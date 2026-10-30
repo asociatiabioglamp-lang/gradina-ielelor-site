@@ -13,3 +13,4 @@ Sursă de adevăr pentru conflictele dintre documente. Se completează pe măsur
 | 2026-10-30 | Pagina Glamping | Aprobată; descrierea cortului doar în listă și la întrebări | Unită în `main` |
 | 2026-10-30 | Site nou | **WordPress nou, curat**, construit separat (fără tema `giw` și fără Elementor) | Site-ul live rămâne neatins. Site-ul nou îl înlocuiește pe cel vechi **numai după ce proprietarul îl verifică și îl aprobă** |
 | 2026-10-30 | Siguranță | „Nu blocăm nimic” | Nicio schimbare pe site-ul live în timpul construcției; mutarea se face o singură dată, planificat |
+| 2026-10-30 | Rezervări și plăți | **Rezervarea prin 5starDesk, plata doar pe site-ul nostru** | Detalii și întrebări pentru 5starDesk în `docs/plati-rezervari.md`. Modulul OVABRW probabil nu mai e necesar pe site-ul nou |
