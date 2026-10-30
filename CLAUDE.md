@@ -4,8 +4,10 @@ Site-ul gradina-ielelor.ro (camping, glamping, bungalow și evenimente, Sâmbăt
 Proprietar: Asociația Bioglamp. Comunicarea cu proprietarul se face în română, simplu, fără jargon.
 
 ## Arhitectură (decisă, nu se reia fără cererea proprietarului)
-- WordPress + WooCommerce + OVABRW rămân. Rezervările, plățile și comenzile trec numai prin ele.
-- Pluginul `gradina-ielelor-integration/` aplică designul prin template-uri de pagină; tema `giw` și Elementor rămân instalate.
+- **Site nou, curat (decizia din 30.10.2026):** WordPress nou, fără tema `giw` și fără Elementor, construit separat de site-ul live.
+  Site-ul live rămâne neatins până când proprietarul verifică și aprobă site-ul nou; abia atunci îl înlocuiește.
+- WordPress + WooCommerce + OVABRW rămân motorul de rezervări. Rezervările, plățile și comenzile trec numai prin ele.
+- Pluginul `gradina-ielelor-integration/` conține template-urile paginilor (hub și pagini dedicate).
 - Pagina principală = hub de rezervare: modulul BRW sus, apoi cardurile celor patru oferte:
   **Glamping · Camping & rulote · Bungalow · Festivaluri & evenimente**.
 - Fiecare ofertă are pagina ei dedicată, deschisă în același tab, cu tranziție fluidă.

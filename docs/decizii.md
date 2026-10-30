@@ -10,3 +10,6 @@ Sursă de adevăr pentru conflictele dintre documente. Se completează pe măsur
 | 2026-10-30 | Oferte principale / meniu | **Glamping · Camping & rulote · Bungalow · Festivaluri & evenimente** | Fiecare are pagină dedicată; nunți, tabere, bootcamp se încadrează la evenimente până la o decizie separată |
 | 2026-10-30 | Sursă suplimentară | Folderul `D:\kimi` de pe calculatorul proprietarului | Nu este accesibil din cloud; se analizează după încărcarea în Google Drive |
 | 2026-10-30 | Stil | Pagini **mult mai suple și mai prietenoase** | Ton cald („tu”), fraze scurte, fără jargon tehnic (BRW/WooCommerce) vizibil vizitatorilor, spațiu aerisit, colțuri rotunjite, animații discrete, un CTA dominant |
+| 2026-10-30 | Pagina Glamping | Aprobată; descrierea cortului doar în listă și la întrebări | Unită în `main` |
+| 2026-10-30 | Site nou | **WordPress nou, curat**, construit separat (fără tema `giw` și fără Elementor) | Site-ul live rămâne neatins. Site-ul nou îl înlocuiește pe cel vechi **numai după ce proprietarul îl verifică și îl aprobă** |
+| 2026-10-30 | Siguranță | „Nu blocăm nimic” | Nicio schimbare pe site-ul live în timpul construcției; mutarea se face o singură dată, planificat |
