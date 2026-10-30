@@ -1,16 +1,20 @@
-=== Grădina Ielelor — One Page + BRW ===
+=== Grădina Ielelor — Site + BRW ===
 Contributors: gradina-ielelor
 Tags: one-page, woocommerce, booking, ovabrw, seo
 Requires at least: 6.0
 Requires PHP: 7.4
-Stable tag: 1.0.8
+Stable tag: 1.1.0
 License: GPLv2 or later
 
-Template server-side pentru pagina principală Grădina Ielelor, cu WooCommerce + OVABRW drept singur motor de rezervări.
+Template-uri server-side pentru pagina principală (hub de rezervare) și paginile dedicate ofertelor Grădina Ielelor, cu WooCommerce + OVABRW drept singur motor de rezervări.
 
 == Description ==
 
-Aplică designul prototipului unei singure pagini WordPress printr-un template furnizat de plugin. Include modulul real BRW, prezentări compacte și galerii pentru Camping, Glamping, Bungalow și Evenimente, CTA-uri către rezervare, SEO server-side și logo în header/footer.
+Pagina principală devine hub de rezervare: modulul real BRW sus, apoi cardurile celor patru oferte — Glamping, Camping & rulote, Bungalow, Festivaluri & evenimente. Fiecare ofertă are pagina ei dedicată, deschisă în același tab, cu tranziție fluidă între pagini și preîncărcare la hover.
+
+Paginile dedicate nu încarcă formularul BRW. Butoanele „Rezervă” duc înapoi la modulul de rezervări de pe pagina principală, cu oferta preselectată (/#rezervare-glamping).
+
+Până la publicarea paginii dedicate a unei oferte, cardul ei duce la secțiunea detaliată de pe pagina principală; după publicare, secțiunea dispare de pe pagina principală.
 
 Nu include React, nu creează un al doilea motor de rezervări și nu modifică produsele, comenzile sau plățile.
 
@@ -21,6 +25,8 @@ Nu include React, nu creează un al doilea motor de rezervări și nu modifică 
 3. Verifică Setări → Grădina Ielelor: URL rezultate și slug-uri categorii.
 4. Selectează template-ul „Grădina Ielelor — One Page + BRW” pentru pagina principală.
 5. Setează pagina drept pagină statică de pornire și testează fluxul BRW/WooCommerce cu plăți sandbox.
+6. Pentru Glamping: editează pagina existentă /glamping/ și selectează template-ul „Grădina Ielelor — Glamping”. URL-ul rămâne același.
+7. Verifică: butonul „Rezervă” de pe /glamping/ deschide pagina principală cu Glamping preselectat în modulul BRW.
 
 == Frequently Asked Questions ==
 
@@ -31,6 +37,13 @@ Nu. Constanta GI_REACT_DEMO_ENABLED este false, bundle-ul React nu este inclus, 
 Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai opțiunile acestui plugin.
 
 == Changelog ==
+
+= 1.1.0 =
+* Pagină dedicată Glamping (template nou), cu ton prietenos și fără jargon tehnic pentru vizitatori.
+* Pagina principală ca hub de rezervare, cu carduri pentru cele patru oferte.
+* Butoanele de rezervare de pe paginile dedicate trimit la modulul BRW de pe pagina principală, cu oferta preselectată.
+* Navigare fluidă: tranziții între pagini (View Transitions) și preîncărcare la hover (Speculation Rules, WordPress 6.8+), fără coș, checkout și cont.
+* Header, footer și lightbox comune în templates/parts; SEO server-side pe fiecare template.
 
 = 1.0.8 =
 * Primul ecran mai compact, pentru vizibilitatea imediată a modulului de rezervare pe desktop și mobil.
