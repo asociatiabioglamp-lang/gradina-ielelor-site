@@ -33,7 +33,7 @@ if (!defined('ABSPATH')) {
                 <p>Camping, glamping, bungalow și evenimente la poalele Munților Făgăraș.</p>
                 <div class="home-hero-actions">
                     <a class="button button-accent" href="#rezervare">Rezervă-ți escapada <?php echo gi_icon('arrow-right'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
-                    <a class="home-hero-events-link" href="#evenimente"><?php echo gi_icon('music'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Festivaluri &amp; petreceri</a>
+                    <a class="home-hero-events-link" href="<?php echo esc_url(gi_offer_url('evenimente')); ?>"><?php echo gi_icon('music'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Festivaluri &amp; petreceri</a>
                 </div>
             </div>
         </section>
@@ -73,6 +73,29 @@ if (!defined('ABSPATH')) {
                         </a>
                     <?php endforeach; ?>
                 </div>
+            </div>
+        </section>
+
+        <section class="gi-home-info" aria-label="Informații utile">
+            <div class="container gi-home-info-grid">
+                <a class="gi-home-info-card gi-home-info-festival" href="<?php echo esc_url(home_url('/festival/')); ?>">
+                    <?php echo gi_icon('music'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                    <strong>Organizezi un festival?</strong>
+                    <span>Aviz ISU pentru 5.000 de persoane, scenă permanentă, camping și parcare proprie.</span>
+                    <em>Cere o ofertă de organizare <?php echo gi_icon('arrow-right'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></em>
+                </a>
+                <a class="gi-home-info-card" href="<?php echo esc_url(gi_clean_page_url('despre-noi')); ?>">
+                    <?php echo gi_icon('trees'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                    <strong>Despre noi</strong>
+                    <span>Cine suntem și cum arată locul: nouă hectare la poalele Făgărașului.</span>
+                    <em>Citește povestea <?php echo gi_icon('arrow-right'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></em>
+                </a>
+                <a class="gi-home-info-card" href="<?php echo esc_url(gi_clean_page_url('regulament-politici')); ?>">
+                    <?php echo gi_icon('file'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                    <strong>Regulament &amp; politici</strong>
+                    <span>Regulile domeniului și politica de anulare, pe scurt și clar.</span>
+                    <em>Vezi regulile <?php echo gi_icon('arrow-right'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></em>
+                </a>
             </div>
         </section>
 
@@ -189,11 +212,9 @@ if (!defined('ABSPATH')) {
         <section id="recenzii" class="home-reviews" aria-labelledby="reviews-title">
             <div class="container">
                 <div class="reviews-summary">
-                    <span class="eyebrow">Recenzii ale oaspeților</span>
-                    <div class="reviews-score"><strong>5,0</strong><span>/ 5</span></div>
-                    <div class="stars" aria-label="5 din 5 stele">★★★★★</div>
-                    <p id="reviews-title">Media recenziilor de 5 stele selectate mai jos, publicate pe site-ul Grădina Ielelor.</p>
-                    <a href="https://gradina-ielelor.ro/" target="_blank" rel="noopener noreferrer" class="text-link">Vezi sursa recenziilor <?php echo gi_icon('arrow-up-right'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
+                    <span class="eyebrow">Recenzii</span>
+                    <h2 id="reviews-title">Ce spun oaspeții</h2>
+                    <p>Câteva dintre recenziile primite de la oaspeții noștri, alese de noi.</p>
                 </div>
                 <div class="home-review-cards">
                     <?php foreach (gi_reviews() as $review) : ?>
@@ -202,6 +223,29 @@ if (!defined('ABSPATH')) {
                 </div>
             </div>
         </section>
+
+        <?php
+        $gi_posts = get_posts(array('post_type' => 'post', 'post_status' => 'publish', 'posts_per_page' => 3, 'no_found_rows' => true));
+        if ($gi_posts) :
+            ?>
+            <section id="blog" class="gi-home-blog" aria-labelledby="blog-title">
+                <div class="container">
+                    <div class="gi-offers-head">
+                        <span class="eyebrow">Blog</span>
+                        <h2 id="blog-title">Povești din <em>Grădină</em></h2>
+                    </div>
+                    <div class="gi-home-blog-grid">
+                        <?php foreach ($gi_posts as $gi_post) : ?>
+                            <a class="gi-home-blog-card" href="<?php echo esc_url(get_permalink($gi_post)); ?>">
+                                <small><?php echo esc_html(get_the_date('', $gi_post)); ?></small>
+                                <strong><?php echo esc_html(get_the_title($gi_post)); ?></strong>
+                                <span><?php echo esc_html(wp_trim_words(get_the_excerpt($gi_post), 22)); ?></span>
+                            </a>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </section>
+        <?php endif; ?>
     </main>
 
 <?php gi_part('footer', array('mobile_cta' => 'Rezervă cazare')); ?>

@@ -75,6 +75,25 @@ gi_part('header');
             </div>
         </section>
 
+        <?php if (!empty($gi_page['calendar'])) : ?>
+            <section id="calendar" class="gi-calendar gi-reveal" aria-labelledby="calendar-title">
+                <div class="container">
+                    <div class="gi-section-head">
+                        <span class="eyebrow"><?php echo gi_icon('calendar'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Calendar</span>
+                        <h2 id="calendar-title"><?php echo esc_html($gi_page['calendar']['title']); ?></h2>
+                        <?php if (!empty($gi_page['calendar']['text'])) : ?>
+                            <p><?php echo esc_html($gi_page['calendar']['text']); ?></p>
+                        <?php endif; ?>
+                    </div>
+                    <ul class="gi-calendar-list">
+                        <?php foreach (gi_events_2027() as $gi_event) : ?>
+                            <li><span class="gi-calendar-tag"><?php echo esc_html($gi_event['category_label']); ?></span><strong><?php echo esc_html($gi_event['title']); ?></strong><small><?php echo esc_html($gi_event['period']); ?></small></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            </section>
+        <?php endif; ?>
+
         <section id="galerie" class="gi-gallery-section gi-reveal" aria-labelledby="gallery-title">
             <div class="container">
                 <div class="gi-section-head">

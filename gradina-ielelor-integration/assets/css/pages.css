@@ -296,3 +296,11 @@
 .gi-back-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 22px; color: rgba(255, 255, 255, .92); font-size: 15px; font-weight: 600; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .4); text-underline-offset: .3em; }
 .gi-back-link:hover { text-decoration-color: var(--accent); }
 .gi-back-link .gi-icon { width: 18px; height: 18px; }
+
+/* ---------- Calendar (Festivaluri & evenimente) ---------- */
+.gi-calendar { padding: 0 0 var(--gi-section); scroll-margin-top: 80px; }
+.gi-calendar-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.gi-calendar-list li { display: grid; gap: 6px; align-content: start; padding: 20px 22px; border-radius: var(--gi-radius-sm); background: var(--cream); }
+.gi-calendar-list strong { font-family: var(--display); font-size: 1.25rem; font-weight: 500; color: var(--forest-deep); }
+.gi-calendar-list small { font-size: 14px; color: #4d5b53; }
+.gi-calendar-tag { justify-self: start; padding: 3px 10px; border-radius: 999px; background: var(--paper); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent-dark); }
