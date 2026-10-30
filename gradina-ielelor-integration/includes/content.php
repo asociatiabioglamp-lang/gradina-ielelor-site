@@ -97,71 +97,15 @@ function gi_reviews() {
 }
 
 /**
- * Conținutul paginii dedicate Glamping.
- * Fapte din prezentările proprietarului și din catalogul public; tarifele sunt referință, nu calcul.
- * Nepublicat până la confirmare: animale de companie, ore check-in/check-out, număr minim de nopți.
- */
-function gi_glamping_page() {
-    return array(
-        'facts' => array(
-            array('value' => '4', 'label' => 'corturi cu pat'),
-            array('value' => '2 + 1', 'label' => 'persoane, cu pat suplimentar'),
-            array('value' => '20 min', 'label' => 'până la Transfăgărășan'),
-            array('value' => 'de la 195 lei', 'label' => 'pe noapte'),
-        ),
-        'tent' => array(
-            'Pat adevărat, cu lenjerie',
-            'Covor și noptieră',
-            'Platformă de lemn, ridicată de la sol',
-            'Masă și scaune la intrare',
-            'Pat suplimentar, la cerere',
-        ),
-        'garden' => array(
-            'Opt dușuri cu apă caldă, non-stop',
-            'Douăsprezece toalete',
-            'Două bucătării comune',
-            'Două lacuri, unul în care se înoată',
-            'Terasă din lemn construită pe apă',
-            'Treizeci de hamace și vetre de foc',
-            'Internet și parcare proprie',
-            'Domeniu împrejmuit, pază 24 din 24',
-        ),
-        'prices' => array(
-            array('label' => 'Nopți în timpul săptămânii', 'value' => 'de la 195 lei'),
-            array('label' => 'Vineri și sâmbătă', 'value' => '235 lei'),
-            array('label' => 'Pat suplimentar', 'value' => '55 lei'),
-        ),
-        'notes' => array(
-            array('icon' => 'droplet', 'title' => 'Apa de la robinet nu e potabilă', 'text' => 'E pentru duș, spălat și toalete. Apa de băut o găsești la dozatoare și îmbuteliată.'),
-            array('icon' => 'sun', 'title' => 'Energie proprie, din soare și GPL', 'text' => 'Ai curent, apă caldă și internet. Te rugăm doar să lași acasă electrocasnicele mari.'),
-            array('icon' => 'flame', 'title' => 'Focul, doar în vetrele amenajate', 'text' => 'Avem vetre de foc pregătite pe domeniu. Seara, acolo se adună toată lumea.'),
-        ),
-        'distances' => array(
-            array('place' => 'Transfăgărășan', 'value' => 'cca. 20 min'),
-            array('place' => 'Făgăraș', 'value' => '30 km'),
-            array('place' => 'Brașov', 'value' => 'cca. 60 km'),
-            array('place' => 'Sibiu', 'value' => 'cca. 70 km'),
-        ),
-        'faq' => array(
-            array('q' => 'Ce găsesc în cort?', 'a' => 'Un pat cu lenjerie, covor și noptieră. Cortul stă pe o platformă de lemn, iar la intrare ai o masă cu scaune. Nu e camping de supraviețuire.'),
-            array('q' => 'Câte persoane încap într-un cort?', 'a' => 'Două persoane. Dacă mai vine cineva, poți adăuga un pat suplimentar când faci rezervarea.'),
-            array('q' => 'Baia e în cort?', 'a' => 'Nu, băile sunt comune: opt dușuri cu apă caldă, disponibile oricând, și douăsprezece toalete. Dacă vrei baie proprie, alege un bungalow.'),
-            array('q' => 'Am curent și internet?', 'a' => 'Da. Domeniul funcționează pe energie proprie, solară și GPL, așa că ai curent, apă caldă și internet. Lasă acasă doar aparatele electrice mari.'),
-            array('q' => 'Cât costă o noapte?', 'a' => 'De la 195 lei în timpul săptămânii și 235 lei vineri și sâmbătă. Patul suplimentar costă 55 lei pe noapte. Prețul final îl vezi când alegi datele.'),
-        ),
-        'review_authors' => array('Ada-Casandra Ștefan', 'Mihaela Mocanu'),
-    );
-}
-
-/**
- * Cardurile celor patru oferte de pe pagina principală (hub de rezervare).
- * Fiecare card deschide pagina dedicată; până la publicarea ei, duce la secțiunea detaliată de mai jos.
+ * Cardurile celor cinci categorii (pagina principală și „Poate te tentează și” de pe paginile dedicate).
+ * Fiecare card deschide pagina dedicată; până la publicarea ei, duce la secțiunea detaliată de pe pagina principală.
  */
 function gi_offer_cards() {
     return array(
-        'glamping' => array('text' => 'Corturi cu pat, pe platformă de lemn, cu muntele la intrare.', 'price' => 'de la 195 lei / noapte', 'image' => 'super-glamping-1600.webp', 'alt' => 'Corturi de glamping cu Munții Făgăraș în fundal'),
-        'camping' => array('text' => 'Loc pentru cort sau rulotă, lângă lac, cu bucătării și dușuri calde.', 'price' => '80 lei / noapte', 'image' => 'camping-day-960.webp', 'alt' => 'Corturi și spații verzi în campingul Grădina Ielelor'),
         'bungalow' => array('text' => 'Baie proprie, terasă și liniște, pe malul lacului mare.', 'price' => 'de la 350 lei / noapte', 'image' => 'bungalow-card-960.webp', 'alt' => 'Bungalow în Grădina Ielelor'),
-        'evenimente' => array('text' => 'Festivaluri, petreceri și evenimente private pe un domeniu de 9 hectare.', 'price' => 'Ofertă la cerere', 'image' => 'festival-scena-960.webp', 'alt' => 'Festival și camping pe domeniul Grădina Ielelor'),
+        'glamping' => array('text' => 'Corturi cu pat, pe platformă de lemn, cu muntele la intrare.', 'price' => 'de la 195 lei / noapte', 'image' => 'super-glamping-1600.webp', 'alt' => 'Corturi de glamping cu Munții Făgăraș în fundal'),
+        'camping' => array('text' => 'Vino cu cortul tău: loc lângă lac, bucătării comune și dușuri calde.', 'price' => '80 lei / noapte', 'image' => 'camping-day-960.webp', 'alt' => 'Corturi și spații verzi în campingul Grădina Ielelor'),
+        'rulote' => array('text' => 'Rulotă sau autorulotă? Racorduri și servicii pe loc, lângă lac.', 'price' => '80 lei / noapte', 'image' => 'home-hero-sunny-960.webp', 'alt' => 'Rulote la lac cu munții în fundal'),
+        'evenimente' => array('text' => 'Festivaluri, petreceri și evenimente de familie pe un domeniu de 9 hectare.', 'price' => 'Ofertă la cerere', 'image' => 'festival-scena-960.webp', 'alt' => 'Festival și camping pe domeniul Grădina Ielelor'),
     );
 }

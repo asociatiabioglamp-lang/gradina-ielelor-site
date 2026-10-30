@@ -1,48 +1,52 @@
 <?php
 /**
- * Template Name: Grădina Ielelor — Glamping
- * Pagină dedicată ofertei Glamping. Nu conține formularul de rezervare: fiecare buton de rezervare
- * trimite la modulul OVABRW de pe pagina principală, cu Glamping preselectat.
+ * Pagină dedicată unei oferte (Bungalow, Glamping, Camping, Rulote, Festivaluri & evenimente).
+ * Conținutul vine din gi_offer_page(); pagina nu conține formularul de rezervare: butoanele trimit
+ * la modulul de rezervări de pe pagina principală, cu oferta preselectată.
  */
 if (!defined('ABSPATH')) {
     exit;
 }
 
-$gi_glamping = gi_glamping_page();
-$gi_experience = gi_experiences()['glamping'];
-$gi_hero = $gi_experience['images'][0];
-$gi_closing_photo = $gi_experience['images'][5];
-$gi_book_url = gi_home_booking_url('glamping');
-$gi_reviews = array_values(array_filter(gi_reviews(), function ($review) use ($gi_glamping) {
-    return in_array($review['author'], $gi_glamping['review_authors'], true);
-}));
-$gi_related = array(
-    'camping' => array('text' => 'Vii cu cortul sau cu rulota? Loc generos, lângă lac și munte.', 'image' => 'camping-day-960.webp'),
-    'bungalow' => array('text' => 'Patru bungalow-uri cu baie proprie, pe malul lacului mare.', 'image' => 'bungalow-card-960.webp'),
-    'evenimente' => array('text' => 'Festivaluri, petreceri și întâlniri pe un domeniu de 9 hectare.', 'image' => 'festival-scena-960.webp'),
-);
+$gi_key = gi_current_page_key();
+$gi_page = gi_offer_page($gi_key);
+if (!$gi_page) {
+    // Template-ul a rămas pe o pagină fără conținut definit: afișăm pagina principală în locul unei pagini goale.
+    wp_safe_redirect(home_url('/'));
+    exit;
+}
+
+$gi_book_url = gi_current_cta_url();
+$gi_back_url = gi_home_booking_url($gi_page['booking_type']);
+$gi_reviews = array();
+if (!empty($gi_page['reviews']['authors'])) {
+    $gi_reviews = array_values(array_filter(gi_reviews(), function ($review) use ($gi_page) {
+        return in_array($review['author'], $gi_page['reviews']['authors'], true);
+    }));
+}
+$gi_related = array_diff_key(gi_offer_cards(), array($gi_key => true));
 
 gi_part('document-start', array('shell_class' => 'site-shell gi-site gi-dedicated'));
 gi_part('header');
 ?>
 
     <main id="continut">
-        <section class="gi-page-hero" aria-labelledby="glamping-title">
+        <section class="gi-page-hero" aria-labelledby="page-title">
             <figure class="gi-page-hero-media">
-                <img src="<?php echo esc_url(gi_image_url($gi_hero['src'])); ?>" alt="<?php echo esc_attr($gi_hero['alt']); ?>" width="1600" height="900" fetchpriority="high">
+                <img src="<?php echo esc_url(gi_image_url($gi_page['hero']['image'])); ?>" alt="<?php echo esc_attr($gi_page['hero']['alt']); ?>" width="1600" height="900" fetchpriority="high">
             </figure>
             <div class="gi-page-hero-overlay"></div>
             <div class="container gi-page-hero-content">
                 <nav class="gi-breadcrumb" aria-label="Unde te afli">
                     <a href="<?php echo esc_url(home_url('/')); ?>">Acasă</a>
                     <span aria-hidden="true">/</span>
-                    <span aria-current="page">Glamping</span>
+                    <span aria-current="page"><?php echo esc_html($gi_page['title']); ?></span>
                 </nav>
                 <span class="eyebrow eyebrow-light"><?php echo gi_icon('mountain'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Sâmbăta de Sus · Brașov</span>
-                <h1 id="glamping-title">Glamping în<br><em>Grădina Ielelor</em></h1>
-                <p>Confort și intimitate în natură, la poalele Munților Făgăraș. Nu ai nevoie de echipament ca să dormi la munte.</p>
+                <h1 id="page-title"><?php echo esc_html($gi_page['hero']['h1']); ?><br><em><?php echo esc_html($gi_page['hero']['h1_em']); ?></em></h1>
+                <p><?php echo esc_html($gi_page['hero']['lead']); ?></p>
                 <div class="gi-page-hero-actions">
-                    <a class="button button-accent" href="<?php echo esc_url($gi_book_url); ?>" data-gi-book>Verifică disponibilitatea <?php echo gi_icon('arrow-right'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
+                    <a class="button button-accent" href="<?php echo esc_url($gi_book_url); ?>" data-gi-book><?php echo esc_html($gi_page['cta']); ?> <?php echo gi_icon('arrow-right'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
                     <a class="gi-hero-link" href="#galerie">Vezi pozele</a>
                 </div>
             </div>
@@ -50,7 +54,7 @@ gi_part('header');
 
         <div class="container">
             <ul class="gi-facts" aria-label="Pe scurt">
-                <?php foreach ($gi_glamping['facts'] as $gi_fact) : ?>
+                <?php foreach ($gi_page['facts'] as $gi_fact) : ?>
                     <li><strong><?php echo esc_html($gi_fact['value']); ?></strong><span><?php echo esc_html($gi_fact['label']); ?></span></li>
                 <?php endforeach; ?>
             </ul>
@@ -59,13 +63,14 @@ gi_part('header');
         <section class="gi-story gi-reveal" aria-labelledby="story-title">
             <div class="container gi-story-grid">
                 <div class="gi-story-text">
-                    <span class="eyebrow">Cum e să dormi aici</span>
-                    <h2 id="story-title">Natura, cu confort.<br><em>Fără bagaj de expediție.</em></h2>
-                    <p>Te culci comod, te trezești cu muntele în față și ai timp doar pentru tine.</p>
-                    <p>Ziua ai la dispoziție două lacuri, unul în care se înoată, și o terasă din lemn construită pe apă. Seara, focul se aprinde în vetrele amenajate, iar hamacele sunt la câțiva pași.</p>
+                    <span class="eyebrow"><?php echo esc_html($gi_page['story']['eyebrow']); ?></span>
+                    <h2 id="story-title"><?php echo esc_html($gi_page['story']['title']); ?><br><em><?php echo esc_html($gi_page['story']['title_em']); ?></em></h2>
+                    <?php foreach ($gi_page['story']['paragraphs'] as $gi_paragraph) : ?>
+                        <p><?php echo esc_html($gi_paragraph); ?></p>
+                    <?php endforeach; ?>
                 </div>
                 <figure class="gi-story-media">
-                    <img src="<?php echo esc_url(gi_image_url($gi_experience['images'][1]['src'])); ?>" alt="<?php echo esc_attr($gi_experience['images'][1]['alt']); ?>" width="640" height="800" loading="lazy" decoding="async">
+                    <img src="<?php echo esc_url(gi_image_url($gi_page['story']['image'])); ?>" alt="<?php echo esc_attr($gi_page['story']['alt']); ?>" width="640" height="800" loading="lazy" decoding="async">
                 </figure>
             </div>
         </section>
@@ -74,9 +79,9 @@ gi_part('header');
             <div class="container">
                 <div class="gi-section-head">
                     <span class="eyebrow">Galerie</span>
-                    <h2 id="gallery-title">Vezi exact unde dormi</h2>
+                    <h2 id="gallery-title"><?php echo esc_html($gi_page['gallery']['title']); ?></h2>
                 </div>
-                <?php gi_render_gallery($gi_experience['images'], 'Galerie foto glamping'); ?>
+                <?php gi_render_gallery($gi_page['gallery']['images'], 'Galerie foto ' . $gi_page['title']); ?>
             </div>
         </section>
 
@@ -84,26 +89,22 @@ gi_part('header');
             <div class="container">
                 <div class="gi-section-head">
                     <span class="eyebrow">Ce primești</span>
-                    <h2 id="included-title">Tot ce-ți trebuie, nimic în plus</h2>
+                    <h2 id="included-title"><?php echo esc_html($gi_page['included']['title']); ?></h2>
                 </div>
                 <div class="gi-included-grid">
-                    <div class="gi-included-group gi-included-tent">
-                        <h3><?php echo gi_icon('tent'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> În cortul tău</h3>
-                        <ul class="gi-check-list">
-                            <?php foreach ($gi_glamping['tent'] as $gi_item) : ?>
-                                <li><?php echo gi_icon('check'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php echo esc_html($gi_item); ?></li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
-                    <div class="gi-included-group gi-included-garden">
-                        <h3><?php echo gi_icon('trees'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> În Grădină</h3>
-                        <ul class="gi-check-list">
-                            <?php foreach ($gi_glamping['garden'] as $gi_item) : ?>
-                                <li><?php echo gi_icon('check'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php echo esc_html($gi_item); ?></li>
-                            <?php endforeach; ?>
-                        </ul>
-                        <p class="gi-included-note">Băile sunt comune. Dacă vrei baie proprie, <a href="<?php echo esc_url(gi_offer_url('bungalow')); ?>">alege un bungalow</a>.</p>
-                    </div>
+                    <?php foreach ($gi_page['included']['groups'] as $gi_index => $gi_group) : ?>
+                        <div class="gi-included-group <?php echo 0 === $gi_index ? 'gi-included-tent' : 'gi-included-garden'; ?>">
+                            <h3><?php echo gi_icon($gi_group['icon']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> <?php echo esc_html($gi_group['title']); ?></h3>
+                            <ul class="gi-check-list">
+                                <?php foreach ($gi_group['items'] as $gi_item) : ?>
+                                    <li><?php echo gi_icon('check'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php echo esc_html($gi_item); ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                            <?php if (!empty($gi_group['note'])) : ?>
+                                <p class="gi-included-note"><?php echo esc_html($gi_group['note']['text']); ?><a href="<?php echo esc_url(gi_offer_url($gi_group['note']['link_offer'])); ?>"><?php echo esc_html($gi_group['note']['link_text']); ?></a>.</p>
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </section>
@@ -113,7 +114,7 @@ gi_part('header');
                 <div class="container">
                     <div class="gi-section-head">
                         <span class="eyebrow">Ce spun oaspeții</span>
-                        <h2 id="reviews-title">De la cei care au dormit aici</h2>
+                        <h2 id="reviews-title"><?php echo esc_html($gi_page['reviews']['title']); ?></h2>
                     </div>
                     <div class="home-review-cards gi-swipe">
                         <?php foreach ($gi_reviews as $gi_review) : ?>
@@ -124,26 +125,28 @@ gi_part('header');
             </section>
         <?php endif; ?>
 
-        <section class="gi-prices gi-reveal" aria-labelledby="prices-title">
-            <div class="container">
-                <div class="gi-prices-band">
-                    <div class="gi-prices-intro">
-                        <span class="eyebrow"><?php echo gi_icon('calendar'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Prețuri</span>
-                        <h2 id="prices-title">Simplu, fără surprize</h2>
-                        <p>Prețul final îl vezi când alegi datele, înainte să plătești.</p>
-                    </div>
-                    <dl class="gi-price-list">
-                        <?php foreach ($gi_glamping['prices'] as $gi_price) : ?>
-                            <div><dt><?php echo esc_html($gi_price['label']); ?></dt><dd><?php echo esc_html($gi_price['value']); ?> <small>/ noapte</small></dd></div>
-                        <?php endforeach; ?>
-                    </dl>
-                    <div class="gi-prices-actions">
-                        <a class="button button-accent" href="<?php echo esc_url($gi_book_url); ?>" data-gi-book>Alege datele <?php echo gi_icon('arrow-right'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
-                        <a class="gi-hero-link" href="tel:+40721333164"><?php echo gi_icon('phone'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> sau sună-ne la 0721 333 164</a>
+        <?php if (!empty($gi_page['prices'])) : ?>
+            <section class="gi-prices gi-reveal" aria-labelledby="prices-title">
+                <div class="container">
+                    <div class="gi-prices-band">
+                        <div class="gi-prices-intro">
+                            <span class="eyebrow"><?php echo gi_icon('calendar'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Prețuri</span>
+                            <h2 id="prices-title"><?php echo esc_html($gi_page['prices']['title']); ?></h2>
+                            <p><?php echo esc_html($gi_page['prices']['text']); ?></p>
+                        </div>
+                        <dl class="gi-price-list">
+                            <?php foreach ($gi_page['prices']['rows'] as $gi_price) : ?>
+                                <div><dt><?php echo esc_html($gi_price['label']); ?></dt><dd><?php echo esc_html($gi_price['value']); ?> <small><?php echo esc_html($gi_page['prices']['unit']); ?></small></dd></div>
+                            <?php endforeach; ?>
+                        </dl>
+                        <div class="gi-prices-actions">
+                            <a class="button button-accent" href="<?php echo esc_url($gi_book_url); ?>" data-gi-book><?php echo esc_html($gi_page['cta']); ?> <?php echo gi_icon('arrow-right'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
+                            <a class="gi-hero-link" href="tel:+40721333164"><?php echo gi_icon('phone'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> sau sună-ne la 0721 333 164</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        <?php endif; ?>
 
         <section class="gi-notes gi-reveal" aria-labelledby="notes-title">
             <div class="container">
@@ -152,7 +155,7 @@ gi_part('header');
                     <h2 id="notes-title">Înainte să vii</h2>
                 </div>
                 <div class="gi-notes-grid gi-swipe">
-                    <?php foreach ($gi_glamping['notes'] as $gi_note) : ?>
+                    <?php foreach ($gi_page['notes'] as $gi_note) : ?>
                         <article class="gi-note">
                             <?php echo gi_icon($gi_note['icon']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                             <h3><?php echo esc_html($gi_note['title']); ?></h3>
@@ -180,7 +183,7 @@ gi_part('header');
                     </div>
                 </div>
                 <ul class="gi-distances" aria-label="Distanțe">
-                    <?php foreach ($gi_glamping['distances'] as $gi_distance) : ?>
+                    <?php foreach (gi_distances() as $gi_distance) : ?>
                         <li><span><?php echo esc_html($gi_distance['place']); ?></span><strong><?php echo esc_html($gi_distance['value']); ?></strong></li>
                     <?php endforeach; ?>
                 </ul>
@@ -195,7 +198,7 @@ gi_part('header');
                     <p>Nu găsești răspunsul? Scrie-ne la <a href="mailto:rezervari@gradina-ielelor.ro">rezervari@gradina-ielelor.ro</a>.</p>
                 </div>
                 <div class="gi-faq-list">
-                    <?php foreach ($gi_glamping['faq'] as $gi_index => $gi_item) : ?>
+                    <?php foreach ($gi_page['faq'] as $gi_index => $gi_item) : ?>
                         <details<?php echo 0 === $gi_index ? ' open' : ''; ?>>
                             <summary><?php echo esc_html($gi_item['q']); ?><span aria-hidden="true"></span></summary>
                             <p><?php echo esc_html($gi_item['a']); ?></p>
@@ -212,11 +215,11 @@ gi_part('header');
                     <h2 id="related-title">Poate te tentează și</h2>
                 </div>
                 <div class="gi-related-grid gi-swipe">
-                    <?php foreach ($gi_related as $gi_key => $gi_item) : ?>
-                        <a class="gi-related-card" href="<?php echo esc_url(gi_offer_url($gi_key)); ?>">
+                    <?php foreach ($gi_related as $gi_related_key => $gi_item) : ?>
+                        <a class="gi-related-card" href="<?php echo esc_url(gi_offer_url($gi_related_key)); ?>">
                             <span class="gi-related-media"><img src="<?php echo esc_url(gi_image_url($gi_item['image'])); ?>" alt="" width="960" height="720" loading="lazy" decoding="async"></span>
                             <span class="gi-related-body">
-                                <strong><?php echo esc_html(gi_offers()[$gi_key]['label']); ?></strong>
+                                <strong><?php echo esc_html(gi_offers()[$gi_related_key]['label']); ?></strong>
                                 <span><?php echo esc_html($gi_item['text']); ?></span>
                             </span>
                             <?php echo gi_icon('arrow-up-right', 'gi-related-arrow'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -227,15 +230,16 @@ gi_part('header');
         </section>
 
         <section class="gi-closing" aria-labelledby="closing-title">
-            <img class="gi-closing-media" src="<?php echo esc_url(gi_image_url($gi_closing_photo['src'])); ?>" alt="" width="1280" height="720" loading="lazy" decoding="async">
+            <img class="gi-closing-media" src="<?php echo esc_url(gi_image_url($gi_page['closing']['image'])); ?>" alt="" width="1280" height="720" loading="lazy" decoding="async">
             <div class="container gi-closing-inner">
-                <h2 id="closing-title">Gata de o noapte<br><em>sub cerul Făgărașului?</em></h2>
+                <h2 id="closing-title"><?php echo esc_html($gi_page['closing']['title']); ?><br><em><?php echo esc_html($gi_page['closing']['title_em']); ?></em></h2>
                 <div class="gi-closing-actions">
-                    <a class="button button-accent" href="<?php echo esc_url($gi_book_url); ?>" data-gi-book>Verifică disponibilitatea <?php echo gi_icon('arrow-right'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
+                    <a class="button button-accent" href="<?php echo esc_url($gi_book_url); ?>" data-gi-book><?php echo esc_html($gi_page['cta']); ?> <?php echo gi_icon('arrow-right'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
                     <a class="gi-hero-link" href="tel:+40721333164"><?php echo gi_icon('phone'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Sună-ne</a>
                 </div>
+                <a class="gi-back-link" href="<?php echo esc_url($gi_back_url); ?>"><?php echo gi_icon('chevron-left'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Înapoi la rezervare</a>
             </div>
         </section>
     </main>
 
-<?php gi_part('footer', array('mobile_cta' => 'Verifică disponibilitatea')); ?>
+<?php gi_part('footer', array('mobile_cta' => $gi_page['cta'])); ?>

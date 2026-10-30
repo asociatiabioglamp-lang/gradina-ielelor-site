@@ -21,8 +21,12 @@
 .gi-offer-card:hover .gi-offer-card-cta .gi-icon { transform: translateX(3px); }
 
 /* Aceeași fotografie se transformă în imaginea mare a paginii Glamping la navigare. */
+.gi-offer-card-bungalow img { view-transition-name: gi-photo-bungalow; }
 .gi-offer-card-glamping img { view-transition-name: gi-photo-glamping; }
-.gi-booking-arrival .gi-offer-card-glamping img { view-transition-name: none; }
+.gi-offer-card-camping img { view-transition-name: gi-photo-camping; }
+.gi-offer-card-rulote img { view-transition-name: gi-photo-rulote; }
+.gi-offer-card-evenimente img { view-transition-name: gi-photo-evenimente; }
+.gi-booking-arrival .gi-offer-card img { view-transition-name: none; }
 
 .gi-site .home-booking { scroll-margin-top: 12px; }
 

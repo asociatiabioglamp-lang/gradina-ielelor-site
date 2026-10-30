@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 $gi_current = gi_current_page_key();
-$gi_booking = gi_is_one_page() ? '#rezervare' : gi_home_booking_url($gi_current);
+$gi_booking = gi_current_booking_url();
 $gi_links = array();
 foreach (gi_offers() as $gi_key => $gi_offer) {
     $gi_links[] = array('label' => $gi_offer['label'], 'url' => gi_offer_url($gi_key), 'current' => $gi_key === $gi_current);

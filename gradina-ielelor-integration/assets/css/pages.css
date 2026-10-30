@@ -8,9 +8,12 @@
 ::view-transition-new(root) { animation-duration: .38s; animation-timing-function: cubic-bezier(.2, .7, .2, 1); }
 
 .gi-site .site-header { view-transition-name: gi-header; }
-.home-experience-glamping .home-photo-gallery > :first-child img,
+.gi-page-bungalow .gi-page-hero-media img { view-transition-name: gi-photo-bungalow; }
 .gi-page-glamping .gi-page-hero-media img { view-transition-name: gi-photo-glamping; }
-::view-transition-group(gi-photo-glamping) { animation-duration: .5s; animation-timing-function: cubic-bezier(.2, .8, .2, 1); }
+.gi-page-camping .gi-page-hero-media img { view-transition-name: gi-photo-camping; }
+.gi-page-rulote .gi-page-hero-media img { view-transition-name: gi-photo-rulote; }
+.gi-page-evenimente .gi-page-hero-media img { view-transition-name: gi-photo-evenimente; }
+::view-transition-group(*) { animation-timing-function: cubic-bezier(.2, .8, .2, 1); }
 
 @media (prefers-reduced-motion: reduce) {
   @view-transition { navigation: none; }
@@ -288,3 +291,8 @@
   .gi-closing-actions { flex-direction: column; align-items: stretch; gap: 6px; width: 100%; }
   .gi-closing-actions .gi-hero-link { align-self: center; }
 }
+
+/* ---------- Înapoi la rezervare (finalul fiecărei pagini dedicate) ---------- */
+.gi-back-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 22px; color: rgba(255, 255, 255, .92); font-size: 15px; font-weight: 600; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .4); text-underline-offset: .3em; }
+.gi-back-link:hover { text-decoration-color: var(--accent); }
+.gi-back-link .gi-icon { width: 18px; height: 18px; }

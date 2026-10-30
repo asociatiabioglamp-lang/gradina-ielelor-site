@@ -10,22 +10,26 @@ if (!defined('ABSPATH')) {
 }
 
 function gi_page_templates() {
-    return array(
-        GI_TEMPLATE_SLUG => array('key' => 'one-page', 'label' => 'Grădina Ielelor — One Page + BRW', 'file' => 'one-page.php'),
-        'gi-glamping.php' => array('key' => 'glamping', 'label' => 'Grădina Ielelor — Glamping', 'file' => 'glamping.php'),
+    $templates = array(
+        GI_TEMPLATE_SLUG => array('key' => 'one-page', 'label' => 'Grădina Ielelor — Pagina principală (rezervare)', 'file' => 'one-page.php'),
     );
+    foreach (gi_offers() as $key => $offer) {
+        $templates[$offer['template']] = array('key' => $key, 'label' => 'Grădina Ielelor — ' . $offer['label'], 'file' => 'offer.php');
+    }
+    return $templates;
 }
 
 /**
- * Cele patru oferte principale, în ordinea din meniu.
+ * Cele cinci categorii, în ordinea din meniu.
  * `anchor` este secțiunea de pe pagina principală folosită cât timp pagina dedicată nu există.
  */
 function gi_offers() {
     return array(
+        'bungalow' => array('label' => 'Bungalow', 'anchor' => 'bungalow', 'template' => 'gi-bungalow.php'),
         'glamping' => array('label' => 'Glamping', 'anchor' => 'glamping', 'template' => 'gi-glamping.php'),
-        'camping' => array('label' => 'Camping & rulote', 'anchor' => 'camping', 'template' => ''),
-        'bungalow' => array('label' => 'Bungalow', 'anchor' => 'bungalow', 'template' => ''),
-        'evenimente' => array('label' => 'Festivaluri & evenimente', 'anchor' => 'evenimente', 'template' => ''),
+        'camping' => array('label' => 'Camping', 'anchor' => 'camping', 'template' => 'gi-camping.php'),
+        'rulote' => array('label' => 'Rulote', 'anchor' => 'camping', 'template' => 'gi-rulote.php'),
+        'evenimente' => array('label' => 'Festivaluri & evenimente', 'anchor' => 'evenimente', 'template' => 'gi-evenimente.php'),
     );
 }
 
@@ -112,17 +116,35 @@ function gi_product_url($slug) {
  * Valori SEO implicite pentru fiecare template; câmpurile din pagină și Yoast/Rank Math au prioritate.
  */
 function gi_page_seo_defaults($key) {
-    $defaults = array(
-        'one-page' => array(
-            'title' => 'Camping & Glamping Brașov | Grădina Ielelor Sâmbăta de Sus',
-            'description' => 'Camping, glamping și bungalow în Sâmbăta de Sus, Brașov. Rezervă cazare la poalele Munților Făgăraș și descoperă calendarul evenimentelor 2027.',
-            'image' => 'home-hero-lake-centered-1600.webp',
-        ),
-        'glamping' => array(
-            'title' => 'Glamping Sâmbăta de Sus, Brașov | Grădina Ielelor',
-            'description' => 'Descoperă corturile de glamping din Grădina Ielelor, la poalele Munților Făgăraș. Vezi facilitățile, fotografiile și disponibilitatea și rezervă online.',
-            'image' => 'super-glamping-1600.webp',
-        ),
+    $page = function_exists('gi_offer_page') ? gi_offer_page($key) : null;
+    if ($page && !empty($page['seo'])) {
+        return $page['seo'];
+    }
+    return array(
+        'title' => 'Camping & Glamping Brașov | Grădina Ielelor Sâmbăta de Sus',
+        'description' => 'Camping, glamping și bungalow în Sâmbăta de Sus, Brașov. Rezervă cazare la poalele Munților Făgăraș și descoperă calendarul evenimentelor 2027.',
+        'image' => 'home-hero-lake-centered-1600.webp',
     );
-    return isset($defaults[$key]) ? $defaults[$key] : $defaults['one-page'];
+}
+
+/**
+ * Butonul „Rezervă” din header: modulul de rezervări, cu categoria paginii curente preselectată.
+ */
+function gi_current_booking_url() {
+    if (gi_is_one_page()) {
+        return '#rezervare';
+    }
+    $page = gi_offer_page(gi_current_page_key());
+    return gi_home_booking_url($page ? $page['booking_type'] : '');
+}
+
+/**
+ * Acțiunea principală a paginii curente (ex. rezervare sau cerere de ofertă pentru evenimente).
+ */
+function gi_current_cta_url() {
+    $page = gi_is_one_page() ? null : gi_offer_page(gi_current_page_key());
+    if ($page && !empty($page['cta_url'])) {
+        return $page['cta_url'];
+    }
+    return gi_current_booking_url();
 }

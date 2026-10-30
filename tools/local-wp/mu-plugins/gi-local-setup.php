@@ -3,7 +3,7 @@
  * Doar pentru testul local: activează pluginurile și creează paginile o singură dată.
  */
 add_action('init', function () {
-    if (get_option('gi_local_setup_done') === '2') {
+    if (get_option('gi_local_setup_done') === '3') {
         return;
     }
     $active = (array) get_option('active_plugins', array());
@@ -18,6 +18,10 @@ add_action('init', function () {
     $pages = array(
         'acasa' => array('Acasă', 'gi-one-page.php'),
         'glamping' => array('Glamping', 'gi-glamping.php'),
+        'bungalow' => array('Bungalow', 'gi-bungalow.php'),
+        'camping' => array('Camping', 'gi-camping.php'),
+        'rulote' => array('Rulote', 'gi-rulote.php'),
+        'evenimente' => array('Festivaluri & evenimente', 'gi-evenimente.php'),
         'despre-noi' => array('Despre noi', ''),
         'regulament-politici' => array('Regulament & politici', ''),
     );
@@ -33,5 +37,5 @@ add_action('init', function () {
         }
     }
     flush_rewrite_rules();
-    update_option('gi_local_setup_done', '2');
+    update_option('gi_local_setup_done', '3');
 }, 99);

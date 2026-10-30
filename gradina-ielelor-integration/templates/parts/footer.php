@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 $gi_mobile_cta = isset($args['mobile_cta']) ? $args['mobile_cta'] : 'Rezervă cazare';
-$gi_mobile_cta_url = isset($args['mobile_cta_url']) ? $args['mobile_cta_url'] : (gi_is_one_page() ? '#rezervare' : gi_home_booking_url(gi_current_page_key()));
+$gi_mobile_cta_url = isset($args['mobile_cta_url']) ? $args['mobile_cta_url'] : gi_current_cta_url();
 ?>
     <footer class="site-footer shared-footer">
         <div class="container footer-grid">
