@@ -106,7 +106,7 @@ function gi_glamping_page() {
         'facts' => array(
             array('value' => '4', 'label' => 'corturi cu pat'),
             array('value' => '2 + 1', 'label' => 'persoane, cu pat suplimentar'),
-            array('value' => 'Platformă', 'label' => 'de lemn, cu masă la intrare'),
+            array('value' => '20 min', 'label' => 'până la Transfăgărășan'),
             array('value' => 'de la 195 lei', 'label' => 'pe noapte'),
         ),
         'tent' => array(

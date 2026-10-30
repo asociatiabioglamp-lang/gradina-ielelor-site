@@ -40,7 +40,7 @@ gi_part('header');
                 </nav>
                 <span class="eyebrow eyebrow-light"><?php echo gi_icon('mountain'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Sâmbăta de Sus · Brașov</span>
                 <h1 id="glamping-title">Glamping în<br><em>Grădina Ielelor</em></h1>
-                <p>Un cort cu pat adevărat, pe platformă de lemn, cu Munții Făgăraș la intrare. Nu ai nevoie de echipament ca să dormi la munte.</p>
+                <p>Confort și intimitate în natură, la poalele Munților Făgăraș. Nu ai nevoie de echipament ca să dormi la munte.</p>
                 <div class="gi-page-hero-actions">
                     <a class="button button-accent" href="<?php echo esc_url($gi_book_url); ?>" data-gi-book>Verifică disponibilitatea <?php echo gi_icon('arrow-right'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
                     <a class="gi-hero-link" href="#galerie">Vezi pozele</a>
@@ -61,7 +61,7 @@ gi_part('header');
                 <div class="gi-story-text">
                     <span class="eyebrow">Cum e să dormi aici</span>
                     <h2 id="story-title">Natura, cu confort.<br><em>Fără bagaj de expediție.</em></h2>
-                    <p>Cortul stă pe o platformă de lemn și are pat cu lenjerie, covor și noptieră. La intrare te așteaptă o masă cu scaune, iar în față, muntele.</p>
+                    <p>Te culci comod, te trezești cu muntele în față și ai timp doar pentru tine.</p>
                     <p>Ziua ai la dispoziție două lacuri, unul în care se înoată, și o terasă din lemn construită pe apă. Seara, focul se aprinde în vetrele amenajate, iar hamacele sunt la câțiva pași.</p>
                 </div>
                 <figure class="gi-story-media">
