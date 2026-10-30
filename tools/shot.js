@@ -7,7 +7,7 @@ const { chromium } = require('playwright');
     const page = await browser.newPage({ viewport: vp, deviceScaleFactor: name === 'mobil' ? 2 : 1 });
     await page.goto(url, { waitUntil: 'networkidle' });
     // Animațiile la derulare se declanșează doar la vizualizare; pentru captură le afișăm direct.
-    await page.addStyleTag({ content: '.gi-reveal{animation:none!important;opacity:1!important;transform:none!important}' });
+    await page.addStyleTag({ content: 'html{scroll-behavior:auto!important} .gi-reveal{animation:none!important;opacity:1!important;transform:none!important}' });
     // Derulăm toată pagina ca imaginile lazy să se încarce.
     await page.evaluate(async () => {
       for (let y = 0; y < document.documentElement.scrollHeight; y += 600) { window.scrollTo(0, y); await new Promise(r => setTimeout(r, 60)); }

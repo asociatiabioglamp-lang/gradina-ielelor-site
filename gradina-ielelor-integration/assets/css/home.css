@@ -22,6 +22,7 @@
 
 /* Aceeași fotografie se transformă în imaginea mare a paginii Glamping la navigare. */
 .gi-offer-card-glamping img { view-transition-name: gi-photo-glamping; }
+.gi-booking-arrival .gi-offer-card-glamping img { view-transition-name: none; }
 
 .gi-site .home-booking { scroll-margin-top: 12px; }
 

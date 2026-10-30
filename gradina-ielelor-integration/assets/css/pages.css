@@ -1,4 +1,5 @@
-/* Pagini dedicate Grădina Ielelor + tranziții între pagini. Se încarcă după site.css și îi folosește variabilele. */
+/* Pagini dedicate Grădina Ielelor + tranziții între pagini. Se încarcă după site.css și îi folosește variabilele.
+   Atenție: fișierul se încarcă și pe pagina principală; tot ce ține de paginile dedicate stă sub .gi-dedicated. */
 
 /* ---------- Navigare fluidă între pagini (Chrome, Edge, Safari 18.2+; restul navighează normal) ---------- */
 @view-transition { navigation: auto; }
@@ -19,183 +20,271 @@
 .gi-site .mobile-nav a[aria-current="page"] { color: var(--accent); }
 
 /* ---------- Ritm general al paginilor dedicate ---------- */
-.gi-dedicated { --gi-radius: 28px; --gi-radius-sm: 18px; --gi-section: clamp(64px, 9vw, 120px); --gi-shadow: 0 1px 2px rgba(16, 47, 40, .05), 0 18px 40px -24px rgba(16, 47, 40, .28); background: var(--paper); }
-.gi-dedicated main h2 { font-family: var(--display); font-weight: 500; font-size: clamp(2rem, 4.2vw, 3.1rem); line-height: 1.05; letter-spacing: -.02em; margin: .35em 0 .4em; color: var(--forest-deep); }
+.gi-dedicated {
+  --gi-radius: 28px;
+  --gi-radius-sm: 18px;
+  --gi-section: clamp(56px, 8vw, 112px);
+  --gi-shadow: 0 1px 2px rgba(16, 47, 40, .05), 0 18px 40px -24px rgba(16, 47, 40, .3);
+  --gi-text: #4d5b53;          /* text secundar pe fundaluri colorate: 6:1 pe --sand */
+  --gi-eyebrow: #55704c;       /* moss mai închis: 5,4:1 pe hârtie (moss original are 4:1) */
+  --gi-focus: var(--forest);
+  --gi-ease: cubic-bezier(.2, .8, .2, 1);
+  background: var(--paper);
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:has(.gi-dedicated) { scroll-behavior: smooth; }
+}
+
+.gi-dedicated main h2 { font-family: var(--display); font-weight: 500; font-size: clamp(1.95rem, 4.2vw, 3.1rem); line-height: 1.06; letter-spacing: -.02em; margin: .3em 0 .4em; color: var(--forest-deep); }
 .gi-dedicated main h2 em { font-style: italic; color: var(--moss); }
 .gi-dedicated main p { font-size: 1.06rem; line-height: 1.65; color: var(--muted); max-width: 62ch; }
 .gi-dedicated main p a,
 .gi-dedicated .gi-text-link { color: var(--forest); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: .2em; text-decoration-thickness: 2px; }
-.gi-dedicated .gi-section-head { margin-bottom: clamp(24px, 3.5vw, 44px); }
+.gi-dedicated main .eyebrow { font-size: 12px; color: var(--gi-eyebrow); }
+.gi-dedicated .gi-section-head { margin-bottom: clamp(22px, 3vw, 40px); }
+.gi-dedicated .gi-section-head h2 { margin-bottom: 0; }
+
+/* Focus vizibil pe orice fundal: verde pe hârtie, piersică pe fundalurile închise. */
+.gi-dedicated :is(a, button, summary, [tabindex]):focus-visible { outline: 3px solid var(--gi-focus); outline-offset: 3px; }
 
 /* Mai prietenos decât stilul compact al paginii principale: texte mai mari, butoane rotunjite. */
 .gi-dedicated .button { border-radius: 999px; min-height: 52px; padding: 14px 26px; font-size: 15px; }
 .gi-dedicated .header-cta.button { min-height: 42px; padding: 10px 18px; font-size: 13px; }
-.gi-dedicated .eyebrow { font-size: 12px; }
 .gi-dedicated .desktop-nav a { font-size: 13.5px; }
-.gi-dedicated .mobile-booking-cta { border-radius: 999px; }
-.gi-dedicated .home-photo-gallery { grid-auto-rows: clamp(170px, 18vw, 240px); }
-.gi-dedicated .home-photo-gallery > button > span { font-size: 13px; border-radius: 12px; }
-.gi-dedicated .home-review-cards blockquote { border: 0; border-radius: var(--gi-radius); padding: clamp(24px, 3vw, 34px); background: var(--paper); color: var(--ink); }
-.gi-dedicated .home-review-cards blockquote > p { font-size: 1.2rem; line-height: 1.55; color: var(--ink); max-width: none; }
-.gi-dedicated .home-review-cards footer strong { font-size: 14px; }
-.gi-dedicated .home-review-cards footer span { font-size: 13px; }
-
-/* ---------- Hero ---------- */
-.gi-page-hero { position: relative; min-height: min(86svh, 820px); display: flex; align-items: flex-end; color: #fff; isolation: isolate; border-radius: 0 0 clamp(28px, 4vw, 56px) clamp(28px, 4vw, 56px); overflow: hidden; }
-.gi-page-hero-media { position: absolute; inset: 0; margin: 0; z-index: -2; }
-.gi-page-hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: center 60%; background: var(--forest); }
-.gi-page-hero-overlay { position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(16, 47, 40, .55) 0%, rgba(16, 47, 40, .05) 34%, rgba(16, 47, 40, .25) 58%, rgba(16, 47, 40, .82) 100%); }
-.gi-page-hero-content { padding-top: 140px; padding-bottom: clamp(88px, 11vw, 128px); }
-.gi-page-hero h1 { font-family: var(--display); font-weight: 500; font-size: clamp(2.8rem, 7.4vw, 5.6rem); line-height: .98; letter-spacing: -.03em; margin: .3em 0 .35em; color: #fff; }
-.gi-page-hero h1 em { font-style: italic; color: var(--accent); }
-.gi-dedicated .gi-page-hero p { max-width: 46ch; font-size: clamp(1.05rem, 1.6vw, 1.25rem); line-height: 1.55; color: rgba(255, 255, 255, .92); margin: 0; }
-.gi-page-hero-actions,
-.gi-closing-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; margin-top: 30px; }
-.gi-hero-link { display: inline-flex; align-items: center; gap: 8px; color: #fff; font-size: 16px; font-weight: 600; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .45); text-underline-offset: .3em; }
-.gi-hero-link:hover { text-decoration-color: var(--accent); }
-.gi-hero-link .gi-icon { width: 18px; height: 18px; }
-.gi-breadcrumb { display: flex; gap: 8px; align-items: center; font-size: .86rem; color: rgba(255, 255, 255, .78); margin-bottom: 18px; }
-.gi-breadcrumb a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .4); text-underline-offset: .25em; }
-
-/* ---------- Pe scurt ---------- */
-.gi-facts { list-style: none; margin: -48px auto 0; padding: 10px; position: relative; z-index: 2; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: #fff; border-radius: var(--gi-radius); box-shadow: var(--gi-shadow); max-width: 1040px; }
-.gi-facts li { display: flex; flex-direction: column; gap: 4px; padding: 16px 18px; border-radius: var(--gi-radius-sm); background: var(--cream); }
-.gi-facts strong { font-family: var(--display); font-size: clamp(1.35rem, 2.2vw, 1.75rem); font-weight: 500; color: var(--forest-deep); line-height: 1.1; }
-.gi-facts span { font-size: .9rem; color: var(--muted); line-height: 1.35; }
-
-/* ---------- Rezervare ---------- */
-.gi-booking-card-section { padding: clamp(40px, 6vw, 72px) 0 var(--gi-section); scroll-margin-top: 90px; }
-.gi-booking-card { background: var(--forest); color: #fff; border-radius: var(--gi-radius); padding: clamp(24px, 4vw, 48px); display: grid; gap: 24px; box-shadow: var(--gi-shadow); }
-.gi-booking-card .eyebrow { color: var(--sage); }
-.gi-booking-card h2 { color: #fff !important; margin-top: .2em !important; }
-.gi-booking-card .gi-booking-card-intro p { color: rgba(255, 255, 255, .82); margin: 0; }
-.gi-booking-card .booking-panel { background: #fff; color: var(--ink); border-radius: var(--gi-radius-sm); padding: clamp(14px, 2.4vw, 24px); }
-.gi-booking-card .gi-booking-unavailable { color: var(--ink); }
-.gi-booking-card .gi-booking-unavailable p { color: var(--muted); }
-.gi-booking-alt { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; margin: 0; font-size: .98rem; color: rgba(255, 255, 255, .8) !important; max-width: none !important; }
-.gi-booking-alt a { color: #fff !important; font-weight: 600; text-decoration-color: var(--accent) !important; display: inline-flex; align-items: center; gap: 6px; }
-.gi-booking-alt .gi-icon { width: 16px; height: 16px; }
-
-/* ---------- Poveste ---------- */
-.gi-story { padding-bottom: var(--gi-section); }
-.gi-story-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(28px, 6vw, 88px); align-items: center; }
-.gi-story-media { margin: 0; border-radius: var(--gi-radius); overflow: hidden; aspect-ratio: 4 / 5; background: var(--sand); box-shadow: var(--gi-shadow); }
-.gi-story-media img { width: 100%; height: 100%; object-fit: cover; }
-
-/* ---------- Galerie ---------- */
-.gi-gallery-section { padding: var(--gi-section) 0; background: var(--cream); border-radius: var(--gi-radius); margin: 0 clamp(8px, 1.5vw, 20px); scroll-margin-top: 80px; }
 .gi-dedicated .home-photo-gallery button,
 .gi-dedicated .home-photo-gallery img { border-radius: var(--gi-radius-sm); }
+.gi-dedicated .home-photo-gallery > button > span { font-size: 13px; border-radius: 12px; }
 
-/* ---------- Ce primești ---------- */
-.gi-included { padding: var(--gi-section) 0; }
-.gi-included-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(14px, 2vw, 24px); }
-.gi-soft-card { background: #fff; border: 1px solid var(--line); border-radius: var(--gi-radius); padding: clamp(22px, 3vw, 36px); }
-.gi-soft-card h3 { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 500; font-size: 1.5rem; margin: 0 0 16px; color: var(--forest-deep); }
-.gi-soft-card h3 .gi-icon { width: 26px; height: 26px; color: var(--moss); }
-.gi-check-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-.gi-check-list li { display: flex; gap: 10px; align-items: flex-start; line-height: 1.45; color: var(--ink); }
+/* Link secundar alb (lângă butoanele de pe fundal închis): zonă de atingere de minimum 44px. */
+.gi-hero-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 4px; color: #fff; font-size: 16px; font-weight: 600; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .45); text-underline-offset: .3em; transition: text-decoration-color .2s ease; }
+.gi-hero-link:hover { text-decoration-color: var(--accent); }
+.gi-hero-link .gi-icon { width: 18px; height: 18px; }
+
+/* ---------- Hero: fotografia respiră sus, textul stă pe o umbră caldă jos ---------- */
+.gi-page-hero { --gi-focus: var(--accent); position: relative; min-height: min(88svh, 820px); display: flex; align-items: flex-end; color: #fff; isolation: isolate; border-radius: 0 0 clamp(28px, 4vw, 56px) clamp(28px, 4vw, 56px); overflow: hidden; background: var(--forest-deep); }
+.gi-page-hero-media { position: absolute; inset: 0; margin: 0; z-index: -2; }
+.gi-page-hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: center 60%; background: var(--forest); }
+.gi-page-hero-overlay { position: absolute; inset: 0; z-index: -1; background:
+  linear-gradient(180deg, rgba(10, 32, 26, .5) 0%, rgba(10, 32, 26, 0) 22%),
+  linear-gradient(0deg, rgba(10, 32, 26, .9) 0%, rgba(10, 32, 26, .66) 30%, rgba(10, 32, 26, .3) 56%, rgba(10, 32, 26, 0) 80%),
+  linear-gradient(90deg, rgba(10, 32, 26, .42) 0%, rgba(10, 32, 26, 0) 62%); }
+.gi-page-hero-content { padding-top: 140px; padding-bottom: clamp(92px, 10vw, 128px); }
+.gi-page-hero-content > * { max-width: 640px; }
+.gi-page-hero h1 { font-family: var(--display); font-weight: 500; font-size: clamp(2.75rem, 7vw, 5.4rem); line-height: .98; letter-spacing: -.03em; margin: .28em 0 .32em; color: #fff; text-shadow: 0 2px 28px rgba(0, 0, 0, .22); }
+.gi-page-hero h1 em { font-style: italic; color: var(--accent); }
+.gi-dedicated .gi-page-hero p { max-width: 44ch; font-size: clamp(1.05rem, 1.5vw, 1.22rem); line-height: 1.55; color: rgba(255, 255, 255, .94); margin: 0; text-shadow: 0 1px 14px rgba(0, 0, 0, .28); }
+.gi-dedicated .gi-page-hero .eyebrow { color: rgba(255, 255, 255, .9); }
+.gi-page-hero-actions,
+.gi-closing-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; margin-top: 28px; }
+.gi-breadcrumb { display: flex; gap: 10px; align-items: center; font-size: .86rem; color: rgba(255, 255, 255, .8); margin-bottom: 14px; }
+/* Zonă de atingere mai mare fără să mute textul. */
+.gi-breadcrumb a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .45); text-underline-offset: .25em; padding: 13px 8px; margin: -13px -8px; }
+
+/* ---------- Pe scurt: o singură bandă, celule despărțite prin linii fine ---------- */
+.gi-facts { list-style: none; margin: -52px auto 0; padding: 6px; position: relative; z-index: 2; display: grid; grid-template-columns: repeat(4, 1fr); background: #fff; border-radius: var(--gi-radius); box-shadow: var(--gi-shadow); max-width: 1040px; }
+.gi-facts li { display: flex; flex-direction: column; gap: 4px; padding: 18px 24px; }
+.gi-facts li + li { border-left: 1px solid var(--line); }
+.gi-facts strong { font-family: var(--display); font-size: clamp(1.4rem, 2.2vw, 1.8rem); font-weight: 500; color: var(--forest-deep); line-height: 1.1; }
+.gi-facts span { font-size: .92rem; color: var(--muted); line-height: 1.35; }
+
+/* ---------- Poveste ---------- */
+.gi-story { padding-top: var(--gi-section); }
+.gi-story-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(28px, 6vw, 88px); align-items: center; }
+.gi-story-media { margin: 0; border-radius: var(--gi-radius); overflow: hidden; aspect-ratio: 10 / 11; background: var(--sand); }
+.gi-story-media img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ---------- Galerie: fără chenar, pozele sunt singure decorul ---------- */
+.gi-gallery-section { padding-top: var(--gi-section); scroll-margin-top: 16px; }
+
+/* ---------- Ce primești: cortul într-un panou cald, Grădina liberă alături ---------- */
+.gi-included { padding-top: var(--gi-section); }
+.gi-included-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.55fr); gap: clamp(20px, 4vw, 56px); align-items: start; }
+.gi-included-tent { background: var(--cream); border-radius: var(--gi-radius); padding: clamp(24px, 3vw, 36px); }
+.gi-included-garden { padding-top: clamp(24px, 3vw, 36px); }
+.gi-included h3 { display: flex; align-items: center; gap: 12px; font-family: var(--display); font-weight: 500; font-size: 1.5rem; margin: 0 0 18px; color: var(--forest-deep); }
+.gi-included h3 .gi-icon { width: 42px; height: 42px; padding: 10px; border-radius: 50%; background: var(--cream); color: var(--moss); }
+.gi-included-tent h3 .gi-icon { background: #fff; }
+.gi-check-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.gi-included-garden .gi-check-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 28px; }
+.gi-check-list li { display: flex; gap: 10px; align-items: flex-start; font-size: 1.02rem; line-height: 1.45; color: var(--ink); }
 .gi-check-list .gi-icon { flex: 0 0 auto; width: 20px; height: 20px; padding: 3px; margin-top: 1px; border-radius: 50%; background: var(--sand); color: var(--forest); }
-.gi-included-note { margin-top: 22px !important; }
+.gi-included-tent .gi-check-list .gi-icon { background: #fff; }
+.gi-dedicated .gi-included-note { margin: 24px 0 0; padding: 14px 18px; border-radius: var(--gi-radius-sm); background: #fbeee2; color: var(--ink); font-size: 1rem; max-width: none; }
+.gi-dedicated .gi-included-note a { text-decoration-color: var(--accent-dark); }
 
-/* ---------- Prețuri ---------- */
-.gi-prices { padding: 0 0 var(--gi-section); }
-.gi-prices-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(24px, 5vw, 72px); align-items: center; background: var(--sand); border-radius: var(--gi-radius); padding: clamp(26px, 5vw, 64px); }
-.gi-prices-grid .button { margin-top: 10px; }
-.gi-price-list { margin: 0; display: grid; gap: 10px; }
-.gi-price-list div { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; background: var(--paper); border-radius: var(--gi-radius-sm); padding: 18px 22px; }
-.gi-price-list dt { color: var(--ink); font-weight: 500; }
-.gi-price-list dd { margin: 0; font-family: var(--display); font-size: 1.45rem; color: var(--forest-deep); white-space: nowrap; }
-.gi-price-list small { font-family: var(--sans); font-size: .82rem; color: var(--muted); }
+/* ---------- Recenzii: citate libere, fără cutii ---------- */
+.gi-page-reviews { padding-top: var(--gi-section); }
+.gi-dedicated .gi-page-reviews .home-review-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(24px, 4vw, 64px); }
+.gi-dedicated .gi-page-reviews blockquote { border: 0; border-top: 1px solid var(--line); border-radius: 0; padding: 26px 0 0; background: none; color: var(--ink); }
+.gi-dedicated .gi-page-reviews blockquote > .gi-icon { width: 28px; height: 28px; margin-bottom: 14px; }
+.gi-dedicated .gi-page-reviews blockquote > p { font-size: clamp(1.15rem, 1.6vw, 1.32rem); line-height: 1.55; color: var(--ink); max-width: none; margin-bottom: 18px; }
+.gi-dedicated .gi-page-reviews footer strong { font-size: 14px; color: var(--forest-deep); }
+.gi-dedicated .gi-page-reviews footer span { font-size: 13px; color: var(--muted); }
+
+/* ---------- Prețuri + rezervare: singurul bloc închis de pe pagină ---------- */
+.gi-prices { padding-top: var(--gi-section); }
+.gi-prices-band { --gi-focus: var(--accent); --gi-eyebrow: var(--sage); display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); grid-template-areas: "intro list" "actions list"; gap: 8px clamp(28px, 6vw, 96px); align-items: start; padding: clamp(28px, 5vw, 64px); border-radius: var(--gi-radius); color: #fff; background: radial-gradient(90% 120% at 100% 0%, rgba(109, 132, 99, .5) 0%, rgba(109, 132, 99, 0) 60%), var(--forest); }
+.gi-prices-intro { grid-area: intro; }
+.gi-dedicated .gi-prices h2 { color: #fff; margin-top: .25em; }
+.gi-dedicated .gi-prices p { color: rgba(255, 255, 255, .84); margin: 0; }
+.gi-price-list { grid-area: list; align-self: center; margin: 0; }
+.gi-price-list div { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 18px 0; border-bottom: 1px solid rgba(255, 255, 255, .16); }
+.gi-price-list div:first-child { border-top: 1px solid rgba(255, 255, 255, .16); }
+.gi-price-list dt { color: rgba(255, 255, 255, .88); font-size: 1.02rem; font-weight: 500; }
+.gi-price-list dd { margin: 0; font-family: var(--display); font-size: clamp(1.45rem, 2vw, 1.7rem); color: #fff; white-space: nowrap; }
+.gi-price-list small { font-family: var(--sans); font-size: .84rem; color: var(--sage); }
+.gi-prices-actions { grid-area: actions; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin-top: 22px; }
+.gi-prices-actions .gi-hero-link { font-size: 15px; font-weight: 500; }
 
 /* ---------- Bine de știut ---------- */
-.gi-notes { padding: 0 0 var(--gi-section); }
-.gi-notes-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(12px, 1.6vw, 20px); }
-.gi-note { background: #fff; border: 1px solid var(--line); border-radius: var(--gi-radius); padding: 24px; }
-.gi-note > .gi-icon { width: 42px; height: 42px; padding: 10px; border-radius: 14px; background: var(--cream); color: var(--accent-dark); }
+.gi-notes { padding-top: var(--gi-section); }
+.gi-notes-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 20px); }
+.gi-note { background: var(--cream); border-radius: var(--gi-radius); padding: 24px; }
+.gi-note > .gi-icon { width: 44px; height: 44px; padding: 11px; border-radius: 50%; background: #fff; color: var(--accent-dark); }
 .gi-note h3 { font-size: 1.05rem; line-height: 1.3; margin: 16px 0 8px; color: var(--forest-deep); }
-.gi-note p { font-size: .97rem !important; margin: 0; }
+.gi-dedicated .gi-note p { font-size: .97rem; margin: 0; color: var(--gi-text); }
 
-/* ---------- Recenzii ---------- */
-.gi-page-reviews { padding: var(--gi-section) 0; background: var(--forest-deep); color: #fff; border-radius: var(--gi-radius); margin: 0 clamp(8px, 1.5vw, 20px); }
-.gi-page-reviews h2 { color: #fff !important; }
-.gi-page-reviews .eyebrow { color: var(--sage); }
-.gi-page-reviews .home-review-cards { grid-template-columns: repeat(2, 1fr); }
-
-/* ---------- Locație ---------- */
-.gi-location { padding: var(--gi-section) 0; }
+/* ---------- Locație: distanțele ca mici repere, nu ca listă de cutii ---------- */
+.gi-location { padding-top: var(--gi-section); }
 .gi-location-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 5vw, 72px); align-items: center; }
-.gi-location-actions { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: center; margin-top: 22px; }
-.gi-location-actions .gi-text-link { display: inline-flex; gap: 8px; align-items: center; font-weight: 600; }
+.gi-location-actions { display: flex; flex-wrap: wrap; gap: 8px 22px; align-items: center; margin-top: 22px; }
+.gi-location-actions .gi-text-link { display: inline-flex; gap: 8px; align-items: center; min-height: 44px; font-weight: 600; }
 .gi-location-actions .gi-icon { width: 18px; height: 18px; }
-.gi-distances { list-style: none; margin: 0; padding: 8px; border-radius: var(--gi-radius); background: var(--cream); display: grid; gap: 4px; }
-.gi-distances li { display: flex; justify-content: space-between; gap: 16px; padding: 16px 20px; border-radius: var(--gi-radius-sm); background: var(--paper); }
-.gi-distances strong { font-family: var(--display); font-weight: 500; font-size: 1.2rem; color: var(--forest-deep); }
+.gi-distances { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-radius: var(--gi-radius); background: var(--cream); }
+.gi-distances li { display: flex; flex-direction: column; gap: 4px; padding: 22px 26px; }
+.gi-distances li:nth-child(2n) { border-left: 1px solid var(--line); }
+.gi-distances li:nth-child(n + 3) { border-top: 1px solid var(--line); }
+.gi-distances span { color: var(--gi-text); font-size: .95rem; }
+.gi-distances strong { font-family: var(--display); font-weight: 500; font-size: clamp(1.35rem, 2vw, 1.6rem); color: var(--forest-deep); }
 
-/* ---------- Întrebări ---------- */
-.gi-faq { padding: 0 0 var(--gi-section); }
+/* ---------- Întrebări: linii fine în loc de cutii ---------- */
+.gi-faq { padding-top: var(--gi-section); }
 .gi-faq-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(24px, 5vw, 72px); align-items: start; }
-.gi-faq-list { display: grid; gap: 10px; }
-.gi-faq-list details { background: #fff; border: 1px solid var(--line); border-radius: var(--gi-radius-sm); padding: 0 22px; transition: background-color .25s ease; }
-.gi-faq-list details[open] { background: var(--cream); border-color: transparent; }
-.gi-faq-list summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: 16px; align-items: center; padding: 20px 0; font-weight: 600; color: var(--forest-deep); }
+.gi-faq-list { border-top: 1px solid var(--line); }
+.gi-faq-list details { border-bottom: 1px solid var(--line); }
+.gi-faq-list summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: 16px; align-items: center; min-height: 64px; padding: 16px 2px; font-weight: 600; font-size: 1.05rem; line-height: 1.35; color: var(--forest-deep); border-radius: 8px; }
 .gi-faq-list summary::-webkit-details-marker { display: none; }
-.gi-faq-list summary span { flex: 0 0 auto; width: 28px; height: 28px; border-radius: 50%; background: var(--sand); position: relative; transition: transform .25s ease, background-color .25s ease; }
+.gi-faq-list summary span { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%; background: var(--sand); position: relative; transition: background-color .25s ease; }
 .gi-faq-list summary span::before,
 .gi-faq-list summary span::after { content: ""; position: absolute; left: 50%; top: 50%; width: 12px; height: 2px; margin: -1px 0 0 -6px; background: var(--forest); border-radius: 2px; }
 .gi-faq-list summary span::after { transform: rotate(90deg); transition: transform .25s ease; }
 .gi-faq-list details[open] summary span { background: var(--accent); }
 .gi-faq-list details[open] summary span::after { transform: rotate(0deg); }
-.gi-faq-list details p { margin: 0 0 20px; }
+.gi-dedicated .gi-faq-list details p { margin: 0; padding: 0 46px 22px 2px; }
+/* Deschidere lină a răspunsurilor, unde browserul știe (Chrome 131+); altfel se deschid instant. */
+@supports (interpolate-size: allow-keywords) {
+  @media (prefers-reduced-motion: no-preference) {
+    .gi-faq-list { interpolate-size: allow-keywords; }
+    .gi-faq-list details::details-content { block-size: 0; overflow: clip; transition: block-size .32s var(--gi-ease), content-visibility .32s allow-discrete; }
+    .gi-faq-list details[open]::details-content { block-size: auto; }
+  }
+}
 
-/* ---------- Alte oferte ---------- */
-.gi-related { padding: 0 0 var(--gi-section); }
-.gi-related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(12px, 1.6vw, 20px); }
-.gi-related-card { position: relative; display: flex; flex-direction: column; background: #fff; border: 1px solid var(--line); border-radius: var(--gi-radius); overflow: hidden; color: var(--ink); transition: transform .3s cubic-bezier(.2, .7, .2, 1), box-shadow .3s ease; }
-.gi-related-card:hover { transform: translateY(-4px); box-shadow: var(--gi-shadow); }
-.gi-related-card img { aspect-ratio: 4 / 3; width: 100%; object-fit: cover; background: var(--sand); transition: transform .5s cubic-bezier(.2, .7, .2, 1); }
+/* ---------- Alte oferte: poză + două rânduri, fără chenar ---------- */
+.gi-related { padding-top: var(--gi-section); }
+.gi-related-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2vw, 28px); }
+.gi-related-card { position: relative; display: flex; flex-direction: column; gap: 14px; padding-bottom: 6px; color: var(--ink); border-radius: var(--gi-radius); }
+.gi-related-media { display: block; overflow: hidden; border-radius: var(--gi-radius); background: var(--sand); }
+.gi-related-media img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; transition: transform .5s var(--gi-ease); }
 .gi-related-card:hover img { transform: scale(1.04); }
-.gi-related-body { display: grid; gap: 6px; padding: 20px 22px 24px; }
+.gi-related-body { display: grid; gap: 4px; padding: 0 4px; }
 .gi-related-body strong { font-family: var(--display); font-weight: 500; font-size: 1.4rem; color: var(--forest-deep); }
-.gi-related-body span { color: var(--muted); line-height: 1.5; }
-.gi-related-arrow { position: absolute; top: 14px; right: 14px; width: 40px; height: 40px; padding: 10px; border-radius: 50%; background: rgba(255, 253, 248, .92); color: var(--forest); }
+.gi-related-body span { color: var(--muted); font-size: 1rem; line-height: 1.5; }
+.gi-related-arrow { position: absolute; top: 14px; right: 14px; width: 40px; height: 40px; padding: 11px; border-radius: 50%; background: rgba(255, 253, 248, .92); color: var(--forest); transition: transform .3s var(--gi-ease), background-color .3s ease; }
+.gi-related-card:hover .gi-related-arrow { transform: translate(2px, -2px); background: var(--accent); }
 
-/* ---------- Închidere ---------- */
-.gi-closing { padding: var(--gi-section) 0; margin: 0 clamp(8px, 1.5vw, 20px) clamp(8px, 1.5vw, 20px); background: radial-gradient(120% 120% at 100% 0%, var(--moss) 0%, var(--forest) 45%, var(--forest-deep) 100%); border-radius: var(--gi-radius); color: #fff; text-align: center; }
+/* ---------- Închidere: o ultimă fotografie și o singură invitație ---------- */
+.gi-closing { --gi-focus: var(--accent); position: relative; isolation: isolate; overflow: hidden; margin: var(--gi-section) clamp(8px, 1.5vw, 20px) clamp(8px, 1.5vw, 20px); padding: clamp(88px, 10vw, 140px) 0; border-radius: var(--gi-radius); background: var(--forest-deep); color: #fff; text-align: center; }
+.gi-closing-media { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; }
+.gi-closing::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(70% 70% at 50% 55%, rgba(10, 32, 26, .5) 0%, rgba(10, 32, 26, 0) 100%), linear-gradient(180deg, rgba(10, 32, 26, .48) 0%, rgba(10, 32, 26, .72) 100%); }
 .gi-closing-inner { display: grid; justify-items: center; }
-.gi-closing h2 { color: #fff !important; margin: 0 !important; }
-.gi-closing h2 em { color: var(--accent) !important; }
+.gi-dedicated .gi-closing h2 { color: #fff; margin: 0; text-shadow: 0 2px 24px rgba(0, 0, 0, .25); }
+.gi-dedicated .gi-closing h2 em { color: var(--accent); }
 .gi-closing-actions { justify-content: center; }
+
+/* ---------- Butonul fix de pe mobil: apare doar când niciun alt buton de rezervare nu e pe ecran (pages.js) ---------- */
+@media (max-width: 700px) {
+  .gi-dedicated .mobile-booking-cta { left: 16px; right: 16px; bottom: 12px; min-height: 54px; border-radius: 999px; font-size: 15px; box-shadow: 0 10px 30px -8px rgba(16, 47, 40, .45), 0 0 0 1px rgba(16, 47, 40, .06); transition: transform .4s var(--gi-ease), opacity .3s ease, visibility 0s linear 0s; }
+  .gi-dedicated .mobile-booking-cta:focus-visible { outline-offset: 3px; }
+  .gi-dedicated .mobile-booking-cta.is-managed:not(.is-visible) { transform: translateY(calc(100% + 24px)); opacity: 0; visibility: hidden; transition: transform .3s ease, opacity .2s ease, visibility 0s linear .3s; }
+  /* Butonul se ascunde în dreptul footer-ului, deci spațiul rezervat pentru el nu mai trebuie. */
+  body.gi-one-page:has(.gi-dedicated .mobile-booking-cta.is-managed) { padding-bottom: 0; }
+}
 
 /* ---------- Apariție discretă la derulare (doar unde browserul o suportă) ---------- */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    .gi-reveal { animation: gi-reveal linear both; animation-timeline: view(); animation-range: entry 0% entry 32%; }
-    @keyframes gi-reveal { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+    .gi-reveal { animation: gi-reveal linear both; animation-timeline: view(); animation-range: entry 0% entry 28%; }
+    @keyframes gi-reveal { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
   }
 }
 
-/* ---------- Mobil ---------- */
-@media (max-width: 900px) {
-  .gi-facts { grid-template-columns: repeat(2, 1fr); margin-top: -40px; }
-  .gi-story-grid,
-  .gi-prices-grid,
-  .gi-location-grid,
-  .gi-faq-grid { grid-template-columns: 1fr; }
-  .gi-story-media { aspect-ratio: 4 / 3; order: -1; }
-  .gi-notes-grid { grid-template-columns: repeat(2, 1fr); }
-  .gi-related-grid { grid-template-columns: 1fr; }
-  .gi-related-card { flex-direction: row; align-items: stretch; }
-  .gi-related-card img { width: 38%; aspect-ratio: auto; }
-  .gi-page-reviews .home-review-cards { grid-template-columns: 1fr; }
+/* ---------- Desktop și tabletă: galeria în trei coloane, fără banda îngustă de la final ---------- */
+@media (min-width: 701px) {
+  .gi-dedicated .home-photo-gallery { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: clamp(150px, 17vw, 236px); }
+  .gi-dedicated .home-photo-gallery > button:nth-child(6):last-child { grid-column: auto; }
 }
 
-@media (max-width: 560px) {
-  .gi-page-hero { min-height: 92svh; }
-  .gi-page-hero-content { padding-bottom: 92px; }
-  .gi-included-grid,
-  .gi-notes-grid { grid-template-columns: 1fr; }
-  .gi-facts li { padding: 14px; }
-  .gi-price-list div { padding: 16px; }
-  .gi-related-arrow { display: none; }
+/* ---------- Tabletă ---------- */
+@media (max-width: 900px) {
+  .gi-facts { grid-template-columns: repeat(2, 1fr); margin-top: -44px; }
+  .gi-facts li:nth-child(odd) { border-left: 0; }
+  .gi-facts li:nth-child(n + 3) { border-top: 1px solid var(--line); }
+  .gi-story-grid,
+  .gi-location-grid,
+  .gi-faq-grid,
+  .gi-included-grid { grid-template-columns: 1fr; }
+  .gi-story-media { aspect-ratio: 3 / 2; order: -1; }
+  .gi-prices-band { grid-template-columns: 1fr; grid-template-areas: "intro" "list" "actions"; }
+  .gi-price-list { margin-top: 22px; }
+  .gi-notes-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gi-included-garden { padding-top: 8px; }
+}
+
+/* ---------- Mobil ---------- */
+@media (max-width: 700px) {
+  .gi-dedicated { --gi-radius: 24px; }
+  .gi-dedicated main p { font-size: 1.03rem; line-height: 1.6; }
+  .gi-story-media { aspect-ratio: 4 / 3; }
+
+  /* Rânduri care se derulează cu degetul: următorul card se vede pe margine, ca invitație. */
+  .gi-dedicated .gi-swipe { display: flex; gap: 12px; margin-inline: -16px; padding: 6px 16px 14px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: 16px; scrollbar-width: none; }
+  .gi-dedicated .gi-swipe::-webkit-scrollbar { display: none; }
+  .gi-dedicated .gi-swipe > * { flex: 0 0 80%; scroll-snap-align: start; }
+
+  .gi-page-hero { min-height: 90svh; }
+  .gi-page-hero-content { padding-top: 120px; padding-bottom: 84px; }
+  .gi-page-hero-overlay { background:
+    linear-gradient(180deg, rgba(10, 32, 26, .5) 0%, rgba(10, 32, 26, 0) 20%),
+    linear-gradient(0deg, rgba(10, 32, 26, .92) 0%, rgba(10, 32, 26, .72) 36%, rgba(10, 32, 26, .32) 62%, rgba(10, 32, 26, 0) 82%); }
+  .gi-page-hero-actions { flex-direction: column; align-items: stretch; gap: 6px; margin-top: 24px; }
+  .gi-page-hero-actions .gi-hero-link { align-self: center; }
+
+  .gi-facts { margin-top: -40px; padding: 4px; }
+  .gi-facts li { padding: 16px; }
+
+  .gi-included-garden .gi-check-list { grid-template-columns: 1fr; gap: 10px; }
+  .gi-included h3 { font-size: 1.35rem; }
+
+  .gi-dedicated .gi-page-reviews blockquote { border: 0; border-radius: var(--gi-radius); padding: 22px; background: var(--cream); }
+  .gi-dedicated .gi-page-reviews blockquote > p { font-size: 1.08rem; }
+  .gi-dedicated .gi-page-reviews .home-review-cards > * { flex-basis: 84%; }
+
+  .gi-prices-band { padding: 28px 22px 24px; }
+  .gi-price-list div { flex-direction: column; align-items: flex-start; gap: 2px; padding: 14px 0; }
+  .gi-price-list dt { font-size: .95rem; }
+  .gi-prices-actions { flex-direction: column; align-items: stretch; gap: 4px; }
+  .gi-prices-actions .gi-hero-link { align-self: center; }
+
+  .gi-note { padding: 22px; }
+
+  .gi-location-actions .button { width: 100%; }
+  .gi-distances li { padding: 18px; }
+
+  .gi-related-body strong { font-size: 1.3rem; }
+  .gi-related-arrow { top: 10px; right: 10px; }
+
+  .gi-closing { padding: 88px 0; margin-inline: 8px; }
+  .gi-closing-actions { flex-direction: column; align-items: stretch; gap: 6px; width: 100%; }
+  .gi-closing-actions .gi-hero-link { align-self: center; }
 }
