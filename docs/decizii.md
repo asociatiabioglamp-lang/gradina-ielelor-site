@@ -19,3 +19,5 @@ Sursă de adevăr pentru conflictele dintre documente. Se completează pe măsur
 | 2026-10-30 | Anulare | Fără bani înapoi; **voucher** pentru altă rezervare, anul curent sau următor | Propunere implicită: valoarea plătită, valabil până la 31.12 anul următor, folosibil parțial |
 | 2026-10-30 | Agenți / bloggeri | Link personal, sursa recunoscută, **10% comision** | Propunere implicită: din suma plătită, după sejur; nu la anulare cu voucher |
 | 2026-10-30 | Recenzii | Recenzii pe site-ul nostru (aprobate de proprietar) + cele bune de pe Google | Proprietarul voia închiderea recenziilor Google; recomandare: profilul rămâne (nu se pot dezactiva, iar ștergerea nu le elimină). De confirmat |
+| 2026-10-30 | Voucher la anulare | **Confirmat:** valabil până la **31 decembrie anul următor** | Valoarea și folosirea parțială: conform propunerii (suma plătită, folosibil parțial) până la altă precizare |
+| 2026-10-30 | Comision | Proprietarul a scris „fără comision” la regula propusă (10% din suma plătită, după sejur) | **De clarificat** ce înseamnă: fără comision pentru agenți, voucher fără reținere sau fără comision la anulare |
