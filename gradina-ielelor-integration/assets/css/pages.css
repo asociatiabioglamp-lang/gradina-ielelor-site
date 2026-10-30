@@ -298,8 +298,10 @@
 .gi-back-link .gi-icon { width: 18px; height: 18px; }
 
 /* ---------- Calendar (Festivaluri & evenimente) ---------- */
-.gi-calendar { padding: 0 0 var(--gi-section); scroll-margin-top: 80px; }
-.gi-calendar-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.gi-calendar { padding: clamp(40px, 6vw, 80px) 0 var(--gi-section); scroll-margin-top: 80px; }
+.gi-calendar-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 900px) { .gi-calendar-list { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .gi-calendar-list { grid-template-columns: 1fr; } }
 .gi-calendar-list li { display: grid; gap: 6px; align-content: start; padding: 20px 22px; border-radius: var(--gi-radius-sm); background: var(--cream); }
 .gi-calendar-list strong { font-family: var(--display); font-size: 1.25rem; font-weight: 500; color: var(--forest-deep); }
 .gi-calendar-list small { font-size: 14px; color: #4d5b53; }
