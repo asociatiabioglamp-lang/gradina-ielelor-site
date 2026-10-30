@@ -15,13 +15,13 @@
 
 ## Politica de anulare: voucher, nu bani înapoi
 - La anulare nu se returnează bani; clientul primește un **voucher cu valoarea plătită**.
-- Propunere (implicită până la altă decizie): valabil până la **31 decembrie anul următor**, folosibil și parțial; restul rămâne pe voucher.
+- **Confirmat:** valoarea întreagă plătită, fără reținere; valabil până la **31 decembrie anul următor**; folosibil și parțial, restul rămâne pe voucher.
 - Regula se scrie clar în termeni și se acceptă explicit înainte de plată.
 - Baza tehnică: pluginul `gradina-ielelor-vouchers` (v0.1.0: sold, istoric, restaurare la anulare), adaptat la plata pe site.
 
 ## Agenți și bloggeri (afiliere)
 - Fiecare agent are un **link personal** (ex. `gradina-ielelor.ro/?ref=numeagent`); site-ul reține sursa câteva zile (cu acordul cookie al vizitatorului).
-- Comision **10%**. Propunere implicită: din **suma plătită**, datorat **după sejur**; fără comision la anulare cu voucher.
+- **Confirmat:** comision **10% din suma plătită**, pentru agent; clientul plătește prețul întreg. De stabilit: momentul plății (propunere: după sejur) și comisionul la rezervările transformate în voucher.
 - Raport pe agent: rezervări, sume, comisioane, stare.
 
 ## Recenzii
