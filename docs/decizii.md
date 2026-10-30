@@ -22,3 +22,4 @@ Sursă de adevăr pentru conflictele dintre documente. Se completează pe măsur
 | 2026-10-30 | Voucher la anulare | **Confirmat:** valabil până la **31 decembrie anul următor** | Valoarea și folosirea parțială: conform propunerii (suma plătită, folosibil parțial) până la altă precizare |
 | 2026-10-30 | Voucher la anulare | **Valoarea întreagă**, fără nicio reținere („fără comision” = punctul b) | |
 | 2026-10-30 | Agenți / bloggeri | **10% din suma plătită** revine agentului; clientul plătește prețul întreg | Rămâne de stabilit momentul plății comisionului (propunere: după sejur) și ce se întâmplă cu comisionul când rezervarea devine voucher |
+| 2026-10-30 | Grădina Ielelor Hub | Pagină privată în contul Claude al proprietarului (cea mai sigură și stabilă), cu emailurile, recenziile și rezervările într-un singur loc; link pe desktop și pe telefon | Citește **rezervari@ și office@** prin Gmail, după redirecționarea lor din cPanel către asociatia.bioglamp@gmail.com |
