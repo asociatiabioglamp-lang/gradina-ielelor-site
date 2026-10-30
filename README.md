@@ -14,5 +14,5 @@ Reguli de lucru: `CLAUDE.md`. Instalare pe staging: `gradina-ielelor-integration
 ## Arhivă instalabilă
 Din rădăcina depozitului:
 ```
-cd gradina-ielelor-integration/.. && zip -r gradina-ielelor-integration.zip gradina-ielelor-integration -x '*.DS_Store'
+zip -r gradina-ielelor-integration.zip gradina-ielelor-integration -x '*.DS_Store'
 ```
