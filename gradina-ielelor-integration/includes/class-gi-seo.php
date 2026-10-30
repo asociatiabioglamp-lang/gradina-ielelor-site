@@ -22,22 +22,22 @@ final class GI_SEO {
     }
 
     public static function document_title($title) {
-        if (!gi_is_one_page()) {
+        if (!gi_is_site_page()) {
             return $title;
         }
         return self::title_value('');
     }
 
     public static function seo_title($title) {
-        return gi_is_one_page() ? self::title_value($title) : $title;
+        return gi_is_site_page() ? self::title_value($title) : $title;
     }
 
     public static function seo_description($description) {
-        return gi_is_one_page() ? self::description_value($description) : $description;
+        return gi_is_site_page() ? self::description_value($description) : $description;
     }
 
     public static function og_title($title) {
-        if (!gi_is_one_page()) {
+        if (!gi_is_site_page()) {
             return $title;
         }
         $custom = self::custom('title');
@@ -49,7 +49,7 @@ final class GI_SEO {
     }
 
     public static function og_description($description) {
-        if (!gi_is_one_page()) {
+        if (!gi_is_site_page()) {
             return $description;
         }
         $custom = self::custom('description');
@@ -61,7 +61,7 @@ final class GI_SEO {
     }
 
     public static function canonical($url) {
-        if (!gi_is_one_page()) {
+        if (!gi_is_site_page()) {
             return $url;
         }
         $yoast = get_post_meta(get_queried_object_id(), '_yoast_wpseo_canonical', true);
@@ -69,7 +69,7 @@ final class GI_SEO {
     }
 
     public static function og_image($image) {
-        if (!gi_is_one_page()) {
+        if (!gi_is_site_page()) {
             return $image;
         }
         if (has_post_thumbnail(get_queried_object_id())) {
@@ -77,11 +77,12 @@ final class GI_SEO {
             return $featured ? $featured : $image;
         }
         $social = get_post_meta(get_queried_object_id(), '_yoast_wpseo_opengraph-image', true);
-        return $social ? $image : gi_image_url('home-hero-lake-centered-1600.webp');
+        $defaults = gi_page_seo_defaults(gi_current_page_key());
+        return $social ? $image : gi_image_url($defaults['image']);
     }
 
     public static function fallback_metadata() {
-        if (!gi_is_one_page() || defined('WPSEO_VERSION') || defined('RANK_MATH_VERSION')) {
+        if (!gi_is_site_page() || defined('WPSEO_VERSION') || defined('RANK_MATH_VERSION')) {
             return;
         }
 
@@ -160,13 +161,14 @@ final class GI_SEO {
         if (($seo_meta || $rank_math) && $generated) {
             return $generated;
         }
-        if (!is_front_page()) {
+        $defaults = gi_page_seo_defaults(gi_current_page_key());
+        if (!is_front_page() && !gi_is_dedicated_page()) {
             $page_title = get_the_title($id);
             if ($page_title) {
                 return $page_title . ' | ' . get_bloginfo('name');
             }
         }
-        return 'Camping & Glamping Brașov | Grădina Ielelor Sâmbăta de Sus';
+        return $defaults['title'];
     }
 
     private static function description_value($generated) {
@@ -183,7 +185,8 @@ final class GI_SEO {
         if (has_excerpt($id)) {
             return trim(wp_strip_all_tags(get_the_excerpt($id)));
         }
-        return 'Camping, glamping și bungalow în Sâmbăta de Sus, Brașov. Rezervă cazare la poalele Munților Făgăraș și descoperă calendarul evenimentelor 2027.';
+        $defaults = gi_page_seo_defaults(gi_current_page_key());
+        return $defaults['description'];
     }
 
     private static function canonical_url() {

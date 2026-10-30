@@ -95,3 +95,60 @@ function gi_reviews() {
         array('text' => 'Loc de campare idilic. Foarte curat, amenajat cu atenție la detalii, cu vedere la Munții Făgăraș. Spațiul este generos, cu locuri pentru rulote, corturi și glamping.', 'author' => 'Mihaela Mocanu', 'context' => 'Experiență în Grădina Ielelor'),
     );
 }
+
+/**
+ * Conținutul paginii dedicate Glamping.
+ * Fapte din prezentările proprietarului și din catalogul public; tarifele sunt referință, nu calcul.
+ * Nepublicat până la confirmare: animale de companie, ore check-in/check-out, număr minim de nopți.
+ */
+function gi_glamping_page() {
+    return array(
+        'facts' => array(
+            array('value' => '4', 'label' => 'corturi cu pat'),
+            array('value' => '2 + 1', 'label' => 'persoane, cu pat suplimentar'),
+            array('value' => 'Platformă', 'label' => 'de lemn, cu masă la intrare'),
+            array('value' => '195 lei', 'label' => 'de la, pe noapte'),
+        ),
+        'tent' => array(
+            'Pat adevărat, cu lenjerie',
+            'Covor și noptieră',
+            'Platformă de lemn, ridicată de la sol',
+            'Masă și scaune la intrare',
+            'Pat suplimentar, la cerere',
+        ),
+        'garden' => array(
+            'Opt dușuri cu apă caldă, non-stop',
+            'Douăsprezece toalete',
+            'Două bucătării comune',
+            'Două lacuri, unul în care se înoată',
+            'Terasă din lemn construită pe apă',
+            'Treizeci de hamace și vetre de foc',
+            'Internet și parcare proprie',
+            'Domeniu împrejmuit, pază 24 din 24',
+        ),
+        'prices' => array(
+            array('label' => 'Nopți în timpul săptămânii', 'value' => 'de la 195 lei'),
+            array('label' => 'Vineri și sâmbătă', 'value' => '235 lei'),
+            array('label' => 'Pat suplimentar', 'value' => '55 lei'),
+        ),
+        'notes' => array(
+            array('icon' => 'droplet', 'title' => 'Apa de la robinet nu e potabilă', 'text' => 'E pentru duș, spălat și toalete. Apa de băut o găsești la dozatoare și îmbuteliată.'),
+            array('icon' => 'sun', 'title' => 'Energie proprie, din soare și GPL', 'text' => 'Ai curent, apă caldă și internet. Te rugăm doar să lași acasă electrocasnicele mari.'),
+            array('icon' => 'flame', 'title' => 'Focul, doar în vetrele amenajate', 'text' => 'Avem vetre de foc pregătite pe domeniu. Seara, acolo se adună toată lumea.'),
+        ),
+        'distances' => array(
+            array('place' => 'Transfăgărășan', 'value' => 'cca. 20 min'),
+            array('place' => 'Făgăraș', 'value' => '30 km'),
+            array('place' => 'Brașov', 'value' => 'cca. 60 km'),
+            array('place' => 'Sibiu', 'value' => 'cca. 70 km'),
+        ),
+        'faq' => array(
+            array('q' => 'Ce găsesc în cort?', 'a' => 'Un pat cu lenjerie, covor și noptieră. Cortul stă pe o platformă de lemn, iar la intrare ai o masă cu scaune. Nu e camping de supraviețuire.'),
+            array('q' => 'Câte persoane încap într-un cort?', 'a' => 'Două persoane. Dacă mai vine cineva, poți adăuga un pat suplimentar când faci rezervarea.'),
+            array('q' => 'Baia e în cort?', 'a' => 'Nu, băile sunt comune: opt dușuri cu apă caldă, disponibile oricând, și douăsprezece toalete. Dacă vrei baie proprie, alege un bungalow.'),
+            array('q' => 'Am curent și internet?', 'a' => 'Da. Domeniul funcționează pe energie proprie, solară și GPL, așa că ai curent, apă caldă și internet. Lasă acasă doar aparatele electrice mari.'),
+            array('q' => 'Cât costă o noapte?', 'a' => 'De la 195 lei în timpul săptămânii și 235 lei vineri și sâmbătă. Patul suplimentar costă 55 lei pe noapte. Prețul final îl vezi când alegi datele.'),
+        ),
+        'review_authors' => array('Ada-Casandra Ștefan', 'Mihaela Mocanu'),
+    );
+}

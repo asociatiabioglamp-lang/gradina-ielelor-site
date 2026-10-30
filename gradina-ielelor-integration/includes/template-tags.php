@@ -61,7 +61,13 @@ function gi_requested_category() {
         return '';
     }
 
-    $type = sanitize_key(wp_unslash($_GET['tip']));
+    return gi_category_for_type(sanitize_key(wp_unslash($_GET['tip'])));
+}
+
+/**
+ * Slug-ul categoriei BRW configurate pentru un tip de cazare, sau șir gol pentru tipuri necunoscute.
+ */
+function gi_category_for_type($type) {
     $map = array(
         'camping-cort' => 'category_camping_cort',
         'camping-rulota' => 'category_camping_rulota',
@@ -133,8 +139,11 @@ function gi_brw_search_compatibility($html, $options) {
  * Singurul punct de randare a rezervării: shortcode-ul real OVABRW.
  * Nu există handler de submit, calcul de preț sau disponibilitate în acest plugin.
  */
-function gi_render_booking() {
+function gi_render_booking($default_type = '', $show_trust = true) {
     $preselect = gi_requested_category();
+    if (!$preselect && $default_type) {
+        $preselect = gi_category_for_type($default_type);
+    }
     ?>
     <div class="gi-real-booking" data-gi-booking-engine="ovabrw" data-gi-react-demo="disabled"<?php echo $preselect ? ' data-gi-preselect-category="' . esc_attr($preselect) . '"' : ''; ?>>
         <?php if (shortcode_exists('ovabrw_search') && class_exists('WooCommerce')) : ?>
@@ -170,6 +179,9 @@ function gi_render_booking() {
             </div>
         <?php endif; ?>
     </div>
+    <?php if (!$show_trust) {
+        return;
+    } ?>
     <div class="gi-booking-trust">
         <img src="<?php echo esc_url(gi_asset_url('logo-gradina-ielelor.png')); ?>" alt="" width="120" height="56" loading="lazy">
         <p>Disponibilitatea, tarifele finale, opțiunile, comenzile și plățile sunt furnizate exclusiv de WooCommerce + BRW.</p>
@@ -185,4 +197,11 @@ function gi_booking_shortcode() {
     ob_start();
     gi_render_booking();
     return ob_get_clean();
+}
+
+/**
+ * Încarcă o parte comună din templates/parts/, cu argumente disponibile în $args.
+ */
+function gi_part($name, $args = array()) {
+    load_template(GI_PATH . 'templates/parts/' . sanitize_file_name($name) . '.php', false, $args);
 }
