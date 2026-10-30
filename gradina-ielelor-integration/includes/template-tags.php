@@ -145,7 +145,7 @@ function gi_render_booking($default_type = '', $show_trust = true) {
         $preselect = gi_category_for_type($default_type);
     }
     ?>
-    <div class="gi-real-booking" data-gi-booking-engine="ovabrw" data-gi-react-demo="disabled"<?php echo $preselect ? ' data-gi-preselect-category="' . esc_attr($preselect) . '"' : ''; ?>>
+    <div class="gi-real-booking" data-gi-booking-engine="ovabrw" data-gi-react-demo="disabled" data-gi-categories="<?php echo esc_attr(wp_json_encode(gi_booking_categories())); ?>"<?php echo $preselect ? ' data-gi-preselect-category="' . esc_attr($preselect) . '"' : ''; ?>>
         <?php if (shortcode_exists('ovabrw_search') && class_exists('WooCommerce')) : ?>
             <?php
             $options = gi_options();
@@ -204,4 +204,27 @@ function gi_booking_shortcode() {
  */
 function gi_part($name, $args = array()) {
     load_template(GI_PATH . 'templates/parts/' . sanitize_file_name($name) . '.php', false, $args);
+}
+
+/**
+ * URL-ul modulului de rezervări de pe pagina principală, cu oferta preselectată prin fragment
+ * (ex. /#rezervare-glamping). Fragmentul nu schimbă URL-ul cerut, deci pagina principală
+ * preîncărcată în fundal poate fi refolosită de toate butoanele de rezervare.
+ */
+function gi_home_booking_url($type = '') {
+    $page_id = gi_page_id_for_template(GI_TEMPLATE_SLUG);
+    $base = $page_id ? get_permalink($page_id) : home_url('/');
+    $allowed = array('camping-cort', 'camping-rulota', 'glamping', 'bungalow');
+    return $base . '#rezervare' . (in_array($type, $allowed, true) ? '-' . $type : '');
+}
+
+/**
+ * Corespondența tip → categorie BRW, pentru preselectarea din fragmentul URL-ului.
+ */
+function gi_booking_categories() {
+    $categories = array();
+    foreach (array('camping-cort', 'camping-rulota', 'glamping', 'bungalow') as $type) {
+        $categories[$type] = gi_category_for_type($type);
+    }
+    return $categories;
 }

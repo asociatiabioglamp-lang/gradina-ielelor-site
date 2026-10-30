@@ -45,29 +45,44 @@ if (!defined('ABSPATH')) {
                         <span class="eyebrow"><?php echo gi_icon('calendar'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Escapada ta începe aici</span>
                         <h2 id="booking-title">Când ne vedem în Grădină?</h2>
                     </div>
-                    <p>Alege experiența și datele dorite. Verificarea disponibilității și continuarea rezervării folosesc motorul real BRW + WooCommerce.</p>
+                    <p>Alege experiența și datele. Vezi pe loc ce e liber și cât costă, înainte să plătești.</p>
                 </div>
                 <div class="booking-panel">
-                    <?php gi_render_booking(); ?>
+                    <?php gi_render_booking('', false); ?>
                 </div>
-                <p class="booking-integration-note">Modul real de rezervări. Conținutul și tarifele de referință de mai jos sunt exclusiv informative; totalul și condțiile se confirmă în fluxul BRW/WooCommerce.</p>
+                <p class="booking-integration-note">Tarifele de pe site sunt orientative. Prețul final și condițiile le vezi la rezervare, înainte de plată.</p>
             </div>
         </section>
 
-        <nav class="container home-quick-nav" aria-label="Acces rapid la experiențe">
-            <a href="<?php echo esc_url(gi_offer_url('camping')); ?>"><?php echo gi_icon('tent'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Camping</a>
-            <a href="<?php echo esc_url(gi_offer_url('glamping')); ?>"><?php echo gi_icon('mountain'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Glamping</a>
-            <a href="<?php echo esc_url(gi_offer_url('bungalow')); ?>">Bungalow</a>
-            <a href="<?php echo esc_url(gi_offer_url('evenimente')); ?>"><?php echo gi_icon('music'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Evenimente</a>
-        </nav>
-
-        <div class="container home-one-page-heading">
-            <span class="eyebrow">Aceeași Grădină. 1000 de feluri de a o trăi.</span>
-            <h2>Tot ce vrei să vezi.<br><em>Alege-ți experiența.</em></h2>
-            <p>Derulează prin experiențe, deschide fotografiile și rezervă direct atunci când ai găsit varianta potrivită.</p>
-        </div>
+        <section id="experiente" class="gi-offers" aria-labelledby="offers-title">
+            <div class="container">
+                <div class="gi-offers-head">
+                    <span class="eyebrow">Aceeași Grădină. 1000 de feluri de a o trăi.</span>
+                    <h2 id="offers-title">Alege-ți <em>experiența</em></h2>
+                </div>
+                <div class="gi-offers-grid">
+                    <?php foreach (gi_offer_cards() as $gi_key => $gi_card) : ?>
+                        <a class="gi-offer-card gi-offer-card-<?php echo esc_attr($gi_key); ?>" href="<?php echo esc_url(gi_offer_url($gi_key)); ?>">
+                            <img src="<?php echo esc_url(gi_image_url($gi_card['image'])); ?>" alt="<?php echo esc_attr($gi_card['alt']); ?>" width="960" height="720" loading="lazy" decoding="async">
+                            <span class="gi-offer-card-body">
+                                <strong><?php echo esc_html(gi_offers()[$gi_key]['label']); ?></strong>
+                                <span><?php echo esc_html($gi_card['text']); ?></span>
+                                <small><?php echo esc_html($gi_card['price']); ?></small>
+                            </span>
+                            <span class="gi-offer-card-cta"><?php echo gi_offer_has_page($gi_key) ? 'Descoperă' : 'Vezi detalii'; ?> <?php echo gi_icon('arrow-right'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </section>
 
         <?php foreach (gi_experiences() as $id => $experience) : ?>
+            <?php
+            // Oferta cu pagină dedicată nu se mai încarcă aici; cardul de mai sus duce la pagina ei.
+            if (gi_offer_has_page($id)) {
+                continue;
+            }
+            ?>
             <section id="<?php echo esc_attr($id); ?>" class="home-experience-detail home-experience-<?php echo esc_attr($id); ?>" aria-labelledby="<?php echo esc_attr($id); ?>-title">
                 <div class="container">
                     <div class="home-experience-intro">
@@ -79,7 +94,7 @@ if (!defined('ABSPATH')) {
                             <p><?php echo esc_html($experience['description']); ?></p>
                             <div class="home-inline-price">
                                 <strong><?php echo esc_html($experience['price']); ?></strong>
-                                <span><?php echo esc_html($experience['price_note']); ?><br>Conținut static de prezentare · tariful final se confirmă în BRW</span>
+                                <span><?php echo esc_html($experience['price_note']); ?><br>Tarif orientativ · prețul final îl vezi la rezervare</span>
                             </div>
                         </div>
                     </div>
@@ -106,6 +121,7 @@ if (!defined('ABSPATH')) {
             </section>
         <?php endforeach; ?>
 
+        <?php if (!gi_offer_has_page('evenimente')) : ?>
         <section id="evenimente" class="home-events-detail" aria-labelledby="home-events-title">
             <div class="container">
                 <div class="home-experience-intro">
@@ -168,6 +184,7 @@ if (!defined('ABSPATH')) {
             </section>
             <div class="container home-accommodation-note"><?php echo gi_icon('tent'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><span>Pentru festivaluri și evenimente, oaspeții pot alege camping, glamping sau bungalow direct din modulul real de rezervare.</span></div>
         </section>
+        <?php endif; ?>
 
         <section id="recenzii" class="home-reviews" aria-labelledby="reviews-title">
             <div class="container">

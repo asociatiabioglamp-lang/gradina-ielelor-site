@@ -7,6 +7,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 $gi_current = gi_current_page_key();
+$gi_booking = gi_is_one_page() ? '#rezervare' : gi_home_booking_url($gi_current);
 $gi_links = array();
 foreach (gi_offers() as $gi_key => $gi_offer) {
     $gi_links[] = array('label' => $gi_offer['label'], 'url' => gi_offer_url($gi_key), 'current' => $gi_key === $gi_current);
@@ -24,7 +25,7 @@ $gi_info_links = array(
                     <a href="<?php echo esc_url($gi_link['url']); ?>"<?php echo $gi_link['current'] ? ' aria-current="page"' : ''; ?>><?php echo esc_html($gi_link['label']); ?></a>
                 <?php endforeach; ?>
             </nav>
-            <a class="button button-small header-cta" href="#rezervare">Rezervă <?php echo gi_icon('arrow-up-right'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
+            <a class="button button-small header-cta" href="<?php echo esc_url($gi_booking); ?>">Rezervă <?php echo gi_icon('arrow-up-right'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
             <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="gi-mobile-navigation" aria-label="Deschide meniul" data-menu-toggle>
                 <span data-menu-open><?php echo gi_icon('menu'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
                 <span data-menu-close hidden><?php echo gi_icon('x'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
@@ -34,6 +35,6 @@ $gi_info_links = array(
             <?php foreach (array_merge($gi_links, $gi_info_links) as $gi_link) : ?>
                 <a href="<?php echo esc_url($gi_link['url']); ?>"<?php echo $gi_link['current'] ? ' aria-current="page"' : ''; ?>><?php echo esc_html($gi_link['label']); ?></a>
             <?php endforeach; ?>
-            <a href="#rezervare">Rezervă cazare</a>
+            <a href="<?php echo esc_url($gi_booking); ?>">Rezervă cazare</a>
         </nav>
     </header>

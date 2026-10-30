@@ -150,17 +150,43 @@
   // Nu interceptează submit și nu modifică disponibilitatea, prețul sau fluxul WooCommerce.
   function initBrwPreselection() {
     document.querySelectorAll('[data-gi-preselect-category]').forEach(function (region) {
-      var category = region.getAttribute('data-gi-preselect-category');
-      var select = region.querySelector('select[name="cat"]');
-      if (!category || !select) return;
-
-      var exists = Array.from(select.options).some(function (option) {
-        return option.value === category;
-      });
-      if (!exists) return;
-
-      select.value = category;
-      select.dispatchEvent(new Event('change', { bubbles: true }));
+      preselectCategory(region, region.getAttribute('data-gi-preselect-category'));
     });
+
+    // Paginile dedicate trimit înapoi la modulul de rezervări cu #rezervare-<tip>.
+    // Pagina poate fi deja preîncărcată în fundal, așa că verificăm și la activare și la schimbarea fragmentului.
+    applyBookingHash();
+    window.addEventListener('hashchange', applyBookingHash);
+    document.addEventListener('prerenderingchange', applyBookingHash);
+  }
+
+  function applyBookingHash() {
+    var match = /^#rezervare-([a-z-]+)$/.exec(window.location.hash);
+    var section = document.getElementById('rezervare');
+    if (!match || !section) return;
+
+    section.querySelectorAll('[data-gi-categories]').forEach(function (region) {
+      var categories = {};
+      try {
+        categories = JSON.parse(region.getAttribute('data-gi-categories')) || {};
+      } catch (error) {
+        categories = {};
+      }
+      preselectCategory(region, categories[match[1]]);
+    });
+    section.scrollIntoView({ block: 'start' });
+  }
+
+  function preselectCategory(region, category) {
+    var select = region.querySelector('select[name="cat"]');
+    if (!category || !select) return;
+
+    var exists = Array.from(select.options).some(function (option) {
+      return option.value === category;
+    });
+    if (!exists) return;
+
+    select.value = category;
+    select.dispatchEvent(new Event('change', { bubbles: true }));
   }
 }());

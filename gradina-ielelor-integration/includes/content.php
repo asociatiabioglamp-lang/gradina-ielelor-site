@@ -152,3 +152,16 @@ function gi_glamping_page() {
         'review_authors' => array('Ada-Casandra Ștefan', 'Mihaela Mocanu'),
     );
 }
+
+/**
+ * Cardurile celor patru oferte de pe pagina principală (hub de rezervare).
+ * Fiecare card deschide pagina dedicată; până la publicarea ei, duce la secțiunea detaliată de mai jos.
+ */
+function gi_offer_cards() {
+    return array(
+        'glamping' => array('text' => 'Corturi cu pat, pe platformă de lemn, cu muntele la intrare.', 'price' => 'de la 195 lei / noapte', 'image' => 'super-glamping-1600.webp', 'alt' => 'Corturi de glamping cu Munții Făgăraș în fundal'),
+        'camping' => array('text' => 'Loc pentru cort sau rulotă, lângă lac, cu bucătării și dușuri calde.', 'price' => '80 lei / noapte', 'image' => 'camping-day-960.webp', 'alt' => 'Corturi și spații verzi în campingul Grădina Ielelor'),
+        'bungalow' => array('text' => 'Baie proprie, terasă și liniște, pe malul lacului mare.', 'price' => 'de la 350 lei / noapte', 'image' => 'bungalow-card-960.webp', 'alt' => 'Bungalow în Grădina Ielelor'),
+        'evenimente' => array('text' => 'Festivaluri, petreceri și evenimente private pe un domeniu de 9 hectare.', 'price' => 'Ofertă la cerere', 'image' => 'festival-scena-960.webp', 'alt' => 'Festival și camping pe domeniul Grădina Ielelor'),
+    );
+}

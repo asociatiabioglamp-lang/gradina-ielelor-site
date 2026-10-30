@@ -51,7 +51,13 @@ final class GI_Plugin {
         if (gi_is_site_page()) {
             wp_enqueue_style('gi-pages', gi_asset_url('css/pages.css'), array('gi-one-page'), GI_VERSION);
         }
+        if (gi_is_one_page()) {
+            wp_enqueue_style('gi-home', gi_asset_url('css/home.css'), array('gi-one-page'), GI_VERSION);
+        }
         wp_enqueue_script('gi-one-page', gi_asset_url('js/site.js'), array(), GI_VERSION, true);
+        if (gi_is_dedicated_page() && file_exists(GI_PATH . 'assets/js/pages.js')) {
+            wp_enqueue_script('gi-pages', gi_asset_url('js/pages.js'), array('gi-one-page'), GI_VERSION, true);
+        }
     }
 
     private static function is_booking_page() {
