@@ -30,6 +30,7 @@ function gi_distances() {
  * included{title, groups[{icon, title, items[], note?{text, link_text, link_offer}}]},
  * reviews{title, authors[]}, prices{title, text, unit, rows[]} sau null, notes[], faq[],
  * closing{title, title_em, image}, seo{title, description, image}.
+ * Opționale: cta_url (acțiune principală diferită de rezervare), calendar{title, text} (afișează gi_events_2027()).
  */
 function gi_offer_page($key) {
     $pages = gi_offer_pages();
