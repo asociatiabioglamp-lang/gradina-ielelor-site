@@ -1,0 +1,7 @@
+{
+  "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+  "landingPage": "/",
+  "steps": [
+    { "step": "setSiteOptions", "options": { "blogname": "Grădina Ielelor (test local)", "permalink_structure": "/%postname%/", "WPLANG": "" } }
+  ]
+}
