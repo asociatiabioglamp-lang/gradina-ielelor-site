@@ -10,6 +10,7 @@ final class GI_Plugin {
         add_action('wp_enqueue_scripts', array(__CLASS__, 'enqueue_assets'));
         add_filter('body_class', array(__CLASS__, 'body_class'));
         add_action('wp_head', array(__CLASS__, 'favicon'), 1);
+        add_action('wp_head', array(__CLASS__, 'booking_arrival_script'), 3);
 
         // Navigare fluidă între paginile Grădinii: preîncărcare la hover (WordPress 6.8+).
         add_filter('wp_speculation_rules_configuration', array(__CLASS__, 'speculation_configuration'));
@@ -79,6 +80,18 @@ final class GI_Plugin {
         if (gi_is_site_page()) {
             echo '<link rel="icon" type="image/svg+xml" href="' . esc_url(gi_asset_url('favicon.svg')) . '">' . "\n";
         }
+    }
+
+    /**
+     * Pe pagina principală: la sosirea în modulul de rezervări (/#rezervare-<tip>) fotografia cardului
+     * nu participă la tranziție, ca imaginea paginii dedicate să nu zboare spre un card din afara ecranului.
+     * Rulează în head, înainte de prima afișare; la pagina preîncărcată, la activare (pagereveal).
+     */
+    public static function booking_arrival_script() {
+        if (!gi_is_one_page()) {
+            return;
+        }
+        echo "<script>(function(){var r=document.documentElement;function m(){r.classList.toggle('gi-booking-arrival',/^#rezervare/.test(location.hash));}m();addEventListener('pagereveal',m);addEventListener('hashchange',m);addEventListener('pageswap',function(){r.classList.remove('gi-booking-arrival');});}());</script>\n";
     }
 
     /**

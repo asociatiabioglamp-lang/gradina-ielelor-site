@@ -107,7 +107,7 @@ function gi_glamping_page() {
             array('value' => '4', 'label' => 'corturi cu pat'),
             array('value' => '2 + 1', 'label' => 'persoane, cu pat suplimentar'),
             array('value' => 'Platformă', 'label' => 'de lemn, cu masă la intrare'),
-            array('value' => '195 lei', 'label' => 'de la, pe noapte'),
+            array('value' => 'de la 195 lei', 'label' => 'pe noapte'),
         ),
         'tent' => array(
             'Pat adevărat, cu lenjerie',
