@@ -114,7 +114,7 @@ function gi_local_content_pages() {
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Un domeniu privat de șase hectare la Sâmbăta de Sus, în județul Brașov, cu Munții Făgăraș în față, împrejmuit și păzit zi și noapte. Alte trei hectare sunt parcarea, în afara gardului. La festivaluri folosim toate cele nouă hectare și deschidem încă o parcare, de nouă hectare.</p>
+<p>Un domeniu privat de șase hectare la Sâmbăta de Sus, în județul Brașov, cu Munții Făgăraș în față, împrejmuit și păzit zi și noapte. Mașinile parchează în interior, pe 60.000 de metri pătrați. La festivaluri, domeniul trece în regim de festival, pe nouă hectare, iar pentru mașini se mai adaugă 30.000 de metri pătrați, în vecinătate.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
