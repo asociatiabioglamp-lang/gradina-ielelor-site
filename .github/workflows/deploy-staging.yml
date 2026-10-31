@@ -1,0 +1,134 @@
+# OPȚIONAL și OPRIT implicit: încarcă pluginul pe STAGING prin FTPS.
+#
+# Rulează numai manual (Actions → „Deploy staging (opțional)” → Run workflow) și numai după ce proprietarul a adăugat,
+# în Settings → Secrets and variables → Actions:
+#   - variabila  STAGING_DEPLOY_ENABLED = true
+#   - secretele  STAGING_FTP_HOST, STAGING_FTP_USER, STAGING_FTP_PASSWORD, STAGING_PLUGIN_DIR
+# Recomandat: un cont FTP separat în cPanel, limitat la folderul pluginului de pe staging (atunci STAGING_PLUGIN_DIR = ./).
+# Opțional: variabilele STAGING_FTP_PORT (implicit 21) și STAGING_FTP_SECURITY (implicit strict).
+#
+# Implicit face doar o SIMULARE (dry run): arată ce ar încărca, fără să schimbe nimic.
+# Pentru site-ul LIVE nu există și nu se adaugă workflow: live se instalează manual, cu acordul proprietarului.
+name: Deploy staging (opțional)
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Doar simulare (nu schimbă nimic pe server). Debifează pentru încărcarea reală pe staging.'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Încarcă pluginul pe staging
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Verifică dacă deploy-ul pe staging este pornit și configurat
+        env:
+          ENABLED: ${{ vars.STAGING_DEPLOY_ENABLED }}
+          FTP_HOST: ${{ secrets.STAGING_FTP_HOST }}
+          FTP_USER: ${{ secrets.STAGING_FTP_USER }}
+          FTP_PASSWORD: ${{ secrets.STAGING_FTP_PASSWORD }}
+          PLUGIN_DIR: ${{ secrets.STAGING_PLUGIN_DIR }}
+        run: |
+          missing=()
+          [ "$ENABLED" = "true" ] || missing+=("variabila STAGING_DEPLOY_ENABLED = true")
+          [ -n "$FTP_HOST" ] || missing+=("secretul STAGING_FTP_HOST")
+          [ -n "$FTP_USER" ] || missing+=("secretul STAGING_FTP_USER")
+          [ -n "$FTP_PASSWORD" ] || missing+=("secretul STAGING_FTP_PASSWORD")
+          [ -n "$PLUGIN_DIR" ] || missing+=("secretul STAGING_PLUGIN_DIR")
+          if [ "${#missing[@]}" -gt 0 ]; then
+            {
+              echo "### Deploy pe staging: oprit"
+              echo
+              echo "Lipsesc:"
+              printf -- '- %s\n' "${missing[@]}"
+              echo
+              echo "Se adaugă în Settings → Secrets and variables → Actions. Pașii: \`docs/lansare.md\`, secțiunea „Deploy automat pe staging”."
+            } >> "$GITHUB_STEP_SUMMARY"
+            echo "::error::Deploy-ul pe staging nu este pornit sau nu este configurat. Vezi rezumatul."
+            exit 1
+          fi
+          case "$PLUGIN_DIR" in
+            ./ | */gradina-ielelor-integration/) ;;
+            *)
+              echo "::error::STAGING_PLUGIN_DIR trebuie să fie ./ (cont FTP limitat la folderul pluginului) sau să se termine cu gradina-ielelor-integration/"
+              exit 1
+              ;;
+          esac
+
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: none
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: Construiește și verifică arhiva (tools/build-zip.sh)
+        id: zip
+        # Fără --allow-missing-images: pe staging ajunge numai o arhivă completă, verificată.
+        run: bash tools/build-zip.sh
+
+      - name: Pregătește folderul pluginului din arhiva verificată
+        env:
+          ZIP: ${{ steps.zip.outputs.zip }}
+        run: |
+          set -euo pipefail
+          rm -rf deploy
+          unzip -q "$ZIP" -d deploy
+          test -f deploy/gradina-ielelor-integration/gradina-ielelor-integration.php
+
+      - name: Încarcă prin FTPS ${{ inputs.dry_run && '(SIMULARE)' || '(REAL)' }}
+        # Fără tag „v4” la acest proiect: fixat pe commitul versiunii v4.4.0.
+        uses: SamKirkland/FTP-Deploy-Action@110f9186c050f71550953127052e77650219c287 # v4.4.0
+        with:
+          server: ${{ secrets.STAGING_FTP_HOST }}
+          username: ${{ secrets.STAGING_FTP_USER }}
+          password: ${{ secrets.STAGING_FTP_PASSWORD }}
+          protocol: ftps
+          port: ${{ vars.STAGING_FTP_PORT || 21 }}
+          security: ${{ vars.STAGING_FTP_SECURITY || 'strict' }}
+          local-dir: ./deploy/gradina-ielelor-integration/
+          server-dir: ${{ secrets.STAGING_PLUGIN_DIR }}
+          dry-run: ${{ inputs.dry_run }}
+          log-level: standard
+
+      - name: Rezumat
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+          VERSION: ${{ steps.zip.outputs.version }}
+          SHA: ${{ steps.zip.outputs.sha256 }}
+          REF: ${{ github.ref_name }}
+        run: |
+          {
+            if [ "$DRY_RUN" = "true" ]; then
+              echo "### Staging: SIMULARE reușită (nu s-a schimbat nimic)"
+              echo
+              echo "Lista fișierelor care s-ar încărca este în jurnalul pasului „Încarcă prin FTPS”."
+              echo "Pentru încărcarea reală: Run workflow din nou, cu „Doar simulare” debifat."
+            else
+              echo "### Staging: pluginul $VERSION a fost încărcat"
+              echo
+              echo "1. În WordPress-ul de staging: LiteSpeed Cache → Curăță tot (Purge All)."
+              echo "2. Verifică staging-ul cu lista din \`docs/lansare.md\`."
+            fi
+            echo
+            echo "Ramura: \`$REF\` · versiunea: $VERSION · SHA-256 al arhivei: \`$SHA\`"
+          } >> "$GITHUB_STEP_SUMMARY"

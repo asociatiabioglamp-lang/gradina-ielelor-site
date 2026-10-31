@@ -1,0 +1,219 @@
+# Verifică pluginul și construiește arhiva instalabilă, la fiecare schimbare.
+# - php -l pe toate fișierele PHP, cu PHP 7.4 (minimul declarat de plugin) și PHP 8.3;
+# - node --check pe JS;
+# - arhiva dist/gradina-ielelor-integration-<versiune>.zip (tools/build-zip.sh), încărcată ca artefact;
+# - la un tag v<versiune> (ex. v1.2.0): aceeași arhivă atașată unui Release pe GitHub.
+# Nu folosește secrete și nu se conectează la hosting.
+name: Build
+
+on:
+  push:
+    branches: ['**']
+    tags: ['v*']
+    paths:
+      - 'gradina-ielelor-integration/**'
+      - 'binary-manifest.tsv'
+      - 'tools/build-zip.sh'
+      - '.github/workflows/build.yml'
+  pull_request:
+    paths:
+      - 'gradina-ielelor-integration/**'
+      - 'binary-manifest.tsv'
+      - 'tools/build-zip.sh'
+      - '.github/workflows/build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
+
+jobs:
+  php-lint:
+    name: php -l (PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['7.4', '8.3']
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: none
+
+      - name: php -l pe toate fișierele PHP ale pluginului
+        run: |
+          set -euo pipefail
+          echo "PHP $(php -r 'echo PHP_VERSION;')"
+          count=0
+          failed=0
+          while IFS= read -r -d '' f; do
+            count=$((count + 1))
+            if ! out="$(php -l "$f" 2>&1)"; then
+              failed=$((failed + 1))
+              echo "$out"
+              echo "::error file=$f::php -l a eșuat pe PHP $(php -r 'echo PHP_VERSION;')"
+            fi
+          done < <(find gradina-ielelor-integration -type f -name '*.php' -print0)
+          echo "$count fișiere PHP verificate, $failed cu erori."
+          [ "$count" -gt 0 ] && [ "$failed" -eq 0 ]
+
+  build:
+    name: Arhiva pluginului
+    needs: php-lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      version: ${{ steps.zip.outputs.version }}
+      zip_name: ${{ steps.zip.outputs.zip_name }}
+      sha256: ${{ steps.zip.outputs.sha256 }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # Istoricul complet: data ultimei modificări a pluginului intră în arhivă,
+          # deci aceeași sursă dă aceeași amprentă SHA-256 și aici, și local.
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: none
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: node --check pe JS
+        run: |
+          set -euo pipefail
+          count=0
+          failed=0
+          while IFS= read -r -d '' f; do
+            count=$((count + 1))
+            if ! out="$(node --check "$f" 2>&1)"; then
+              failed=$((failed + 1))
+              echo "$out"
+              echo "::error file=$f::node --check a eșuat"
+            fi
+          done < <(find gradina-ielelor-integration -type f -name '*.js' -print0)
+          echo "$count fișiere JS verificate, $failed cu erori."
+          [ "$failed" -eq 0 ]
+
+      - name: Construiește arhiva (tools/build-zip.sh)
+        id: zip
+        run: bash tools/build-zip.sh
+
+      - name: Tagul trebuie să fie v + versiunea din plugin
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          TAG: ${{ github.ref_name }}
+          VERSION: ${{ steps.zip.outputs.version }}
+        run: |
+          if [ "$TAG" != "v$VERSION" ]; then
+            echo "::error::Tagul $TAG nu corespunde versiunii din plugin ($VERSION). Tagul corect: v$VERSION."
+            exit 1
+          fi
+
+      - name: Încarcă arhiva (artefact)
+        uses: actions/upload-artifact@v7
+        with:
+          # archive: false = se descarcă direct .zip-ul pluginului, gata de încărcat în WordPress.
+          path: dist/${{ steps.zip.outputs.zip_name }}
+          archive: false
+          overwrite: true
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Rezumat
+        env:
+          VERSION: ${{ steps.zip.outputs.version }}
+          ZIP_NAME: ${{ steps.zip.outputs.zip_name }}
+          SHA: ${{ steps.zip.outputs.sha256 }}
+          BYTES: ${{ steps.zip.outputs.bytes }}
+        run: |
+          {
+            echo "### Pluginul Grădina Ielelor $VERSION"
+            echo
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Arhivă | \`$ZIP_NAME\` ($((BYTES / 1024)) KB) |"
+            echo "| SHA-256 | \`$SHA\` |"
+            echo "| Verificări | php -l (PHP 7.4 și 8.3), node --check, unzip -t, poze complete |"
+            echo
+            echo "Descărcare: secțiunea **Artifacts** de mai jos. Instalare: \`docs/lansare.md\` (întâi pe staging, cu backup)."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  release:
+    name: Release pe GitHub
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: none
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: Construiește din nou arhiva
+        id: zip
+        run: bash tools/build-zip.sh
+
+      - name: Aceeași arhivă ca în jobul de build
+        env:
+          EXPECTED: ${{ needs.build.outputs.sha256 }}
+          ACTUAL: ${{ steps.zip.outputs.sha256 }}
+        run: |
+          if [ "$EXPECTED" != "$ACTUAL" ]; then
+            echo "::error::Amprenta diferă ($EXPECTED față de $ACTUAL). Release-ul nu se publică."
+            exit 1
+          fi
+
+      - name: Publică release-ul cu arhiva
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+          VERSION: ${{ steps.zip.outputs.version }}
+          ZIP: ${{ steps.zip.outputs.zip }}
+          ZIP_NAME: ${{ steps.zip.outputs.zip_name }}
+          SHA: ${{ steps.zip.outputs.sha256 }}
+        run: |
+          set -euo pipefail
+          notes="$(printf '%s\n' \
+            "Pluginul Grădina Ielelor $VERSION." \
+            "" \
+            "- Fișierul de instalat în WordPress: \`$ZIP_NAME\` (Module → Adaugă modul → Încarcă modul)." \
+            "- Amprenta SHA-256: \`$SHA\`" \
+            "- Pașii, backup-ul și revenirea: \`docs/lansare.md\`. Întâi pe staging; pe live numai cu acordul proprietarului.")"
+          prerelease=()
+          case "$VERSION" in *-*) prerelease=(--prerelease) ;; esac
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$ZIP" "$ZIP.sha256" --clobber
+          else
+            gh release create "$TAG" "$ZIP" "$ZIP.sha256" --verify-tag \
+              --title "Grădina Ielelor $VERSION" --notes "$notes" "${prerelease[@]}"
+          fi

@@ -1,0 +1,233 @@
+<?php
+/**
+ * Redirecționări 301 de la adresele vechi ale site-ului spre paginile noi.
+ *
+ * Modul de sine stătător, ÎNCĂ NEÎNCĂRCAT de plugin. Se activează după verificare, adăugând în
+ * gradina-ielelor-integration.php, după linia cu includes/pages.php:
+ *     require_once GI_PATH . 'includes/redirects.php';
+ *
+ * Reguli:
+ * - se redirecționează numai adresele din gi_redirect_map(), verificate pe site-ul live la 31.10.2026;
+ * - numai dacă pagina nouă există și este publicată; până atunci adresa veche funcționează ca acum;
+ * - nu se ating previzualizările administratorilor, paginile WooCommerce (magazin, produs, coș,
+ *   finalizare, cont), căutările din modulul de rezervări (BRW), cererile POST, AJAX, REST sau cron;
+ * - restul parametrilor din adresă (utm_*, fbclid, gclid, ref) se păstrează, ca sursa vizitei să nu se piardă.
+ *
+ * Motivul fiecărei redirecționări și lista de verificare: docs/seo-migrare.md.
+ */
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+/**
+ * Adresa veche (cheie) → adresa nouă (valoare), ca drumuri față de pagina principală.
+ *
+ * Valori: '/' = pagina principală nouă (hub-ul de rezervare), activă numai după ce e setată ca prima pagină;
+ * '/bungalow/', '/glamping/', '/camping/', '/rulote/', '/evenimente/' = paginile dedicate din gi_offers()
+ * (se caută după template, deci funcționează și dacă pagina are alt slug);
+ * orice alt drum = o pagină WordPress publicată cu acel drum (ex. '/despre-noi/').
+ */
+function gi_redirect_map() {
+    $map = array(
+        // Cazare: paginile vechi din meniul „Cazare” → paginile dedicate noi.
+        // /glamping/ și /camping/ își păstrează adresa (pagina existentă primește template-ul nou), deci nu apar aici.
+        '/cazare-bungalow/' => '/bungalow/',
+        '/camping-cort/' => '/camping/',
+        '/camping-rulota/' => '/rulote/',
+
+        // Evenimente: pagina veche din „Totul despre ea” → pagina dedicată.
+        '/gradina-ielelor-totul-despre-ea/evenimente/' => '/evenimente/',
+
+        // „Despre Noi” din meniul vechi → pagina nouă Despre noi (numai după ce e publicată).
+        '/gradina-ielelor-totul-despre-ea/' => '/despre-noi/',
+
+        // Tarifele: cele două pagini identice → pagina principală (cardurile au prețurile, rezervarea e sus).
+        '/tarife/' => '/',
+        '/tarife-2026/' => '/',
+
+        // Pagina principală veche (Acasă2023), cu informații din 2024–2025.
+        '/acasa2023/' => '/',
+
+        // De activat numai după confirmarea proprietarului (vezi docs/seo-migrare.md, secțiunea 3):
+        // '/gradina-ielelor-totul-despre-ea/timp-liber/' => '/despre-noi/',
+        // '/info-util/info-covid-19/' => '/info-util/',
+    );
+
+    return apply_filters('gi_redirect_map', $map);
+}
+
+/**
+ * Harta cu drumurile aduse la aceeași formă (litere mici, cu „/” la început și la sfârșit).
+ */
+function gi_redirect_normalized_map() {
+    static $normalized = null;
+    if (null === $normalized) {
+        $normalized = array();
+        foreach (gi_redirect_map() as $old => $new) {
+            $normalized[gi_redirect_normalize_path($old)] = (string) $new;
+        }
+    }
+    return $normalized;
+}
+
+/**
+ * „/Cazare-Bungalow” și „/cazare-bungalow/” devin aceeași cheie: „/cazare-bungalow/”.
+ */
+function gi_redirect_normalize_path($path) {
+    $path = strtolower(trim(preg_replace('#/+#', '/', (string) $path), '/'));
+    return '' === $path ? '/' : '/' . $path . '/';
+}
+
+/**
+ * Drumul unei adrese față de pagina principală (contează dacă WordPress e instalat într-un subfolder).
+ */
+function gi_redirect_relative_path($url_path) {
+    $path = rawurldecode((string) $url_path);
+    $home_path = untrailingslashit((string) wp_parse_url(home_url('/'), PHP_URL_PATH));
+    if ('' !== $home_path && 0 === strpos($path, $home_path)) {
+        $path = substr($path, strlen($home_path));
+    }
+    return gi_redirect_normalize_path($path);
+}
+
+/**
+ * Drumul cererii curente, normalizat.
+ */
+function gi_redirect_request_path() {
+    $uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash($_SERVER['REQUEST_URI']) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+    return gi_redirect_relative_path((string) wp_parse_url((string) $uri, PHP_URL_PATH));
+}
+
+/**
+ * Adresa completă a paginii noi sau șir gol dacă pagina nu există (încă).
+ */
+function gi_redirect_target_url($new_path) {
+    $slug = trim(gi_redirect_normalize_path($new_path), '/');
+
+    // Pagina principală nouă: numai după ce hub-ul de rezervare este publicat și setat ca prima pagină.
+    if ('' === $slug) {
+        $hub_id = gi_page_id_for_template(GI_TEMPLATE_SLUG);
+        $is_front = 'page' === get_option('show_on_front') && (int) get_option('page_on_front') === $hub_id;
+        return ($hub_id && $is_front) ? home_url('/') : '';
+    }
+
+    // Paginile dedicate ofertelor: după template, nu după slug.
+    $offers = gi_offers();
+    if (isset($offers[$slug])) {
+        return gi_offer_has_page($slug) ? gi_offer_url($slug) : '';
+    }
+
+    $page = get_page_by_path($slug);
+    if ($page && 'publish' === $page->post_status) {
+        return get_permalink($page);
+    }
+    return '';
+}
+
+/**
+ * Există în adresă cel puțin unul dintre parametrii dați?
+ */
+function gi_redirect_query_has($keys) {
+    foreach ($keys as $key) {
+        if (isset($_GET[$key])) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * Căutare sau preselectare din modulul de rezervări: parametrii formularului OVABRW (observați pe live)
+ * și `tip`, folosit de plugin pentru oferta preselectată.
+ */
+function gi_redirect_is_booking_query() {
+    foreach (array_keys($_GET) as $key) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        if (0 === strpos(strtolower((string) $key), 'ovabrw')) {
+            return true;
+        }
+    }
+    return gi_redirect_query_has(array('cat', 'pickup_date', 'dropoff_date', 'order', 'orderby', 'tip', 'product_cat'));
+}
+
+/**
+ * Pagini și acțiuni WooCommerce: magazin, produs, categorii de produse, coș, finalizare, cont și endpoint-urile lor.
+ */
+function gi_redirect_is_woocommerce_request() {
+    $checks = array('is_woocommerce', 'is_cart', 'is_checkout', 'is_account_page', 'is_wc_endpoint_url');
+    foreach ($checks as $check) {
+        if (function_exists($check) && call_user_func($check)) {
+            return true;
+        }
+    }
+    return gi_redirect_query_has(array('wc-ajax', 'wc-api', 'add-to-cart', 'remove_item', 'undo_item', 'removed_item', 'order-received', 'key'));
+}
+
+/**
+ * Previzualizare: în editor, în Personalizare sau în Elementor, de către cineva care poate edita pagini.
+ */
+function gi_redirect_is_admin_preview() {
+    if (is_preview() || is_customize_preview()) {
+        return true;
+    }
+    if (!is_user_logged_in() || !current_user_can('edit_pages')) {
+        return false;
+    }
+    return gi_redirect_query_has(array('preview', 'preview_id', 'preview_nonce', 'elementor-preview', 'customize_changeset_uuid', 'page_id', 'p'));
+}
+
+function gi_redirect_should_skip() {
+    $method = isset($_SERVER['REQUEST_METHOD']) ? strtoupper(sanitize_key(wp_unslash($_SERVER['REQUEST_METHOD']))) : 'GET';
+    if (!in_array($method, array('GET', 'HEAD'), true)) {
+        return true;
+    }
+    if (is_admin() || wp_doing_ajax() || wp_doing_cron() || (defined('REST_REQUEST') && REST_REQUEST)) {
+        return true;
+    }
+    return gi_redirect_is_admin_preview() || gi_redirect_is_woocommerce_request() || gi_redirect_is_booking_query();
+}
+
+/**
+ * Parametrii din adresa veche (ex. utm_source, fbclid, ref), transmiși mai departe.
+ */
+function gi_redirect_query_string() {
+    $query = isset($_SERVER['QUERY_STRING']) ? wp_unslash($_SERVER['QUERY_STRING']) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+    return trim((string) $query, "&? \t\n\r\0\x0B");
+}
+
+/**
+ * 301 de la o adresă veche din hartă spre pagina nouă, dacă aceasta există.
+ * Rulează înaintea redirecționărilor WordPress (prioritatea 1), ca vizitatorul să facă un singur salt.
+ */
+function gi_redirect_old_urls() {
+    if (!function_exists('gi_offers') || !defined('GI_TEMPLATE_SLUG') || gi_redirect_should_skip()) {
+        return;
+    }
+
+    $path = gi_redirect_request_path();
+    $map = gi_redirect_normalized_map();
+    if (!isset($map[$path])) {
+        return;
+    }
+
+    $target = gi_redirect_target_url($map[$path]);
+    if ('' === $target) {
+        // Pagina nouă nu e publicată încă: adresa veche rămâne activă, fără 404.
+        return;
+    }
+
+    // Fără bucle: dacă template-ul nou a fost pus chiar pe pagina veche, adresa veche e deja pagina nouă.
+    if (gi_redirect_relative_path((string) wp_parse_url($target, PHP_URL_PATH)) === $path) {
+        return;
+    }
+
+    $query = gi_redirect_query_string();
+    if ('' !== $query) {
+        $target .= (false === strpos($target, '?') ? '?' : '&') . $query;
+    }
+
+    wp_safe_redirect($target, 301, 'Gradina Ielelor');
+    exit;
+}
+
+add_action('template_redirect', 'gi_redirect_old_urls', 1);

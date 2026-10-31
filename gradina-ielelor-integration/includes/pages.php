@@ -16,8 +16,18 @@ function gi_page_templates() {
     foreach (gi_offers() as $key => $offer) {
         $templates[$offer['template']] = array('key' => $key, 'label' => 'Grădina Ielelor — ' . $offer['label'], 'file' => 'offer.php');
     }
+    // Pagini scrise de proprietar în editorul WordPress (Despre noi, Regulament & politici, Contact).
+    $templates['gi-content.php'] = array('key' => 'content', 'label' => 'Grădina Ielelor — Pagină simplă', 'file' => 'content-page.php');
     return $templates;
 }
+
+/**
+ * Câmpul „Rezumat” (excerpt) în editorul paginilor: pe pagina simplă devine textul de sub titlu și descrierea SEO.
+ */
+function gi_page_excerpt_support() {
+    add_post_type_support('page', 'excerpt');
+}
+add_action('init', 'gi_page_excerpt_support');
 
 /**
  * Cele cinci categorii, în ordinea din meniu.
@@ -120,11 +130,19 @@ function gi_page_seo_defaults($key) {
     if ($page && !empty($page['seo'])) {
         return $page['seo'];
     }
-    return array(
+    $defaults = array(
         'title' => 'Camping & Glamping Brașov | Grădina Ielelor Sâmbăta de Sus',
         'description' => 'Camping, glamping și bungalow în Sâmbăta de Sus, Brașov. Rezervă cazare la poalele Munților Făgăraș și descoperă calendarul evenimentelor 2027.',
         'image' => 'home-hero-lake-centered-1600.webp',
     );
+    // Pagina simplă: titlul paginii + numele site-ului; descrierea vine din Rezumat (GI_SEO îl citește înaintea acestor valori).
+    if ('content' === $key && is_singular('page')) {
+        $title = get_the_title(get_queried_object_id());
+        if ('' !== $title) {
+            $defaults['title'] = $title . ' | ' . get_bloginfo('name');
+        }
+    }
+    return $defaults;
 }
 
 /**
