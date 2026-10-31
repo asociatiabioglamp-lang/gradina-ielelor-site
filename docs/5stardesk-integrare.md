@@ -31,8 +31,12 @@ Varianta aleasă depinde de răspunsurile 5starDesk (`docs/plati-rezervari.md`):
 2. **Redirecționare:** clientul rezervă în motorul 5starDesk, apoi plătește pe pagina noastră, cu codul rezervării și suma.
 3. **Link de plată în email:** varianta minimă; marcarea „plătită” se face de mână.
 
-## De la tine
-1. Ai primit răspuns de la 5starDesk la întrebări? Trimite-mi-l (sau redirecționează-l pe Gmail). Dacă nu, emailul e pregătit (întrebările din `docs/plati-rezervari.md`).
-2. Captura cu linkurile de calendar (iCal) din 5starDesk, pentru fiecare unitate.
-3. Ce se vinde azi pe Airbnb și pe Booking: numai Glamping, sau și Bungalow?
-4. Accesul la documentații: în setările mediului de lucru (Network access) adaugă domeniile **5stardesk.com** și **ovatheme.gitbook.io**, ca să pot citi documentațiile 5starDesk și BRW.
+## Stare (31.10.2026)
+- **Pe Airbnb și Booking se vând numai Glamping și Bungalow** (confirmat de proprietar). Camping și rulote nu: pentru ele nu e nevoie de calendar legat.
+- **5starDesk nu a răspuns încă**; proprietarul pregătește emailul cu întrebările (inclusiv unde se găsește linkul iCal al fiecărei unități).
+- Documentațiile 5starDesk și BRW nu se pot citi din mediul de lucru; pașii exacți se stabilesc pe staging, după capturi de ecran trimise de proprietar.
+
+## Următorii pași
+1. **[TU]** Trimiți emailul către 5starDesk și îmi copiezi răspunsul aici.
+2. **[TU]** Luni (D-5), după instalarea pe staging: captură cu **WooCommerce → Setări → Booking & Rental → Sync Order** și cu ecranul unei unități din 5starDesk (fără parole).
+3. **[TU + CLAUDE]** Legăm calendarele pentru Glamping 1–4 și Bungalow 1–4 și facem testul în ambele sensuri.
