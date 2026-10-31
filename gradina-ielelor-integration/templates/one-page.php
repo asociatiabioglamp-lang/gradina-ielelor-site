@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 
     <main id="continut">
         <section class="home-hero" aria-labelledby="home-hero-title">
-            <div class="home-hero-slices" role="group" aria-label="Lacul, munții și relaxarea în Grădina Ielelor">
+            <div class="home-hero-slices" role="group" aria-label="Lacul, munții și focul de seară în Grădina Ielelor">
                 <figure class="home-hero-slice home-hero-slice-lake">
                     <picture>
                         <source media="(max-width: 640px)" srcset="<?php echo esc_url(gi_image_url('home-hero-lake-centered-mobile-640.webp')); ?> 640w, <?php echo esc_url(gi_image_url('home-hero-lake-centered-mobile-960.webp')); ?> 960w" sizes="100vw">
@@ -22,8 +22,12 @@ if (!defined('ABSPATH')) {
                 <figure class="home-hero-slice home-hero-slice-shore">
                     <img src="<?php echo esc_url(gi_image_url('lac-ponton-1280.webp')); ?>" alt="Lacul și corturile de pe mal, cu Munții Făgăraș în fundal" width="1280" height="720" fetchpriority="low" decoding="async">
                 </figure>
-                <figure class="home-hero-slice home-hero-slice-chill">
-                    <img src="<?php echo esc_url(gi_image_url('home-hero-chill-640.webp')); ?>" alt="Foișor din lemn cu scaune-hamac și fotolii pentru relaxare" width="640" height="480" fetchpriority="low" decoding="async">
+                <figure class="home-hero-slice home-hero-slice-foc">
+                    <?php // Fotografia e încadrată pe lățimea primei pagini: focul și oamenii cad în triunghiul de jos. ?>
+                    <picture>
+                        <source media="(max-width: 700px)" srcset="<?php echo esc_url(gi_image_url('home-hero-foc-mobil-1280.webp')); ?> 1280w" sizes="100vw">
+                        <img src="<?php echo esc_url(gi_image_url('home-hero-foc-1920.webp')); ?>" srcset="<?php echo esc_url(gi_image_url('home-hero-foc-1280.webp')); ?> 1280w, <?php echo esc_url(gi_image_url('home-hero-foc-1920.webp')); ?> 1920w" sizes="100vw" alt="Oaspeți în jurul focului, seara, cu tobe, în Grădina Ielelor" width="1920" height="753" fetchpriority="low" decoding="async">
+                    </picture>
                 </figure>
             </div>
             <div class="home-hero-overlay"></div>
@@ -33,7 +37,7 @@ if (!defined('ABSPATH')) {
                 <p>Camping, glamping, bungalow și evenimente la poalele Munților Făgăraș.</p>
                 <div class="home-hero-actions">
                     <a class="button button-accent" href="#rezervare">Rezervă-ți escapada <?php echo gi_icon('arrow-right'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
-                    <a class="home-hero-events-link" href="<?php echo esc_url(gi_offer_url('evenimente')); ?>"><?php echo gi_icon('music'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Festivaluri &amp; petreceri</a>
+                    <a class="home-hero-events-link" href="<?php echo esc_url(gi_offer_url('festivaluri')); ?>"><?php echo gi_icon('music'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Festivaluri &amp; tabere</a>
                 </div>
             </div>
         </section>
@@ -55,13 +59,15 @@ if (!defined('ABSPATH')) {
         </section>
 
         <?php
-        // Secțiunile detaliate care rămân pe prima pagină: o ofertă fără pagină dedicată trimite la ele (ex. Rulote → #camping).
+        // Secțiunile detaliate care rămân pe prima pagină: o ofertă fără pagină dedicată trimite la ele
+        // (ex. Festivaluri & tabere și Evenimente private → #evenimente, până când amândouă au pagina lor).
         $gi_home_sections = array();
         foreach (gi_offers() as $gi_offer_key => $gi_offer) {
             if (!gi_offer_has_page($gi_offer_key)) {
                 $gi_home_sections[$gi_offer['anchor']] = true;
             }
         }
+        $gi_card_ids = array();
         ?>
         <section id="experiente" class="gi-offers" aria-labelledby="offers-title">
             <div class="container">
@@ -71,8 +77,16 @@ if (!defined('ABSPATH')) {
                 </div>
                 <div class="gi-offers-grid">
                     <?php foreach (gi_offer_cards() as $gi_key => $gi_card) : ?>
-                        <?php // Adresele vechi (/#glamping) ajung la card când secțiunea cu același nume nu mai e pe pagină. ?>
-                        <a<?php echo empty($gi_home_sections[$gi_key]) ? ' id="' . esc_attr($gi_key) . '"' : ''; ?> class="gi-offer-card gi-offer-card-<?php echo esc_attr($gi_key); ?>" href="<?php echo esc_url(gi_offer_url($gi_key)); ?>">
+                        <?php
+                        // Adresele vechi (/#glamping, /#evenimente) ajung la card când secțiunea cu același nume nu mai e pe pagină;
+                        // un singur card primește numele (la evenimente, primul: Festivaluri & tabere).
+                        $gi_card_anchor = gi_offers()[$gi_key]['anchor'];
+                        $gi_card_id = (empty($gi_home_sections[$gi_card_anchor]) && empty($gi_card_ids[$gi_card_anchor])) ? $gi_card_anchor : '';
+                        if ($gi_card_id) {
+                            $gi_card_ids[$gi_card_id] = true;
+                        }
+                        ?>
+                        <a<?php echo $gi_card_id ? ' id="' . esc_attr($gi_card_id) . '"' : ''; ?> class="gi-offer-card gi-offer-card-<?php echo esc_attr($gi_key); ?>" href="<?php echo esc_url(gi_offer_url($gi_key)); ?>">
                             <?php // Numele ofertei e deja textul linkului: fotografia e decorativă aici (alt gol, fără dublare). ?>
                             <img src="<?php echo esc_url(gi_image_url($gi_card['image'])); ?>" alt="" width="960" height="720" loading="lazy" decoding="async">
                             <span class="gi-offer-card-body">
@@ -154,12 +168,12 @@ if (!defined('ABSPATH')) {
             </section>
         <?php endforeach; ?>
 
-        <?php if (!gi_offer_has_page('evenimente')) : ?>
+        <?php if (!empty($gi_home_sections['evenimente'])) : ?>
         <section id="evenimente" class="home-events-detail" aria-labelledby="home-events-title">
             <div class="container">
                 <div class="home-experience-intro">
                     <div>
-                        <span class="eyebrow"><?php echo gi_icon('music'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Festivaluri &amp; evenimente</span>
+                        <span class="eyebrow"><?php echo gi_icon('music'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Festivaluri, tabere &amp; evenimente private</span>
                         <h2 id="home-events-title">Momente trăite<br><em>împreună.</em></h2>
                     </div>
                     <div class="home-experience-summary">

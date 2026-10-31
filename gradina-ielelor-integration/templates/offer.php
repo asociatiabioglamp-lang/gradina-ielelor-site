@@ -1,6 +1,6 @@
 <?php
 /**
- * Pagină dedicată unei oferte (Bungalow, Glamping, Camping, Rulote, Festivaluri & evenimente).
+ * Pagină dedicată unei oferte (Bungalow, Glamping, Camping & rulote, Festivaluri & tabere, Evenimente private).
  * Conținutul vine din gi_offer_page(); pagina nu conține formularul de rezervare: butoanele trimit
  * la modulul de rezervări de pe pagina principală, cu oferta preselectată.
  */
@@ -85,6 +85,8 @@ gi_part('header');
                 <div class="gi-page-hero-actions">
                     <a class="button button-accent" href="<?php echo esc_url($gi_book_url); ?>" data-gi-book><?php echo esc_html($gi_page['cta']); ?> <?php echo gi_icon('arrow-right'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
                     <?php if ($gi_alt) : ?><a class="gi-hero-link" href="<?php echo esc_url($gi_alt['url']); ?>" data-gi-book><?php echo esc_html($gi_alt['label']); ?></a><?php endif; ?>
+                    <?php // Paginile cu cerere de ofertă (festivaluri, tabere, evenimente private): telefonul, la vedere lângă buton. ?>
+                    <?php if (!empty($gi_page['phone'])) : ?><a class="gi-hero-link" href="tel:+40721333164"><?php echo gi_icon('phone'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> 0721 333 164</a><?php endif; ?>
                     <a class="gi-hero-link" href="#galerie">Vezi pozele</a>
                 </div>
             </div>

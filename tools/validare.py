@@ -19,7 +19,9 @@ import urllib.request
 from pathlib import Path
 
 PLUGIN = Path(__file__).resolve().parents[1] / 'gradina-ielelor-integration'
-PAGINI = ['/', '/bungalow/', '/glamping/', '/camping/', '/evenimente/', '/despre-noi/', '/regulament-politici/', '/contact/']
+PAGINI = ['/', '/bungalow/', '/glamping/', '/camping/', '/festivaluri-si-tabere/', '/evenimente-private/', '/despre-noi/', '/regulament-politici/', '/contact/']
+# Butoane „Cere ofertă” care nu duc la modulul de rezervare: pagina pentru organizatori și Contact (Evenimente private).
+CERERI_OFERTA = ('/festival/', '/contact/')
 # Pagini care nu fac parte din plugin; pe site-ul real există, local pot lipsi.
 EXTERNE_PLUGINULUI = ('/festival/', '/shop/', '/produs/')
 
@@ -141,7 +143,7 @@ def main():
             continue
         for href in set(p.rezervare):
             u = urllib.parse.urlparse(urllib.parse.urljoin(baza + cale, href))
-            if u.path == '/festival/':
+            if u.path in CERERI_OFERTA:
                 continue
             if u.path != '/' or not u.fragment.startswith('rezervare'):
                 erori.append(f'{cale}: buton de rezervare spre {href} (trebuie /#rezervare-<tip>)')

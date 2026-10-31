@@ -7,8 +7,8 @@ BASE = 'http://127.0.0.1:9400'
 LIVE = 'https://gradina-ielelor.ro'
 OUT = sys.argv[1]
 PAGES = {'/': 'index.html', '/bungalow/': 'bungalow/index.html', '/glamping/': 'glamping/index.html', '/camping/': 'camping/index.html',
-         '/rulote/': 'rulote/index.html', '/evenimente/': 'evenimente/index.html', '/despre-noi/': 'despre-noi/index.html',
-         '/regulament-politici/': 'regulament-politici/index.html', '/contact/': 'contact/index.html'}
+         '/festivaluri-si-tabere/': 'festivaluri-si-tabere/index.html', '/evenimente-private/': 'evenimente-private/index.html',
+         '/despre-noi/': 'despre-noi/index.html', '/regulament-politici/': 'regulament-politici/index.html', '/contact/': 'contact/index.html'}
 done = {}
 
 def get(url):

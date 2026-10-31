@@ -30,16 +30,31 @@ function gi_page_excerpt_support() {
 add_action('init', 'gi_page_excerpt_support');
 
 /**
- * Cele cinci categorii, în ordinea din meniu.
- * `anchor` este secțiunea de pe pagina principală folosită cât timp pagina dedicată nu există.
+ * Cele cinci categorii, în ordinea din meniu (decizia proprietarului din 31.10.2026).
+ * `anchor` este secțiunea de pe pagina principală folosită cât timp pagina dedicată nu există
+ * (Festivaluri & tabere și Evenimente private o împart pe cea de evenimente).
+ * `slug` este adresa recomandată a paginii (docs/lansare.md); pagina se găsește oricum după template.
  */
 function gi_offers() {
     return array(
-        'bungalow' => array('label' => 'Bungalow', 'anchor' => 'bungalow', 'template' => 'gi-bungalow.php'),
-        'glamping' => array('label' => 'Glamping', 'anchor' => 'glamping', 'template' => 'gi-glamping.php'),
-        'camping' => array('label' => 'Camping & rulote', 'anchor' => 'camping', 'template' => 'gi-camping.php'),
-        'evenimente' => array('label' => 'Festivaluri & evenimente', 'anchor' => 'evenimente', 'template' => 'gi-evenimente.php'),
+        'bungalow' => array('label' => 'Bungalow', 'anchor' => 'bungalow', 'template' => 'gi-bungalow.php', 'slug' => 'bungalow'),
+        'glamping' => array('label' => 'Glamping', 'anchor' => 'glamping', 'template' => 'gi-glamping.php', 'slug' => 'glamping'),
+        'camping' => array('label' => 'Camping & rulote', 'anchor' => 'camping', 'template' => 'gi-camping.php', 'slug' => 'camping'),
+        'festivaluri' => array('label' => 'Festivaluri & tabere', 'anchor' => 'evenimente', 'template' => 'gi-festivaluri.php', 'slug' => 'festivaluri-si-tabere'),
+        'private' => array('label' => 'Evenimente private', 'anchor' => 'evenimente', 'template' => 'gi-evenimente-private.php', 'slug' => 'evenimente-private'),
     );
+}
+
+/**
+ * Cheia ofertei a cărei pagină are adresa dată (ex. 'festivaluri-si-tabere' → 'festivaluri'), sau ''.
+ */
+function gi_offer_key_for_slug($slug) {
+    foreach (gi_offers() as $key => $offer) {
+        if ($slug === $key || $slug === $offer['slug']) {
+            return $key;
+        }
+    }
+    return '';
 }
 
 function gi_current_page_key() {
@@ -156,7 +171,7 @@ function gi_current_booking_url() {
 }
 
 /**
- * Acțiunea principală a paginii curente (ex. rezervare sau cerere de ofertă pentru evenimente).
+ * Acțiunea principală a paginii curente (ex. rezervare sau cerere de ofertă pentru festivaluri, tabere și evenimente private).
  */
 function gi_current_cta_url() {
     $page = gi_is_one_page() ? null : gi_offer_page(gi_current_page_key());

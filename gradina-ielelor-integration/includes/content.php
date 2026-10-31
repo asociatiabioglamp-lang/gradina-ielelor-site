@@ -106,6 +106,7 @@ function gi_offer_cards() {
         'bungalow' => array('text' => 'Baie proprie, terasă și liniște, pe malul lacului mare.', 'price' => 'de la 350 lei / noapte', 'image' => 'bungalow-munte-card-960.webp', 'alt' => 'Bungalow în Grădina Ielelor'),
         'glamping' => array('text' => 'Corturi cu pat, pe platformă de lemn, cu muntele la intrare.', 'price' => 'de la 195 lei / noapte', 'image' => 'glamping-card-960.webp', 'alt' => 'Corturi de glamping cu Munții Făgăraș în fundal'),
         'camping' => array('text' => 'Cu cortul, cu rulota sau cu autorulota: loc lângă lac, dușuri calde și bucătării comune.', 'price' => '80 lei / noapte', 'image' => 'camping-card-960.webp', 'alt' => 'Corturi în campingul Grădina Ielelor, cu Munții Făgăraș în fundal'),
-        'evenimente' => array('text' => 'Festivaluri, petreceri și evenimente de familie pe un domeniu de 9 hectare.', 'price' => 'Ofertă la cerere', 'image' => 'evenimente-card-960.webp', 'alt' => 'Oaspeți la un eveniment în aer liber, cu Munții Făgăraș în fundal'),
+        'festivaluri' => array('text' => 'Festivaluri cu public cazat pe loc și tabere de copii, pe un domeniu împrejmuit și păzit.', 'price' => 'Ofertă la cerere', 'image' => 'evenimente-card-960.webp', 'alt' => 'Oaspeți la un eveniment în aer liber, cu Munții Făgăraș în fundal'),
+        'private' => array('text' => 'Ieșiri cu echipa, retreaturi, cursuri și petreceri de familie, cu munții în față.', 'price' => 'Ofertă la cerere', 'image' => 'intrare-munte-960.webp', 'alt' => 'Arcada din lemn cu numele Grădinii, cu Munții Făgăraș în fundal'),
     );
 }

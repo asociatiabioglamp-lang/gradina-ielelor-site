@@ -1,6 +1,6 @@
 <?php
 /**
- * Conținutul paginilor dedicate (Bungalow, Glamping, Camping, Rulote, Festivaluri & evenimente).
+ * Conținutul paginilor dedicate (Bungalow, Glamping, Camping & rulote, Festivaluri & tabere, Evenimente private).
  * Fapte din prezentările proprietarului, textele pregătite pentru WordPress și catalogul public;
  * tarifele sunt referință, prețul final vine din sistemul de rezervări.
  * Nu se adaugă fapte neconfirmate (vezi docs/decizii.md și CLAUDE.md).
@@ -30,7 +30,8 @@ function gi_distances() {
  * included{title, groups[{icon, title, items[], note?{text, link_text, link_offer}}]},
  * reviews{title, authors[]}, prices{title, text, unit, rows[]} sau null, notes[], faq[],
  * closing{title, title_em, image}, seo{title, description, image}.
- * Opționale: cta_url (acțiune principală diferită de rezervare), calendar{title, text} (afișează gi_events_2027()).
+ * Opționale: cta_url (acțiune principală diferită de rezervare), phone (true = telefonul lângă butonul din hero),
+ * calendar{title, text} (afișează gi_events_2027()), cta_alt{label, booking_type} (al doilea buton de rezervare).
  */
 function gi_offer_page($key) {
     $pages = gi_offer_pages();
@@ -304,63 +305,75 @@ function gi_offer_pages() {
         ),
     );
 
-    $pages['evenimente'] = array(
-        'title' => 'Festivaluri & evenimente',
+    // Festivaluri & tabere (decizia din 31.10.2026). Surse: prezentările Festivaluri, Festival familie, Tabere
+    // și fișa tehnică (docs/prezentari.md), pagina /festival/ de pe site-ul actual și docs/decizii.md.
+    $pages['festivaluri'] = array(
+        'title' => 'Festivaluri & tabere',
         'booking_type' => '',
         'cta' => 'Cere ofertă',
+        // Pagina pentru organizatori de pe site-ul actual: fișa tehnică și formularul de cerere.
         'cta_url' => home_url('/festival/'),
+        'phone' => true,
         'hero' => array(
             'image' => 'evenimente-munte-1600.webp',
-            'alt' => 'Familii la un eveniment în aer liber în Grădina Ielelor, cu Munții Făgăraș în fundal',
-            'h1' => 'Festivaluri și evenimente',
-            'h1_em' => 'în Grădina Ielelor',
-            'lead' => 'Nouă hectare la poalele Munților Făgăraș, cu scenă permanentă, două lacuri, cazare și parcare. Pentru festivaluri, petreceri și evenimente de familie.',
+            'alt' => 'Oameni la un eveniment în aer liber în Grădina Ielelor, cu Munții Făgăraș în fundal',
+            'h1' => 'Festivaluri și tabere',
+            'h1_em' => 'sub Munții Făgăraș',
+            'lead' => 'Un domeniu privat cu scenă permanentă, două lacuri, cazare pe loc și pază zi și noapte. Pentru festivaluri cu public cazat pe domeniu și pentru tabere de copii.',
         ),
         'facts' => array(
             array('value' => '5.000', 'label' => 'persoane, cu aviz ISU'),
             array('value' => '6 × 7 m', 'label' => 'scenă permanentă'),
             array('value' => '58', 'label' => 'unități de cazare pe domeniu'),
-            array('value' => 'cca. 1.000', 'label' => 'locuri de parcare'),
+            array('value' => '6 ha', 'label' => 'împrejmuite, cu pază 24 din 24'),
         ),
         'story' => array(
             'eyebrow' => 'Ce găzduim',
-            'title' => 'Momente trăite',
-            'title_em' => 'împreună.',
+            'title' => 'Construit de la zero',
+            'title_em' => 'pentru grupuri mari.',
             'paragraphs' => array(
-                'Grădina primește festivaluri de muzică cu camping, petreceri, evenimente de familie și evenimente private. Publicul doarme pe domeniu, iar după ultimul set focul, lacul și hamacele preiau seara.',
-                'Pentru nunți și botezuri avem pavilionul de 225 mp de pe platou, cu terasă acoperită și loc pentru până la 150 de invitați. Pavilionul este disponibil din mai 2027.',
+                'Găzduim festivaluri de muzică cu camping, rock, stand-up și folk, dar și festivaluri pentru familii. Publicul doarme pe domeniu, iar după ultimul set focul, lacul și hamacele preiau seara.',
+                'La taberele de copii, siguranța vine prima. Cele șase hectare sunt împrejmuite, cu o singură intrare și pază pe toată durata șederii. Parcarea rămâne în afara gardului, iar lacul mare are un metru adâncime peste tot, fără zone adânci.',
+                'Copiii au loc de joacă și de învățat: platoul de 3.000 mp pentru jocuri și festivitatea de deschidere, scena pentru spectacolul de final, lacurile pentru activități pe apă supravegheate și vetrele de foc pentru serile de povești.',
             ),
             'image' => 'festival-domeniu-960.webp',
             'alt' => 'Domeniul Grădina Ielelor văzut de sus, cu corturi, lacul și Munții Făgăraș în fundal',
         ),
         'calendar' => array(
             'title' => 'Ce pregătim în 2027',
-            'text' => 'Festivaluri, petreceri și întâlniri pentru familii. Datele exacte și biletele le anunțăm pe măsură ce fiecare eveniment se confirmă.',
+            'text' => 'Festivaluri, petreceri și întâlniri pentru familii. Datele exacte le anunțăm pe măsură ce se confirmă. Pregătești o tabără sau un festival? Rezervă-ți perioada din timp.',
         ),
-        'gallery' => array('title' => 'Vezi domeniul', 'images' => array_merge(gi_event_images(), array(
-            array('src' => 'evenimente-apus-1280.webp', 'alt' => 'Apus de soare reflectat în lacul din Grădina Ielelor', 'caption' => 'Lacul, la apus'),
-        ))),
+        'gallery' => array('title' => 'Vezi domeniul', 'images' => array(
+            array('src' => 'festival-scena-960.webp', 'alt' => 'Spectacol de dansuri populare pe scenă, cu copii în public, la un eveniment în Grădina Ielelor', 'caption' => 'Spectacol pe scenă'),
+            array('src' => 'camping-lac-munte-1280.webp', 'alt' => 'Corturi pe malul lacului, cu Munții Făgăraș în fundal', 'caption' => 'Corturi pe malul lacului'),
+            array('src' => 'evenimente-foc-960.webp', 'alt' => 'Oaspeți în jurul focului de tabără, seara, în Grădina Ielelor', 'caption' => 'Seara, în jurul focului'),
+            array('src' => 'glamping-pajiste-960.webp', 'alt' => 'Corturi de glamping pe pajiște, cu Munții Făgăraș sub nori în fundal', 'caption' => 'Corturi de glamping'),
+            array('src' => 'camping-sanitare-960.webp', 'alt' => 'Grupul sanitar, cu chiuvete și oglinzi', 'caption' => 'Grupuri sanitare fixe'),
+            array('src' => 'domeniu-aerian-1280.webp', 'alt' => 'Domeniul Grădina Ielelor văzut de sus, cu rulote și Munții Făgăraș în fundal', 'caption' => 'Domeniul, văzut de sus'),
+        )),
         'included' => array(
             'title' => 'Totul pe același teren',
             'groups' => array(
-                array('icon' => 'music', 'title' => 'Spațiile de program', 'items' => array(
-                    'Scenă permanentă de 6 × 7 m, înaltă de 5 m',
-                    'Platou înălțat de 3.000 mp',
-                    'Pavilion de 225 mp cu terasă acoperită, disponibil din mai 2027',
-                    'Lac de 8.000 mp cu ponton, în care se înoată',
-                    'Lac de 2.000 mp cu terasă din lemn pe apă',
-                )),
-                array('icon' => 'trees', 'title' => 'Pentru organizatori', 'items' => array(
+                array('icon' => 'music', 'title' => 'Pentru festivaluri', 'items' => array(
                     'Aviz ISU pentru 5.000 de persoane',
-                    '6 ha împrejmuite, pază 24 din 24',
-                    'Trei zone separate, pe același domeniu',
-                    'Parcare de 3 ha, cca. 1.000 de locuri',
-                    'La festivaluri, încă o parcare, de 9 ha',
-                    '58 de unități de cazare, plus camping și rulote',
-                    'Bucătărie licențiată pe domeniu',
-                    'Opt dușuri calde non-stop, douăsprezece toalete',
+                    'Scenă permanentă și acoperită, de 6 × 7 m, înaltă de 5 m',
+                    'Platou înălțat de 3.000 mp, pentru a doua scenă sau un târg',
+                    'Pavilion de 225 mp cu terasă acoperită, gata la 1 mai 2027',
+                    'Drum de acces pentru camioane, până la scenă',
+                    'Bucătărie licențiată și loc pentru food trucks',
+                    'Parcare de 3 ha, cca. 1.000 de locuri, iar la festivaluri încă una, de 9 ha',
                     'Cea mai apropiată casă, la circa 2 km',
-                ), 'note' => array('text' => 'Cazare pentru artiști sau invitați? ', 'link_text' => 'Vezi bungalow-urile', 'link_offer' => 'bungalow')),
+                ), 'note' => array('text' => 'Cazare pentru artiști și echipă? ', 'link_text' => 'Vezi bungalow-urile', 'link_offer' => 'bungalow')),
+                array('icon' => 'tent', 'title' => 'Pentru tabere', 'items' => array(
+                    'Șase hectare împrejmuite, cu o singură intrare',
+                    'Pază 24 din 24, pe toată durata șederii',
+                    'Lac de 1 m adâncime peste tot, fără zone adânci',
+                    'Trei zone separate, pentru grupe diferite',
+                    '4 bungalow-uri, 4 corturi cu pat și 50 cu saltele',
+                    'Opt dușuri calde non-stop, douăsprezece toalete',
+                    'Bucătărie licențiată și două bucătării comune',
+                    'Internet și iluminat în zonele comune',
+                ), 'note' => array('text' => 'Ai un grup mai mic, care vine cu programul lui? ', 'link_text' => 'Vezi evenimentele private', 'link_offer' => 'private')),
             ),
         ),
         'reviews' => array('title' => 'Ce spun oaspeții', 'authors' => array()),
@@ -368,21 +381,109 @@ function gi_offer_pages() {
         'notes' => array(
             array('icon' => 'droplet', 'title' => 'Apa de la robinet nu e potabilă', 'text' => 'E doar pentru igienă. Apa de băut se asigură separat, prin dozatoare și îmbuteliată.'),
             array('icon' => 'sun', 'title' => 'Energie proprie, din soare și GPL', 'text' => 'Domeniul are curent pentru consumul lui. Pentru scenă, sunet și lumini, necesarul se stabilește din timp, împreună cu organizatorul.'),
-            array('icon' => 'music', 'title' => 'Producția rămâne a organizatorului', 'text' => 'Sunetul, luminile, structurile temporare și toaletele suplimentare nu sunt incluse. Le planificăm împreună, din timp.'),
+            array('icon' => 'music', 'title' => 'Programul și producția rămân ale tale', 'text' => 'Sunetul, luminile, structurile temporare și toaletele suplimentare nu sunt incluse. La tabere, programul, personalul și masa sunt ale organizatorului.'),
         ),
         'faq' => array(
-            array('q' => 'Ce fel de evenimente găzduiți?', 'a' => 'Festivaluri de muzică cu camping, petreceri, evenimente de familie și evenimente private. Din mai 2027, odată cu pavilionul, și nunți sau botezuri.'),
-            array('q' => 'Câți oameni încap?', 'a' => 'Domeniul are aviz ISU pentru 5.000 de persoane. Parcarea, de circa 1.000 de locuri, ajunge pentru aproximativ 3.000 de participanți; peste, se planifică teren suplimentar sau navetă.'),
-            array('q' => 'Unde dorm participanții?', 'a' => 'Pe domeniu sunt 58 de unități: 4 bungalow-uri cu baie proprie, 4 corturi glamping cu pat și 50 cu saltele. Se adaugă zona de camping și rulote, iar la evenimentele mari ajută și pensiunile din satele din jur.'),
+            array('q' => 'Ce fel de festivaluri găzduiți?', 'a' => 'Festivaluri de muzică cu camping, festivaluri rock, seri de stand-up și muzică folk și festivaluri pentru familii. Unele au avut deja loc aici, altele sunt în calendarul 2027.'),
+            array('q' => 'Câți oameni încap?', 'a' => 'Domeniul are aviz ISU pentru 5.000 de persoane. Parcarea obișnuită are circa 1.000 de locuri, iar la festivaluri se deschide încă o parcare, de 9 hectare.'),
+            array('q' => 'Unde dorm participanții?', 'a' => 'Pe domeniu sunt 58 de unități: 4 bungalow-uri cu baie proprie, 4 corturi glamping cu pat și 50 cu saltele. Se adaugă zona de camping și rulote, iar la evenimentele mari ajută și pensiunile din satele din jur. Cazarea de pe domeniu o poți include în biletul festivalului.'),
             array('q' => 'Ce asigurați voi și ce aduce organizatorul?', 'a' => 'Noi punem la dispoziție locul: scena, platoul, lacurile, grupurile sanitare, parcarea, cazarea și paza. Organizatorul aduce producția: sunet, lumini, generatoare, program, bilete și avizele evenimentului.'),
-            array('q' => 'Pot organiza o nuntă sau un botez?', 'a' => 'Da, din mai 2027, când pavilionul de 225 mp este disponibil. Încap până la 150 de invitați, iar bucătăria licențiată e chiar pe domeniu.'),
-            array('q' => 'Primiți și tabere sau grupuri?', 'a' => 'Da. Taberele de copii și grupurile găsesc aici un perimetru închis, pază 24 din 24 și cazare pe domeniu. Cere o ofertă și stabilim totul împreună.'),
+            array('q' => 'Cum arată o tabără de copii la voi?', 'a' => 'Noi asigurăm cazarea, spațiile comune, utilitățile, paza și accesul la bucătării. Tu vii cu programul, cu oamenii care au grijă de copii, cu asistența medicală, transportul, asigurările și avizele taberei. Masa o poți găti în bucătăria licențiată sau o aduce un furnizor ales împreună.'),
+            array('q' => 'Cum putem colabora?', 'a' => 'La festivaluri, închiriezi tot domeniul pe durata evenimentului, cu zilele de montaj și demontaj. La tabere, plătești pe copil și pe noapte, închiriezi tot domeniul sau doar o zonă, ori împărțim încasările. Variantele se pot combina, iar tariful îl stabilim împreună.'),
+            array('q' => 'Când să vă scriu?', 'a' => 'Cât mai devreme: îți recomandăm cel puțin șase luni înainte, mai ales pentru iunie–septembrie. Cel mai bine e să vii întâi în vizită. Ne facem timp oricând, și în afara sezonului.'),
         ),
-        'closing' => array('title' => 'Ai un eveniment în minte?', 'title_em' => 'Hai să vorbim.', 'image' => 'festival-standuri-1280.webp'),
+        'closing' => array('title' => 'Ai un festival sau o tabără în minte?', 'title_em' => 'Hai să vorbim.', 'image' => 'festival-standuri-1280.webp'),
         'seo' => array(
-            'title' => 'Locație evenimente în aer liber, Brașov | Grădina Ielelor',
-            'description' => 'Festivaluri, petreceri și evenimente de familie în Grădina Ielelor, Sâmbăta de Sus: 9 ha, aviz ISU pentru 5.000 de persoane, scenă permanentă, lacuri și cazare.',
+            'title' => 'Festivaluri și tabere sub Munții Făgăraș | Grădina Ielelor',
+            'description' => 'Locație pentru festivaluri și tabere de copii la Sâmbăta de Sus, Brașov: aviz ISU pentru 5.000 de persoane, scenă permanentă, două lacuri și cazare pe domeniu.',
             'image' => 'evenimente-munte-1600.webp',
+        ),
+    );
+
+    // Evenimente private (decizia din 31.10.2026). Surse: prezentarea „Boot camp” (formulele I și II, docs/prezentari.md),
+    // pagina veche /gradina-ielelor-totul-despre-ea/evenimente/ (nunți, botezuri, majorate, seminarii, teambuilding) și docs/decizii.md.
+    $pages['private'] = array(
+        'title' => 'Evenimente private',
+        'booking_type' => '',
+        'cta' => 'Cere ofertă',
+        'cta_url' => gi_clean_page_url('contact'),
+        'phone' => true,
+        'hero' => array(
+            'image' => 'lac-ponton-1280.webp',
+            'alt' => 'Oaspeți pe pontonul din lemn de pe lac, cu Munții Făgăraș în fundal',
+            'h1' => 'Evenimente private',
+            'h1_em' => 'în Grădina Ielelor',
+            'lead' => 'Un lac, munții în față și timp doar pentru tine și oamenii tăi. Pentru ieșiri cu echipa, retreaturi, cursuri și petreceri de familie.',
+        ),
+        'facts' => array(
+            array('value' => 'de la 10', 'label' => 'oameni până la câteva sute'),
+            array('value' => '58', 'label' => 'unități de cazare pe domeniu'),
+            array('value' => '8 + 12', 'label' => 'dușuri calde non-stop și toalete'),
+            array('value' => 'cca. 60 km', 'label' => 'de Brașov'),
+        ),
+        'story' => array(
+            'eyebrow' => 'Cum e la noi',
+            'title' => 'Timp în care',
+            'title_em' => 'nimic nu te întrerupe.',
+            'paragraphs' => array(
+                'Cazarea și mâncarea se înțeleg de la sine. Ce găsești greu în altă parte e timpul lung, fără întreruperi, și un loc în care oamenii vorbesc altfel decât într-o sală cu proiector.',
+                'O baie în lac la prânz schimbă tot restul zilei. Seara, mesele lungi și focul fac restul.',
+                'Vii cu colegii, cu grupul tău de yoga sau cu familia, pentru o nuntă, un botez sau un majorat? Spune-ne ce ai în minte și vedem împreună cum ți se potrivește locul.',
+            ),
+            'image' => 'camping-night-960.webp',
+            'alt' => 'Vetre de foc cu bănci și ghirlande de lumini, la apus, cu munții în zare',
+        ),
+        'gallery' => array('title' => 'Vezi locul', 'images' => array(
+            array('src' => 'intrare-munte-960.webp', 'alt' => 'Arcada din lemn cu numele Grădinii, loc de fotografie, cu Munții Făgăraș în fundal', 'caption' => 'Locul de fotografie de la intrare'),
+            array('src' => 'private-events-card-960.webp', 'alt' => 'Terasă acoperită din lemn, cu mese și scaune', 'caption' => 'Mese sub acoperiș'),
+            array('src' => 'home-hero-chill-640.webp', 'alt' => 'Foișor din lemn cu scaune-hamac și fotolii pentru relaxare', 'caption' => 'Foișorul cu scaune-hamac'),
+            array('src' => 'festival-pavilion-640.webp', 'alt' => 'Oaspeți sub o terasă acoperită din lemn, la căderea serii', 'caption' => 'Seara, sub acoperiș'),
+            array('src' => 'camping-sanitare-960.webp', 'alt' => 'Grupul sanitar, cu chiuvete și oglinzi', 'caption' => 'Băi fixe, cu apă caldă'),
+            array('src' => 'evenimente-apus-1280.webp', 'alt' => 'Apus de soare reflectat în lacul din Grădina Ielelor', 'caption' => 'Lacul, la apus'),
+        )),
+        'included' => array(
+            'title' => 'Alege cum lucrăm împreună',
+            'groups' => array(
+                array('icon' => 'flame', 'title' => 'Ieșire cu echipa', 'items' => array(
+                    'Pentru echipe de 8–30 de oameni',
+                    'O zi, două sau trei, cu obiectivul stabilit dinainte',
+                    'Programul îl ținem noi',
+                    'Fără concursuri și punctaje: ceva util sau plăcut, făcut împreună',
+                    'O seară la foc și o dimineață în care se decide ceva',
+                )),
+                array('icon' => 'trees', 'title' => 'Retreaturi, cursuri, grupuri', 'items' => array(
+                    'Pentru profesori de yoga, terapeuți, ONG-uri și școli',
+                    'De la 10 oameni la câteva sute',
+                    'Programul, înscrierile și prețul rămân ale tale',
+                    'Corturile pregătite înainte să ajungi',
+                    'Toate mesele, cu restricțiile alimentare strânse din timp',
+                    'Apă caldă, curent, curățenie zilnică și gunoiul',
+                    'Spațiu acoperit, pentru zilele cu ploaie',
+                    'Un om de contact, prezent tot timpul',
+                ), 'note' => array('text' => 'Pregătești un festival sau o tabără de copii? ', 'link_text' => 'Vezi Festivaluri & tabere', 'link_offer' => 'festivaluri')),
+            ),
+        ),
+        'reviews' => array('title' => 'Ce spun oaspeții', 'authors' => array()),
+        'prices' => null,
+        'notes' => array(
+            array('icon' => 'droplet', 'title' => 'Apa de la robinet nu e potabilă', 'text' => 'E pentru duș, spălat și toalete. Apa de băut o găsești la dozatoare și îmbuteliată.'),
+            array('icon' => 'calendar', 'title' => 'Spune-ne trei lucruri', 'text' => 'Câți sunteți, ce perioadă ai în minte și ce ți-ar plăcea să se întâmple. Îți răspundem în 48 de ore.'),
+            array('icon' => 'sun', 'title' => 'Energie proprie, din soare și GPL', 'text' => 'Ai curent, apă caldă și internet. Te rugăm doar să lași acasă electrocasnicele mari.'),
+        ),
+        'faq' => array(
+            array('q' => 'Ce fel de evenimente private găzduiți?', 'a' => 'Ieșiri cu echipa de la firmă, retreaturi, cursuri și seminarii, dar și nunți, botezuri sau majorate. Spune-ne ce ai în minte și vedem împreună dacă locul ți se potrivește.'),
+            array('q' => 'Câți oameni încap?', 'a' => 'De la un grup de zece oameni până la câteva sute. Pe domeniu sunt 58 de unități de cazare: 4 bungalow-uri cu baie proprie, 4 corturi glamping cu pat și 50 cu saltele.'),
+            array('q' => 'Ce e inclus la o ieșire cu echipa sau la un retreat?', 'a' => 'Locul pe tot intervalul rezervat, cazarea, băile cu apă caldă, toate mesele gătite pe loc, cu variantă vegetariană, și un spațiu acoperit pentru ploaie. Plus lacul cu pontonul și plăcile SUP, vatra de foc și lemnele.'),
+            array('q' => 'Ce nu e inclus?', 'a' => 'Transportul, dar ți-l putem organiza. Apoi băuturile alcoolice, asigurarea de grup și serviciile cerute separat, cum ar fi un fotograf.'),
+            array('q' => 'Și dacă plouă?', 'a' => 'Avem spații acoperite pentru zilele cu ploaie. Din 1 mai 2027 se adaugă pavilionul de 225 mp, cu loc pentru 150 de persoane.'),
+            array('q' => 'Cum decurge?', 'a' => 'Ne scrii câți sunteți, ce perioadă ai în minte și ce ți-ar plăcea să se întâmple. Îți răspundem în 48 de ore, vorbim o dată, cam o jumătate de oră, apoi primești o ofertă scrisă, cu tot ce include. Data se blochează la confirmare.'),
+            array('q' => 'Emiteți factură?', 'a' => 'Da. Primești întâi o ofertă scrisă, apoi contractul și factura.'),
+        ),
+        'closing' => array('title' => 'Ai un eveniment în minte?', 'title_em' => 'Spune-ne câți, când și de ce.', 'image' => 'glamping-panorama-1280.webp'),
+        'seo' => array(
+            'title' => 'Evenimente private și ieșiri cu echipa, Brașov | Grădina Ielelor',
+            'description' => 'Ieșiri cu echipa, retreaturi, cursuri, nunți sau botezuri la Sâmbăta de Sus, Brașov: un lac, Munții Făgăraș în față și cazare pe domeniu, pentru grupul tău.',
+            'image' => 'lac-ponton-1280.webp',
         ),
     );
 

@@ -23,7 +23,7 @@ if (!defined('ABSPATH')) {
  * Adresa veche (cheie) → adresa nouă (valoare), ca drumuri față de pagina principală.
  *
  * Valori: '/' = pagina principală nouă (hub-ul de rezervare), activă numai după ce e setată ca prima pagină;
- * '/bungalow/', '/glamping/', '/camping/' și celelalte pagini dedicate din gi_offers()
+ * '/bungalow/', '/glamping/', '/camping/', '/festivaluri-si-tabere/', '/evenimente-private/' = paginile dedicate din gi_offers()
  * (se caută după template, deci funcționează și dacă pagina are alt slug);
  * orice alt drum = o pagină WordPress publicată cu acel drum (ex. '/despre-noi/').
  */
@@ -37,8 +37,11 @@ function gi_redirect_map() {
         // Rulote are acum aceeași pagină cu Camping (decizia din 31.10.2026).
         '/rulote/' => '/camping/',
 
-        // Evenimente: pagina veche din „Totul despre ea” → pagina dedicată.
-        '/gradina-ielelor-totul-despre-ea/evenimente/' => '/evenimente/',
+        // Evenimente (decizia din 31.10.2026: „Festivaluri & evenimente” devine Festivaluri & tabere + Evenimente private).
+        // Pagina veche din „Totul despre ea” vorbește despre nunți, botezuri, majorate, seminarii și teambuilding → Evenimente private.
+        '/gradina-ielelor-totul-despre-ea/evenimente/' => '/evenimente-private/',
+        // Adresa scurtă /evenimente/ (pe live arată azi pagina veche; în planul inițial era pagina „Festivaluri & evenimente”).
+        '/evenimente/' => '/festivaluri-si-tabere/',
 
         // „Despre Noi” din meniul vechi → pagina nouă Despre noi (numai după ce e publicată).
         '/gradina-ielelor-totul-despre-ea/' => '/despre-noi/',
@@ -121,10 +124,10 @@ function gi_redirect_target_url($new_path) {
         return ($hub_id && $is_front) ? home_url('/') : '';
     }
 
-    // Paginile dedicate ofertelor: după template, nu după slug.
-    $offers = gi_offers();
-    if (isset($offers[$slug])) {
-        return gi_offer_has_page($slug) ? gi_offer_url($slug) : '';
+    // Paginile dedicate ofertelor: după template, nu după slug (ex. '/festivaluri-si-tabere/' → pagina cu template-ul Festivaluri & tabere).
+    $offer_key = gi_offer_key_for_slug($slug);
+    if ('' !== $offer_key) {
+        return gi_offer_has_page($offer_key) ? gi_offer_url($offer_key) : '';
     }
 
     $page = get_page_by_path($slug);

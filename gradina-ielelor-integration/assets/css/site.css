@@ -58,10 +58,11 @@ body.admin-bar .gi-site .site-header{top:32px}
 .gi-site .home-hero-slice img{display:block;object-fit:cover}
 .gi-site .home-hero-slice-lake{clip-path:polygon(0 0,100% 0,60% 48%,0 68%)}
 .gi-site .home-hero-slice-shore{clip-path:polygon(100% 0,100% 100%,60% 48%)}
-.gi-site .home-hero-slice-chill{clip-path:polygon(100% 100%,0 100%,0 68%,60% 48%)}
+.gi-site .home-hero-slice-foc{clip-path:polygon(100% 100%,0 100%,0 68%,60% 48%)}
 .gi-site .home-hero-slice-lake img{object-position:60% 50%}
 .gi-site .home-hero-slice-shore img{object-position:50% 35%}
-.gi-site .home-hero-slice-chill img{object-position:50% 0%}
+.gi-site .home-hero-slice-foc img{object-position:100% 100%}
+@media (min-width:701px) and (max-width:1150px){.gi-site .home-hero-slice-foc img{object-position:65% 100%}}
 .gi-site .home-hero-overlay{z-index:1;background:linear-gradient(90deg,rgb(var(--shade) / .62) 0%,rgb(var(--shade) / .22) 52%,rgb(var(--shade) / .02) 84%),linear-gradient(0deg,rgb(var(--shade) / .28),transparent 52%)}
 .gi-site .home-hero-content{position:relative;z-index:2;padding-top:96px;padding-bottom:40px}
 .gi-site .home-hero-content>*{max-width:600px}
@@ -247,7 +248,7 @@ body.gi-one-page .gt_float_wrapper{top:auto!important;right:auto!important;botto
   body.gi-one-page .gt_float_wrapper{bottom:calc(76px + env(safe-area-inset-bottom,0px))!important}
   body.gi-one-page{padding-bottom:62px}.gi-site .container{width:calc(100% - 32px)}
   .gi-site .home-hero{min-height:max(540px,64svh);align-items:flex-end}.gi-site .home-hero-slice-lake img{object-position:60% 50%}
-  .gi-site .home-hero-slice-shore img{object-position:72% 50%}.gi-site .home-hero-slice-chill img{object-position:0% 50%}
+  .gi-site .home-hero-slice-shore img{object-position:72% 50%}.gi-site .home-hero-slice-foc img{object-position:22% 50%}
   .gi-site .home-hero-overlay{background:linear-gradient(0deg,rgb(var(--shade) / .76) 0%,rgb(var(--shade) / .18) 68%,rgb(var(--shade) / .12) 100%)}
   .gi-site .home-hero-content{padding:88px 0 32px}.gi-site .home-hero-content h1{margin:16px 0 18px;font-size:clamp(44px,12vw,48px);line-height:.98}
   .gi-site .home-hero-content>p{margin-bottom:26px;font-size:14px;line-height:1.65}.gi-site .home-hero-actions{gap:20px}.gi-site .home-hero-actions .button{width:100%}
