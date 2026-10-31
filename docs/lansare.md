@@ -152,6 +152,8 @@ Staging-ul a fost clonat pe 28.10, înainte ca pe live contul tău să devină A
 ### A1. Backup
 Secțiunea 2, pentru staging. Nu treci mai departe fără el.
 
+**De știut despre site-ul vostru (din raportul WooCommerce, 31.10):** pagina de finalizare e `/finalizare-rezervare/`, coșul `/rezervarea-mea/`; la plată apare deja bifa WooCommerce pentru Termeni și condiții, iar noi adăugăm lângă ea caseta cu regulamentul; tema `giw` suprascrie formularul de finalizare, deci pe staging verifici anume că ambele bife apar și că rezervarea trece cu ambele bifate. Nu există modul de cache activ; la pasul A8 golești doar cache-ul Elementor (Elementor → Unelte → Regenerează CSS) și, dacă ai, cache-ul LiteSpeed din cPanel.
+
 ### A2. Încarcă arhiva
 1. **Module (Plugins)** → **Adaugă modul (Add New Plugin)** → sus, **Încarcă modul (Upload Plugin)**.
 2. **Alege fișierul** → `gradina-ielelor-integration-1.2.0.zip` → **Instalează acum (Install Now)**.
