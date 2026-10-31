@@ -4,8 +4,9 @@ Site-ul gradina-ielelor.ro (camping, glamping, bungalow și evenimente, Sâmbăt
 Proprietar: Asociația Bioglamp. Comunicarea cu proprietarul se face în română, simplu, fără jargon.
 
 ## Arhitectură (decisă, nu se reia fără cererea proprietarului)
-- **Site nou, curat (decizia din 30.10.2026):** WordPress nou, fără tema `giw` și fără Elementor, construit separat de site-ul live.
-  Site-ul live rămâne neatins până când proprietarul verifică și aprobă site-ul nou; abia atunci îl înlocuiește.
+- **Lansare în 7 zile (decizia din 31.10.2026):** designul nou se aplică prin pluginul nostru pe WordPress-ul existent (întâi staging, apoi live), cu rezervările actuale (OVABRW + NETOPIA).
+  WordPress-ul nou, curat (fără tema `giw` și fără Elementor) și trecerea pe 5starDesk vin după lansare. Nimic nu ajunge pe live fără aprobarea proprietarului.
+- **Fără dependență de programatori:** tot ce se poate face e documentat pas cu pas pentru proprietar (`docs/lansare.md`, `docs/independenta.md`).
 - WordPress + WooCommerce + OVABRW rămân motorul de rezervări. Rezervările, plățile și comenzile trec numai prin ele.
 - Pluginul `gradina-ielelor-integration/` conține template-urile paginilor (hub și pagini dedicate).
 - Pagina principală = hub de rezervare: modulul BRW sus, apoi cardurile celor patru oferte:
@@ -28,6 +29,13 @@ Proprietar: Asociația Bioglamp. Comunicarea cu proprietarul se face în român�
 4. Unire în `main` numai cu acordul proprietarului.
 5. Staging înainte de live. Nimic nu se instalează pe site-ul live fără aprobare explicită. Pe staging: plăți sandbox, emailuri către clienți oprite, `noindex`.
 6. Nu se scriu parole, chei API sau date personale în depozit.
+
+## Livrare (arhivă, staging, live)
+- Arhiva se face numai cu `tools/build-zip.sh` (local) sau cu workflow-ul „Build” din GitHub Actions. Nu se instalează niciodată o arhivă cu „INCOMPLET” în nume.
+- La fiecare versiune nouă: `Version:` din antet și `GI_VERSION` egale (altfel arhiva nu se construiește), `Stable tag` și changelog în `readme.txt`; pozele noi sau schimbate se trec în `binary-manifest.tsv` cu mărimea exactă.
+- Release: tag `v<versiune>` pe `main`, numai după aprobarea proprietarului; GitHub atașează arhiva și amprenta.
+- Pașii proprietarului (backup, instalare, NETOPIA sandbox, lansare, revenire, urmărire): `docs/lansare.md`. Conturi, accese, secrete: `docs/independenta.md`.
+- Nu se adaugă deploy automat pe live. `deploy-staging.yml` rămâne manual și oprit implicit.
 
 ## Stare la 30.10.2026
 - Versiunea pluginului: 1.1.0 (ramura `main`).

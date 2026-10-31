@@ -117,8 +117,8 @@ function gi_offer_pages() {
         ),
         'closing' => array('title' => 'Gata de o noapte', 'title_em' => 'sub cerul Făgărașului?', 'image' => 'hero-1280.webp'),
         'seo' => array(
-            'title' => 'Glamping Sâmbăta de Sus, Brașov | Grădina Ielelor',
-            'description' => 'Descoperă corturile de glamping din Grădina Ielelor, la poalele Munților Făgăraș. Vezi facilitățile, fotografiile și disponibilitatea și rezervă online.',
+            'title' => 'Glamping Brașov, sub Munții Făgăraș | Grădina Ielelor',
+            'description' => 'Corturi de glamping cu pat adevărat, pe platformă de lemn, în Sâmbăta de Sus, la poalele Munților Făgăraș. Două lacuri, dușuri calde non-stop. Rezervă online.',
             'image' => 'super-glamping-1600.webp',
         ),
     );
@@ -201,7 +201,7 @@ function gi_offer_pages() {
         ),
         'closing' => array('title' => 'Gata de o noapte', 'title_em' => 'pe malul lacului?', 'image' => 'home-hero-lake-centered-1600.webp'),
         'seo' => array(
-            'title' => 'Bungalow Sâmbăta de Sus, Brașov | Grădina Ielelor',
+            'title' => 'Bungalow pe malul lacului, Brașov | Grădina Ielelor',
             'description' => 'Patru bungalow-uri cu baie proprie și încălzire, pe malul lacului din Grădina Ielelor, la poalele Munților Făgăraș. Vezi pozele și verifică disponibilitatea.',
             'image' => 'bungalow-detail-1600.webp',
         ),
@@ -289,8 +289,8 @@ function gi_offer_pages() {
         ),
         'closing' => array('title' => 'Gata de o noapte', 'title_em' => 'la cort, sub Făgăraș?', 'image' => 'camping-noapte-1280.webp'),
         'seo' => array(
-            'title' => 'Camping Sâmbăta de Sus, Brașov | Grădina Ielelor',
-            'description' => 'Camping cu cortul tău în Grădina Ielelor: două lacuri, dușuri calde non-stop, bucătării comune, hamace și vetre de foc. La 20 de minute de Transfăgărășan.',
+            'title' => 'Camping Făgăraș, aproape de Transfăgărășan | Grădina Ielelor',
+            'description' => 'Vino cu cortul în Grădina Ielelor, Sâmbăta de Sus (Brașov): două lacuri, dușuri calde non-stop, bucătării comune și vetre de foc. La 20 min de Transfăgărășan.',
             'image' => 'camping-hero-1600.webp',
         ),
     );
@@ -376,7 +376,7 @@ function gi_offer_pages() {
         ),
         'closing' => array('title' => 'Gata de drum', 'title_em' => 'spre poalele Făgărașului?', 'image' => 'home-hero-lake-centered-1280.webp'),
         'seo' => array(
-            'title' => 'Rulote și autorulote, Sâmbăta de Sus | Grădina Ielelor',
+            'title' => 'Camping rulote și autorulote, Brașov | Grădina Ielelor',
             'description' => 'Loc pentru rulotă sau autorulotă în Grădina Ielelor, Sâmbăta de Sus: racorduri și servicii pe loc, dușuri calde non-stop, bucătării comune și lac, sub Făgăraș.',
             'image' => 'rulote-hero-1600.webp',
         ),
@@ -458,7 +458,7 @@ function gi_offer_pages() {
         ),
         'closing' => array('title' => 'Ai un eveniment în minte?', 'title_em' => 'Hai să vorbim.', 'image' => 'domeniu-aerian-1280.webp'),
         'seo' => array(
-            'title' => 'Festivaluri și evenimente, Brașov | Grădina Ielelor',
+            'title' => 'Locație evenimente în aer liber, Brașov | Grădina Ielelor',
             'description' => 'Festivaluri, petreceri și evenimente de familie în Grădina Ielelor, Sâmbăta de Sus: 9 ha, aviz ISU pentru 5.000 de persoane, scenă permanentă, lacuri și cazare.',
             'image' => 'evenimente-hero-1600.webp',
         ),

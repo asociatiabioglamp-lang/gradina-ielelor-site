@@ -30,6 +30,7 @@ require_once GI_PATH . 'includes/template-tags.php';
 require_once GI_PATH . 'includes/class-gi-plugin.php';
 require_once GI_PATH . 'includes/class-gi-seo.php';
 require_once GI_PATH . 'includes/class-gi-settings.php';
+require_once GI_PATH . 'includes/redirects.php';
 
 GI_Plugin::init();
 GI_SEO::init();
