@@ -148,7 +148,7 @@ Fără nume, date sau istorie inventate: povestea e doar cea de pe pagina veche 
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->
-<li>Opt dușuri cu apă caldă, non-stop, și douăsprezece toalete.</li>
+<li>Opt băi publice, cu apă caldă, non-stop. Fiecare dintre cele patru bungalow-uri are și baia lui proprie.</li>
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->

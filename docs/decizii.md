@@ -41,6 +41,7 @@ Sursă de adevăr pentru conflictele dintre documente. Se completează pe măsur
 | 2026-10-31 | Copii | **Copiii sunt bineveniți și încurajați**, la grupuri, ieșiri cu echipa, retreaturi și evenimente de familie. **Fără limită de vârstă** | Scris pe Festivaluri & tabere și Evenimente private |
 | 2026-10-31 | Câini | **Câinii mici (până la 15 kg), conform regulamentului de pe site.** Restul regulilor: Regulament & politici | Paginile Camping & rulote, Festivaluri & tabere și Evenimente private spun „câinii mici (până la 15 kg)” |
 | 2026-10-31 | Pavilioane la evenimente private | **Le punem noi la dispoziție sau le aduce clientul, după caz și preferință** | Scris pe Evenimente private. Prețuri și dimensiuni: neconfirmate, nu se publică |
+| 2026-10-31 | Băi | **8 băi publice + 4 băi proprii, câte una la fiecare bungalow** (12 băi în total) | Pe site: „opt băi publice, cu duș și apă caldă non-stop” și „baie proprie în fiecare bungalow”. Prezentările spun „8 dușuri și 12 toalete”; [B] pagina 4 spune greșit „8 băi proprii” |
 | 2026-10-31 | Repartizarea ofertelor | **Boot camp, tabere de copii și retreaturi intră la Festivaluri & tabere** (inclusiv ieșirile cu echipa din prezentarea Boot camp). **Evenimente private** rămân pentru nunți, botezuri, majorate și petreceri de familie | Pagina Festivaluri & tabere are patru liste: festivaluri, tabere, ieșiri cu echipa și retreaturi, boot camp pentru tineri. Redirecționarea paginii vechi „Totul despre ea / Evenimente” rămâne spre Evenimente private |
 
 ## Întrebări deschise înainte de lansare (31.10.2026)

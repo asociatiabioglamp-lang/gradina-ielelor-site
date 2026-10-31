@@ -978,6 +978,7 @@ Listă deduplicată. După fiecare fapt: sursele în care apare. **⚠** = docum
 - **Copii:** bineveniți și încurajați, fără limită de vârstă (răspunsul la „Venim cu copii sau cu câinele?” din [B], pagina 15).
 - **Câini:** câini mici, până la 15 kg, conform regulamentului de pe site.
 - **Pavilioane (evenimente private):** le punem noi la dispoziție sau le aduce clientul, după caz și preferință.
+- **Băi:** 8 băi publice și 4 băi proprii, câte una la fiecare bungalow. [B] pagina 4 spune greșit „8 băi proprii, în bungalow-uri” (sunt 4 bungalow-uri); corectat în varianta nouă a PDF-ului. Site-ul spune „8 băi publice” și „baie proprie în fiecare bungalow”.
 - **Suprafața:** 6 ha de camping (împrejmuite, pază 24/7); 9 ha în regim de festival, plus o parcare suplimentară de 9 ha.
 
 ## Lipsuri / neclarități

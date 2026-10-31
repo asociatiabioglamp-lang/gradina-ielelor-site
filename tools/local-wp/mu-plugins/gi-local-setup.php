@@ -5,7 +5,7 @@
  * cu textul din docs/pagini-continut.md (marcaj de blocuri, exact ca în editorul WordPress).
  */
 add_action('init', function () {
-    if (get_option('gi_local_setup_done') === '9') {
+    if (get_option('gi_local_setup_done') === '10') {
         return;
     }
     $active = (array) get_option('active_plugins', array());
@@ -58,7 +58,7 @@ add_action('init', function () {
     kses_init();
 
     flush_rewrite_rules();
-    update_option('gi_local_setup_done', '9');
+    update_option('gi_local_setup_done', '10');
 }, 99);
 
 // Paginile legale ale site-ului actual (aceleași adrese ca pe live) și pagina de blog, pentru linkurile din subsol.
@@ -165,7 +165,7 @@ function gi_local_content_pages() {
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->
-<li>Opt dușuri cu apă caldă, non-stop, și douăsprezece toalete.</li>
+<li>Opt băi publice, cu apă caldă, non-stop. Fiecare dintre cele patru bungalow-uri are și baia lui proprie.</li>
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->

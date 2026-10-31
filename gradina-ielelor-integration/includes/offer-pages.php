@@ -82,8 +82,7 @@ function gi_offer_pages() {
                     'Pat suplimentar, la cerere',
                 )),
                 array('icon' => 'trees', 'title' => 'În Grădină', 'items' => array(
-                    'Opt dușuri cu apă caldă, non-stop',
-                    'Douăsprezece toalete',
+                    'Opt băi publice, cu duș și apă caldă, non-stop',
                     'Două bucătării comune',
                     'Două lacuri, unul în care se înoată',
                     'Terasă din lemn construită pe apă',
@@ -112,7 +111,7 @@ function gi_offer_pages() {
         'faq' => array(
             array('q' => 'Ce găsesc în cort?', 'a' => 'Un pat cu lenjerie, covor și noptieră. Cortul stă pe o platformă de lemn, iar la intrare ai o masă cu scaune. Nu e camping de supraviețuire.'),
             array('q' => 'Câte persoane încap într-un cort?', 'a' => 'Două persoane. Dacă mai vine cineva, poți adăuga un pat suplimentar când faci rezervarea.'),
-            array('q' => 'Baia e în cort?', 'a' => 'Nu, băile sunt comune: opt dușuri cu apă caldă, disponibile oricând, și douăsprezece toalete. Dacă vrei baie proprie, alege un bungalow.'),
+            array('q' => 'Baia e în cort?', 'a' => 'Nu, băile sunt comune: opt băi publice, cu duș și apă caldă, disponibile oricând. Baie proprie au doar bungalow-urile, câte una la fiecare. Dacă vrei baie proprie, alege un bungalow.'),
             array('q' => 'Am curent și internet?', 'a' => 'Da. Domeniul funcționează pe energie proprie, solară și GPL, așa că ai curent, apă caldă și internet. Lasă acasă doar aparatele electrice mari.'),
             array('q' => 'Cât costă o noapte?', 'a' => 'De la 195 lei în timpul săptămânii și 235 lei vineri și sâmbătă. Patul suplimentar costă 55 lei pe noapte. Prețul final îl vezi când alegi datele.'),
         ),
@@ -225,7 +224,7 @@ function gi_offer_pages() {
         ),
         'facts' => array(
             array('value' => '2', 'label' => 'lacuri, unul în care se înoată'),
-            array('value' => '8', 'label' => 'dușuri cu apă caldă, non-stop'),
+            array('value' => '8', 'label' => 'băi publice, cu apă caldă non-stop'),
             array('value' => '20 min', 'label' => 'până la Transfăgărășan'),
             array('value' => '80 lei', 'label' => 'pe noapte, cort sau rulotă'),
         ),
@@ -262,8 +261,7 @@ function gi_offer_pages() {
                     'Câinii mici (până la 15 kg) sunt bineveniți',
                 ), 'note' => array('text' => 'Nu ai cort? Avem corturi cu pat, gata pregătite: ', 'link_text' => 'alege glampingul', 'link_offer' => 'glamping')),
                 array('icon' => 'trees', 'title' => 'În Grădină', 'items' => array(
-                    'Opt dușuri cu apă caldă, non-stop',
-                    'Douăsprezece toalete',
+                    'Opt băi publice, cu duș și apă caldă, non-stop',
                     'Două bucătării comune',
                     'Două lacuri, unul în care se înoată',
                     'Terasă din lemn construită pe apă',
@@ -289,7 +287,7 @@ function gi_offer_pages() {
             array('icon' => 'flame', 'title' => 'Focul, doar în vetrele amenajate', 'text' => 'Avem vetre de foc pregătite pe domeniu. Seara, acolo se adună toată lumea.'),
         ),
         'faq' => array(
-            array('q' => 'Ce găsesc la camping?', 'a' => 'Spațiu pentru cortul tău, opt dușuri cu apă caldă non-stop, douăsprezece toalete și două bucătării comune. Plus două lacuri, treizeci de hamace și vetre de foc.'),
+            array('q' => 'Ce găsesc la camping?', 'a' => 'Spațiu pentru cortul tău, opt băi publice cu apă caldă non-stop și două bucătării comune. Plus două lacuri, treizeci de hamace și vetre de foc.'),
             array('q' => 'Primiți și rulote sau autorulote?', 'a' => 'Da, și rulote, și autorulote. Ai racorduri și servicii pe loc, în zona de camping. Dacă ai întrebări despre rulota ta, sună-ne la 0721 333 164.'),
             array('q' => 'Se poate înota?', 'a' => 'Da, în lacul mare. Are 8.000 de metri pătrați și un metru adâncime pe toată suprafața, fără zone adânci.'),
             array('q' => 'Am curent și internet?', 'a' => 'Da. Domeniul funcționează pe energie proprie, solară și GPL, așa că ai curent, apă caldă și internet. Lasă acasă doar aparatele electrice mari.'),
@@ -371,7 +369,7 @@ function gi_offer_pages() {
                     'Lac de 1 m adâncime peste tot, fără zone adânci',
                     'Trei zone separate, pentru grupe diferite',
                     '4 bungalow-uri, 4 corturi cu pat și 50 cu saltele',
-                    'Opt dușuri calde non-stop, douăsprezece toalete',
+                    'Opt băi publice, cu apă caldă non-stop, și câte o baie proprie în fiecare bungalow',
                     'Bucătărie licențiată și două bucătării comune',
                     'Internet și iluminat în zonele comune',
                 ), 'note' => array('text' => 'Vrei o nuntă, un botez sau un majorat? ', 'link_text' => 'Vezi evenimentele private', 'link_offer' => 'private')),
@@ -441,7 +439,7 @@ function gi_offer_pages() {
         ),
         'facts' => array(
             array('value' => '58', 'label' => 'unități de cazare pe domeniu'),
-            array('value' => '8 + 12', 'label' => 'dușuri calde non-stop și toalete'),
+            array('value' => '8 + 4', 'label' => 'băi publice și băi proprii, câte una la fiecare bungalow'),
             array('value' => '3 ha', 'label' => 'de parcare, în afara gardului'),
             array('value' => 'cca. 60 km', 'label' => 'de Brașov'),
         ),
@@ -477,10 +475,9 @@ function gi_offer_pages() {
                 )),
                 array('icon' => 'tent', 'title' => 'Pentru invitați', 'items' => array(
                     '58 de unități de cazare pe domeniu',
-                    '4 bungalow-uri cu baie proprie',
+                    '4 bungalow-uri, fiecare cu baia lui proprie',
                     '4 corturi de glamping cu pat și 50 cu saltele',
-                    'Opt dușuri cu apă caldă, non-stop',
-                    'Douăsprezece toalete',
+                    'Opt băi publice, cu duș și apă caldă, non-stop',
                     'Parcare de 3 ha, în afara gardului',
                     'Domeniu împrejmuit, pază 24 din 24',
                     'Două lacuri, cu ponton din lemn',
