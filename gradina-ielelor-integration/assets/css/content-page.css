@@ -2,13 +2,23 @@
    Se încarcă doar pe template-ul „Pagină simplă”, după site.css și pages.css, și le folosește variabilele.
    Stilizează blocurile de bază: titluri, liste, tabele, citate, butoane, imagini, detalii și acordeon. */
 
-/* ---------- Hero calm: titlul pe verde închis, fără fotografie ---------- */
-.gi-content-hero { --gi-focus: var(--accent); position: relative; isolation: isolate; overflow: hidden; color: #fff; background: radial-gradient(80% 130% at 100% 0%, rgba(109, 132, 99, .5) 0%, rgba(109, 132, 99, 0) 62%), var(--forest-deep); border-radius: 0 0 clamp(28px, 4vw, 56px) clamp(28px, 4vw, 56px); }
+/* ---------- Hero calm: titlul pe cer senin de munte, cu soarele în colț, fără fotografie ---------- */
+.gi-content-hero { --gi-focus: var(--lake-deep); position: relative; isolation: isolate; overflow: hidden; color: var(--mountain); background: radial-gradient(48% 90% at 96% 0%, rgba(255, 216, 168, .7) 0%, rgba(255, 216, 168, 0) 70%), linear-gradient(180deg, var(--sky-200) 0%, var(--sky-100) 55%, var(--sky-50) 100%); border-radius: 0 0 clamp(28px, 4vw, 56px) clamp(28px, 4vw, 56px); }
+/* Header-ul stă pe cer luminos aici, nu pe fotografie: logo și meniu închise la culoare.
+   Logo-ul alb devine exact varianta închisă (#2b2b2b; cele două fișiere au aceeași formă), fără schimbări în PHP. */
+.gi-content-site .site-header { --gi-focus: var(--lake-deep); background: none; border-bottom-color: rgba(27, 58, 75, .12); }
+.gi-content-site .site-header .official-brand img { filter: brightness(0) invert(.17); }
+.gi-content-site .desktop-nav a,
+.gi-content-site .desktop-nav a[aria-current="page"],
+.gi-content-site .menu-toggle { color: var(--mountain); text-shadow: none; }
+.gi-content-site .desktop-nav a::after { background: var(--mountain); }
+.gi-content-site .gi-content-hero .gi-breadcrumb { color: var(--text-2); }
+.gi-content-site .gi-content-hero .gi-breadcrumb a { color: var(--forest); text-decoration-color: rgba(29, 99, 128, .4); }
 .gi-content-hero-inner { padding-top: clamp(128px, 13vw, 168px); padding-bottom: clamp(48px, 7vw, 88px); }
 .gi-content-hero-inner > * { max-width: 780px; }
-.gi-content-site .gi-content-hero h1 { margin: .18em 0 0; font-family: var(--display); font-weight: 500; font-size: clamp(2.6rem, 6.2vw, 4.6rem); line-height: 1; letter-spacing: -.03em; color: #fff; }
-.gi-content-site .gi-content-lead { max-width: 52ch; margin: 20px 0 0; font-size: clamp(1.06rem, 1.5vw, 1.22rem); line-height: 1.55; color: rgba(255, 255, 255, .88); }
-.gi-content-hero-mark { position: absolute; z-index: -1; right: -3%; bottom: -22%; width: clamp(240px, 36vw, 520px); height: auto; aspect-ratio: 1; color: rgba(255, 255, 255, .07); stroke-width: .5; }
+.gi-content-site .gi-content-hero h1 { margin: .18em 0 0; font-family: var(--display); font-weight: 500; font-size: clamp(2.6rem, 6.2vw, 4.6rem); line-height: 1; letter-spacing: -.03em; color: var(--mountain); }
+.gi-content-site .gi-content-lead { max-width: 52ch; margin: 20px 0 0; font-size: clamp(1.06rem, 1.5vw, 1.22rem); line-height: 1.55; color: var(--text-2); }
+.gi-content-hero-mark { position: absolute; z-index: -1; right: -3%; bottom: -22%; width: clamp(240px, 36vw, 520px); height: auto; aspect-ratio: 1; color: rgba(44, 127, 160, .14); stroke-width: .5; }
 
 /* ---------- Coloana de text: rând de lectură confortabil (~68 de caractere) ---------- */
 .gi-content-site main { padding-bottom: var(--gi-section); }
@@ -20,7 +30,7 @@
 .gi-prose > * { margin-block: 0; }
 /* Spațiu între blocuri; .gi-content-site ca să treacă peste „.gi-site p { margin-top: 0 }” din site.css. */
 .gi-content-site .gi-prose > * + * { margin-top: 1.15em; }
-.gi-content-site .gi-prose :is(p, li) { max-width: none; font-size: inherit; line-height: 1.7; color: #33433b; }
+.gi-content-site .gi-prose :is(p, li) { max-width: none; font-size: inherit; line-height: 1.7; color: var(--ink-soft); }
 .gi-prose strong { color: var(--ink); font-weight: 650; }
 .gi-content-site .gi-prose a:not(.wp-block-button__link):not(.wp-block-file__button) { color: var(--forest); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: .2em; transition: text-decoration-color .2s ease; }
 .gi-content-site .gi-prose a:not(.wp-block-button__link):not(.wp-block-file__button):hover { text-decoration-color: var(--forest); }
@@ -71,7 +81,7 @@
 /* ---------- Butoane ---------- */
 .gi-prose .wp-block-buttons { display: flex; flex-wrap: wrap; gap: 10px 14px; margin-top: 1.4em; }
 .gi-content-site .gi-prose .wp-block-button__link { display: inline-flex; align-items: center; justify-content: center; min-height: 50px; padding: 13px 24px; border: 1.5px solid var(--forest); border-radius: 999px; background: var(--forest); color: #fff; font-family: var(--sans); font-size: 15px; font-weight: 650; line-height: 1.2; text-align: center; text-decoration: none; transition: transform .2s, background-color .2s, color .2s, box-shadow .2s; }
-.gi-content-site .gi-prose .wp-block-button__link:hover { transform: translateY(-2px); background: #24584a; box-shadow: 0 8px 20px rgba(23, 63, 53, .16); }
+.gi-content-site .gi-prose .wp-block-button__link:hover { transform: translateY(-2px); background: var(--lake-hover); box-shadow: 0 8px 20px rgb(var(--shade) / .16); }
 .gi-content-site .gi-prose .is-style-outline .wp-block-button__link { background: transparent; color: var(--forest); }
 .gi-content-site .gi-prose .is-style-outline .wp-block-button__link:hover { background: var(--forest); color: #fff; }
 
@@ -122,12 +132,12 @@
 /* ---------- Casete ---------- */
 /* Casetă caldă (clasa „gi-caseta”) sau orice grup cu fundal ales în editor. */
 .gi-prose :is(.gi-caseta, .wp-block-group.has-background) { padding: clamp(20px, 3vw, 28px); border-radius: var(--gi-radius-sm); }
-.gi-prose .gi-caseta { background: #fbeee2; }
+.gi-prose .gi-caseta { background: var(--sun-50); }
 .gi-content-site .gi-prose .gi-caseta :is(p, li) { color: var(--ink); }
 .gi-prose .wp-block-group > * { margin-block: 0; }
 .gi-prose .wp-block-group > * + * { margin-top: .8em; }
 /* Notă pentru editor (clasa „gi-nota-editor”): vizitatorii nu o primesc deloc; aici e doar aspectul pentru cine e autentificat. */
-.gi-prose .gi-nota-editor { padding: 18px 20px; border: 2px dashed var(--accent-dark); border-radius: var(--gi-radius-sm); background: #fff8ef; }
+.gi-prose .gi-nota-editor { padding: 18px 20px; border: 2px dashed var(--accent-dark); border-radius: var(--gi-radius-sm); background: var(--sun-50); }
 .gi-content-site .gi-prose .gi-nota-editor :is(p, li) { font-size: .95rem; line-height: 1.6; color: var(--ink); }
 
 /* ---------- Alte blocuri ---------- */

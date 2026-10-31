@@ -1,6 +1,9 @@
 /* Stiluri izolate pentru template-ul Grădina Ielelor; fără framework React/CSS extern. */
-body.gi-one-page{margin:0;background:#fffdf8;color:#1c2b26;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
-.gi-site{--forest:#173f35;--forest-deep:#102f28;--moss:#6d8463;--sage:#b9c8af;--cream:#f2f5ed;--paper:#fffdf8;--sand:#e7ede1;--accent:#efb783;--accent-dark:#a9683e;--ink:#1c2b26;--muted:#637168;--line:rgba(23,63,53,.14);--display:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;--sans:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow:clip;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.4}
+body.gi-one-page{margin:0;background:#fffdf8;color:#22343f;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+/* Paleta „O zi senină la munte” (31.10.2026): cer, lac, pajiște și soare, pe alb cald. Contrastele sunt măsurate (WCAG AA).
+   Numele vechi (--forest, --moss, --cream…) rămân ca roluri, ca toate fișierele să le folosească în continuare. */
+.gi-site{--sky-50:#f0f7fb;--sky-100:#e1eff8;--sky-200:#cfe6f4;--sky:#8fc6e6;--lake:#2c7fa0;--lake-deep:#1d6380;--lake-hover:#174f67;--mountain:#1b3a4b;--meadow-50:#eef6e7;--meadow:#7db56a;--meadow-deep:#356b3b;--meadow-em:#4d8a45;--sun-50:#fff3e4;--sun-100:#ffe6c8;--sun:#f7b267;--sun-hover:#f9c283;--sun-light:#ffd8a8;--sun-deep:#a3561f;--shade:16 40 56;--ink-soft:#33454f;--text-2:#475b66;--field-line:#6a8796;--field-hint:#5f7380;
+--forest:var(--lake-deep);--forest-deep:var(--mountain);--moss:var(--meadow-deep);--sage:var(--sky-200);--cream:var(--sky-50);--paper:#fffdf8;--sand:var(--sky-100);--accent:var(--sun);--accent-dark:var(--sun-deep);--ink:#22343f;--muted:#536773;--line:rgba(27,58,75,.14);--display:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;--sans:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow:clip;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.4}
 .gi-site *,.gi-site *::before,.gi-site *::after{box-sizing:border-box}
 .gi-site img{display:block;max-width:100%}
 .gi-site a{color:inherit;text-decoration:none}
@@ -24,9 +27,9 @@ body.gi-one-page{margin:0;background:#fffdf8;color:#1c2b26;font-family:Inter,ui-
 .gi-site .button:focus-visible,.gi-site a:focus-visible,.gi-site button:focus-visible,.gi-site summary:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
 .gi-site .button-small{min-height:40px;padding:10px 17px;background:var(--forest);color:#fff;font-size:12px}
 .gi-site .button-accent{background:var(--accent);color:var(--forest-deep)}
-.gi-site .button-accent:hover{background:#f4c495;box-shadow:0 8px 24px rgba(16,47,40,.2)}
+.gi-site .button-accent:hover{background:var(--sun-hover);box-shadow:0 8px 24px rgb(var(--shade) / .2)}
 .gi-site .button-primary{background:var(--forest);color:#fff}
-.gi-site .button-primary:hover,.gi-site .button-small:hover{background:#24584a;box-shadow:0 8px 20px rgba(23,63,53,.16)}
+.gi-site .button-primary:hover,.gi-site .button-small:hover{background:var(--lake-hover);box-shadow:0 8px 20px rgb(var(--shade) / .16)}
 .gi-site .button-outline{border-color:var(--forest);background:transparent;color:var(--forest)}
 .gi-site .button-outline:hover{background:var(--forest);color:#fff}
 .gi-site .text-link{display:inline-flex;align-items:center;gap:8px;border-bottom:1px solid currentColor;padding-bottom:5px;font-size:13px;font-weight:600}
@@ -34,7 +37,7 @@ body.gi-one-page{margin:0;background:#fffdf8;color:#1c2b26;font-family:Inter,ui-
 /* Header și identitate */
 .gi-site .official-brand{display:inline-flex;align-items:center;width:142px;flex:0 0 auto}
 .gi-site .official-brand img{width:100%;height:auto}
-.gi-site .site-header{position:absolute;z-index:50;top:0;right:0;left:0;background:linear-gradient(180deg,rgba(8,28,23,.72),transparent);border-bottom:1px solid rgba(255,255,255,.16)}
+.gi-site .site-header{position:absolute;z-index:50;top:0;right:0;left:0;background:linear-gradient(180deg,rgb(var(--shade) / .62),transparent);border-bottom:1px solid rgba(255,255,255,.16)}
 body.admin-bar .gi-site .site-header{top:32px}
 .gi-site .header-inner{min-height:88px;display:flex;align-items:center;gap:32px}
 .gi-site .desktop-nav{display:flex;align-items:center;justify-content:center;gap:clamp(15px,1.8vw,27px);margin-left:auto}
@@ -59,18 +62,18 @@ body.admin-bar .gi-site .site-header{top:32px}
 .gi-site .home-hero-slice-lake img{object-position:60% 50%}
 .gi-site .home-hero-slice-shore img{object-position:50% 35%}
 .gi-site .home-hero-slice-chill img{object-position:50% 0%}
-.gi-site .home-hero-overlay{z-index:1;background:linear-gradient(90deg,rgba(12,38,30,.62) 0%,rgba(12,38,30,.22) 52%,rgba(12,38,30,.02) 84%),linear-gradient(0deg,rgba(12,38,30,.28),transparent 52%)}
+.gi-site .home-hero-overlay{z-index:1;background:linear-gradient(90deg,rgb(var(--shade) / .62) 0%,rgb(var(--shade) / .22) 52%,rgb(var(--shade) / .02) 84%),linear-gradient(0deg,rgb(var(--shade) / .28),transparent 52%)}
 .gi-site .home-hero-content{position:relative;z-index:2;padding-top:96px;padding-bottom:40px}
 .gi-site .home-hero-content>*{max-width:600px}
 .gi-site .home-hero-content h1{margin:18px 0 20px;font-size:clamp(64px,5.3vw,76px);line-height:.96;letter-spacing:-.045em;text-shadow:0 2px 24px rgba(0,0,0,.16)}
-.gi-site .home-hero-content h1 em{color:#f0c999}
+.gi-site .home-hero-content h1 em{color:var(--sun-light)}
 .gi-site .home-hero-content>p{margin-bottom:32px;color:rgba(255,255,255,.9);font-size:16px;line-height:1.7}
 .gi-site .home-hero-actions{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
 .gi-site .home-hero-events-link{display:inline-flex;align-items:center;gap:9px;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.55);color:#fff;font-size:13px;font-weight:600}
 
 /* Modul real BRW */
 .gi-site .home-booking{position:relative;padding:40px 0 52px;background:var(--paper);scroll-margin-top:30px}
-.gi-site .home-booking-shell{padding:26px 28px 20px;background:var(--cream);border:1px solid rgba(23,63,53,.1)}
+.gi-site .home-booking-shell{padding:26px 28px 20px;background:radial-gradient(60% 120% at 100% 0%,rgba(255,216,168,.42) 0%,rgba(255,216,168,0) 70%),linear-gradient(180deg,var(--sky-100) 0%,var(--sky-50) 100%);border:1px solid rgba(29,99,128,.12)}
 .gi-site .booking-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:50px;margin-bottom:20px}
 .gi-site .booking-heading h2{margin:10px 0 0;font-size:34px}
 .gi-site .booking-heading>p{max-width:440px;margin:0 0 4px;color:var(--muted);font-size:13px;line-height:1.7}
@@ -82,14 +85,14 @@ body.admin-bar .gi-site .site-header{top:32px}
 .gi-real-booking .wrap_content{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;width:100%;margin:0}
 .gi-real-booking .s_field{min-width:0;margin:0;padding:0}
 .gi-real-booking .s_field .content{width:100%;margin:0;padding:0}
-.gi-real-booking label,.gi-real-booking .label{display:block;margin:0 0 8px;color:#4f5d55;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}
-.gi-real-booking input[type="text"],.gi-real-booking input[type="date"],.gi-real-booking select{width:100%;min-height:56px;padding:0 16px;border:1px solid var(--moss);border-radius:14px;background:#fff;color:var(--ink);font-size:15px;box-shadow:none}
-.gi-real-booking input::placeholder{color:#6b7870;opacity:1}
-.gi-real-booking input:focus,.gi-real-booking select:focus{border-color:var(--forest);outline:2px solid rgba(23,63,53,.12)}
+.gi-real-booking label,.gi-real-booking .label{display:block;margin:0 0 8px;color:var(--text-2,#475b66);font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}
+.gi-real-booking input[type="text"],.gi-real-booking input[type="date"],.gi-real-booking select{width:100%;min-height:56px;padding:0 16px;border:1px solid var(--field-line,#6a8796);border-radius:14px;background:#fff;color:var(--ink);font-size:15px;box-shadow:none}
+.gi-real-booking input::placeholder{color:var(--field-hint,#5f7380);opacity:1}
+.gi-real-booking input:focus,.gi-real-booking select:focus{border-color:var(--forest);outline:2px solid rgba(29,99,128,.14)}
 .gi-real-booking .s_submit{display:flex;align-items:flex-end;margin:0;padding:0}
-.gi-real-booking .ovabrw_btn_submit{min-height:56px;display:inline-flex;align-items:center;justify-content:center;padding:0 32px;border:0;border-radius:14px;background:var(--forest);color:#fff;font-size:15px;font-weight:700;letter-spacing:.01em;white-space:nowrap;cursor:pointer;box-shadow:0 10px 24px rgba(16,47,40,.18);text-transform:none;transition:background .2s ease,transform .2s ease}
-.gi-real-booking .ovabrw_btn_submit:hover{background:var(--forest-deep);color:#fff;transform:translateY(-1px)}
-.gi-booking-trust{display:flex;align-items:center;gap:18px;padding:16px 24px;border-top:1px solid var(--line);background:#fffdf8}
+.gi-real-booking .ovabrw_btn_submit{min-height:56px;display:inline-flex;align-items:center;justify-content:center;padding:0 32px;border:0;border-radius:14px;background:var(--sun,#f7b267);color:var(--mountain,#1b3a4b);font-size:15px;font-weight:700;letter-spacing:.01em;white-space:nowrap;cursor:pointer;box-shadow:0 10px 24px -6px rgba(214,124,46,.45);text-transform:none;transition:background .2s ease,transform .2s ease,box-shadow .2s ease}
+.gi-real-booking .ovabrw_btn_submit:hover{background:var(--sun-hover,#f9c283);color:var(--mountain,#1b3a4b);transform:translateY(-1px);box-shadow:0 14px 28px -8px rgba(214,124,46,.5)}
+.gi-booking-trust{display:flex;align-items:center;gap:18px;padding:16px 24px;border-top:1px solid var(--line);background:var(--paper,#fffdf8)}
 .gi-booking-trust img{width:90px;height:auto;flex:0 0 auto}
 .gi-booking-trust p{margin:0;color:var(--muted);font-size:11px;line-height:1.6}
 .gi-booking-unavailable{padding:10px}
@@ -100,7 +103,7 @@ body.admin-bar .gi-site .site-header{top:32px}
 /* Navigare și experiențe */
 .gi-site .home-quick-nav{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:48px}
 .gi-site .home-quick-nav a{min-height:46px;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border:1px solid var(--line);background:var(--cream);color:var(--forest);font-size:12px;font-weight:650}
-.gi-site .home-quick-nav a:hover{border-color:var(--moss);background:#e8efe2}
+.gi-site .home-quick-nav a:hover{border-color:var(--lake);background:var(--sky-100)}
 .gi-site .home-one-page-heading{max-width:760px;padding:8px 0 56px;text-align:center}
 .gi-site .home-one-page-heading h2{margin:14px 0 16px;font-size:clamp(36px,4vw,52px)}
 .gi-site .home-one-page-heading h2 em{color:var(--moss)}
@@ -125,13 +128,13 @@ body.admin-bar .gi-site .site-header{top:32px}
 .gi-site .home-experience-camping .home-photo-gallery>button:nth-child(2) img{object-position:60% 50%}
 .gi-site .home-experience-bottom{display:grid;grid-template-columns:1.4fr auto;align-items:end;gap:34px;margin-top:26px}
 .gi-site .home-facilities{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 18px}
-.gi-site .home-facilities span{display:flex;align-items:center;gap:8px;color:#44544b;font-size:11px;line-height:1.4}
+.gi-site .home-facilities span{display:flex;align-items:center;gap:8px;color:var(--text-2);font-size:11px;line-height:1.4}
 .gi-site .home-facilities .gi-icon{color:var(--moss)}
 .gi-site .home-experience-actions{display:flex;gap:10px}
 .gi-site .home-experience-actions .button{min-height:44px;padding:11px 16px;white-space:nowrap}
 
 /* Evenimente */
-.gi-site .home-events-detail{padding-bottom:0;background:#f7f8f2}
+.gi-site .home-events-detail{padding-bottom:0;background:var(--sky-50)}
 .gi-site .home-event-quick-facts{display:flex;flex-wrap:wrap;gap:8px 18px;padding-top:14px;border-top:1px solid var(--line)}
 .gi-site .home-event-quick-facts span{color:var(--muted);font-size:10px}
 .gi-site .home-event-quick-facts strong{display:block;margin-bottom:3px;color:var(--forest);font-family:var(--display);font-size:23px;font-weight:400}
@@ -150,7 +153,7 @@ body.admin-bar .gi-site .site-header{top:32px}
 .gi-site .home-event-contact>span,.gi-site .home-event-contact>a:not(.button){display:inline-flex;align-items:center;gap:7px;font-size:11px}
 .gi-site .home-event-contact .button{min-height:44px;padding:11px 17px}
 .gi-site .home-event-contact .button-primary{margin-left:auto}
-.gi-site .events-calendar{position:relative;padding:105px 0;background:var(--forest-deep);color:#fff;scroll-margin-top:30px}
+.gi-site .events-calendar{position:relative;padding:105px 0;background:var(--meadow-50);color:var(--ink);scroll-margin-top:30px}
 .gi-site .calendar-layout{display:grid;grid-template-columns:.78fr 1.22fr;gap:80px}
 .gi-site .calendar-intro{position:relative;align-self:start}
 .gi-site .calendar-intro .eyebrow{color:var(--accent)}
@@ -159,16 +162,16 @@ body.admin-bar .gi-site .site-header{top:32px}
 .gi-site .calendar-intro>p{max-width:400px;color:var(--muted);font-size:13px;line-height:1.8}
 .gi-site .calendar-watermark{width:120px;height:auto;margin-top:15px;opacity:.16;filter:brightness(0) saturate(100%)}
 .gi-site .calendar-filters{display:flex;flex-wrap:wrap;gap:7px;margin-top:24px}
-.gi-site .calendar-filters button{padding:8px 12px;border:1px solid rgba(23,63,53,.22);background:transparent;color:var(--forest);font-size:10px;cursor:pointer}
+.gi-site .calendar-filters button{padding:8px 12px;border:1px solid rgba(27,58,75,.22);background:transparent;color:var(--forest);font-size:10px;cursor:pointer}
 .gi-site .calendar-filters button:hover,.gi-site .calendar-filters button.active{border-color:var(--accent);background:var(--accent);color:var(--forest-deep)}
-.gi-site .calendar-list{border-top:1px solid rgba(23,63,53,.16)}
-.gi-site .calendar-event{display:grid;grid-template-columns:36px 1fr;gap:17px;align-items:start;padding:23px 0;border-bottom:1px solid rgba(23,63,53,.16)}
+.gi-site .calendar-list{border-top:1px solid rgba(27,58,75,.16)}
+.gi-site .calendar-event{display:grid;grid-template-columns:36px 1fr;gap:17px;align-items:start;padding:23px 0;border-bottom:1px solid rgba(27,58,75,.16)}
 .gi-site .calendar-event-icon{padding-top:3px;color:var(--accent-dark);font-family:var(--display);font-size:18px}
 .gi-site .calendar-event-category{color:var(--accent-dark);font-size:8px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
 .gi-site .calendar-event h3{margin:5px 0 7px;color:var(--forest);font-family:var(--display);font-size:25px;font-weight:400}
 .gi-site .calendar-event small{color:var(--muted);font-size:11px}
 .gi-site .calendar-disclaimer{margin:15px 0 0;color:var(--muted);font-size:9px;line-height:1.6}
-.gi-site .home-events-detail .events-calendar{margin-top:54px;padding:56px 0;background:#e7eee1;color:var(--ink)}
+.gi-site .home-events-detail .events-calendar{margin-top:54px;padding:56px 0;background:var(--meadow-50);color:var(--ink)}
 .gi-site .home-accommodation-note{display:flex;align-items:center;justify-content:center;gap:10px;padding-block:22px;color:var(--muted);font-size:11px;line-height:1.6;text-align:center}
 .gi-site .home-accommodation-note .gi-icon{color:var(--moss)}
 
@@ -190,24 +193,25 @@ body.admin-bar .gi-site .site-header{top:32px}
 .gi-site .home-review-cards footer strong{margin-bottom:6px;font-size:11px}
 .gi-site .home-review-cards footer span{color:var(--muted);font-size:9px}
 
-/* Footer */
-.gi-site .site-footer{padding:60px 0 24px;background:var(--forest-deep);color:#fff}
+/* Footer: cer luminos la orizont; logo-ul alb devine exact varianta închisă (aceeași formă, #2b2b2b). */
+.gi-site .site-footer{padding:60px 0 24px;background:linear-gradient(180deg,var(--sky-100) 0%,var(--sky-200) 100%);color:var(--ink)}
+.gi-site .site-footer .official-brand img{filter:brightness(0) invert(.17)}
 .gi-site .footer-grid{display:grid;grid-template-columns:1.35fr .85fr 1fr 1.25fr;gap:42px;padding-bottom:45px}
 .gi-site .footer-official-brand{width:155px}
-.gi-site .footer-grid>div:first-child>p{max-width:360px;margin:22px 0 0;color:rgba(255,255,255,.58);font-size:12px;line-height:1.8}
-.gi-site .footer-grid h3{margin-bottom:18px;color:var(--accent);font-size:10px;letter-spacing:.15em;text-transform:uppercase}
-.gi-site .footer-grid>div:not(:first-child) a{display:flex;align-items:flex-start;gap:7px;margin:12px 0;color:rgba(255,255,255,.72);font-size:12px;line-height:1.5}
+.gi-site .footer-grid>div:first-child>p{max-width:360px;margin:22px 0 0;color:var(--text-2);font-size:12px;line-height:1.8}
+.gi-site .footer-grid h3{margin-bottom:18px;color:var(--meadow-deep);font-size:10px;letter-spacing:.15em;text-transform:uppercase}
+.gi-site .footer-grid>div:not(:first-child) a{display:flex;align-items:flex-start;gap:7px;margin:12px 0;color:var(--ink-soft);font-size:12px;line-height:1.5}
 .gi-site .footer-grid>div:not(:first-child) a .gi-icon{margin-top:2px}
-.gi-site .footer-grid a:hover{color:#fff}
-.gi-site .footer-legal{display:flex;flex-wrap:wrap;gap:4px 20px;padding-top:18px;padding-bottom:14px;border-top:1px solid rgba(255,255,255,.12)}
-.gi-site .footer-legal a{display:inline-flex;align-items:center;min-height:32px;color:rgba(255,255,255,.72);font-size:12px}
-.gi-site .footer-legal a:hover{color:#fff}
+.gi-site .footer-grid a:hover{color:var(--lake-deep)}
+.gi-site .footer-legal{display:flex;flex-wrap:wrap;gap:4px 20px;padding-top:18px;padding-bottom:14px;border-top:1px solid rgba(27,58,75,.14)}
+.gi-site .footer-legal a{display:inline-flex;align-items:center;min-height:32px;color:var(--text-2);font-size:12px}
+.gi-site .footer-legal a:hover{color:var(--lake-deep)}
 .gi-site .footer-legal+.footer-bottom{border-top:0;padding-top:8px}
-.gi-site .footer-bottom{display:flex;justify-content:space-between;gap:30px;padding-top:24px;border-top:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.42);font-size:10px;line-height:1.6}
+.gi-site .footer-bottom{display:flex;justify-content:space-between;gap:30px;padding-top:24px;border-top:1px solid rgba(27,58,75,.14);color:var(--text-2);font-size:10px;line-height:1.6}
 .gi-site .mobile-booking-cta{display:none}
 
 /* Galerie accesibilă, vanilla JS */
-#gi-lightbox{position:fixed;z-index:100000;inset:0;display:flex;align-items:center;justify-content:center;padding:60px 90px;background:rgba(8,25,21,.96);color:#fff;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+#gi-lightbox{position:fixed;z-index:100000;inset:0;display:flex;align-items:center;justify-content:center;padding:60px 90px;background:rgba(12,30,42,.96);color:#fff;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 #gi-lightbox figure{max-width:1100px;max-height:100%;margin:0}
 #gi-lightbox figure img{display:block;max-width:100%;max-height:calc(100vh - 160px);margin:auto;object-fit:contain}
 #gi-lightbox figcaption{display:flex;justify-content:space-between;gap:20px;padding-top:14px;color:rgba(255,255,255,.78);font-size:12px}
@@ -239,7 +243,7 @@ body.gi-lightbox-open{overflow:hidden}
   body.gi-one-page{padding-bottom:62px}.gi-site .container{width:calc(100% - 32px)}
   .gi-site .home-hero{min-height:max(540px,64svh);align-items:flex-end}.gi-site .home-hero-slice-lake img{object-position:60% 50%}
   .gi-site .home-hero-slice-shore img{object-position:72% 50%}.gi-site .home-hero-slice-chill img{object-position:0% 50%}
-  .gi-site .home-hero-overlay{background:linear-gradient(0deg,rgba(10,35,27,.76) 0%,rgba(10,35,27,.18) 68%,rgba(10,35,27,.12) 100%)}
+  .gi-site .home-hero-overlay{background:linear-gradient(0deg,rgb(var(--shade) / .76) 0%,rgb(var(--shade) / .18) 68%,rgb(var(--shade) / .12) 100%)}
   .gi-site .home-hero-content{padding:88px 0 32px}.gi-site .home-hero-content h1{margin:16px 0 18px;font-size:clamp(44px,12vw,48px);line-height:.98}
   .gi-site .home-hero-content>p{margin-bottom:26px;font-size:14px;line-height:1.65}.gi-site .home-hero-actions{gap:20px}.gi-site .home-hero-actions .button{width:100%}
   .gi-site .home-booking{padding:28px 0 42px}.gi-site .home-booking-shell{width:calc(100% - 24px);padding:22px 16px 17px}.gi-site .booking-heading h2{font-size:32px}
@@ -256,7 +260,7 @@ body.gi-lightbox-open{overflow:hidden}
   .gi-site .home-events-detail .events-calendar{margin-top:42px;padding:46px 0}.gi-site .calendar-layout{gap:34px}.gi-site .calendar-year{font-size:54px}.gi-site .calendar-intro h2{font-size:39px}.gi-site .calendar-event h3{font-size:21px}
   .gi-site .home-accommodation-note{align-items:flex-start;text-align:left}.gi-site .home-reviews{padding:46px 0}.gi-site .home-reviews>.container{gap:28px}.gi-site .home-review-cards{grid-template-columns:1fr}.gi-site .home-review-cards blockquote>p{font-size:20px}
   .gi-site .footer-grid{grid-template-columns:1fr}.gi-site .footer-bottom{flex-direction:column;gap:12px}
-  .gi-site .mobile-booking-cta{position:fixed;z-index:45;right:12px;bottom:10px;left:12px;display:flex;align-items:center;justify-content:center;gap:10px;min-height:48px;background:var(--accent);color:var(--forest-deep);box-shadow:0 8px 30px rgba(16,47,40,.24);font-size:13px;font-weight:700}
+  .gi-site .mobile-booking-cta{position:fixed;z-index:45;right:12px;bottom:10px;left:12px;display:flex;align-items:center;justify-content:center;gap:10px;min-height:48px;background:var(--accent);color:var(--forest-deep);box-shadow:0 8px 30px rgb(var(--shade) / .24);font-size:13px;font-weight:700}
   #gi-lightbox{padding:70px 12px 90px}#gi-lightbox .lightbox-arrow{top:auto;bottom:20px;width:46px;height:46px;transform:none}#gi-lightbox .lightbox-arrow.previous{left:calc(50% - 58px)}#gi-lightbox .lightbox-arrow.next{right:calc(50% - 58px)}#gi-lightbox .lightbox-close{top:14px;right:14px}#gi-lightbox figcaption{font-size:10px}
 }
 @media (max-width:782px){body.admin-bar .gi-site .site-header{top:46px}}
