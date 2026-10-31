@@ -24,6 +24,9 @@ Surse: capturile trimise de proprietară din WordPress (live, `gradina-ielelor.r
 - **Comenzi:** 1.099 în total (877 finalizate, 186 anulate, 34 eșuate, 1 în așteptare, 1 rambursată). Ultima comandă: 19.09.2026. Comenzile sunt stocate ca articole WordPress (tabelele noi de comenzi nu sunt pornite). Lista are coloanele Deposit, Remaining, Deposit status, Insurance: rezervările pot avea avans și rest.
 - **Pagina de finalizare:** nu s-a stabilit încă dacă e cea clasică (`[woocommerce_checkout]`) sau cu blocuri. Caseta cu regulamentul funcționează numai cu cea clasică.
 
+## Paginile WordPress (lista publică, 31.10.2026)
+42 de pagini publicate, printre care: Acasă (`acasa2025`, #16356, adresa `/`), `cazare-bungalow`, `glamping`, `camping-rulota`, `camping-cort`, `camping` (#4794), `tarife`, `tarife-2026`, `galerie-foto`, `blog-2`, `contact` (#323), `gradina-ielelor-totul-despre-ea` (cu `evenimente` și `timp-liber`), `info-util` (cu Termeni, Confidențialitate, Cookies, Politica de anulare, Info COVID-19), 20 de pagini `info-qr/...` (plante din grădină), `shop`, `rezervarea-mea`, `finalizare-rezervare`, `contul-meu`. Toate cu „Șablon implicit”. **`/festival/` și `/cotatie/` nu apar în listă: nu sunt pagini WordPress.**
+
 ## Alte module active
 GTranslate 5.0.1, Yoast SEO 28.6, Yoast Duplicate Post, WP Mail SMTP 4.10.0, WP Statistics 14.16.15, GTM4WP 2.0.5, Meta Pixel 5.2.2, LoftLoader 2.5.3 (ecranul de încărcare e **oprit** din Personalizare), Advanced Coupons, Auto Coupons, Abandoned Cart Reports, Payment Gateways by User Roles, When Last Login, Editor clasic, Piese clasice.
 
