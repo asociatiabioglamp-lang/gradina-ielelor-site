@@ -261,7 +261,7 @@ gi_part('header');
             <div class="container">
                 <div class="gi-section-head">
                     <span class="eyebrow">Mai multe feluri de a sta în Grădină</span>
-                    <h2 id="related-title">Poate te tentează și</h2>
+                    <h2 id="related-title">Poate te tentează și acestea</h2>
                 </div>
                 <div class="gi-related-grid gi-swipe">
                     <?php foreach ($gi_related as $gi_related_key => $gi_item) : ?>
