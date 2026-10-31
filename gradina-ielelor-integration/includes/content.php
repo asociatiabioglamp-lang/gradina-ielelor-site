@@ -103,7 +103,7 @@ function gi_reviews() {
  */
 function gi_offer_cards() {
     return array(
-        'bungalow' => array('text' => 'Baie proprie, terasă și liniște, pe malul lacului mare.', 'price' => 'de la 350 lei / noapte', 'image' => 'bungalow-card-960.webp', 'alt' => 'Bungalow în Grădina Ielelor'),
+        'bungalow' => array('text' => 'Baie proprie, terasă și liniște, pe malul lacului mare.', 'price' => 'de la 350 lei / noapte', 'image' => 'bungalow-munte-card-960.webp', 'alt' => 'Bungalow în Grădina Ielelor'),
         'glamping' => array('text' => 'Corturi cu pat, pe platformă de lemn, cu muntele la intrare.', 'price' => 'de la 195 lei / noapte', 'image' => 'glamping-card-960.webp', 'alt' => 'Corturi de glamping cu Munții Făgăraș în fundal'),
         'camping' => array('text' => 'Vino cu cortul tău: loc lângă lac, bucătării comune și dușuri calde.', 'price' => '80 lei / noapte', 'image' => 'camping-card-960.webp', 'alt' => 'Corturi în campingul Grădina Ielelor, cu Munții Făgăraș în fundal'),
         'rulote' => array('text' => 'Rulotă sau autorulotă? Racorduri și servicii pe loc, lângă lac.', 'price' => '80 lei / noapte', 'image' => 'home-hero-sunny-960.webp', 'alt' => 'Autorulote lângă lac, cu munții în fundal'),
