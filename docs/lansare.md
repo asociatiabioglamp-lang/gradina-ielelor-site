@@ -166,6 +166,13 @@ Tot aici, două lucruri noi:
   4. Salvează. Limbile noi le poți adăuga pe live chiar de acum: merg și pe site-ul vechi.
 - **Sezonul:** verifică cele patru câmpuri „Sezon” (acum „1 mai – 1 octombrie” la toate). Ce scrie aici apare pe pagini; zilele din afara sezonului le închizi în fiecare produs BRW.
 
+### A3b. Facturarea (FGO) pe staging: oprită, ca să nu se emită facturi reale
+FGO e platforma prin care clientul primește factura. Staging-ul e o copie a live-ului, deci are **aceleași chei FGO**: o comandă de test ar emite o **factură reală**, cu număr din seria firmei.
+1. **[TU]** Pe staging: **Module → FGO Premium → Dezactivează**. Dezactivează și „Facturare – Persoana Fizica sau Juridica” numai dacă lasă comanda de test să treacă fără ea; altfel o lași activă (câmpurile de facturare trebuie văzute la plată).
+2. **[TU]** Verifică **pe staging**, după ce ai oprit FGO: la plată apar câmpurile de facturare (persoană fizică sau juridică), iar în comandă se salvează (numele firmei, CUI, dacă ai ales persoană juridică).
+3. **Nu faci comenzi de test pe live.** Pe live, factura FGO pleacă exact ca până acum: pluginul nostru nu schimbă statusul comenzilor.
+4. **Tariful pentru plata la locație (+10%)** rămâne **oprit** la lansare. E un rând separat în comandă; înainte să-l pornești, verifici cu FGO că rândul apare în factură și că totalul facturii se potrivește. Nu-l porni înainte de verificare.
+
 ### A4. Notează cum e acum (pentru revenire)
 Pe site-ul live, verificat la 31.10.2026, toate paginile de mai jos folosesc **„Șablon implicit” (Default template)**, cu conținut Elementor. Pe staging (o copie a live-ului) ar trebui să fie la fel. Verifică la două pagini (Acasă și Glamping): **Pagini (Pages)** → treci cu mouse-ul peste titlu → **Editare rapidă (Quick Edit)** → câmpul **Șablon (Template)**. Dacă scrie altceva decât „Șablon implicit”, notează și spune-i lui Claude.
 
@@ -399,6 +406,8 @@ Softaculous → **Instalări** → rândul site-ului → **Backups** → **Resto
 ---
 
 ## 9. Urmărirea în primele 7 zile (D+1 … D+7)
+
+**Facturile FGO (în primele zile):** la **prima comandă reală** după lansare verifici că factura a ajuns la client (sau în FGO) cu datele corecte (persoană fizică sau juridică, suma, seria). Dacă nu, revino la R1 și spune-mi.
 
 **[TU]** Zilnic, aproximativ 10 minute:
 1. **Comenzi:** **WooCommerce → Comenzi**. Nicio comandă plătită nu trebuie să rămână „Plată în așteptare” mai mult de o oră. Dacă rămâne, compar-o cu NETOPIA (pasul 2) și spune-i lui Claude.
