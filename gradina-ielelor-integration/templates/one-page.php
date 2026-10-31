@@ -178,7 +178,7 @@ if (!defined('ABSPATH')) {
                     </div>
                     <div class="home-experience-summary">
                         <p>Festivaluri, petreceri, nunți și întâlniri corporate pe un domeniu natural de 9 ha, cu scenă permanentă, camping, cazare, lacuri și parcare.</p>
-                        <div class="home-event-quick-facts"><span><strong>5.000</strong> persoane · aviz ISU</span><span><strong>6 × 7 m</strong> scenă permanentă</span><span><strong>60.000 mp</strong> parcare în interior</span></div>
+                        <div class="home-event-quick-facts"><span><strong>5.000</strong> persoane · aviz ISU</span><span><strong>6 × 7 m</strong> scenă permanentă</span><span><strong>cca. 1.000</strong> locuri de parcare</span></div>
                     </div>
                 </div>
 

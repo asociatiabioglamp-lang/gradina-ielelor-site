@@ -71,7 +71,7 @@ Nu am preluat: `/info-util/info-covid-19/` (depășită) și textul de pe `/grad
 - **Șablon:** Grădina Ielelor — Pagină simplă
 - **Rezumat:** Grădina Ielelor: șase hectare de natură la poalele Munților Făgăraș, la Sâmbăta de Sus. Un loc făcut cu grijă, pentru odihnă în natură.
 
-**Structura:** un paragraf de deschidere (imaginile de pe pagina veche) · Cine suntem (gazdele care au construit Grădina) · Ce este, de fapt, Grădina (6 ha de camping, împrejmuite și păzite, cu parcarea în interior, pe 60.000 mp; la festivaluri, regim de festival pe 9 ha și încă 30.000 mp de parcare în vecinătate; cele trei zone) · Cum poți sta la noi (linkuri spre cele cinci oferte) · Energie din soare, apă din puțul nostru · Ce găsești aici (listă) · Cum trece timpul aici, cu un citat de pe pagina veche · Prin împrejurimi · două butoane: „Alege cum vrei să stai” și „Scrie-ne”.
+**Structura:** un paragraf de deschidere (imaginile de pe pagina veche) · Cine suntem (gazdele care au construit Grădina) · Ce este, de fapt, Grădina (6 ha de camping, împrejmuite și păzite, cu parcarea în interior, pe 60.000 mp; la festivaluri, regim de festival pe 9 ha; la evenimentele mari, la cerere, parcarea se extinde cu 30.000 mp în vecinătate (9 ha, cam o mie de mașini); cele trei zone) · Cum poți sta la noi (linkuri spre cele cinci oferte) · Energie din soare, apă din puțul nostru · Ce găsești aici (listă) · Cum trece timpul aici, cu un citat de pe pagina veche · Prin împrejurimi · două butoane: „Alege cum vrei să stai” și „Scrie-ne”.
 
 Fără nume, date sau istorie inventate: povestea e doar cea de pe pagina veche („de la faza de gând și vis până la faza de cheie”).
 
@@ -97,7 +97,7 @@ Fără nume, date sau istorie inventate: povestea e doar cea de pe pagina veche 
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Un domeniu privat de șase hectare la Sâmbăta de Sus, în județul Brașov, cu Munții Făgăraș în față, împrejmuit și păzit zi și noapte. Mașinile parchează în interior, pe 60.000 de metri pătrați. La festivaluri, domeniul trece în regim de festival, pe nouă hectare, iar pentru mașini se mai adaugă 30.000 de metri pătrați, în vecinătate.</p>
+<p>Un domeniu privat de șase hectare la Sâmbăta de Sus, în județul Brașov, cu Munții Făgăraș în față, împrejmuit și păzit zi și noapte. Mașinile parchează în interior, pe 60.000 de metri pătrați. La festivaluri, domeniul trece în regim de festival, pe nouă hectare. La evenimentele mari, la cerere, parcarea se extinde cu încă 30.000 de metri pătrați, în vecinătate: în total, cam o mie de mașini.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->

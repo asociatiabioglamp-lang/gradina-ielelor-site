@@ -363,7 +363,7 @@ function gi_offer_pages() {
                     'Pavilion de 225 mp cu terasă acoperită, gata la 1 mai 2027',
                     'Drum de acces pentru camioane, până la scenă',
                     'Bucătărie autorizată și loc pentru food trucks',
-                    'Parcare în interiorul Grădinii, pe 60.000 mp, iar la festivaluri încă 30.000 mp în vecinătate',
+                    'Parcare în interiorul Grădinii, pe 60.000 mp. La evenimentele mari, la cerere, ajunge la 9 ha, cu loc pentru cca. 1.000 de mașini',
                     'Cea mai apropiată casă, la circa 2 km',
                 ), 'note' => array('text' => 'Cazare pentru artiști și echipă? ', 'link_text' => 'Vezi bungalow-urile', 'link_offer' => 'bungalow')),
                 array('icon' => 'tent', 'title' => 'Pentru tabere', 'items' => array(
@@ -408,7 +408,7 @@ function gi_offer_pages() {
         ),
         'faq' => array(
             array('q' => 'Ce fel de festivaluri găzduiți?', 'a' => 'Festivaluri de muzică cu camping, festivaluri rock, seri de stand-up și muzică folk și festivaluri pentru familii. Unele au avut deja loc aici, altele sunt în calendarul 2027.'),
-            array('q' => 'Câți oameni încap?', 'a' => 'Domeniul are aviz ISU pentru 5.000 de persoane. Mașinile parchează în interiorul Grădinii, pe 60.000 de metri pătrați. La festivaluri se poate folosi tot spațiul din interior și se mai adaugă 30.000 de metri pătrați, în vecinătate.'),
+            array('q' => 'Câți oameni încap?', 'a' => 'Domeniul are aviz ISU pentru 5.000 de persoane. Mașinile parchează în interiorul Grădinii, pe 60.000 de metri pătrați. La evenimentele mari, la cerere, parcarea se extinde cu încă 30.000 de metri pătrați, în vecinătate: în total 9 hectare, cu loc pentru cam o mie de mașini.'),
             array('q' => 'Câte băi sunt și unde?', 'a' => 'Sunt opt dușuri publice cu apă caldă și douăsprezece toalete, repartizate pe cele trei zone. În Zona 1 (camping și lacul mic): 4 dușuri și 4 toalete. În Zona 2 (platoul și pavilionul): 4 toalete. În Zona 3 (lacul mare și scena): 4 dușuri și 4 toalete. Fiecare dintre cele 4 bungalow-uri are în plus baie proprie.'),
             array('q' => 'Unde dorm participanții?', 'a' => 'Pe domeniu sunt 58 de unități: 4 bungalow-uri cu baie proprie, 4 corturi glamping cu pat și 50 cu saltele, cu lenjerie la cerere. Se adaugă zona de camping și rulote, iar la evenimentele mari ajută și pensiunile din satele din jur. Cazarea de pe domeniu o poți include în biletul festivalului.'),
             array('q' => 'Ce asigurați voi și ce aduce organizatorul?', 'a' => 'Noi punem la dispoziție locul: scena, platoul, lacurile, grupurile sanitare, parcarea, cazarea și paza. Organizatorul aduce producția: sunet, lumini, generatoare, program, bilete și avizele evenimentului.'),
