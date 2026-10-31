@@ -29,6 +29,7 @@ Sursă de adevăr pentru conflictele dintre documente. Se completează pe măsur
 | 2026-10-31 | Sezonul | **Camping cort și rulotă: 1 mai – 1 octombrie · Glamping: 15 mai – 1 octombrie · Bungalow: 1 iunie – 1 octombrie** („momentan”) | Afișat pe pagini, editabil din Setări → Grădina Ielelor; zilele din afara sezonului se închid în fiecare produs BRW |
 | 2026-10-31 | Suprafața | **6 ha de camping** (împrejmuite, pază 24/7); **9 ha în regim de festival**, când se deschide și **o parcare suplimentară de 9 ha** | Texte actualizate: Despre noi, Camping, prima pagină, Festivaluri & evenimente |
 | 2026-10-31 | Design | **Aprobat:** formularul de rezervare de pe prima pagină (câmpuri rotunjite, buton mare „Caută disponibilitatea”) și designul paginilor | Unirea în `main` rămâne la aprobarea finală, după staging |
+| 2026-10-31 | Fotografii | **Muntele e piesa de rezistență:** pozele importante au Munții Făgăraș în spate („ca la Paris, cu Turnul Eiffel”). Prima pagină: în dreapta, lacul cu munții; terasa din stânga rămâne | Pozele de interior (baie, dormitor, bucătărie) rămân doar în galerii, unde informează |
 
 ## Întrebări deschise înainte de lansare (31.10.2026)
 
