@@ -53,6 +53,7 @@ Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai 
 * SEO: titlul setat în Yoast / Rank Math are prioritate; un singur canonical fără plugin SEO.
 * Redirecționările de la adresele vechi sunt temporare (302) până când bifezi „Redirecționări permanente (301)” în Setări → Grădina Ielelor (la D+7).
 * Blocurile cu clasa gi-nota-editor nu ajung la vizitatori nicăieri (pagină, căutare, REST, rezumate).
+* Formularul de rezervare de pe prima pagină: câmpuri rotunjite pe un rând, buton mare „Caută disponibilitatea”, texte prietenoase („Alege cazarea”, „Alege data”).
 
 = 1.1.0 =
 * Pagină dedicată Glamping (template nou), cu ton prietenos și fără jargon tehnic pentru vizitatori.

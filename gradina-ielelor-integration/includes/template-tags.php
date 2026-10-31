@@ -172,6 +172,17 @@ function gi_brw_search_compatibility($html, $options) {
 }
 
 /**
+ * Textele formularului BRW, pe limba vizitatorului: butonul „Caută disponibilitatea”, „Alege cazarea”
+ * în loc de „Selecteză Tip Cazare” și „Alege data” în loc de formatul tehnic „d-m-Y”. Se schimbă doar textul afișat;
+ * numele câmpurilor și valorile trimise la căutare rămân ale BRW.
+ */
+function gi_brw_search_texts($html) {
+    $html = preg_replace('/(<button\b[^>]*\bovabrw_btn_submit\b[^>]*>)\s*Caută\s*(<\/button>)/u', '$1Caută disponibilitatea$2', $html, 1);
+    $html = preg_replace('/(<select\b[^>]*\bname=(["\'])cat\2[^>]*>\s*<option\b[^>]*\bvalue=(["\'])\3[^>]*>)[^<]*(<\/option>)/u', '$1Alege cazarea$4', $html, 1);
+    return preg_replace('/(<input\b[^>]*\bovabrw-datepicker-(?:start|end)\b[^>]*\bplaceholder=)(["\'])d-m-Y\2/u', '$1$2Alege data$2', $html);
+}
+
+/**
  * Singurul punct de randare a rezervării: shortcode-ul real OVABRW.
  * Nu există handler de submit, calcul de preț sau disponibilitate în acest plugin.
  */
@@ -202,7 +213,7 @@ function gi_render_booking($default_type = '', $show_trust = true) {
             }
             $shortcode .= ']';
 
-            $html = do_shortcode($shortcode);
+            $html = gi_brw_search_texts(do_shortcode($shortcode));
             echo gi_brw_search_compatibility($html, $options); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML BRW, cu action escapat.
             ?>
         <?php else : ?>

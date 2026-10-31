@@ -77,16 +77,18 @@ body.admin-bar .gi-site .site-header{top:32px}
 .gi-site .booking-panel{background:#fff;border:1px solid var(--line)}
 .gi-real-booking{padding:24px}
 .gi-real-booking .ovabrw_wd_search{width:100%}
-.gi-real-booking .ovabrw_search{margin:0;width:100%}
+/* Formularul real de rezervare (OVABRW): aerisit, colțuri rotunjite, câmpuri pe un rând și butonul mare alături. */
+.gi-real-booking .ovabrw_search{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:16px;margin:0;width:100%}
 .gi-real-booking .wrap_content{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;width:100%;margin:0}
 .gi-real-booking .s_field{min-width:0;margin:0;padding:0}
 .gi-real-booking .s_field .content{width:100%;margin:0;padding:0}
-.gi-real-booking label,.gi-real-booking .label{display:block;margin:0 0 8px;color:#526059;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}
-.gi-real-booking input[type="text"],.gi-real-booking input[type="date"],.gi-real-booking select{width:100%;min-height:50px;padding:0 12px;border:1px solid var(--line);border-radius:2px;background:#fff;color:var(--ink);font-size:13px;box-shadow:none}
+.gi-real-booking label,.gi-real-booking .label{display:block;margin:0 0 8px;color:#4f5d55;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}
+.gi-real-booking input[type="text"],.gi-real-booking input[type="date"],.gi-real-booking select{width:100%;min-height:56px;padding:0 16px;border:1px solid var(--moss);border-radius:14px;background:#fff;color:var(--ink);font-size:15px;box-shadow:none}
+.gi-real-booking input::placeholder{color:#6b7870;opacity:1}
 .gi-real-booking input:focus,.gi-real-booking select:focus{border-color:var(--forest);outline:2px solid rgba(23,63,53,.12)}
-.gi-real-booking .s_submit{display:flex;align-items:flex-end;margin:18px 0 0;padding:0}
-.gi-real-booking .ovabrw_btn_submit{min-height:50px;display:inline-flex;align-items:center;justify-content:center;padding:13px 24px;border:1px solid transparent;border-radius:2px;background:var(--accent);color:var(--forest-deep);font-size:13px;font-weight:700;cursor:pointer;box-shadow:none;text-transform:none}
-.gi-real-booking .ovabrw_btn_submit:hover{background:#f4c495;color:var(--forest-deep)}
+.gi-real-booking .s_submit{display:flex;align-items:flex-end;margin:0;padding:0}
+.gi-real-booking .ovabrw_btn_submit{min-height:56px;display:inline-flex;align-items:center;justify-content:center;padding:0 32px;border:0;border-radius:14px;background:var(--forest);color:#fff;font-size:15px;font-weight:700;letter-spacing:.01em;white-space:nowrap;cursor:pointer;box-shadow:0 10px 24px rgba(16,47,40,.18);text-transform:none;transition:background .2s ease,transform .2s ease}
+.gi-real-booking .ovabrw_btn_submit:hover{background:var(--forest-deep);color:#fff;transform:translateY(-1px)}
 .gi-booking-trust{display:flex;align-items:center;gap:18px;padding:16px 24px;border-top:1px solid var(--line);background:#fffdf8}
 .gi-booking-trust img{width:90px;height:auto;flex:0 0 auto}
 .gi-booking-trust p{margin:0;color:var(--muted);font-size:11px;line-height:1.6}
@@ -225,6 +227,7 @@ body.gi-lightbox-open{overflow:hidden}
   .gi-site .home-reviews>.container{grid-template-columns:210px 1fr;gap:30px}
 }
 @media (max-width:900px){
+  .gi-real-booking .ovabrw_search{grid-template-columns:1fr}.gi-real-booking .ovabrw_btn_submit{width:100%}
   .gi-site .desktop-nav,.gi-site .header-cta{display:none}.gi-site .menu-toggle{display:block}
   .gi-site .booking-heading{display:block}.gi-site .booking-heading>p{max-width:620px;margin-top:18px}
   .gi-site .home-hero-content h1{font-size:76px}.gi-site .home-experience-intro{gap:35px}
@@ -240,7 +243,7 @@ body.gi-lightbox-open{overflow:hidden}
   .gi-site .home-hero-content{padding:88px 0 32px}.gi-site .home-hero-content h1{margin:16px 0 18px;font-size:clamp(44px,12vw,48px);line-height:.98}
   .gi-site .home-hero-content>p{margin-bottom:26px;font-size:14px;line-height:1.65}.gi-site .home-hero-actions{gap:20px}.gi-site .home-hero-actions .button{width:100%}
   .gi-site .home-booking{padding:28px 0 42px}.gi-site .home-booking-shell{width:calc(100% - 24px);padding:22px 16px 17px}.gi-site .booking-heading h2{font-size:32px}
-  .gi-real-booking{padding:18px 14px}.gi-real-booking .wrap_content{grid-template-columns:1fr;gap:14px}.gi-real-booking .ovabrw_btn_submit{width:100%}
+  .gi-real-booking{padding:18px 14px}.gi-real-booking .wrap_content{grid-template-columns:1fr;gap:14px}
   .gi-booking-trust{align-items:flex-start;padding:16px}.gi-booking-trust img{width:72px}
   .gi-site .home-quick-nav{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:40px}.gi-site .home-one-page-heading{padding-bottom:40px}.gi-site .home-one-page-heading h2{font-size:36px}
   .gi-site .home-experience-detail,.gi-site .home-events-detail{padding-top:46px}.gi-site .home-experience-intro{grid-template-columns:1fr;gap:18px;margin-bottom:24px}.gi-site .home-experience-intro h2{font-size:36px}
