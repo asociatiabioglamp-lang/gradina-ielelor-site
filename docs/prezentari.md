@@ -968,6 +968,18 @@ Listă deduplicată. După fiecare fapt: sursele în care apare. **⚠** = docum
 
 ---
 
+## Corecturi ale proprietarului (31.10.2026; au prioritate față de PDF-uri)
+
+- **Sezon: 1 mai – 1 octombrie, peste tot** (cazare, festivaluri, tabere, retreaturi, evenimente private), „cel puțin momentan”. În PDF-urile din Drive (nemodificate de Claude) apar alte intervale:
+  - [B] Boot camp: „SEZON — Aprilie – octombrie” (pagina 1) și „Apr–Oct — sezonul în care primim grupuri” (pagina 13);
+  - [F] Festivaluri: „Sezonul recomandat este mai–septembrie” (slide 12) și „Sezon și disponibilitate — Mai–septembrie” (slide 13);
+  - [FF] Festival familie: recomandarea „cu cel puțin 6 luni înainte, mai ales pentru iunie – septembrie” (nu contrazice, dar se poate rescrie ca „vara”);
+  - [T] Tabere: „Sezon 2027” (fără interval).
+- **Copii:** bineveniți și încurajați, fără limită de vârstă (răspunsul la „Venim cu copii sau cu câinele?” din [B], pagina 15).
+- **Câini:** câini mici, până la 15 kg, conform regulamentului de pe site.
+- **Pavilioane (evenimente private):** le punem noi la dispoziție sau le aduce clientul, după caz și preferință.
+- **Suprafața:** 6 ha de camping (împrejmuite, pază 24/7); 9 ha în regim de festival, plus o parcare suplimentară de 9 ha.
+
 ## Lipsuri / neclarități
 
 ### Contradicții între sau în interiorul documentelor
@@ -976,7 +988,7 @@ Listă deduplicată. După fiecare fapt: sursele în care apare. **⚠** = docum
 2. **Capacitatea de public pentru festival:** 1.000–1.500 / eveniment [FF] vs 5.000–6.000 capacitate maximă [F] vs aviz ISU 5.000 [FT]. Cifra de 6.000 din [F] depășește avizul ISU de 5.000 din [FT].
 3. **Suficiența toaletelor:** [F] spune că infrastructura permanentă (8 dușuri, 12 toalete) se suplimentează cu module temporare „pentru evenimente de până la 5.000–6.000” și insistă „Fără toalete ecologice”; [FT] arată că 12 toalete acoperă doar 1.000 de participanți, iar la 2.500 trebuie „+18 cabine închiriate”, la 5.000 — 50–65 toalete. În plus, [FT] spune „Nu asigurăm … toalete suplimentare”.
 4. **Parcarea:** \~1.000 locuri peste tot; [FT] precizează că acoperă doar circa 3.000 de participanți (la 4.000 „parţial”, la 5.000 „insuficientă”, navetă obligatorie), în timp ce [F] promovează 5.000–6.000 de participanți.
-5. **Sezonul:** mai–septembrie [F] vs aprilie–octombrie [B].
+5. ~~**Sezonul:** mai–septembrie [F] vs aprilie–octombrie [B].~~ **Rezolvat 31.10:** 1 mai – 1 octombrie, peste tot (vezi „Corecturi ale proprietarului”).
 6. **Ora limită pentru sunet:** „Nu există” [F] vs câmp necompletat „`[___]` dB până la ora `[___]`” [FT].
 7. **Distanța până la prima locuință:** 2 km [F] vs `[___ m]` necompletat [FT].
 8. **Puterea electrică:** „fără plafon de putere” [F] vs „Putere disponibilă `[___]` kVA” [FT] vs „racordurile … se dimensionează împreună cu organizatorul” [FF].

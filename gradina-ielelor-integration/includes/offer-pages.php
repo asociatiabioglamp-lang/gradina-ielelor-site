@@ -259,7 +259,7 @@ function gi_offer_pages() {
                     'Loc pentru rulotă sau autorulotă, cu racorduri și servicii pe loc',
                     'Aproape de lac',
                     'Internet și parcare proprie',
-                    'Câinii sunt bineveniți',
+                    'Câinii mici (până la 15 kg) sunt bineveniți',
                 ), 'note' => array('text' => 'Nu ai cort? Avem corturi cu pat, gata pregătite: ', 'link_text' => 'alege glampingul', 'link_offer' => 'glamping')),
                 array('icon' => 'trees', 'title' => 'În Grădină', 'items' => array(
                     'Opt dușuri cu apă caldă, non-stop',
@@ -411,10 +411,10 @@ function gi_offer_pages() {
             array('q' => 'Unde dorm participanții?', 'a' => 'Pe domeniu sunt 58 de unități: 4 bungalow-uri cu baie proprie, 4 corturi glamping cu pat și 50 cu saltele. Se adaugă zona de camping și rulote, iar la evenimentele mari ajută și pensiunile din satele din jur. Cazarea de pe domeniu o poți include în biletul festivalului.'),
             array('q' => 'Ce asigurați voi și ce aduce organizatorul?', 'a' => 'Noi punem la dispoziție locul: scena, platoul, lacurile, grupurile sanitare, parcarea, cazarea și paza. Organizatorul aduce producția: sunet, lumini, generatoare, program, bilete și avizele evenimentului.'),
             array('q' => 'Ce asigurați la o tabără de copii?', 'a' => 'Noi asigurăm cazarea, spațiile comune, utilitățile, paza și accesul la bucătării. Tu vii cu programul, cu oamenii care au grijă de copii, cu asistența medicală, transportul, asigurările și avizele taberei. Masa o poți găti în bucătăria licențiată sau o aduce un furnizor ales împreună.'),
-            array('q' => 'Primiți și ieșiri cu echipa, retreaturi sau cursuri?', 'a' => 'Da. Pentru echipe de 8–30 de oameni facem ieșiri de o zi, două sau trei, cu programul ținut de noi. La retreaturi și cursuri vii cu programul tău, iar noi ținem locul, mesele și curățenia. Grupurile au zone rezervate doar pentru ele. Pentru nunți, botezuri și majorate avem pagina Evenimente private.'),
+            array('q' => 'Primiți și ieșiri cu echipa, retreaturi sau cursuri?', 'a' => 'Da. Pentru echipe de 8–30 de oameni facem ieșiri de o zi, două sau trei, cu programul ținut de noi. La retreaturi și cursuri vii cu programul tău, iar noi ținem locul, mesele și curățenia. Grupurile au zone rezervate doar pentru ele. Copiii sunt bineveniți, fără limită de vârstă, iar câinii mici (până la 15 kg) sunt primiți. Pentru nunți, botezuri și majorate avem pagina Evenimente private.'),
             array('q' => 'Ce este bootcampul pentru tineri?', 'a' => 'Cinci zile în care tinerii învață pe un teren adevărat: pământ, apă, energie, construcție naturală, și cum se transformă asta într-un proiect care stă în picioare. Sponsorizarea se traduce direct în locuri pentru tineri care altfel nu ar ajunge aici. Dacă vrei să susții o ediție, scrie-ne.'),
             array('q' => 'Cum putem colabora?', 'a' => 'La festivaluri, închiriezi tot domeniul pe durata evenimentului, cu zilele de montaj și demontaj. La tabere, plătești pe copil și pe noapte, închiriezi tot domeniul sau doar o zonă, ori împărțim încasările. Variantele se pot combina, iar tariful îl stabilim împreună.'),
-            array('q' => 'Când să vă scriu?', 'a' => 'Cât mai devreme: îți recomandăm cel puțin șase luni înainte, mai ales pentru iunie–septembrie. Cel mai bine e să vii întâi în vizită. Ne facem timp oricând, și în afara sezonului.'),
+            array('q' => 'Când să vă scriu?', 'a' => 'Cât mai devreme: îți recomandăm cel puțin șase luni înainte, mai ales pentru weekendurile de vară. Cel mai bine e să vii întâi în vizită. Ne facem timp oricând, și în afara sezonului.'),
         ),
         'closing' => array('title' => 'Ai un festival, o tabără sau un retreat în minte?', 'title_em' => 'Hai să vorbim.', 'image' => 'festival-standuri-1280.webp'),
         'seo' => array(
@@ -451,7 +451,7 @@ function gi_offer_pages() {
             'title_em' => 'sub Munții Făgăraș.',
             'paragraphs' => array(
                 'Un domeniu privat, cu un lac, Munții Făgăraș în față și pază zi și noapte. Aici îți poți face nunta, botezul sau majoratul în aer liber, cu oamenii tăi aproape.',
-                'Evenimentele se țin în aer liber, în pavilioane închiriate. Grupurile au zone rezervate doar pentru ele.',
+                'Evenimentele se țin în aer liber, în pavilioane. Le punem noi la dispoziție sau le aduci tu, după caz și preferință. Grupurile au zone rezervate doar pentru ele.',
                 'Invitații pot dormi pe domeniu: avem 58 de unități de cazare, între bungalow-uri, corturi de glamping și corturi cu saltele. Seara, lacul și focul fac restul. Spune-ne ce ai în minte și vedem împreună cum ți se potrivește locul.',
             ),
             'image' => 'intrare-munte-960.webp',
@@ -469,7 +469,7 @@ function gi_offer_pages() {
             'title' => 'Ce găsești la noi',
             'groups' => array(
                 array('icon' => 'music', 'title' => 'La eveniment', 'items' => array(
-                    'În aer liber, în pavilioane închiriate',
+                    'În aer liber, în pavilioane puse la dispoziție de noi sau aduse de tine',
                     'Zone rezervate doar pentru tine și invitații tăi',
                     'Vetre de foc și hamace',
                     'Pavilion de 225 mp, gata la 1 mai 2027',
@@ -495,11 +495,13 @@ function gi_offer_pages() {
             array('icon' => 'sun', 'title' => 'Energie proprie, din soare și GPL', 'text' => 'Ai curent, apă caldă și internet. Te rugăm doar să lași acasă electrocasnicele mari.'),
         ),
         'faq' => array(
-            array('q' => 'Ce fel de evenimente private găzduiți?', 'a' => 'Nunți, botezuri, majorate și petreceri de familie. Se țin în aer liber, în pavilioane închiriate. Spune-ne ce ai în minte și vedem împreună dacă locul ți se potrivește.'),
+            array('q' => 'Ce fel de evenimente private găzduiți?', 'a' => 'Nunți, botezuri, majorate și petreceri de familie. Se țin în aer liber, în pavilioane. Spune-ne ce ai în minte și vedem împreună dacă locul ți se potrivește.'),
+            array('q' => 'Cine asigură pavilioanele?', 'a' => 'Le punem noi la dispoziție sau le aduci tu, după caz și preferință. Stabilim împreună ce ți se potrivește.'),
             array('q' => 'Suntem singuri pe domeniu?', 'a' => 'Grupurile au zone rezervate doar pentru ele. Detaliile le stabilim împreună, după ce ne spui câți sunteți.'),
             array('q' => 'Unde dorm invitații?', 'a' => 'Pe domeniu sunt 58 de unități: 4 bungalow-uri cu baie proprie, 4 corturi glamping cu pat și 50 cu saltele. Pentru invitați în plus, ajută pensiunile din satele din jur.'),
-            array('q' => 'Și dacă plouă?', 'a' => 'Evenimentele se țin în pavilioane închiriate. Din 1 mai 2027 se adaugă pavilionul nostru de 225 mp, cu loc pentru 150 de persoane.'),
+            array('q' => 'Și dacă plouă?', 'a' => 'Evenimentele se țin în pavilioane, puse la dispoziție de noi sau aduse de tine. Din 1 mai 2027 se adaugă pavilionul nostru de 225 mp, cu loc pentru 150 de persoane.'),
             array('q' => 'Cum decurge?', 'a' => 'Ne scrii câți invitați veți fi, ce perioadă ai în minte și ce fel de eveniment faci. Revenim cu un răspuns și vedem împreună ce ți se potrivește.'),
+            array('q' => 'Pot veni copii și câini?', 'a' => 'Da, copiii sunt bineveniți și chiar îi încurajăm: nu există limită de vârstă. Câinii mici, până la 15 kg, sunt primiți, cu regulile din Regulament & politici.'),
             array('q' => 'Pot veni cu echipa de la firmă sau cu un grup de retreat?', 'a' => 'Da. Ieșirile cu echipa, retreaturile și cursurile sunt pe pagina Festivaluri & tabere.'),
         ),
         'closing' => array('title' => 'Ai un eveniment în minte?', 'title_em' => 'Spune-ne câți, când și de ce.', 'image' => 'hero-1280.webp'),

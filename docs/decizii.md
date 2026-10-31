@@ -37,7 +37,10 @@ Sursă de adevăr pentru conflictele dintre documente. Se completează pe măsur
 | 2026-10-31 | Categorii | **Bungalow · Glamping · Camping (corturi & rulote, o singură pagină) · Festivaluri & tabere · Evenimente private.** „Festivaluri & evenimente” dispare | `/rulote/` și `/camping-rulota/` duc la `/camping/`. Pe pagina Camping: al doilea buton „Ai rulotă? Rezervă aici”, cu rulota preselectată |
 | 2026-10-31 | Limbi | Site-ul se **traduce automat** în: engleză, franceză, germană, olandeză, cehă, poloneză, maghiară, spaniolă, norvegiană, daneză (minimum 6) | Prin GTranslate (deja instalat pe site, versiunea gratuită: traducere automată Google în browser, fără pagini traduse indexate). Steagul de limbi stă jos în stânga pe paginile noi. Pașii: `docs/lansare.md`, A3. Pagini traduse indexate în Google = GTranslate plătit, după lansare |
 | 2026-10-31 | Evenimente private | **Grupurile au zone rezervate doar pentru ele.** Nunțile, botezurile și majoratele se țin **în aer liber, în pavilioane închiriate** | Scris pe pagina Evenimente private (poveste, listă, întrebări) |
-| 2026-10-31 | Sezonul evenimentelor | **Toate evenimentele din Grădina Ielelor: 1 mai – 1 octombrie**, „cel puțin momentan” | Afișat pe Festivaluri & tabere și Evenimente private, editabil din Setări → Grădina Ielelor |
+| 2026-10-31 | Sezonul | **Un singur interval peste tot: 1 mai – 1 octombrie**, pentru cazare, festivaluri, tabere, retreaturi și evenimente private, „cel puțin momentan”. Aceeași dată trebuie să apară și în prezentările PDF | Site: câmpuri editabile în Setări → Grădina Ielelor. PDF-urile din Drive nu le modifică Claude; locurile cu alt interval sunt în `docs/prezentari.md`, secțiunea „Corecturi ale proprietarului” |
+| 2026-10-31 | Copii | **Copiii sunt bineveniți și încurajați**, la grupuri, ieșiri cu echipa, retreaturi și evenimente de familie. **Fără limită de vârstă** | Scris pe Festivaluri & tabere și Evenimente private |
+| 2026-10-31 | Câini | **Câinii mici (până la 15 kg), conform regulamentului de pe site.** Restul regulilor: Regulament & politici | Paginile Camping & rulote, Festivaluri & tabere și Evenimente private spun „câinii mici (până la 15 kg)” |
+| 2026-10-31 | Pavilioane la evenimente private | **Le punem noi la dispoziție sau le aduce clientul, după caz și preferință** | Scris pe Evenimente private. Prețuri și dimensiuni: neconfirmate, nu se publică |
 | 2026-10-31 | Repartizarea ofertelor | **Boot camp, tabere de copii și retreaturi intră la Festivaluri & tabere** (inclusiv ieșirile cu echipa din prezentarea Boot camp). **Evenimente private** rămân pentru nunți, botezuri, majorate și petreceri de familie | Pagina Festivaluri & tabere are patru liste: festivaluri, tabere, ieșiri cu echipa și retreaturi, boot camp pentru tineri. Redirecționarea paginii vechi „Totul despre ea / Evenimente” rămâne spre Evenimente private |
 
 ## Întrebări deschise înainte de lansare (31.10.2026)
@@ -48,11 +51,8 @@ Contradicții între regulamentul vechi (2022) și textele noi ale proprietarulu
 |---|---|---|---|---|
 | 1 | Operatorul site-ului | AGRICOLA MEDICINALE 2002 SRL (CUI 33073262) | Facturare prin Asociația Bioglamp (prezentări) | Ce firmă apare în termeni și pe facturi |
 | 2 | Înot în lac | Interzis | Permis în lacul mare (1 m adâncime) | Se poate înota? |
-| 3 | Câini | Doar câini mici (max. 15 kg) | „Câinii sunt bineveniți” (Camping, Rulote) | Regula exactă |
 | 4 | Rulote | Fără curent pentru rulote; racordurile de apă/canal interzise | „Racorduri și servicii pe loc” | Ce primește concret o rulotă |
 | 5 | Voucher | — | Valabil până la 31.12 anul următor anulării, folosibil parțial | Se poate transfera altei persoane? |
 | 6 | Confidențialitate și cookies | Texte vechi (menționează Privacy Shield) | — | Actualizare de jurist pentru serviciile noi |
 | 7 | Link ODR (litigii online) | Pe site-ul vechi | Păstrat, cu notă | Platforma UE ODR s-a închis în 2025: juristul confirmă ce o înlocuiește |
-| 8 | Nunți, botezuri, majorate: cine închiriază pavilioanele | **Răspuns (31.10):** se țin în aer liber, în pavilioane închiriate | Scris pe Evenimente private | Cine închiriază pavilioanele (noi sau clientul), ce tipuri și pentru câți invitați? Până atunci nu scriem prețuri sau dimensiuni |
-| 11 | Grupuri cu copii sau cu câini | Boot camp: „Venim cu copii sau cu câinele?” fără răspuns (`[completează]`) | Fără răspuns pe Evenimente private | Regula pentru grupuri (legată de întrebarea 3) |
 | 12 | Boot camp pentru tineri: ediția următoare | Prezentarea Boot camp: „cinci zile în care `[__]` de tineri…”, număr și date necompletate | Descris pe Festivaluri & tabere (fără număr, date sau preț) | Câți tineri, în ce perioadă e următoarea ediție, cât costă un loc subvenționat? |

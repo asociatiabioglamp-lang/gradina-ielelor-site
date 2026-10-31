@@ -799,7 +799,7 @@ Aceste întrebări ar trebui trecute și în `docs/decizii.md`.
 4. **Plecarea mai devreme.** Regula veche („nopțile rămase se plătesc integral”) a rămas. Se potrivește cu voucherul?
 5. **Acceptarea înainte de plată.** Planul cere ca politica de anulare să fie acceptată explicit înainte de plată. Trebuie verificat că pasul de plată are această bifă.
 6. **Înotul.** Regulamentul din 2022 interzicea înotul în lacuri. Prezentările, pagina /festival/ și paginile Camping și Rulote spun că în lacul mare se poate înota. Am urmat varianta nouă.
-7. **Câinii.** Regulamentul spune: cel mult 15 kg, doar talie mică. Paginile Camping și Rulote spun doar „Câinii sunt bineveniți”. De aliniat.
+7. ~~**Câinii.**~~ **Rezolvat 31.10:** câini mici, până la 15 kg, conform regulamentului. Paginile Camping & rulote, Festivaluri & tabere și Evenimente private spun la fel.
 8. **Curentul și racordurile pentru rulote.** Pagina Info util de pe site-ul actual spune „Nu oferim curent la rulote”, iar regulamentul interzice conectarea la apă și canalizare. Pagina Rulote promite „racorduri și servicii pe loc”. Pe Regulament am scris doar regula prizelor (aparate mici).
 9. **Mașinile.** Regulamentul permite o mașină la fiecare loc (5 km/h, între 8:00 și 23:00). Prezentările pentru grupuri spun „în interior nu circulă mașini”. Am urmat regulamentul.
 10. **Grătarul.** Garanția de 50 de lei pentru grătar, perie sau topor și ora 22:00 vin de pe pagina Info util. Mai sunt valabile?
