@@ -54,10 +54,10 @@ body.admin-bar .gi-site .site-header{top:32px}
 .gi-site .home-hero-slice{overflow:hidden}
 .gi-site .home-hero-slice img{display:block;object-fit:cover}
 .gi-site .home-hero-slice-lake{clip-path:polygon(0 0,100% 0,60% 48%,0 68%)}
-.gi-site .home-hero-slice-sup{clip-path:polygon(100% 0,100% 100%,60% 48%)}
+.gi-site .home-hero-slice-shore{clip-path:polygon(100% 0,100% 100%,60% 48%)}
 .gi-site .home-hero-slice-chill{clip-path:polygon(100% 100%,0 100%,0 68%,60% 48%)}
 .gi-site .home-hero-slice-lake img{object-position:60% 50%}
-.gi-site .home-hero-slice-sup img{object-position:100% 50%}
+.gi-site .home-hero-slice-shore img{object-position:50% 35%}
 .gi-site .home-hero-slice-chill img{object-position:50% 0%}
 .gi-site .home-hero-overlay{z-index:1;background:linear-gradient(90deg,rgba(12,38,30,.62) 0%,rgba(12,38,30,.22) 52%,rgba(12,38,30,.02) 84%),linear-gradient(0deg,rgba(12,38,30,.28),transparent 52%)}
 .gi-site .home-hero-content{position:relative;z-index:2;padding-top:96px;padding-bottom:40px}
@@ -227,8 +227,6 @@ body.gi-lightbox-open{overflow:hidden}
   .gi-site .home-reviews>.container{grid-template-columns:210px 1fr;gap:30px}
 }
 @media (max-width:900px){
-  /* Pe telefon și tabletă, triunghiul din dreapta (lacul cu SUP) e mai larg, ca placa să se vadă întreagă. */
-  .gi-site .home-hero-slice-lake{clip-path:polygon(0 0,100% 0,45% 50%,0 68%)}.gi-site .home-hero-slice-sup{clip-path:polygon(100% 0,100% 100%,45% 50%)}.gi-site .home-hero-slice-chill{clip-path:polygon(100% 100%,0 100%,0 68%,45% 50%)}
   .gi-real-booking .ovabrw_search{grid-template-columns:1fr}.gi-real-booking .ovabrw_btn_submit{width:100%}
   .gi-site .desktop-nav,.gi-site .header-cta{display:none}.gi-site .menu-toggle{display:block}
   .gi-site .booking-heading{display:block}.gi-site .booking-heading>p{max-width:620px;margin-top:18px}
@@ -240,7 +238,7 @@ body.gi-lightbox-open{overflow:hidden}
 @media (max-width:700px){
   body.gi-one-page{padding-bottom:62px}.gi-site .container{width:calc(100% - 32px)}
   .gi-site .home-hero{min-height:max(540px,64svh);align-items:flex-end}.gi-site .home-hero-slice-lake img{object-position:60% 50%}
-  .gi-site .home-hero-slice-sup img{object-position:100% 50%}.gi-site .home-hero-slice-chill img{object-position:0% 50%}
+  .gi-site .home-hero-slice-shore img{object-position:72% 50%}.gi-site .home-hero-slice-chill img{object-position:0% 50%}
   .gi-site .home-hero-overlay{background:linear-gradient(0deg,rgba(10,35,27,.76) 0%,rgba(10,35,27,.18) 68%,rgba(10,35,27,.12) 100%)}
   .gi-site .home-hero-content{padding:88px 0 32px}.gi-site .home-hero-content h1{margin:16px 0 18px;font-size:clamp(44px,12vw,48px);line-height:.98}
   .gi-site .home-hero-content>p{margin-bottom:26px;font-size:14px;line-height:1.65}.gi-site .home-hero-actions{gap:20px}.gi-site .home-hero-actions .button{width:100%}
