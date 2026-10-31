@@ -142,6 +142,13 @@ Arhiva se construiește automat în GitHub, verificată (sintaxa PHP pe PHP 7.4 
 
 Timp: aproximativ o oră. Toți pașii sunt **[TU]**, în WordPress-ul de **staging**. Verifică adresa din bara browserului înainte de fiecare pas: trebuie să fie adresa staging-ului, nu gradina-ielelor.ro.
 
+### A0. Contul tău pe staging (la fel ca pe live, făcut o singură dată)
+Staging-ul a fost clonat pe 28.10, înainte ca pe live contul tău să devină Administrator. Pe staging ai probabil tot rolul **Manager magazin**, cu meniul fără „Module”. Îl repari ca pe live (sau îmi trimiți o captură și te ghidez):
+1. cPanel → **Softaculous → Instalări** → pe rândul staging-ului (adresa `…cpanel.site`) apasă pictograma **Backup**, doar ca să vezi pe pagină **Database Name** (numele bazei de date). Nu apeși „Backup Installation”.
+2. cPanel → **phpMyAdmin** → alegi acea bază de date → fila **SQL**.
+3. Rulezi întâi comanda de citire din `docs/regulament-2022-corectat.md`-ul echivalent: `SELECT u.ID, u.user_login, m.meta_value FROM <prefix>users u JOIN <prefix>usermeta m ON m.user_id = u.ID WHERE m.meta_key LIKE '%capabilities';` (prefixul tabelelor, de exemplu `wp_`, se vede în lista de tabele din stânga). Cauți contul `g.ielelor` și ID-ul lui (pe live: 6).
+4. Îmi trimiți captura; îți dau comanda `UPDATE` exactă, cu ID-ul și prefixul potrivite. Nu rulezi nimic înainte.
+
 ### A1. Backup
 Secțiunea 2, pentru staging. Nu treci mai departe fără el.
 
@@ -394,6 +401,8 @@ Alegi **R1** dacă e urgent (ceva important nu merge) și **R2** dacă vrei să 
 Ce se întâmplă: paginile existente revin singure la designul vechi (conținutul Elementor e neatins), iar redirecționările se opresc. Până la D+7 redirecționările sunt temporare (302), așa că nici browserele vizitatorilor nu rămân pe adresele noi. Dacă ai trecut deja pe Ciornă paginile vechi (secțiunea 9, D+2), le **publici din nou**, ca adresele vechi să nu dea „pagină negăsită”. Paginile **noi** (Bungalow, Rulote, Festivaluri & evenimente, Despre noi, Regulament & politici) rămân goale. Treci-le pe **Ciornă** când ai timp (Editare rapidă → Stare: Ciornă). Nu e urgent, pentru că meniul vechi nu duce la ele.
 
 Ca să revii la designul nou: **Activează** pluginul. Paginile își păstrează șabloanele alese.
+
+**Dacă numai regulamentul de la plată face probleme** (caseta nu apare sau rezervarea nu poate fi finalizată): în **Setări → Grădina Ielelor → Regulamentul la plată** debifezi „Clientul citește și bifează regulamentul…” și salvezi. Rezervările merg din nou ca înainte, fără bifă, iar designul nou rămâne. Spune-mi imediat, ca să reparăm.
 
 ### R2. O singură pagină înapoi (1 minut pe pagină)
 **Pagini** → **Editare rapidă** pe pagina respectivă → **Șablon: Șablon implicit (Default template)** → **Actualizează**. Golește cache-ul. La o pagină nouă: **Stare: Ciornă**.
