@@ -1,0 +1,9 @@
+export const card = 'rounded-xl border border-[#1e3329] bg-[#111f18] p-5'
+export const cardMuted = 'rounded-xl border border-[#1e3329] bg-[#0d1a13] p-4'
+export const btn = 'inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors'
+export const btnPrimary = `${btn} bg-[#c9a96a] text-[#122117] hover:bg-[#dbbd85]`
+export const btnGhost = `${btn} border border-[#2a4536] text-[#dce8df] hover:bg-[#16281f]`
+export const input = 'w-full rounded-lg border border-[#2a4536] bg-[#0b1410] px-3 py-2 text-sm text-[#dce8df] placeholder-[#5f7a6b] outline-none focus:border-[#c9a96a]'
+export const label = 'mb-1 block text-xs font-medium uppercase tracking-wide text-[#8fa79a]'
+export const chip = 'inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium'
+export const h2 = 'text-lg font-semibold text-[#e9f2ec]'
