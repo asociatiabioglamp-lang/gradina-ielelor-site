@@ -67,7 +67,7 @@ function gi_offer_pages() {
                 'Ziua ai la dispoziție două lacuri, unul în care se înoată, și o terasă din lemn construită pe apă. Seara, focul se aprinde în vetrele amenajate, iar hamacele sunt la câțiva pași.',
             ),
             'image' => 'glamping-4-640.webp',
-            'alt' => 'Interior luminos al unei unități de glamping',
+            'alt' => 'Interiorul unui cort de glamping, cu pat dublu, comodă și covor',
         ),
         'gallery' => array('title' => 'Vezi exact unde dormi', 'images' => $experiences['glamping']['images']),
         'included' => array(
@@ -149,11 +149,11 @@ function gi_offer_pages() {
                 'Bungalow-urile stau pe malul lacului mare, care are 8.000 de metri pătrați și un metru adâncime. Se înoată în el. Cea mai apropiată casă e la circa doi kilometri, așa că seara se aude apa și atât.',
             ),
             'image' => 'bungalow-interior-960.webp',
-            'alt' => 'Interiorul bungalow-ului, cu dormitor și zonă de relaxare',
+            'alt' => 'Interiorul bungalow-ului, cu pat, canapea și ușa deschisă spre lac și munți',
         ),
         'gallery' => array('title' => 'Vezi unde te cazezi', 'images' => array_merge($experiences['bungalow']['images'], array(
-            array('src' => 'home-hero-lake-centered-960.webp', 'alt' => 'Lacul din Grădina Ielelor într-o zi însorită, cu Munții Făgăraș în fundal', 'caption' => 'Lacul și Munții Făgăraș'),
-            array('src' => 'festival-lake-640.webp', 'alt' => 'Lac și ponton în Grădina Ielelor', 'caption' => 'Lacul și pontonul'),
+            array('src' => 'bungalow-baie-960.webp', 'alt' => 'Baia unui bungalow, cu duș, chiuvetă și toaletă', 'caption' => 'Baie proprie'),
+            array('src' => 'lac-ponton-1280.webp', 'alt' => 'Lacul cu pontonul din lemn, cu Munții Făgăraș în fundal', 'caption' => 'Lacul și pontonul'),
         ))),
         'included' => array(
             'title' => 'Tot ce-ți trebuie, nimic în plus',
@@ -212,8 +212,8 @@ function gi_offer_pages() {
         'booking_type' => 'camping-cort',
         'cta' => 'Verifică disponibilitatea',
         'hero' => array(
-            'image' => 'camping-day-960.webp',
-            'alt' => 'Corturi și spații verzi în campingul Grădina Ielelor',
+            'image' => 'camping-hero-1600.webp',
+            'alt' => 'Corturi în zona de camping, cu Munții Făgăraș în fundal',
             'h1' => 'Camping la',
             'h1_em' => 'poalele Făgărașului',
             'lead' => 'Vino cu cortul tău. Ai dușuri calde, bucătării comune și un lac în care se înoată, într-un domeniu privat și păzit.',
@@ -233,15 +233,15 @@ function gi_offer_pages() {
                 'Lacul mare are 8.000 de metri pătrați și un metru adâncime, așa că se înoată în el. Lacul mic are o terasă din lemn construită direct pe apă, de 7 pe 12 metri, unde încape toată gașca.',
             ),
             'image' => 'camping-night-960.webp',
-            'alt' => 'Corturi luminate seara în Grădina Ielelor',
+            'alt' => 'Vetre de foc cu bănci și ghirlande de lumini, la apus, în zona de camping',
         ),
         'gallery' => array('title' => 'Vezi unde îți pui cortul', 'images' => array(
             array('src' => 'camping-day-960.webp', 'alt' => 'Corturi și spații verzi în campingul Grădina Ielelor', 'caption' => 'Camping în zi însorită'),
-            array('src' => 'camping-night-960.webp', 'alt' => 'Corturi luminate seara în Grădina Ielelor', 'caption' => 'Seri liniștite la cort'),
-            array('src' => 'festival-lake-640.webp', 'alt' => 'Lac și ponton în Grădina Ielelor', 'caption' => 'Acces la lac și ponton'),
-            array('src' => 'home-hero-chill-640.webp', 'alt' => 'Terasă cu hamace și fotolii pentru relaxare', 'caption' => 'Loc de relaxare'),
-            array('src' => 'home-hero-lake-centered-960.webp', 'alt' => 'Lacul din Grădina Ielelor într-o zi însorită, cu Munții Făgăraș în fundal', 'caption' => 'Lacul și Munții Făgăraș'),
-            array('src' => 'home-hero-festival-640.webp', 'alt' => 'Vedere aeriană cu oaspeți, corturi și rulote în Grădina Ielelor', 'caption' => 'Grădina, văzută de sus'),
+            array('src' => 'camping-bucatarie-960.webp', 'alt' => 'Bucătărie comună în aer liber, sub un acoperiș din lemn', 'caption' => 'Bucătărie comună'),
+            array('src' => 'festival-lake-640.webp', 'alt' => 'Lacul cu pontonul din lemn, cu Munții Făgăraș în fundal', 'caption' => 'Acces la lac și ponton'),
+            array('src' => 'home-hero-chill-640.webp', 'alt' => 'Foișor din lemn cu scaune-hamac și fotolii pentru relaxare', 'caption' => 'Loc de relaxare'),
+            array('src' => 'camping-sanitare-960.webp', 'alt' => 'Grupul sanitar din camping, cu chiuvete și oglinzi', 'caption' => 'Grup sanitar'),
+            array('src' => 'camping-lac-1280.webp', 'alt' => 'Lacul și corturile de pe mal, cu Munții Făgăraș în fundal', 'caption' => 'Corturi lângă lac'),
         )),
         'included' => array(
             'title' => 'Tot ce-ți trebuie, nimic în plus',
@@ -287,11 +287,11 @@ function gi_offer_pages() {
             array('q' => 'Trebuie să rezerv din timp?', 'a' => 'Îți recomandăm, mai ales pentru weekendurile de vară și cât timp e deschis Transfăgărășanul.'),
             array('q' => 'Cât costă o noapte?', 'a' => 'Tariful de referință este 80 lei pe noapte. Prețul final îl vezi când alegi datele.'),
         ),
-        'closing' => array('title' => 'Gata de o noapte', 'title_em' => 'la cort, sub Făgăraș?', 'image' => 'hero-1280.webp'),
+        'closing' => array('title' => 'Gata de o noapte', 'title_em' => 'la cort, sub Făgăraș?', 'image' => 'camping-noapte-1280.webp'),
         'seo' => array(
             'title' => 'Camping Sâmbăta de Sus, Brașov | Grădina Ielelor',
             'description' => 'Camping cu cortul tău în Grădina Ielelor: două lacuri, dușuri calde non-stop, bucătării comune, hamace și vetre de foc. La 20 de minute de Transfăgărășan.',
-            'image' => 'camping-day-960.webp',
+            'image' => 'camping-hero-1600.webp',
         ),
     );
 
@@ -300,8 +300,8 @@ function gi_offer_pages() {
         'booking_type' => 'camping-rulota',
         'cta' => 'Verifică disponibilitatea',
         'hero' => array(
-            'image' => 'home-hero-sunny-960.webp',
-            'alt' => 'Rulote la lac cu munții în fundal',
+            'image' => 'rulote-hero-1600.webp',
+            'alt' => 'Autorulote parcate lângă lac, cu Munții Făgăraș în fundal',
             'h1' => 'Cu rulota în',
             'h1_em' => 'Grădina Ielelor',
             'lead' => 'Rulotă sau autorulotă? Ai racorduri și servicii pe loc, lângă lac, la poalele Munților Făgăraș.',
@@ -324,12 +324,12 @@ function gi_offer_pages() {
             'alt' => 'Vedere aeriană cu oaspeți, corturi și rulote în Grădina Ielelor',
         ),
         'gallery' => array('title' => 'Vezi locul înainte să vii', 'images' => array(
-            array('src' => 'home-hero-sunny-960.webp', 'alt' => 'Rulote la lac cu munții în fundal', 'caption' => 'Rulote lângă lac'),
-            array('src' => 'home-hero-festival-640.webp', 'alt' => 'Vedere aeriană cu oaspeți, corturi și rulote în Grădina Ielelor', 'caption' => 'Corturi și rulote, văzute de sus'),
-            array('src' => 'camping-day-960.webp', 'alt' => 'Corturi și spații verzi în campingul Grădina Ielelor', 'caption' => 'Zona de camping, ziua'),
-            array('src' => 'festival-lake-640.webp', 'alt' => 'Lac și ponton în Grădina Ielelor', 'caption' => 'Acces la lac și ponton'),
-            array('src' => 'home-hero-chill-640.webp', 'alt' => 'Terasă cu hamace și fotolii pentru relaxare', 'caption' => 'Loc de relaxare'),
-            array('src' => 'camping-night-960.webp', 'alt' => 'Corturi luminate seara în Grădina Ielelor', 'caption' => 'Seri liniștite în camping'),
+            array('src' => 'rulote-aerian-960.webp', 'alt' => 'Rulote și autorulote parcate pe domeniu, văzute de sus', 'caption' => 'Rulote pe domeniu, văzute de sus'),
+            array('src' => 'rulote-lac-960.webp', 'alt' => 'Autorulote lângă lac, într-o zi cu nori', 'caption' => 'Rulote lângă lac'),
+            array('src' => 'festival-lake-640.webp', 'alt' => 'Lacul cu pontonul din lemn, cu Munții Făgăraș în fundal', 'caption' => 'Acces la lac și ponton'),
+            array('src' => 'camping-bucatarie-960.webp', 'alt' => 'Bucătărie comună în aer liber, sub un acoperiș din lemn', 'caption' => 'Bucătărie comună'),
+            array('src' => 'camping-sanitare-960.webp', 'alt' => 'Grupul sanitar din camping, cu chiuvete și oglinzi', 'caption' => 'Grup sanitar'),
+            array('src' => 'domeniu-aerian-1280.webp', 'alt' => 'Domeniul Grădina Ielelor văzut de sus, cu rulote și Munții Făgăraș în fundal', 'caption' => 'Domeniul, văzut de sus'),
         )),
         'included' => array(
             'title' => 'Tot ce-ți trebuie, nimic în plus',
@@ -378,7 +378,7 @@ function gi_offer_pages() {
         'seo' => array(
             'title' => 'Rulote și autorulote, Sâmbăta de Sus | Grădina Ielelor',
             'description' => 'Loc pentru rulotă sau autorulotă în Grădina Ielelor, Sâmbăta de Sus: racorduri și servicii pe loc, dușuri calde non-stop, bucătării comune și lac, sub Făgăraș.',
-            'image' => 'home-hero-sunny-960.webp',
+            'image' => 'rulote-hero-1600.webp',
         ),
     );
 
@@ -388,8 +388,8 @@ function gi_offer_pages() {
         'cta' => 'Cere ofertă',
         'cta_url' => home_url('/festival/'),
         'hero' => array(
-            'image' => 'festival-scena-960.webp',
-            'alt' => 'Festival și camping pe domeniul Grădina Ielelor',
+            'image' => 'evenimente-hero-1600.webp',
+            'alt' => 'Familii la un eveniment în aer liber în Grădina Ielelor, cu Munții Făgăraș în fundal',
             'h1' => 'Festivaluri și evenimente',
             'h1_em' => 'în Grădina Ielelor',
             'lead' => 'Nouă hectare la poalele Munților Făgăraș, cu scenă permanentă, două lacuri, cazare și parcare. Pentru festivaluri, petreceri și evenimente de familie.',
@@ -417,7 +417,7 @@ function gi_offer_pages() {
         ),
         'gallery' => array('title' => 'Vezi domeniul', 'images' => array_merge(gi_event_images(), array(
             array('src' => 'home-hero-festival-640.webp', 'alt' => 'Vedere aeriană cu oaspeți, corturi și rulote în Grădina Ielelor', 'caption' => 'Publicul doarme pe domeniu'),
-            array('src' => 'festival-lake-640.webp', 'alt' => 'Lac și ponton în Grădina Ielelor', 'caption' => 'Lacul, între concerte'),
+            array('src' => 'evenimente-apus-1280.webp', 'alt' => 'Apus de soare reflectat în lacul din Grădina Ielelor', 'caption' => 'Lacul, la apus'),
         ))),
         'included' => array(
             'title' => 'Totul pe același teren',
@@ -456,11 +456,11 @@ function gi_offer_pages() {
             array('q' => 'Pot organiza o nuntă sau un botez?', 'a' => 'Da, din mai 2027, când pavilionul de 225 mp este disponibil. Încap până la 150 de invitați, iar bucătăria licențiată e chiar pe domeniu.'),
             array('q' => 'Primiți și tabere sau grupuri?', 'a' => 'Da. Taberele de copii și grupurile găsesc aici un perimetru închis, pază 24 din 24 și cazare pe domeniu. Cere o ofertă și stabilim totul împreună.'),
         ),
-        'closing' => array('title' => 'Ai un eveniment în minte?', 'title_em' => 'Hai să vorbim.', 'image' => 'hero-1280.webp'),
+        'closing' => array('title' => 'Ai un eveniment în minte?', 'title_em' => 'Hai să vorbim.', 'image' => 'domeniu-aerian-1280.webp'),
         'seo' => array(
             'title' => 'Festivaluri și evenimente, Brașov | Grădina Ielelor',
             'description' => 'Festivaluri, petreceri și evenimente de familie în Grădina Ielelor, Sâmbăta de Sus: 9 ha, aviz ISU pentru 5.000 de persoane, scenă permanentă, lacuri și cazare.',
-            'image' => 'festival-scena-960.webp',
+            'image' => 'evenimente-hero-1600.webp',
         ),
     );
 

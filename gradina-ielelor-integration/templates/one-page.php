@@ -23,7 +23,7 @@ if (!defined('ABSPATH')) {
                     <img src="<?php echo esc_url(gi_image_url('home-hero-festival-640.webp')); ?>" alt="Vedere aeriană cu oaspeți, corturi și rulote în Grădina Ielelor" width="640" height="480">
                 </figure>
                 <figure class="home-hero-slice home-hero-slice-chill">
-                    <img src="<?php echo esc_url(gi_image_url('home-hero-chill-640.webp')); ?>" alt="Terasă cu hamace și fotolii pentru relaxare" width="640" height="480">
+                    <img src="<?php echo esc_url(gi_image_url('home-hero-chill-640.webp')); ?>" alt="Foișor din lemn cu scaune-hamac și fotolii pentru relaxare" width="640" height="480">
                 </figure>
             </div>
             <div class="home-hero-overlay"></div>
