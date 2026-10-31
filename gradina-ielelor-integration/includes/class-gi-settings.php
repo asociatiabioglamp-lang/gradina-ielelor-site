@@ -48,7 +48,7 @@ final class GI_Settings {
         $brw = shortcode_exists('ovabrw_search');
         ?>
         <div class="wrap">
-            <h1>Grădina Ielelor — One Page + BRW</h1>
+            <h1>Grădina Ielelor — Site + rezervări</h1>
             <p>Interfața este randată server-side. Formularul React demonstrativ este <strong>dezactivat permanent și nu este inclus în pachet</strong>.</p>
 
             <h2>Stare dependențe</h2>
@@ -95,7 +95,7 @@ final class GI_Settings {
             <h2>Activarea paginii</h2>
             <ol>
                 <li>Creează sau editează pagina principală WordPress.</li>
-                <li>Selectează template-ul <strong>Grădina Ielelor — One Page + BRW</strong>.</li>
+                <li>Selectează template-ul <strong>Grădina Ielelor — Pagina principală (rezervare)</strong>.</li>
                 <li>Setează pagina drept pagină statică de pornire în Setări → Citire.</li>
                 <li>Verifică o căutare reală BRW până la rezultate; nu folosi plăți live pe staging.</li>
             </ol>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Header comun: logo, cele patru oferte, informații și CTA de rezervare.
+ * Header comun: logo, cele cinci categorii, informații și CTA de rezervare.
  * Ofertele trimit la pagina dedicată când există, altfel la secțiunea de pe pagina principală.
  */
 if (!defined('ABSPATH')) {

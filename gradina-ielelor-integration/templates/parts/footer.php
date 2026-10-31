@@ -16,9 +16,15 @@ $gi_mobile_cta_url = isset($args['mobile_cta_url']) ? $args['mobile_cta_url'] : 
                 <p>Camping, glamping, bungalow și evenimente în natură, la Sâmbăta de Sus, Brașov, la poalele Munților Făgăraș.</p>
             </div>
             <div><h3>Descoperă</h3><?php foreach (gi_offers() as $gi_key => $gi_offer) : ?><a href="<?php echo esc_url(gi_offer_url($gi_key)); ?>"<?php echo gi_current_page_key() === $gi_key ? ' aria-current="page"' : ''; ?>><?php echo esc_html($gi_offer['label']); ?></a><?php endforeach; ?></div>
-            <div><h3>Informații</h3><a href="<?php echo esc_url(gi_clean_page_url('despre-noi')); ?>">Despre noi</a><a href="<?php echo esc_url(gi_clean_page_url('regulament-politici')); ?>">Regulament &amp; politici</a><a href="<?php echo esc_url(gi_offer_has_page('evenimente') ? gi_offer_url('evenimente') . '#calendar' : gi_home_section_url('calendar-2027')); ?>">Calendar evenimente 2027</a><a href="<?php echo esc_url(gi_home_section_url('recenzii')); ?>">Recenzii ale oaspeților</a></div>
+            <div><h3>Informații</h3><a href="<?php echo esc_url(gi_clean_page_url('despre-noi')); ?>">Despre noi</a><a href="<?php echo esc_url(gi_clean_page_url('regulament-politici')); ?>">Regulament &amp; politici</a><a href="<?php echo esc_url(gi_clean_page_url('contact')); ?>">Contact</a><a href="<?php echo esc_url(gi_blog_url()); ?>">Blog</a><a href="<?php echo esc_url(gi_offer_has_page('evenimente') ? gi_offer_url('evenimente') . '#calendar' : gi_home_section_url('calendar-2027')); ?>">Calendar evenimente 2027</a><a href="<?php echo esc_url(gi_home_section_url('recenzii')); ?>">Recenzii ale oaspeților</a></div>
             <div><h3>Contact</h3><a href="tel:+40721333164"><?php echo gi_icon('phone'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> +40 721 333 164</a><a href="mailto:office@gradina-ielelor.ro"><?php echo gi_icon('mail'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> office@gradina-ielelor.ro</a><a href="https://www.google.com/maps/search/?api=1&amp;query=Gradina+Ielelor+Sambata+de+Sus" target="_blank" rel="noopener noreferrer"><?php echo gi_icon('map-pin'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Sâmbăta de Sus, Brașov</a></div>
         </div>
+        <nav class="container footer-legal" aria-label="Informații legale">
+            <?php foreach (gi_legal_links() as $gi_label => $gi_url) : ?>
+                <?php $gi_external = 0 !== strpos($gi_url, home_url('/')); ?>
+                <a href="<?php echo esc_url($gi_url); ?>"<?php echo $gi_external ? ' target="_blank" rel="noopener noreferrer"' : ''; ?>><?php echo esc_html($gi_label); ?></a>
+            <?php endforeach; ?>
+        </nav>
         <div class="container footer-bottom"><span>Rezervările și plățile se fac online, direct pe site.</span><span>© <?php echo esc_html(wp_date('Y')); ?> Grădina Ielelor</span></div>
     </footer>
 

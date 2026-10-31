@@ -47,6 +47,39 @@ function gi_clean_page_url($path) {
     return $page ? get_permalink($page) : home_url('/' . trim($path, '/') . '/');
 }
 
+/**
+ * Linkurile legale din subsol: paginile site-ului care există (aceleași adrese ca pe site-ul actual)
+ * și autoritățile pentru protecția consumatorului (aceleași linkuri ca pe site-ul actual; ODR: vezi docs/decizii.md).
+ */
+function gi_legal_links() {
+    $terms_id = function_exists('wc_terms_and_conditions_page_id') ? wc_terms_and_conditions_page_id() : 0;
+    $pages = array(
+        'Termeni și condiții' => $terms_id ? get_permalink($terms_id) : 'info-util/termeni-si-conditii',
+        'Confidențialitate' => get_privacy_policy_url() ? get_privacy_policy_url() : 'info-util/politica-de-confidentialitate',
+        'Cookies' => 'info-util/politica-cookies',
+        'Politica de anulare' => 'info-util/politica-de-anulare',
+    );
+    $links = array();
+    foreach ($pages as $label => $target) {
+        if (0 !== strpos($target, 'http')) {
+            $page = get_page_by_path($target);
+            $target = ($page && 'publish' === $page->post_status) ? get_permalink($page) : '';
+        }
+        if ($target) {
+            $links[$label] = $target;
+        }
+    }
+    $links['ANPC'] = 'https://anpc.ro/';
+    $links['ANPC — SAL'] = 'https://anpc.ro/categorie/1271/sal';
+    $links['Litigii online (SOL)'] = 'https://ec.europa.eu/consumers/odr/main/index.cfm?event=main.home2.show&lng=RO';
+    return apply_filters('gi_legal_links', $links);
+}
+
+function gi_blog_url() {
+    $page_id = (int) get_option('page_for_posts');
+    return $page_id ? get_permalink($page_id) : gi_home_section_url('blog');
+}
+
 function gi_booking_url($type = '') {
     $base = is_singular() ? get_permalink(get_queried_object_id()) : home_url('/');
     $allowed = array('camping-cort', 'camping-rulota', 'glamping', 'bungalow');

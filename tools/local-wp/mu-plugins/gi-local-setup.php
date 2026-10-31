@@ -54,6 +54,30 @@ add_action('init', function () {
     update_option('gi_local_setup_done', '4');
 }, 99);
 
+// Paginile legale ale site-ului actual (aceleași adrese ca pe live) și pagina de blog, pentru linkurile din subsol.
+add_action('init', function () {
+    if (get_option('gi_local_setup_legal') === '1') {
+        return;
+    }
+    $parent = get_page_by_path('info-util');
+    $parent_id = $parent ? $parent->ID : wp_insert_post(array('post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Info util', 'post_name' => 'info-util', 'post_content' => 'Conținut de test.'));
+    foreach (array(
+        'termeni-si-conditii' => 'Termeni și condiții',
+        'politica-de-confidentialitate' => 'Politica de confidențialitate',
+        'politica-cookies' => 'Politica cookies',
+        'politica-de-anulare' => 'Politica de anulare',
+    ) as $slug => $title) {
+        if (!get_page_by_path('info-util/' . $slug)) {
+            wp_insert_post(array('post_type' => 'page', 'post_status' => 'publish', 'post_title' => $title, 'post_name' => $slug, 'post_parent' => $parent_id, 'post_content' => 'Conținut de test.'));
+        }
+    }
+    $blog = get_page_by_path('blog');
+    $blog_id = $blog ? $blog->ID : wp_insert_post(array('post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Blog', 'post_name' => 'blog', 'post_content' => ''));
+    update_option('page_for_posts', $blog_id);
+    flush_rewrite_rules();
+    update_option('gi_local_setup_legal', '1');
+}, 100);
+
 /**
  * Copie a textului din docs/pagini-continut.md (generată din aceleași fișiere, verificate în editorul WordPress).
  */

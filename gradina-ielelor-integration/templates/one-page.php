@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Grădina Ielelor — One Page + BRW
+ * Template Name: Grădina Ielelor — Pagina principală (rezervare)
  * Randare server-side; modulul de rezervare este exclusiv OVABRW.
  */
 if (!defined('ABSPATH')) {
@@ -102,8 +102,14 @@ if (!defined('ABSPATH')) {
 
         <?php foreach (gi_experiences() as $id => $experience) : ?>
             <?php
-            // Oferta cu pagină dedicată nu se mai încarcă aici; cardul de mai sus duce la pagina ei.
-            if (gi_offer_has_page($id)) {
+            // Secțiunea rămâne cât timp o ofertă care trimite la ea (ex. Rulote → #camping) nu are pagină dedicată.
+            $gi_needed = false;
+            foreach (gi_offers() as $gi_offer_key => $gi_offer) {
+                if ($gi_offer['anchor'] === $id && !gi_offer_has_page($gi_offer_key)) {
+                    $gi_needed = true;
+                }
+            }
+            if (!$gi_needed) {
                 continue;
             }
             ?>

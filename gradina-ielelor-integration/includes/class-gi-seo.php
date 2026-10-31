@@ -25,7 +25,8 @@ final class GI_SEO {
         if (!gi_is_site_page()) {
             return $title;
         }
-        return self::title_value('');
+        // Yoast / Rank Math trimit aici titlul lor; titlul setat de mână în ele are prioritate.
+        return self::title_value($title);
     }
 
     public static function seo_title($title) {
@@ -90,6 +91,8 @@ final class GI_SEO {
         $description = self::description_value('');
         $canonical = self::canonical_url();
         $image = self::og_image('');
+        // Un singur canonical: cel de mai jos, nu și cel din nucleul WordPress.
+        remove_action('wp_head', 'rel_canonical');
         ?>
         <meta name="description" content="<?php echo esc_attr($description); ?>">
         <link rel="canonical" href="<?php echo esc_url($canonical); ?>">
