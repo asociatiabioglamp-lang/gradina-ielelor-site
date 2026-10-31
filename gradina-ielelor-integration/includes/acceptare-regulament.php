@@ -196,11 +196,35 @@ function gi_roi_capture_posted($post_data) {
 add_action('woocommerce_checkout_update_order_review', 'gi_roi_capture_posted');
 
 /**
+ * Pe pagina de plată a unei comenzi existente („order-pay”, de exemplu restul după un avans): comanda respectivă, sau null.
+ */
+function gi_roi_pay_order() {
+    if (!function_exists('is_wc_endpoint_url') || !is_wc_endpoint_url('order-pay')) {
+        return null;
+    }
+    global $wp;
+    $order_id = isset($wp->query_vars['order-pay']) ? absint($wp->query_vars['order-pay']) : 0;
+    return $order_id ? wc_get_order($order_id) : null;
+}
+
+/**
+ * Caseta se arată când acceptarea e activă și comanda nu a acceptat deja regulamentul (restul de plată al unei rezervări
+ * acceptate la început nu cere bifa a doua oară).
+ */
+function gi_roi_needed() {
+    if (!gi_roi_active()) {
+        return false;
+    }
+    $order = gi_roi_pay_order();
+    return !($order && $order->get_meta('_gi_roi_acceptat'));
+}
+
+/**
  * Caseta și bifa, chiar deasupra butonului de plată (finalizare și plata unei comenzi existente).
  * Starea (derulat / bifat) se păstrează când pagina de plată se reîmprospătează.
  */
 function gi_roi_render_box() {
-    if (!gi_roi_active()) {
+    if (!gi_roi_needed()) {
         return;
     }
     gi_roi_mark_displayed();
@@ -284,7 +308,7 @@ add_action('woocommerce_checkout_create_order', 'gi_roi_save_acceptance');
  * Plata unei comenzi existente (link de plată): aceeași cerință, aceeași dovadă.
  */
 function gi_roi_before_pay($order) {
-    if (!$order instanceof WC_Order || !gi_roi_active()) {
+    if (!$order instanceof WC_Order || !gi_roi_active() || $order->get_meta('_gi_roi_acceptat')) {
         return;
     }
     $error = gi_roi_acceptance_error();
