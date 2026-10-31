@@ -178,16 +178,16 @@ if (!defined('ABSPATH')) {
                     </div>
                     <div class="home-experience-summary">
                         <p>Festivaluri, petreceri, nunți și întâlniri corporate pe un domeniu natural de 9 ha, cu scenă permanentă, camping, cazare, lacuri și parcare.</p>
-                        <div class="home-event-quick-facts"><span><strong>5.000</strong> persoane · aviz ISU</span><span><strong>6 × 7 m</strong> scenă permanentă</span><span><strong>cca. 1.000</strong> locuri de parcare</span></div>
+                        <div class="home-event-quick-facts"><span><strong>5.000</strong> persoane · aviz ISU</span><span><strong>6 × 7 m</strong> scenă permanentă</span><span><strong>60.000 mp</strong> parcare în interior</span></div>
                     </div>
                 </div>
 
                 <?php gi_render_gallery(gi_event_images(), 'Galerie festivaluri și evenimente'); ?>
 
                 <div class="home-event-zones">
-                    <article><?php echo gi_icon('waves'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><div><h3>Camping &amp; lacul mic</h3><p>Bucătării comune, hamace, vetre de foc, Wi-Fi și terasă acoperită pe apă.</p></div></article>
-                    <article><?php echo gi_icon('trees'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><div><h3>Platoul &amp; pavilionul</h3><p>Pavilion de 225 mp, terasă de 50 mp, bucătărie autorizată și grup sanitar.</p></div></article>
-                    <article><?php echo gi_icon('music'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><div><h3>Lacul mare &amp; scena</h3><p>Scenă permanentă, lac de 8.000 mp, ponton, bungalow-uri și bloc sanitar.</p></div></article>
+                    <article><?php echo gi_icon('waves'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><div><h3>Camping &amp; lacul mic</h3><p>Bucătării comune, hamace, vetre de foc, Wi-Fi, terasă acoperită pe apă, 4 dușuri și 4 toalete.</p></div></article>
+                    <article><?php echo gi_icon('trees'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><div><h3>Platoul &amp; pavilionul</h3><p>Pavilion de 225 mp, terasă de 50 mp, bucătărie autorizată și 4 toalete.</p></div></article>
+                    <article><?php echo gi_icon('music'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><div><h3>Lacul mare &amp; scena</h3><p>Scenă permanentă, lac de 8.000 mp, ponton, bungalow-uri, 4 dușuri și 4 toalete.</p></div></article>
                 </div>
 
                 <details class="home-event-details">

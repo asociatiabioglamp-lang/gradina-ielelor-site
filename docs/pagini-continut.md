@@ -472,7 +472,7 @@ Apoi, mereu vizibile: **Cine suntem** (datele firmei de pe site-ul actual) · **
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->
-<li>În lacul mare se poate înota: are un metru adâncime peste tot, fără zone adânci.</li>
+<li>În lacul mare se poate înota: are un metru adâncime peste tot, fără zone adânci. Lacul mic e rezervat pescuitului.</li>
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->
@@ -798,7 +798,7 @@ Aceste întrebări ar trebui trecute și în `docs/decizii.md`.
 3. **Voucher transferabil?** Regulamentul din 2022 permitea folosirea voucherului de altă persoană. Decizia nouă nu spune nimic, deci nu am scris.
 4. **Plecarea mai devreme.** Regula veche („nopțile rămase se plătesc integral”) a rămas. Se potrivește cu voucherul?
 5. **Acceptarea înainte de plată.** Planul cere ca politica de anulare să fie acceptată explicit înainte de plată. Trebuie verificat că pasul de plată are această bifă.
-6. **Înotul.** Regulamentul din 2022 interzicea înotul în lacuri. Prezentările, pagina /festival/ și paginile Camping și Rulote spun că în lacul mare se poate înota. Am urmat varianta nouă.
+6. ~~**Înotul.**~~ **Rezolvat 31.10:** în lacul mare se poate înota (confirmat de proprietar). Lacul mic e rezervat pescuitului. Regulamentul din 2022 interzicea înotul în lacuri: copia corectată e în `docs/regulament-2022-corectat.md` (fișierul PDF nou, de înlocuit de proprietar).
 7. ~~**Câinii.**~~ **Rezolvat 31.10:** câini mici, până la 15 kg, conform regulamentului. Paginile Camping & rulote, Festivaluri & tabere și Evenimente private spun la fel.
 8. **Curentul și racordurile pentru rulote.** Pagina Info util de pe site-ul actual spune „Nu oferim curent la rulote”, iar regulamentul interzice conectarea la apă și canalizare. Pagina Rulote promite „racorduri și servicii pe loc”. Pe Regulament am scris doar regula prizelor (aparate mici).
 9. **Mașinile.** Regulamentul permite o mașină la fiecare loc (5 km/h, între 8:00 și 23:00). Prezentările pentru grupuri spun „în interior nu circulă mașini”. Am urmat regulamentul.
@@ -806,7 +806,7 @@ Aceste întrebări ar trebui trecute și în `docs/decizii.md`.
 11. **Datele personale și cookie-urile.** Textele vechi nu acoperă serviciile noi: 5starDesk, NETOPIA, sincronizarea cu Booking, Airbnb și agențiile, linkul de afiliere `?ref=` (cookie), recenziile Google aduse pe site, redirecționarea emailurilor rezervari@ și office@ către Gmail. Politica veche pune totul pe consimțământ și spune că datele nu ies din țară (afirmația aceasta n-am preluat-o). Pagina veche de cookie-uri pomenește „Privacy Shield”, invalidat în 2020, plus Google Analytics și Facebook; site-ul actual are și pixelul Facebook. Avocatul actualizează textele; de stabilit și bannerul de cookie-uri al site-ului nou.
 12. **Termenii.** Vârsta minimă apare și ca 18 ani (definiții), și ca 16 ani (acord). Mai e și termenul de 7 zile pentru reclamații.
 13. **ODR.** Linkul redirecționează, iar adresa nouă nu a putut fi verificată (acces blocat din mediul de lucru). Platforma europeană ODR ar fi fost închisă în iulie 2025. Avocatul confirmă dacă linkul mai e necesar, cu ce se înlocuiește și dacă trebuie afișate pictogramele ANPC pentru SAL și SOL.
-14. **PDF-ul regulamentului din 2022** are vechea regulă de anulare (voucher valabil în același sezon, transferabil) și interdicția de înot. Pagina nouă nu mai trimite la el. Dacă vrei să rămână publicat, trebuie actualizat întâi.
+14. **PDF-ul regulamentului din 2022** are vechea regulă de anulare (voucher valabil în același sezon, transferabil). Interdicția de înot a fost scoasă din copia nouă (vezi punctul 6). Pagina nouă nu mai trimite la el. Dacă vrei să rămână publicat, regula voucherului trebuie actualizată în el.
 15. **Adresa.** „Sâmbăta de Sus nr. 588” e sediul firmei. E și adresa Grădinii (pentru GPS)? Pe Contact am pus doar „Sâmbăta de Sus, județul Brașov” și linkul Google Maps.
 16. **Instagram.** Prezentările scriu „Facebook / Instagram: gradina-ielelor”, dar site-ul actual are doar linkul de Facebook, așa că am pus doar Facebook.
 17. **Adresele de email.** rezervari@ pentru rezervări și sejur, office@ pentru restul (și pentru cererile despre datele personale, ca pe site-ul actual). De confirmat.

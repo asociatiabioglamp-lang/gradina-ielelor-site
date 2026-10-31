@@ -333,7 +333,7 @@ function gi_offer_pages() {
             'title_em' => 'pentru grupuri mari.',
             'paragraphs' => array(
                 'Găzduim festivaluri de muzică cu camping, rock, stand-up și folk, dar și festivaluri pentru familii. Publicul doarme pe domeniu, iar după ultimul set focul, lacul și hamacele preiau seara.',
-                'La taberele de copii, siguranța vine prima. Cele șase hectare sunt împrejmuite, cu o singură intrare și pază pe toată durata șederii. Parcarea este în afara gardului, iar la tabere organizatorul decide cum intră mașinile în interior. Lacul mare are un metru adâncime peste tot, fără zone adânci.',
+                'La taberele de copii, siguranța vine prima. Cele șase hectare sunt împrejmuite, cu o singură intrare și pază pe toată durata șederii. Parcarea este în interiorul Grădinii, iar la tabere organizatorul decide cum intră mașinile. Lacul mare are un metru adâncime peste tot, fără zone adânci.',
                 'Copiii au loc de joacă și de învățat: platoul de 3.000 mp pentru jocuri și festivitatea de deschidere, scena pentru spectacolul de final, lacurile pentru activități pe apă supravegheate și vetrele de foc pentru serile de povești.',
                 'Mai primim ieșiri cu echipa, retreaturi, cursuri și un boot camp pentru tineri. Poți rezerva o zonă sau toată Grădina.',
             ),
@@ -363,7 +363,7 @@ function gi_offer_pages() {
                     'Pavilion de 225 mp cu terasă acoperită, gata la 1 mai 2027',
                     'Drum de acces pentru camioane, până la scenă',
                     'Bucătărie autorizată și loc pentru food trucks',
-                    'Parcare de 3 ha, cca. 1.000 de locuri, iar la festivaluri încă una, de 9 ha, cu cca. 1.000 de locuri, la un partener',
+                    'Parcare în interiorul Grădinii, pe 60.000 mp, iar la festivaluri încă 30.000 mp în vecinătate',
                     'Cea mai apropiată casă, la circa 2 km',
                 ), 'note' => array('text' => 'Cazare pentru artiști și echipă? ', 'link_text' => 'Vezi bungalow-urile', 'link_offer' => 'bungalow')),
                 array('icon' => 'tent', 'title' => 'Pentru tabere', 'items' => array(
@@ -372,7 +372,7 @@ function gi_offer_pages() {
                     'Lac de 1 m adâncime peste tot, fără zone adânci',
                     'Trei zone separate, pentru grupe diferite',
                     '4 bungalow-uri, cu baie proprie (toaletă și duș), 4 corturi cu pat și 50 cu saltele (lenjerie la cerere)',
-                    'Opt dușuri publice cu apă caldă non-stop și douăsprezece toalete publice',
+                    'Opt dușuri publice cu apă caldă non-stop și douăsprezece toalete publice, repartizate pe zone',
                     'Bucătărie autorizată și două bucătării comune',
                     'Internet și iluminat în zonele comune',
                 ), 'note' => array('text' => 'Vrei o nuntă, un botez sau un majorat? ', 'link_text' => 'Vezi evenimentele private', 'link_offer' => 'private')),
@@ -408,7 +408,8 @@ function gi_offer_pages() {
         ),
         'faq' => array(
             array('q' => 'Ce fel de festivaluri găzduiți?', 'a' => 'Festivaluri de muzică cu camping, festivaluri rock, seri de stand-up și muzică folk și festivaluri pentru familii. Unele au avut deja loc aici, altele sunt în calendarul 2027.'),
-            array('q' => 'Câți oameni încap?', 'a' => 'Domeniul are aviz ISU pentru 5.000 de persoane. Parcarea obișnuită are circa 1.000 de locuri, iar la festivaluri se adaugă încă o parcare, de 9 hectare, cu circa 1.000 de locuri, la un partener.'),
+            array('q' => 'Câți oameni încap?', 'a' => 'Domeniul are aviz ISU pentru 5.000 de persoane. Mașinile parchează în interiorul Grădinii, pe 60.000 de metri pătrați. La festivaluri se poate folosi tot spațiul din interior și se mai adaugă 30.000 de metri pătrați, în vecinătate.'),
+            array('q' => 'Câte băi sunt și unde?', 'a' => 'Sunt opt dușuri publice cu apă caldă și douăsprezece toalete, repartizate pe cele trei zone. În Zona 1 (camping și lacul mic): 4 dușuri și 4 toalete. În Zona 2 (platoul și pavilionul): 4 toalete. În Zona 3 (lacul mare și scena): 4 dușuri și 4 toalete. Fiecare dintre cele 4 bungalow-uri are în plus baie proprie.'),
             array('q' => 'Unde dorm participanții?', 'a' => 'Pe domeniu sunt 58 de unități: 4 bungalow-uri cu baie proprie, 4 corturi glamping cu pat și 50 cu saltele, cu lenjerie la cerere. Se adaugă zona de camping și rulote, iar la evenimentele mari ajută și pensiunile din satele din jur. Cazarea de pe domeniu o poți include în biletul festivalului.'),
             array('q' => 'Ce asigurați voi și ce aduce organizatorul?', 'a' => 'Noi punem la dispoziție locul: scena, platoul, lacurile, grupurile sanitare, parcarea, cazarea și paza. Organizatorul aduce producția: sunet, lumini, generatoare, program, bilete și avizele evenimentului.'),
             array('q' => 'Ce asigurați la o tabără de copii?', 'a' => 'Noi asigurăm cazarea, spațiile comune, utilitățile, paza și accesul la bucătării. Tu vii cu programul, cu oamenii care au grijă de copii, cu asistența medicală, transportul, asigurările și avizele taberei. Masa o poți găti în bucătăria autorizată sau o aduce un furnizor ales împreună.'),
@@ -443,7 +444,7 @@ function gi_offer_pages() {
         'facts' => array(
             array('value' => '58', 'label' => 'unități de cazare pe domeniu'),
             array('value' => '8 + 12', 'label' => 'dușuri publice cu apă caldă și toalete publice'),
-            array('value' => '3 ha', 'label' => 'de parcare, în afara gardului'),
+            array('value' => '60.000 mp', 'label' => 'de parcare, în interiorul Grădinii'),
             array('value' => 'cca. 60 km', 'label' => 'de Brașov'),
         ),
         'story' => array(
@@ -482,7 +483,7 @@ function gi_offer_pages() {
                     '4 corturi de glamping cu pat și 50 cu saltele (lenjerie la cerere)',
                     'Opt dușuri publice, cu apă caldă non-stop',
                     'Douăsprezece toalete publice',
-                    'Parcare de 3 ha, în afara gardului',
+                    'Parcare în interiorul Grădinii, pe 60.000 mp',
                     'Domeniu împrejmuit, pază 24 din 24',
                     'Două lacuri, cu ponton din lemn',
                 ), 'note' => array('text' => 'Pregătești o ieșire cu echipa, un retreat sau o tabără? ', 'link_text' => 'Vezi Festivaluri & tabere', 'link_offer' => 'festivaluri')),

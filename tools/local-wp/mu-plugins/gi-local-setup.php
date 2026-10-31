@@ -5,7 +5,7 @@
  * cu textul din docs/pagini-continut.md (marcaj de blocuri, exact ca în editorul WordPress).
  */
 add_action('init', function () {
-    if (get_option('gi_local_setup_done') === '12') {
+    if (get_option('gi_local_setup_done') === '13') {
         return;
     }
     $active = (array) get_option('active_plugins', array());
@@ -58,7 +58,7 @@ add_action('init', function () {
     kses_init();
 
     flush_rewrite_rules();
-    update_option('gi_local_setup_done', '12');
+    update_option('gi_local_setup_done', '13');
 }, 99);
 
 // Paginile legale ale site-ului actual (aceleași adrese ca pe live) și pagina de blog, pentru linkurile din subsol.
@@ -454,7 +454,7 @@ GI_DESPRE_NOI
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->
-<li>În lacul mare se poate înota: are un metru adâncime peste tot, fără zone adânci.</li>
+<li>În lacul mare se poate înota: are un metru adâncime peste tot, fără zone adânci. Lacul mic e rezervat pescuitului.</li>
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->
