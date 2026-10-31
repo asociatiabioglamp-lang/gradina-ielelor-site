@@ -100,7 +100,7 @@
 .gi-page-hero-media { position: absolute; inset: 0; margin: 0; z-index: -2; }
 .gi-page-hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: center 60%; background: var(--forest); }
 .gi-page-hero-overlay { position: absolute; inset: 0; z-index: -1; background:
-  linear-gradient(180deg, rgb(var(--shade) / .42) 0%, rgb(var(--shade) / 0) 22%),
+  linear-gradient(180deg, rgb(var(--shade) / .46) 0%, rgb(var(--shade) / 0) 22%),
   linear-gradient(0deg, rgb(var(--shade) / .42) 0%, rgb(var(--shade) / .16) 40%, rgb(var(--shade) / 0) 64%); }
 .gi-page-hero .gi-breadcrumb,
 .gi-dedicated .gi-page-hero .eyebrow { text-shadow: 0 1px 10px rgb(var(--shade) / .55); }
@@ -110,7 +110,7 @@
    începe cu puțin deasupra firului de navigare și, pe ecrane late, se stinge spre dreapta după coloana de text
    (50vw = marginea stângă a textului în acest bloc), ca restul fotografiei să rămână însorit. */
 .gi-page-hero-content::before { content: ""; position: absolute; z-index: -1; top: calc(var(--gi-hero-pad) - 64px); bottom: 0; left: -50vw; right: -50vw; pointer-events: none;
-  background: linear-gradient(180deg, rgb(var(--shade) / 0) 0, rgb(var(--shade) / .56) 64px, rgb(var(--shade) / .46) 60%, rgb(var(--shade) / .22) 100%);
+  background: linear-gradient(180deg, rgb(var(--shade) / 0) 0, rgb(var(--shade) / .6) 64px, rgb(var(--shade) / .5) 60%, rgb(var(--shade) / .24) 100%);
   -webkit-mask-image: linear-gradient(90deg, #000 calc(50vw + 560px), transparent calc(50vw + 1080px)); mask-image: linear-gradient(90deg, #000 calc(50vw + 560px), transparent calc(50vw + 1080px)); }
 .gi-page-hero h1 { font-family: var(--display); font-weight: 500; font-size: clamp(2.75rem, 7vw, 5.4rem); line-height: .98; letter-spacing: -.03em; margin: .28em 0 .32em; color: #fff; text-shadow: 0 2px 28px rgb(var(--shade) / .35); }
 .gi-page-hero h1 em { font-style: italic; color: var(--sun-light); }
@@ -305,7 +305,7 @@
     linear-gradient(180deg, rgb(var(--shade) / .42) 0%, rgb(var(--shade) / 0) 20%),
     linear-gradient(0deg, rgb(var(--shade) / .78) 0%, rgb(var(--shade) / .56) 36%, rgb(var(--shade) / .2) 62%, rgb(var(--shade) / 0) 82%); }
   /* Pe telefon textul ocupă toată lățimea: umbra nu se mai stinge spre dreapta. */
-  .gi-page-hero-content::before { -webkit-mask-image: none; mask-image: none; background: linear-gradient(180deg, rgb(var(--shade) / 0) 0, rgb(var(--shade) / .52) 64px, rgb(var(--shade) / .34) 55%, rgb(var(--shade) / 0) 100%); }
+  .gi-page-hero-content::before { -webkit-mask-image: none; mask-image: none; background: linear-gradient(180deg, rgb(var(--shade) / 0) 0, rgb(var(--shade) / .58) 64px, rgb(var(--shade) / .36) 55%, rgb(var(--shade) / 0) 100%); }
   .gi-page-hero-actions { flex-direction: column; align-items: stretch; gap: 6px; margin-top: 24px; }
   .gi-page-hero-actions .gi-hero-link { align-self: center; }
 

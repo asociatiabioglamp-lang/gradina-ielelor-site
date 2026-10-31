@@ -81,7 +81,7 @@ function gi_events_2027() {
 
 function gi_event_images() {
     return array(
-        array('src' => 'festival-mancare-munte-960.webp', 'alt' => 'Standuri de mâncare și oaspeți pe domeniu, cu Munții Făgăraș în fundal', 'caption' => 'Standuri de mâncare, sub munte'),
+        array('src' => 'intrare-munte-960.webp', 'alt' => 'Arcadă din lemn cu numele Grădinii, loc de fotografie, cu domeniul și Munții Făgăraș în fundal', 'caption' => 'Locul de fotografie de la intrare'),
         array('src' => 'festival-scena-960.webp', 'alt' => 'Spectacol de dansuri populare pe scenă, cu copii în public, la un eveniment în Grădina Ielelor', 'caption' => 'Festivaluri în mijlocul naturii'),
         array('src' => 'evenimente-foc-960.webp', 'alt' => 'Oaspeți în jurul focului de tabără, seara, în Grădina Ielelor', 'caption' => 'Seara, în jurul focului'),
         array('src' => 'festival-pavilion-640.webp', 'alt' => 'Oaspeți sub o terasă acoperită din lemn, la căderea serii', 'caption' => 'Petreceri și întâlniri'),

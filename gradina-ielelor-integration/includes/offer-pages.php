@@ -458,7 +458,7 @@ function gi_offer_pages() {
             array('q' => 'Pot organiza o nuntă sau un botez?', 'a' => 'Da, din mai 2027, când pavilionul de 225 mp este disponibil. Încap până la 150 de invitați, iar bucătăria licențiată e chiar pe domeniu.'),
             array('q' => 'Primiți și tabere sau grupuri?', 'a' => 'Da. Taberele de copii și grupurile găsesc aici un perimetru închis, pază 24 din 24 și cazare pe domeniu. Cere o ofertă și stabilim totul împreună.'),
         ),
-        'closing' => array('title' => 'Ai un eveniment în minte?', 'title_em' => 'Hai să vorbim.', 'image' => 'intrare-munte-1280.webp'),
+        'closing' => array('title' => 'Ai un eveniment în minte?', 'title_em' => 'Hai să vorbim.', 'image' => 'festival-standuri-1280.webp'),
         'seo' => array(
             'title' => 'Locație evenimente în aer liber, Brașov | Grădina Ielelor',
             'description' => 'Festivaluri, petreceri și evenimente de familie în Grădina Ielelor, Sâmbăta de Sus: 9 ha, aviz ISU pentru 5.000 de persoane, scenă permanentă, lacuri și cazare.',
