@@ -797,7 +797,7 @@ Aceste întrebări ar trebui trecute și în `docs/decizii.md`.
 2. **Voucher, „anul următor”.** L-am scris ca „anul de după cel în care ai anulat” (exemplu: anulezi în 2027, îl folosești până la 31.12.2028). De confirmat.
 3. **Voucher transferabil?** Regulamentul din 2022 permitea folosirea voucherului de altă persoană. Decizia nouă nu spune nimic, deci nu am scris.
 4. **Plecarea mai devreme.** Regula veche („nopțile rămase se plătesc integral”) a rămas. Se potrivește cu voucherul?
-5. **Acceptarea înainte de plată.** Planul cere ca politica de anulare să fie acceptată explicit înainte de plată. Trebuie verificat că pasul de plată are această bifă.
+5. ~~**Acceptarea înainte de plată.**~~ **Rezolvat 31.10:** la finalizarea rezervării apare caseta „Regulamentul Grădinii” (textul acestei pagini, cu condițiile de anulare), iar rezervarea nu pleacă fără bifă. Mai jos, nota veche: Planul cerea ca politica de anulare să fie acceptată explicit înainte de plată. Trebuia verificat că pasul de plată are această bifă.
 6. ~~**Înotul.**~~ **Rezolvat 31.10:** în lacul mare se poate înota (confirmat de proprietar). Lacul mic e rezervat pescuitului. Regulamentul din 2022 interzicea înotul în lacuri: copia corectată e în `docs/regulament-2022-corectat.md` (fișierul PDF nou, de înlocuit de proprietar).
 7. ~~**Câinii.**~~ **Rezolvat 31.10:** câini mici, până la 15 kg, conform regulamentului. Paginile Camping & rulote, Festivaluri & tabere și Evenimente private spun la fel.
 8. **Curentul și racordurile pentru rulote.** Pagina Info util de pe site-ul actual spune „Nu oferim curent la rulote”, iar regulamentul interzice conectarea la apă și canalizare. Pagina Rulote promite „racorduri și servicii pe loc”. Pe Regulament am scris doar regula prizelor (aparate mici).

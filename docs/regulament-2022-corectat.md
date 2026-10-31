@@ -12,7 +12,13 @@ Nu am schimbat aceste locuri fără o decizie scrisă a proprietarului:
 - **Antet:** `office@gradina-ielelor.ro`, în timp ce rezervările merg pe `rezervari@`.
 - **Câinii, mașinile, grătarul:** regulile din 2022 pot fi mai vechi decât cele de pe site-ul nou. Pagina nouă „Regulament & politici” e cea de referință.
 
+## Regulamentul se consultă numai pe site (decizia din 31.10.2026)
+- Clientul nu primește regulamentul ca fișier și nu-l poate copia sau tipări de pe site: se citește în pagină, iar la plată trebuie citit și bifat. Textul din pagina „Regulament & politici” e cel acceptat; ce se acceptă se salvează în fiecare comandă.
+- **PDF-ul vechi din 2022 trebuie șters de pe site** (WordPress → Media → caută „ROI”), altfel poate fi descărcat. Copia nouă (`…-PROIECT.pdf`) rămâne la tine și la avocat, nu se pune pe site.
+- Protecția oprește gesturile obișnuite (selectare, copiere, clic dreapta, tipărire). O captură de ecran nu poate fi oprită de niciun site.
+
 ## Pașii proprietarului
 1. Un jurist (sau tu) citește copia nouă.
 2. Ce nu se potrivește se corectează în Word și se exportă PDF nou (sau îmi spui și îl corectez).
-3. Se încarcă PDF-ul nou în WordPress (Media), se schimbă linkul vechi, iar PDF-ul vechi se șterge.
+3. Textul corectat se pune în pagina „Regulament & politici” din WordPress (nu se încarcă PDF), iar PDF-ul vechi se șterge din Media.
+4. În Setări → Grădina Ielelor → „Regulamentul la plată”, schimbi „Versiunea regulamentului” (de exemplu cu data). Se salvează în fiecare comandă.

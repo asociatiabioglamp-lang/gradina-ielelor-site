@@ -1,6 +1,6 @@
 <?php
 /**
- * Header comun: logo, cele cinci categorii, informații și CTA de rezervare.
+ * Header comun: logo, cele cinci categorii, informații (Despre noi, Review & blog, Regulament) și CTA de rezervare.
  * Ofertele trimit la pagina dedicată când există, altfel la secțiunea de pe pagina principală.
  */
 if (!defined('ABSPATH')) {
@@ -18,6 +18,10 @@ $gi_info_links = array();
 foreach (array('despre-noi' => 'Despre noi', 'regulament-politici' => 'Regulament & politici') as $gi_slug => $gi_label) {
     $gi_url = gi_clean_page_url($gi_slug);
     $gi_info_links[] = array('label' => $gi_label, 'url' => $gi_url, 'current' => '' !== $gi_here && untrailingslashit($gi_url) === $gi_here);
+    if ('despre-noi' === $gi_slug) {
+        // Recenziile și articolele de blog sunt pe prima pagină, una după alta; linkul duce la ele de pe orice pagină.
+        $gi_info_links[] = array('label' => 'Review & blog', 'url' => gi_home_section_url('recenzii'), 'current' => false);
+    }
 }
 ?>
     <header class="site-header shared-header header-overlay">

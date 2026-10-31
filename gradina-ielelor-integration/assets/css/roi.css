@@ -1,0 +1,51 @@
+/* Regulamentul: casetă de citit la finalizarea rezervării și protecție „doar de consultat”. */
+.gi-protejat,
+.gi-protejat * {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+.gi-protejat img { -webkit-user-drag: none; }
+.gi-protejat-nota { display: none; }
+@media print {
+  .gi-protejat { display: none !important; }
+  .gi-protejat-nota { display: block !important; font-size: 14pt; }
+}
+
+.gi-roi {
+  margin: 18px 0;
+  padding: 16px;
+  border: 1px solid rgba(27, 58, 75, .2);
+  border-radius: 14px;
+  background: #f4f9fc;
+  color: #22343f;
+}
+.gi-roi .gi-roi-title { margin: 0 0 6px; font-size: 18px; line-height: 1.3; color: #1b3a4b; }
+.gi-roi .gi-roi-hint { margin: 0 0 10px; font-size: 14px; color: #1d6380; }
+.gi-roi .gi-roi-box {
+  max-height: 260px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 12px 14px;
+  border: 1px solid rgba(27, 58, 75, .2);
+  border-radius: 10px;
+  background: #fff;
+  font-size: 14px;
+  line-height: 1.55;
+  text-align: left;
+}
+.gi-roi .gi-roi-box:focus-visible { outline: 3px solid #1d6380; outline-offset: 2px; }
+.gi-roi .gi-roi-box h2,
+.gi-roi .gi-roi-box h3,
+.gi-roi .gi-roi-box summary { font-size: 15px; line-height: 1.35; margin: 12px 0 6px; color: #1b3a4b; }
+.gi-roi .gi-roi-box p,
+.gi-roi .gi-roi-box li { margin: 0 0 6px; }
+.gi-roi .gi-roi-box ul { margin: 0 0 8px 18px; padding: 0; }
+.gi-roi .gi-roi-check { margin: 12px 0 0; }
+.gi-roi .gi-roi-check label { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-weight: 600; }
+.gi-roi .gi-roi-check input[type="checkbox"] { flex: 0 0 auto; width: 20px; height: 20px; margin: 2px 0 0; }
+.gi-roi .gi-roi-check input[type="checkbox"]:disabled { cursor: not-allowed; opacity: .55; }
+.gi-roi .gi-roi-link { margin: 8px 0 0; font-size: 13px; }
+.gi-roi.gi-roi-citit .gi-roi-box { border-color: #2f6b3f; }

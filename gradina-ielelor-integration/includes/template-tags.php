@@ -17,6 +17,9 @@ function gi_default_options() {
         'onsite_surcharge_enabled' => 0,
         'onsite_surcharge_percent' => 10,
         'onsite_surcharge_gateways' => array('cod'),
+        // Regulamentul la finalizarea rezervării: bifă obligatorie, cu citire (decizia proprietarului, 31.10.2026).
+        'roi_required' => 1,
+        'roi_version' => '31.10.2026',
         // Sezonul afișat pe paginile ofertelor (text liber; gol = nu se afișează).
         'season_bungalow' => '1 mai – 1 octombrie',
         'season_glamping' => '1 mai – 1 octombrie',

@@ -266,6 +266,14 @@ Pe staging, emailurile către clienți sunt oprite, ca oaspeții reali (care exi
 4. Pe pagina NETOPIA (sandbox), plătește cu **cardul de test** din documentația NETOPIA pentru sandbox. Exemplul des folosit este 9900 0048 1022 5098, CVV 111, orice dată de expirare din viitor. Dacă nu merge, cere cardul de test la NETOPIA.
 5. Așteaptă să revii pe site, pe pagina de mulțumire.
 
+**Regulamentul la plată (verifică în aceeași rezervare de test):**
+- [ ] Înainte de butonul de plată apare caseta „Regulamentul Grădinii”, cu textul din pagina „Regulament & politici”. Bifa „Am citit și accept…” e blocată până derulezi textul până jos.
+- [ ] Fără bifă, rezervarea nu pleacă: apare mesajul „Ca să finalizezi rezervarea, citește regulamentul…”.
+- [ ] Alege altă limbă din steagul de limbi, apoi mergi la plată: textul din casetă e tradus.
+- [ ] Textul din casetă nu se poate selecta, copia sau tipări.
+- [ ] După plată, în WooCommerce → Comenzi → comanda ta apare „Regulament acceptat” (data, versiunea, limba) și o notă a comenzii.
+- [ ] Dacă caseta nu apare, pagina de finalizare folosește blocuri noi. Setări → Grădina Ielelor → „Regulamentul la plată” arată asta; pagina trebuie să fie cea clasică, cu `[woocommerce_checkout]`.
+
 ### B5. Cum arată reușita
 Toate patru trebuie să fie adevărate:
 1. **Comanda trece singură în „În procesare” (Processing)** în 1–2 minute, fără să o schimbi tu. Vezi la **WooCommerce → Comenzi**. În notele comenzii (dreapta) apare mesajul de confirmare de la NETOPIA.
@@ -297,7 +305,7 @@ Fă-o pe **telefon** și pe **calculator**, într-o fereastră privată.
 - [ ] O căutare cu date reale arată rezultate și prețuri.
 - [ ] Cardurile Bungalow · Glamping · Camping & rulote · Festivaluri & tabere · Evenimente private deschid fiecare pagina lor, în același tab.
 - [ ] Linkurile Despre noi, Regulament & politici, Contact și Festival se deschid (nu „Pagina nu a fost găsită”).
-- [ ] Recenziile și blogul apar.
+- [ ] Recenziile și blogul apar, iar „Review & blog” din meniu duce la ele.
 
 **Paginile dedicate (fiecare din cele cinci)**
 - [ ] Pozele se încarcă. Textele și prețurile (orientative) sunt corecte.
@@ -310,6 +318,10 @@ Fă-o pe **telefon** și pe **calculator**, într-o fereastră privată.
 
 **Adresele vechi**
 - [ ] Câteva adrese vechi duc spre paginile noi, de exemplu `/cazare-bungalow/` → `/bungalow/` (lista completă: `docs/seo-migrare.md`).
+
+**Regulamentul**
+- [ ] La finalizarea rezervării apare caseta cu regulamentul (vezi B4) și nu se poate rezerva fără bifă.
+- [ ] PDF-ul vechi al regulamentului (din 2022) a fost **șters din WordPress → Media**, ca să nu mai poată fi descărcat. Regulamentul rămâne doar ca text în pagină.
 
 **Restul**
 - [ ] Magazinul și paginile de produs se deschid.

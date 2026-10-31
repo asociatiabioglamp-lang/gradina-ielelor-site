@@ -32,6 +32,7 @@ require_once GI_PATH . 'includes/class-gi-seo.php';
 require_once GI_PATH . 'includes/class-gi-settings.php';
 require_once GI_PATH . 'includes/redirects.php';
 require_once GI_PATH . 'includes/plata-la-locatie.php';
+require_once GI_PATH . 'includes/acceptare-regulament.php';
 
 GI_Plugin::init();
 GI_SEO::init();

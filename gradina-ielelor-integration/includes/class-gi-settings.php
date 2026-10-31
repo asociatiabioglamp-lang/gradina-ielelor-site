@@ -28,6 +28,9 @@ final class GI_Settings {
         }
         $output['redirects_permanent'] = empty($input['redirects_permanent']) ? 0 : 1;
         $output['onsite_surcharge_enabled'] = empty($input['onsite_surcharge_enabled']) ? 0 : 1;
+        $output['roi_required'] = empty($input['roi_required']) ? 0 : 1;
+        $roi_version = isset($input['roi_version']) ? sanitize_text_field(wp_unslash($input['roi_version'])) : '';
+        $output['roi_version'] = '' !== $roi_version ? $roi_version : $defaults['roi_version'];
         $percent = isset($input['onsite_surcharge_percent']) ? (float) str_replace(',', '.', (string) wp_unslash($input['onsite_surcharge_percent'])) : $defaults['onsite_surcharge_percent'];
         $output['onsite_surcharge_percent'] = max(0, min(100, $percent));
         $gateways = isset($input['onsite_surcharge_gateways']) ? (array) wp_unslash($input['onsite_surcharge_gateways']) : array();
@@ -102,6 +105,22 @@ final class GI_Settings {
                         <td>
                             <label><input type="checkbox" name="gi_integration_options[redirects_permanent]" value="1" <?php checked(!empty($options['redirects_permanent'])); ?>> Redirecționări permanente (301)</label>
                             <p class="description">Lasă nebifat în prima săptămână după lansare: redirecționările sunt temporare, iar dacă revii la site-ul vechi, browserele vizitatorilor nu rămân pe adresele noi. Bifează după 7 zile fără probleme (D+7), ca Google să mute definitiv adresele.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Regulamentul la plată</th>
+                        <td>
+                            <label><input type="checkbox" name="gi_integration_options[roi_required]" value="1" <?php checked(!empty($options['roi_required'])); ?>> Clientul citește și bifează regulamentul înainte să finalizeze rezervarea</label>
+                            <p><label>Versiunea regulamentului: <input class="regular-text" type="text" name="gi_integration_options[roi_version]" value="<?php echo esc_attr($options['roi_version']); ?>"></label></p>
+                            <p class="description">Se salvează în fiecare comandă, împreună cu data, limba aleasă și un cod al textului exact. Când modifici regulamentul, schimbă aici versiunea (de exemplu, data). Textul vine din pagina „Regulament &amp; politici”.</p>
+                            <?php
+                            $roi_page = function_exists('gi_roi_page') ? gi_roi_page() : null;
+                            $checkout_id = function_exists('wc_get_page_id') ? (int) wc_get_page_id('checkout') : 0;
+                            $checkout_blocks = $checkout_id > 0 && function_exists('has_block') && has_block('woocommerce/checkout', get_post($checkout_id));
+                            ?>
+                            <p class="description"><strong>Pagina regulamentului:</strong> <?php echo $roi_page ? '✓ găsită și publicată' : '✗ lipsește (pagina „Regulament &amp; politici” trebuie publicată)'; ?><br>
+                            <strong>Pagina de finalizare:</strong> <?php echo $checkout_blocks ? '✗ folosește blocuri: caseta cu regulamentul nu apare acolo. Revino la pagina clasică (shortcode [woocommerce_checkout])' : '✓ clasică'; ?><br>
+                            <strong>Versiuni arhivate:</strong> <?php echo esc_html((string) count((array) get_option('gi_roi_arhiva', array()))); ?> (textul exact acceptat, păstrat pentru dovadă)</p>
                         </td>
                     </tr>
                     <tr>

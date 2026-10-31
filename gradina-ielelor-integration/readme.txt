@@ -48,6 +48,8 @@ Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai 
 * Link „Înapoi la rezervare” la finalul fiecărei pagini dedicate; calendar 2027 pe pagina Festivaluri & tabere.
 * Versiune nouă pentru reîmprospătarea CSS/JS în browsere și CDN.
 * Pagini simple (Despre noi, Regulament & politici, Contact), editabile în WordPress; redirecționări 301 de la adresele vechi.
+* Regulamentul la finalizarea rezervării: casetă de citit și bifă obligatorie (activă după derulare), cu dovada acceptării în comandă (data, versiunea, limba, codul textului); textul se arhivează. Regulamentul se consultă numai în pagină: fără selectare, copiere sau tipărire. Setări → Grădina Ielelor → „Regulamentul la plată”.
+* „Review & blog” în meniu.
 * Subsol cu linkurile legale: termeni, confidențialitate, cookies, politica de anulare, ANPC, SAL, SOL; Contact și Blog.
 * Accesibilitate: focus vizibil, contrast, ținte de atingere de 44 px, galerie și meniu din tastatură (axe: 0 probleme).
 * Viteză: fără fișierele WooCommerce pe paginile ofertelor; poze principale în 960/1280/1600 px, după ecran.

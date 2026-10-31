@@ -5,7 +5,7 @@
  * cu textul din docs/pagini-continut.md (marcaj de blocuri, exact ca în editorul WordPress).
  */
 add_action('init', function () {
-    if (get_option('gi_local_setup_done') === '15') {
+    if (get_option('gi_local_setup_done') === '19') {
         return;
     }
     $active = (array) get_option('active_plugins', array());
@@ -57,8 +57,30 @@ add_action('init', function () {
     }
     kses_init();
 
+    // Numai pentru testul local al paginii de finalizare: un produs de probă (virtual), plata la locație activă, România ca țară.
+    if (class_exists('WC_Product_Simple') && !get_page_by_path('rezervare-de-proba', OBJECT, 'product')) {
+        $product = new WC_Product_Simple();
+        $product->set_name('Rezervare de probă');
+        $product->set_slug('rezervare-de-proba');
+        $product->set_regular_price('100');
+        $product->set_virtual(true);
+        $product->set_status('publish');
+        $product->save();
+    }
+    // Pagina de finalizare clasică ([woocommerce_checkout]), ca pe site-ul real și ca la OVABRW; blocurile noi nu acceptă câmpuri proprii în WooCommerce 8.7.
+    foreach (array('checkout' => '[woocommerce_checkout]', 'cart' => '[woocommerce_cart]') as $wc_slug => $wc_shortcode) {
+        $wc_page = get_page_by_path($wc_slug);
+        if ($wc_page) {
+            wp_update_post(array('ID' => $wc_page->ID, 'post_content' => $wc_shortcode));
+            update_option('woocommerce_' . $wc_slug . '_page_id', $wc_page->ID);
+        }
+    }
+    update_option('woocommerce_cod_settings', array('enabled' => 'yes', 'title' => 'Plată la locație', 'description' => 'Test local', 'enable_for_methods' => array(), 'enable_for_virtual' => 'yes'));
+    update_option('woocommerce_default_country', 'RO:BV');
+    update_option('woocommerce_ship_to_countries', 'disabled');
+
     flush_rewrite_rules();
-    update_option('gi_local_setup_done', '15');
+    update_option('gi_local_setup_done', '19');
 }, 99);
 
 // Paginile legale ale site-ului actual (aceleași adrese ca pe live) și pagina de blog, pentru linkurile din subsol.
