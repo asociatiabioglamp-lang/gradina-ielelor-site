@@ -123,7 +123,7 @@ final class GI_Settings {
                             <th scope="row"><label for="gi-season-<?php echo esc_attr($key); ?>">Sezon <?php echo esc_html($label); ?></label></th>
                             <td>
                                 <input class="regular-text" type="text" id="gi-season-<?php echo esc_attr($key); ?>" name="gi_integration_options[season_<?php echo esc_attr($key); ?>]" value="<?php echo esc_attr($options['season_' . $key]); ?>">
-                                <p class="description">Apare pe pagina <?php echo esc_html($label); ?>, lângă prețuri și la întrebări (ex. „15 mai – 1 octombrie”). Gol = nu se afișează. Zilele din afara sezonului se închid separat, în fiecare produs BRW.</p>
+                                <p class="description">Apare pe pagina <?php echo esc_html($label); ?>, lângă prețuri și la întrebări (ex. „1 mai – 1 octombrie”). Gol = nu se afișează. Zilele din afara sezonului se închid separat, în fiecare produs BRW.</p>
                             </td>
                         </tr>
                     <?php endforeach; ?>

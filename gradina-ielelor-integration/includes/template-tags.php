@@ -18,8 +18,8 @@ function gi_default_options() {
         'onsite_surcharge_percent' => 10,
         'onsite_surcharge_gateways' => array('cod'),
         // Sezonul afișat pe paginile ofertelor (text liber; gol = nu se afișează).
-        'season_bungalow' => '1 iunie – 1 octombrie',
-        'season_glamping' => '15 mai – 1 octombrie',
+        'season_bungalow' => '1 mai – 1 octombrie',
+        'season_glamping' => '1 mai – 1 octombrie',
         'season_camping' => '1 mai – 1 octombrie',
         'season_rulote' => '1 mai – 1 octombrie',
     );
