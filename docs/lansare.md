@@ -421,6 +421,12 @@ Softaculous → **Instalări** → rândul site-ului → **Backups** → **Resto
 
 **Facturile FGO (în primele zile):** la **prima comandă reală** după lansare verifici că factura a ajuns la client (sau în FGO) cu datele corecte (persoană fizică sau juridică, suma, seria). Dacă nu, revino la R1 și spune-mi.
 
+**Contul vechi de administrator `a.min` (ID 1) — nu înainte de lansare, în trei pași, după D+7:**
+1. **Acum:** nimic. Proprietara spune cine e `a.min` și dacă mai lucrează cu el. Coloana „Last Login” din Utilizatori arată când s-a autentificat ultima oară.
+2. **D+7 (14.11), cu backup proaspăt:** i se schimbă parola (aleasă la întâmplare, lungă) și emailul contului, cu al proprietarei; se pornește 2FA pe contul ei. Așa nu mai poate intra nimeni cu el, fără să ștergem nimic.
+3. **D+14, dacă nimic nu s-a stricat** (comenzi, facturi FGO, rezervări BRW, calendare iCal, emailuri): se șterge contul, cu toate articolele și paginile lui atribuite contului proprietarei. Revenire: restaurarea din backup.
+De ce nu mai devreme: pe `a.min` pot rula, fără să se vadă, modulul FGO, sincronizarea iCal sau emailurile; o ștergere chiar înaintea lansării ar fi un risc inutil.
+
 **[TU]** Zilnic, aproximativ 10 minute:
 1. **Comenzi:** **WooCommerce → Comenzi**. Nicio comandă plătită nu trebuie să rămână „Plată în așteptare” mai mult de o oră. Dacă rămâne, compar-o cu NETOPIA (pasul 2) și spune-i lui Claude.
 2. **NETOPIA:** plățile din ziua precedentă corespund comenzilor „În procesare” din WooCommerce.
