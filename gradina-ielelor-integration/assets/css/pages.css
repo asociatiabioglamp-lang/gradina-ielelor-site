@@ -152,6 +152,12 @@
 .gi-included-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.55fr); gap: clamp(20px, 4vw, 56px); align-items: start; }
 .gi-included-tent { background: var(--cream); border-radius: var(--gi-radius); padding: clamp(24px, 3vw, 36px); }
 .gi-included-garden { padding-top: clamp(24px, 3vw, 36px); }
+/* Mai mult de două grupuri (ex. Festivaluri & tabere): grilă 2×2, fiecare grup pe un fundal deschis. */
+.gi-included-grid-many { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.gi-included-grid-many .gi-included-group { background: var(--cream); border-radius: var(--gi-radius); padding: clamp(24px, 3vw, 36px); }
+.gi-included-grid-many .gi-included-group h3 .gi-icon { background: #fff; }
+.gi-included-grid-many .gi-included-garden .gi-check-list { grid-template-columns: minmax(0, 1fr); }
+.gi-included-grid-many .gi-included-group .gi-check-list .gi-icon { background: #fff; }
 .gi-included h3 { display: flex; align-items: center; gap: 12px; font-family: var(--display); font-weight: 500; font-size: 1.5rem; margin: 0 0 18px; color: var(--forest-deep); }
 .gi-included h3 .gi-icon { width: 42px; height: 42px; padding: 10px; border-radius: 50%; background: var(--cream); color: var(--moss); }
 .gi-included-tent h3 .gi-icon { background: #fff; }

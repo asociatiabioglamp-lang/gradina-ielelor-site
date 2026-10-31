@@ -37,7 +37,7 @@ $gi_related = array_diff_key(gi_offer_cards(), array($gi_key => true));
 // Sezonul și regula plății în locație vin din Setări → Grădina Ielelor, ca proprietarul să le poată schimba singur.
 $gi_season = gi_season($gi_key);
 if ($gi_season) {
-    $gi_page['faq'][] = array('q' => 'Când e deschis?', 'a' => 'Sezonul pentru ' . strtolower(gi_offers()[$gi_key]['label']) . ': ' . $gi_season . '.');
+    $gi_page['faq'][] = array('q' => empty($gi_page['prices']) ? 'Care e sezonul?' : 'Când e deschis?', 'a' => 'Sezonul pentru ' . strtolower(gi_offers()[$gi_key]['label']) . ': ' . $gi_season . '.');
 }
 $gi_payment_note = function_exists('gi_onsite_surcharge_notice') ? gi_onsite_surcharge_notice() : '';
 // Al doilea buton de rezervare (ex. Camping & rulote: „Ai rulotă? Rezervă aici”, cu rulota preselectată).
@@ -150,7 +150,7 @@ gi_part('header');
                     <span class="eyebrow">Ce primești</span>
                     <h2 id="included-title"><?php echo esc_html($gi_page['included']['title']); ?></h2>
                 </div>
-                <div class="gi-included-grid">
+                <div class="gi-included-grid<?php echo count($gi_page['included']['groups']) > 2 ? ' gi-included-grid-many' : ''; ?>">
                     <?php foreach ($gi_page['included']['groups'] as $gi_index => $gi_group) : ?>
                         <div class="gi-included-group <?php echo 0 === $gi_index ? 'gi-included-tent' : 'gi-included-garden'; ?>">
                             <h3><?php echo gi_icon($gi_group['icon']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> <?php echo esc_html($gi_group['title']); ?></h3>

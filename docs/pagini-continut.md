@@ -773,7 +773,7 @@ Apoi, mereu vizibile: **Cine suntem** (datele firmei de pe site-ul actual) · **
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Pentru festivaluri și tabere avem o pagină dedicată organizatorilor, cu fișa tehnică a domeniului și cererea de ofertă. Pentru ieșiri cu echipa, retreaturi sau petreceri de familie, sună-ne sau scrie-ne la adresele de mai sus: câți sunteți, ce perioadă ai în minte și ce ți-ar plăcea să se întâmple.</p>
+<p>Pentru festivaluri, tabere, retreaturi și ieșiri cu echipa avem o pagină dedicată organizatorilor, cu fișa tehnică a domeniului și cererea de ofertă. Pentru nunți, botezuri, majorate sau alte petreceri de familie, sună-ne sau scrie-ne la adresele de mai sus: câți invitați veți fi, ce perioadă ai în minte și ce fel de eveniment faci.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:buttons -->

@@ -32,7 +32,7 @@ final class GI_Settings {
         $output['onsite_surcharge_percent'] = max(0, min(100, $percent));
         $gateways = isset($input['onsite_surcharge_gateways']) ? (array) wp_unslash($input['onsite_surcharge_gateways']) : array();
         $output['onsite_surcharge_gateways'] = array_values(array_filter(array_map('sanitize_key', $gateways)));
-        foreach (array('bungalow', 'glamping', 'camping') as $key) {
+        foreach (array('bungalow', 'glamping', 'camping', 'festivaluri', 'private') as $key) {
             $output['season_' . $key] = isset($input['season_' . $key]) ? sanitize_text_field(wp_unslash($input['season_' . $key])) : $defaults['season_' . $key];
         }
         return $output;
@@ -118,7 +118,7 @@ final class GI_Settings {
                             <p class="description">Bifează numai metodele de plată la locație, niciodată NETOPIA. Majorarea apare ca rând separat înainte de plată și rămâne în comandă. Când e pornită, paginile spun și vizitatorilor: „Prețurile sunt pentru plata online, cu rezervarea garantată. Dacă alegi plata în locație, tariful e cu 10% mai mare, iar rezervarea nu e garantată.”</p>
                         </td>
                     </tr>
-                    <?php foreach (array('bungalow' => 'Bungalow', 'glamping' => 'Glamping', 'camping' => 'Camping & rulote') as $key => $label) : ?>
+                    <?php foreach (array('bungalow' => 'Bungalow', 'glamping' => 'Glamping', 'camping' => 'Camping & rulote', 'festivaluri' => 'Festivaluri & tabere', 'private' => 'Evenimente private') as $key => $label) : ?>
                         <tr>
                             <th scope="row"><label for="gi-season-<?php echo esc_attr($key); ?>">Sezon <?php echo esc_html($label); ?></label></th>
                             <td>

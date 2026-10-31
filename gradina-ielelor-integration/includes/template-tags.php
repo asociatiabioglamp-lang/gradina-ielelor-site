@@ -21,6 +21,8 @@ function gi_default_options() {
         'season_bungalow' => '1 mai – 1 octombrie',
         'season_glamping' => '1 mai – 1 octombrie',
         'season_camping' => '1 mai – 1 octombrie',
+        'season_festivaluri' => '1 mai – 1 octombrie',
+        'season_private' => '1 mai – 1 octombrie',
     );
 }
 
