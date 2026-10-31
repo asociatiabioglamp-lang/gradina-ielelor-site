@@ -12,15 +12,20 @@ if (!defined('ABSPATH')) {
 
     <main id="continut">
         <section class="home-hero" aria-labelledby="home-hero-title">
-            <div class="home-hero-slices" role="group" aria-label="Lac, relaxare și evenimente în Grădina Ielelor">
+            <div class="home-hero-slices" role="group" aria-label="Lac, SUP și relaxare în Grădina Ielelor">
                 <figure class="home-hero-slice home-hero-slice-lake">
                     <picture>
                         <source media="(max-width: 640px)" srcset="<?php echo esc_url(gi_image_url('home-hero-lake-centered-mobile-640.webp')); ?> 640w, <?php echo esc_url(gi_image_url('home-hero-lake-centered-mobile-960.webp')); ?> 960w" sizes="100vw">
                         <img src="<?php echo esc_url(gi_image_url('home-hero-lake-centered-1600.webp')); ?>" srcset="<?php echo esc_url(gi_image_url('home-hero-lake-centered-640.webp')); ?> 640w, <?php echo esc_url(gi_image_url('home-hero-lake-centered-960.webp')); ?> 960w, <?php echo esc_url(gi_image_url('home-hero-lake-centered-1280.webp')); ?> 1280w, <?php echo esc_url(gi_image_url('home-hero-lake-centered-1600.webp')); ?> 1600w" sizes="100vw" alt="Lacul din Grădina Ielelor într-o zi însorită, cu Munții Făgăraș în fundal" width="1600" height="900" fetchpriority="high">
                     </picture>
                 </figure>
-                <figure class="home-hero-slice home-hero-slice-festival">
-                    <img src="<?php echo esc_url(gi_image_url('home-hero-festival-640.webp')); ?>" alt="Vedere aeriană cu oaspeți, corturi și rulote în Grădina Ielelor" width="640" height="480" fetchpriority="low" decoding="async">
+                <figure class="home-hero-slice home-hero-slice-sup">
+                    <?php // Fotografia e încadrată special: placa SUP cade în triunghiul din dreapta, pe calculator și pe telefon. ?>
+                    <picture>
+                        <source media="(max-width: 700px)" srcset="<?php echo esc_url(gi_image_url('home-hero-sup-mobile-780.webp')); ?> 780w" sizes="100vw">
+                        <source media="(max-width: 900px)" srcset="<?php echo esc_url(gi_image_url('home-hero-sup-tablet-780.webp')); ?> 780w" sizes="100vw">
+                        <img src="<?php echo esc_url(gi_image_url('home-hero-sup-1920.webp')); ?>" srcset="<?php echo esc_url(gi_image_url('home-hero-sup-1280.webp')); ?> 1280w, <?php echo esc_url(gi_image_url('home-hero-sup-1920.webp')); ?> 1920w" sizes="100vw" alt="Un adult și un copil pe o placă SUP, pe lacul din Grădina Ielelor, cu corturi și Munții Făgăraș în spate" width="1920" height="800" fetchpriority="low" decoding="async">
+                    </picture>
                 </figure>
                 <figure class="home-hero-slice home-hero-slice-chill">
                     <img src="<?php echo esc_url(gi_image_url('home-hero-chill-640.webp')); ?>" alt="Foișor din lemn cu scaune-hamac și fotolii pentru relaxare" width="640" height="480" fetchpriority="low" decoding="async">
