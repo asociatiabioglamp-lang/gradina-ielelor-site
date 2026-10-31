@@ -24,3 +24,17 @@ Sursă de adevăr pentru conflictele dintre documente. Se completează pe măsur
 | 2026-10-30 | Agenți / bloggeri | **10% din suma plătită** revine agentului; clientul plătește prețul întreg | Rămâne de stabilit momentul plății comisionului (propunere: după sejur) și ce se întâmplă cu comisionul când rezervarea devine voucher |
 | 2026-10-30 | Grădina Ielelor Hub | Pagină privată în contul Claude al proprietarului (cea mai sigură și stabilă), cu emailurile, recenziile și rezervările într-un singur loc; link pe desktop și pe telefon | Citește **rezervari@ și office@** prin Gmail, după redirecționarea lor din cPanel către asociatia.bioglamp@gmail.com |
 | 2026-10-31 | Termen și priorități | **Lansare în 7 zile.** Prioritate maximă: **design modern, viteză**, fără dependență de programatori | Implicit (până la altă decizie): design nou pe WordPress-ul existent, rezervări prin sistemul actual (OVABRW + NETOPIA); 5starDesk și WordPress curat după lansare |
+
+## Întrebări deschise înainte de lansare (31.10.2026)
+
+Contradicții între regulamentul vechi (2022) și textele noi ale proprietarului. Paginile noi folosesc deocamdată textele noi; trebuie confirmate:
+
+| # | Subiect | Regulamentul 2022 / site-ul vechi | Paginile noi | De confirmat |
+|---|---|---|---|---|
+| 1 | Operatorul site-ului | AGRICOLA MEDICINALE 2002 SRL (CUI 33073262) | Facturare prin Asociația Bioglamp (prezentări) | Ce firmă apare în termeni și pe facturi |
+| 2 | Înot în lac | Interzis | Permis în lacul mare (1 m adâncime) | Se poate înota? |
+| 3 | Câini | Doar câini mici (max. 15 kg) | „Câinii sunt bineveniți” (Camping, Rulote) | Regula exactă |
+| 4 | Rulote | Fără curent pentru rulote; racordurile de apă/canal interzise | „Racorduri și servicii pe loc” | Ce primește concret o rulotă |
+| 5 | Voucher | — | Valabil până la 31.12 anul următor anulării, folosibil parțial | Se poate transfera altei persoane? |
+| 6 | Confidențialitate și cookies | Texte vechi (menționează Privacy Shield) | — | Actualizare de jurist pentru serviciile noi |
+| 7 | Link ODR (litigii online) | Pe site-ul vechi | Păstrat, cu notă | Platforma UE ODR s-a închis în 2025: juristul confirmă ce o înlocuiește |

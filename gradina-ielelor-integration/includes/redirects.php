@@ -49,6 +49,14 @@ function gi_redirect_map() {
         // Pagina principală veche (Acasă2023), cu informații din 2024–2025.
         '/acasa2023/' => '/',
 
+        // Paginile legale vechi -> pagina nouă Regulament & politici.
+        // De activat numai după ce juristul aprobă textul nou și pagina e publicată (docs/pagini-continut.md):
+        // '/info-util/' => '/regulament-politici/',
+        // '/info-util/politica-de-anulare/' => '/regulament-politici/',
+        // '/info-util/termeni-si-conditii/' => '/regulament-politici/',
+        // '/info-util/politica-de-confidentialitate/' => '/regulament-politici/',
+        // '/info-util/politica-cookies/' => '/regulament-politici/',
+
         // De activat numai după confirmarea proprietarului (vezi docs/seo-migrare.md, secțiunea 3):
         // '/gradina-ielelor-totul-despre-ea/timp-liber/' => '/despre-noi/',
         // '/info-util/info-covid-19/' => '/info-util/',
