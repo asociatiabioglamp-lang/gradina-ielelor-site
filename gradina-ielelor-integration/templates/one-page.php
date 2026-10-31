@@ -185,9 +185,9 @@ if (!defined('ABSPATH')) {
                 <?php gi_render_gallery(gi_event_images(), 'Galerie festivaluri și evenimente'); ?>
 
                 <div class="home-event-zones">
-                    <article><?php echo gi_icon('waves'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><div><h3>Camping &amp; lacul mic</h3><p>Bucătării comune, hamace, vetre de foc, Wi-Fi și terasă pe apă.</p></div></article>
-                    <article><?php echo gi_icon('trees'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><div><h3>Platoul &amp; pavilionul</h3><p>Pavilion de 225 mp, terasă de 50 mp, bucătărie licențiată și grup sanitar.</p></div></article>
-                    <article><?php echo gi_icon('music'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><div><h3>Lacul mare &amp; scena</h3><p>Scenă permanentă, lac de 8.000 mp, ponton, bungalowuri și bloc sanitar.</p></div></article>
+                    <article><?php echo gi_icon('waves'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><div><h3>Camping &amp; lacul mic</h3><p>Bucătării comune, hamace, vetre de foc, Wi-Fi și terasă acoperită pe apă.</p></div></article>
+                    <article><?php echo gi_icon('trees'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><div><h3>Platoul &amp; pavilionul</h3><p>Pavilion de 225 mp, terasă de 50 mp, bucătărie autorizată și grup sanitar.</p></div></article>
+                    <article><?php echo gi_icon('music'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><div><h3>Lacul mare &amp; scena</h3><p>Scenă permanentă, lac de 8.000 mp, ponton, bungalow-uri și bloc sanitar.</p></div></article>
                 </div>
 
                 <details class="home-event-details">

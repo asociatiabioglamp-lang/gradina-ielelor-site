@@ -5,7 +5,7 @@
  * cu textul din docs/pagini-continut.md (marcaj de blocuri, exact ca în editorul WordPress).
  */
 add_action('init', function () {
-    if (get_option('gi_local_setup_done') === '11') {
+    if (get_option('gi_local_setup_done') === '12') {
         return;
     }
     $active = (array) get_option('active_plugins', array());
@@ -58,7 +58,7 @@ add_action('init', function () {
     kses_init();
 
     flush_rewrite_rules();
-    update_option('gi_local_setup_done', '11');
+    update_option('gi_local_setup_done', '12');
 }, 99);
 
 // Paginile legale ale site-ului actual (aceleași adrese ca pe live) și pagina de blog, pentru linkurile din subsol.
@@ -123,7 +123,7 @@ function gi_local_content_pages() {
 
 <!-- wp:list -->
 <ul class="wp-block-list"><!-- wp:list-item -->
-<li><strong>Campingul și lacul mic.</strong> Locuri pentru cort și rulotă, un lac în formă de potcoavă cu terasă din lemn pe apă, două bucătării comune, hamace și vetre de foc.</li>
+<li><strong>Campingul și lacul mic.</strong> Locuri pentru cort și rulotă, un lac în formă de potcoavă, cu o terasă acoperită din lemn, pe apă, două bucătării comune, hamace și vetre de foc.</li>
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->

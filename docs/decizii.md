@@ -43,6 +43,17 @@ Sursă de adevăr pentru conflictele dintre documente. Se completează pe măsur
 | 2026-10-31 | Pavilioane la evenimente private | **Le punem noi la dispoziție sau le aduce clientul, după caz și preferință** | Scris pe Evenimente private. Prețuri și dimensiuni: neconfirmate, nu se publică |
 | 2026-10-31 | Băi | **Publice: 8 dușuri cu apă caldă și 12 toalete. În plus, fiecare dintre cele 4 bungalow-uri are baie proprie, cu toaletă și duș** | Pe site: „opt dușuri publice… douăsprezece toalete publice”, „baie proprie (toaletă și duș)” la bungalow. Prezentările: „8 dușuri și 12 toalete” era corect; „8 băi proprii” ([B] pagina 4) și „8 bungalow-uri” ([F] slide 9 și ciorna fișei tehnice) erau greșite; `Fisa-tehnica-de-trimis.pdf` era deja corectă |
 | 2026-10-31 | Repartizarea ofertelor | **Boot camp, tabere de copii și retreaturi intră la Festivaluri & tabere** (inclusiv ieșirile cu echipa din prezentarea Boot camp). **Evenimente private** rămân pentru nunți, botezuri, majorate și petreceri de familie | Pagina Festivaluri & tabere are patru liste: festivaluri, tabere, ieșiri cu echipa și retreaturi, boot camp pentru tineri. Redirecționarea paginii vechi „Totul despre ea / Evenimente” rămâne spre Evenimente private |
+| 2026-10-31 | Capacitate | **5.000 de persoane (aviz ISU)** peste tot; cifrele 6.000 și 1.000–1.500 din prezentări nu se mai folosesc | Site: 5.000 (deja); PDF-uri: corectate |
+| 2026-10-31 | Parcări | Parcarea permanentă: 3 ha, cca. 1.000 de locuri. **La festivaluri: încă o parcare de 9 ha, cca. 1.000 de locuri, la un partener** | Scris pe Festivaluri & tabere |
+| 2026-10-31 | Rezervare | **Un grup poate rezerva o zonă sau toată Grădina** | Scris pe Festivaluri & tabere și Evenimente private; Boot camp promitea „locul numai pentru voi” |
+| 2026-10-31 | Toalete la festival | **Toaletele suplimentare le aduce organizatorul** | Cele 8 dușuri și 12 toalete publice rămân |
+| 2026-10-31 | Lenjerie | Cele 50 de corturi au **saltele înăuntru; lenjeria se poate oferi la cerere**. Doar cele 4 corturi glamping au pat | Scris pe Festivaluri & tabere și Evenimente private |
+| 2026-10-31 | Lacuri | **Două lacuri de agrement și pescuit:** lacul mic, pentru pescuit, cu o **terasă acoperită de 7 × 12 m** în zona centrală; lacul mare (8.000 mp), pentru **activități nautice și pescuit**. Nu există un al treilea lac („lac de agrement” din Zona 2 nu se mai folosește) | Înotul: neconfirmat (rândul 2 din întrebări) |
+| 2026-10-31 | Mașini | **În regim normal de campare, mașinile au acces în interior. La festivaluri și la închirierea întregii locații, decizia aparține organizatorilor** | Înlocuiește „zero trafic auto / în interior nu circulă mașini” din prezentări |
+| 2026-10-31 | Bar la festival | **Barul îl ține organizatorul** | |
+| 2026-10-31 | E-mail pe oferte | **rezervari@gradina-ielelor.ro** | Boot camp avea office@ pe copertă |
+| 2026-10-31 | Tarife | **Se negociază, în funcție de configurarea evenimentului** | În loc de câmpurile goale din Tabere și Festival familie |
+| 2026-10-31 | Bucătărie | **„Bucătărie autorizată”** (nu „licențiată”) | Pe site corectat; fișa tehnică de trimis spune încă „licențiată” |
 
 ## Întrebări deschise înainte de lansare (31.10.2026)
 
@@ -51,7 +62,8 @@ Contradicții între regulamentul vechi (2022) și textele noi ale proprietarulu
 | # | Subiect | Regulamentul 2022 / site-ul vechi | Paginile noi | De confirmat |
 |---|---|---|---|---|
 | 1 | Operatorul site-ului | AGRICOLA MEDICINALE 2002 SRL (CUI 33073262) | Facturare prin Asociația Bioglamp (prezentări) | Ce firmă apare în termeni și pe facturi |
-| 2 | Înot în lac | Interzis | Permis în lacul mare (1 m adâncime) | Se poate înota? |
+| 2 | Înot în lac | Interzis | Permis în lacul mare (1 m adâncime) — scris pe Glamping, Bungalow, Camping | **Descrierea proprietarului (31.10): lacul mare e pentru „activități nautice și pescuit”, fără înot.** Se poate înota sau nu? Până la răspuns, pe site rămâne „se înoată” |
+| 13 | Băi: în ce zonă sunt cele 8 dușuri și 12 toalete publice? | Nu e spus în prezentări; [F] pomenește un grup sanitar în plus lângă lacul mare | — | Există băi în afara celor 8 + 12 publice + 4 din bungalow-uri? |
 | 4 | Rulote | Fără curent pentru rulote; racordurile de apă/canal interzise | „Racorduri și servicii pe loc” | Ce primește concret o rulotă |
 | 5 | Voucher | — | Valabil până la 31.12 anul următor anulării, folosibil parțial | Se poate transfera altei persoane? |
 | 6 | Confidențialitate și cookies | Texte vechi (menționează Privacy Shield) | — | Actualizare de jurist pentru serviciile noi |

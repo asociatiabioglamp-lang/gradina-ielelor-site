@@ -106,7 +106,7 @@ Fără nume, date sau istorie inventate: povestea e doar cea de pe pagina veche 
 
 <!-- wp:list -->
 <ul class="wp-block-list"><!-- wp:list-item -->
-<li><strong>Campingul și lacul mic.</strong> Locuri pentru cort și rulotă, un lac în formă de potcoavă cu terasă din lemn pe apă, două bucătării comune, hamace și vetre de foc.</li>
+<li><strong>Campingul și lacul mic.</strong> Locuri pentru cort și rulotă, un lac în formă de potcoavă, cu o terasă acoperită din lemn, pe apă, două bucătării comune, hamace și vetre de foc.</li>
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->
