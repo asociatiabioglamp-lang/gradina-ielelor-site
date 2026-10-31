@@ -5,7 +5,7 @@
  * cu textul din docs/pagini-continut.md (marcaj de blocuri, exact ca în editorul WordPress).
  */
 add_action('init', function () {
-    if (get_option('gi_local_setup_done') === '14') {
+    if (get_option('gi_local_setup_done') === '15') {
         return;
     }
     $active = (array) get_option('active_plugins', array());
@@ -58,7 +58,7 @@ add_action('init', function () {
     kses_init();
 
     flush_rewrite_rules();
-    update_option('gi_local_setup_done', '14');
+    update_option('gi_local_setup_done', '15');
 }, 99);
 
 // Paginile legale ale site-ului actual (aceleași adrese ca pe live) și pagina de blog, pentru linkurile din subsol.
@@ -114,7 +114,7 @@ function gi_local_content_pages() {
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Un domeniu privat de șase hectare la Sâmbăta de Sus, în județul Brașov, cu Munții Făgăraș în față, împrejmuit și păzit zi și noapte. Mașinile parchează în interior, pe 60.000 de metri pătrați. La festivaluri, domeniul trece în regim de festival, pe nouă hectare. La evenimentele mari, la cerere, parcarea se extinde cu încă 30.000 de metri pătrați, în vecinătate: în total, cam o mie de mașini.</p>
+<p>Un domeniu privat de șase hectare la Sâmbăta de Sus, în județul Brașov, cu Munții Făgăraș în față, împrejmuit și păzit zi și noapte. Mașinile parchează în interior, pe 60.000 de metri pătrați. La festivaluri, domeniul trece în regim de festival, pe nouă hectare. La evenimentele mari, la cerere, se adaugă încă 30.000 de metri pătrați, în vecinătate, la un partener: în total, cam o mie de mașini.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
