@@ -536,6 +536,7 @@ Legendă:
   1. **Comutarea automată după limba browserului.** Robotul Google randează paginile cu un browser în engleză, deci există riscul să vadă versiunea tradusă automat.
      → Verifică în Search Console: Inspectare URL → *Testează adresa URL publicată* → *Vezi pagina testată* (captură/HTML). Recomandare: comutarea automată oprită.
   2. **Steagul plutitor apare și pe paginile noi** (template-urile apelează `wp_footer()`). Poate acoperi header-ul nou → de verificat vizual.
+- **Decizia proprietarului (31.10.2026):** site-ul se traduce automat în cel puțin 6 limbi: engleză, franceză, germană, olandeză, cehă, poloneză, maghiară, spaniolă, norvegiană, daneză. Comutarea automată după limba browserului rămâne pornită; riscul 1 se verifică în Search Console la D+2 (`docs/lansare.md`, secțiunea 9).
 - **Dacă se vor pagini traduse indexate:** e nevoie de GTranslate plătit, cu subdirectoare sau subdomenii (adaugă `hreflang` automat), și de traduceri revizuite. E proiect separat, nu pentru lansare.
 
 ## G. Alte probleme găsite (în afara redirecționărilor)

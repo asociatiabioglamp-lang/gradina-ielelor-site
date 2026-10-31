@@ -159,6 +159,11 @@ Din acest moment, magazinul și paginile de produs primesc stilul nou. E normal.
 
 Tot aici, două lucruri noi:
 - **Plata la locație:** bifează „Tarif majorat când clientul alege plata la locație”, lasă **10** la procent și bifează metoda ta de plată la locație (niciodată NETOPIA). Apasă **Salvează integrarea**. Apoi, în **WooCommerce → Setări → Plăți** → metoda de plată la locație → **Descriere**, scrie: „Tariful e cu 10% mai mare decât plata online, iar rezervarea nu e garantată.” Pe staging, fă o comandă de test cu această metodă: la total trebuie să apară rândul „Tarif pentru plata la locație (+10%)”.
+- **Limbile (GTranslate, traducerea automată):** **Setări → GTranslate** (numele câmpurilor pot diferi puțin între versiuni):
+  1. La limbi, bifează: **English, Français, Deutsch, Nederlands, Čeština, Polski, Magyar, Español, Norsk, Dansk**. Păstrează **Română** ca limbă implicită (și Italiano, dacă vrei).
+  2. Comutarea automată după limba browserului rămâne **pornită**: vizitatorul străin vede site-ul direct în limba lui.
+  3. Direcția de deschidere a steagului plutitor: **Top / sus** (pe paginile noi steagul stă jos în stânga). *Pe site-ul vechi steagul e sus; schimbă direcția abia la lansare (pasul C2).*
+  4. Salvează. Limbile noi le poți adăuga pe live chiar de acum: merg și pe site-ul vechi.
 - **Sezonul:** verifică cele patru câmpuri „Sezon” (acum „1 mai – 1 octombrie” la toate). Ce scrie aici apare pe pagini; zilele din afara sezonului le închizi în fiecare produs BRW.
 
 ### A4. Notează cum e acum (pentru revenire)
@@ -391,6 +396,7 @@ Softaculous → **Instalări** → rândul site-ului → **Backups** → **Resto
 **[TU]** În **D+2**, dacă totul a mers 48 de ore: treci pe **Ciornă** paginile vechi care au acum redirecționare (`/cazare-bungalow/`, `/camping-cort/`, `/camping-rulota/`, `/tarife/`, `/tarife-2026/`, `/acasa2023/`, `/gradina-ielelor-totul-despre-ea/evenimente/`), după `docs/seo-migrare.md`, secțiunea 5. Nu mai devreme: până atunci, revenirea R1 rămâne de un singur clic.
 
 **[TU]** În D+2 și D+7, în **Search Console**:
+- **Traducerea automată:** Inspectare URL pe `https://gradina-ielelor.ro/` → *Testează adresa URL publicată* → *Vezi pagina testată*: textul trebuie să fie în **română**. Dacă Google vede pagina în engleză, oprește în GTranslate comutarea automată după limba browserului și spune-i lui Claude.
 - **Indexare → Pagini (Pages):** numărul de pagini „Negăsită (404)” nu crește. Trimite-i lui Claude lista adreselor noi cu 404.
 - **Performanță:** clicurile din Google, comparate cu săptămâna de dinainte.
 

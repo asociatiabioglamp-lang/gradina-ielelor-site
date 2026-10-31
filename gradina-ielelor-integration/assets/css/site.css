@@ -226,6 +226,9 @@ body.admin-bar .gi-site .site-header{top:32px}
 #gi-lightbox .lightbox-arrow.next{right:22px}
 body.gi-lightbox-open{overflow:hidden}
 
+/* Comutatorul de limbi (GTranslate, steagul plutitor): jos în stânga pe paginile noi, ca să nu acopere sigla și meniul.
+   În setările GTranslate, direcția de deschidere trebuie să fie „sus” (docs/lansare.md, pasul A3). */
+body.gi-one-page .gt_float_wrapper{top:auto!important;right:auto!important;bottom:max(20px,env(safe-area-inset-bottom,0px))!important;left:max(16px,env(safe-area-inset-left,0px))!important;z-index:60!important}
 @media (max-width:1150px){
   .gi-site .desktop-nav{gap:14px}.gi-site .desktop-nav a{font-size:11px}.gi-site .official-brand{width:125px}
   .gi-site .home-experience-bottom{grid-template-columns:1fr;align-items:start}.gi-site .calendar-layout{gap:55px}
@@ -241,6 +244,7 @@ body.gi-lightbox-open{overflow:hidden}
   .gi-site .footer-grid{grid-template-columns:1.3fr 1fr}
 }
 @media (max-width:700px){
+  body.gi-one-page .gt_float_wrapper{bottom:calc(76px + env(safe-area-inset-bottom,0px))!important}
   body.gi-one-page{padding-bottom:62px}.gi-site .container{width:calc(100% - 32px)}
   .gi-site .home-hero{min-height:max(540px,64svh);align-items:flex-end}.gi-site .home-hero-slice-lake img{object-position:60% 50%}
   .gi-site .home-hero-slice-shore img{object-position:72% 50%}.gi-site .home-hero-slice-chill img{object-position:0% 50%}
