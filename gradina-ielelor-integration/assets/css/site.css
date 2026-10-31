@@ -2,7 +2,7 @@
 body.gi-one-page{margin:0;background:#fffdf8;color:#22343f;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
 /* Paleta „O zi senină la munte” (31.10.2026): cer, lac, pajiște și soare, pe alb cald. Contrastele sunt măsurate (WCAG AA).
    Numele vechi (--forest, --moss, --cream…) rămân ca roluri, ca toate fișierele să le folosească în continuare. */
-.gi-site{--sky-50:#f0f7fb;--sky-100:#e1eff8;--sky-200:#cfe6f4;--sky:#8fc6e6;--lake:#2c7fa0;--lake-deep:#1d6380;--lake-hover:#174f67;--mountain:#1b3a4b;--meadow-50:#eef6e7;--meadow:#7db56a;--meadow-deep:#356b3b;--meadow-em:#4d8a45;--sun-50:#fff3e4;--sun-100:#ffe6c8;--sun:#f7b267;--sun-hover:#f9c283;--sun-light:#ffd8a8;--sun-deep:#a3561f;--shade:16 40 56;--ink-soft:#33454f;--text-2:#475b66;--field-line:#6a8796;--field-hint:#5f7380;
+.gi-site{--sky-50:#f0f7fb;--sky-100:#e1eff8;--sky-200:#cfe6f4;--sky:#8fc6e6;--lake:#2c7fa0;--lake-deep:#1d6380;--lake-hover:#174f67;--mountain:#1b3a4b;--meadow-50:#eef6e7;--meadow:#7db56a;--meadow-deep:#356b3b;--meadow-em:#4d8a45;--sun-50:#fff3e4;--sun-100:#ffe6c8;--sun:#f7b267;--sun-hover:#f9c283;--sun-light:#ffd8a8;--sun-deep:#a3561f;--on-sun:#11293a;--shade:16 40 56;--ink-soft:#33454f;--text-2:#475b66;--field-line:#6a8796;--field-hint:#5f7380;
 --forest:var(--lake-deep);--forest-deep:var(--mountain);--moss:var(--meadow-deep);--sage:var(--sky-200);--cream:var(--sky-50);--paper:#fffdf8;--sand:var(--sky-100);--accent:var(--sun);--accent-dark:var(--sun-deep);--ink:#22343f;--muted:#536773;--line:rgba(27,58,75,.14);--display:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;--sans:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow:clip;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.4}
 .gi-site *,.gi-site *::before,.gi-site *::after{box-sizing:border-box}
 .gi-site img{display:block;max-width:100%}
@@ -10,7 +10,7 @@ body.gi-one-page{margin:0;background:#fffdf8;color:#22343f;font-family:Inter,ui-
 .gi-site button,.gi-site input,.gi-site select{font:inherit}
 .gi-site button,.gi-site a{-webkit-tap-highlight-color:transparent}
 .gi-site [hidden],#gi-lightbox[hidden]{display:none!important}
-.gi-site ::selection{background:var(--accent);color:var(--forest-deep)}
+.gi-site ::selection{background:var(--accent);color:var(--on-sun)}
 .gi-svg-sprite{position:absolute;width:0;height:0;overflow:hidden}
 .gi-icon{width:1.15em;height:1.15em;display:inline-block;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.15em}
 .gi-site .container{width:min(1280px,calc(100% - 64px));margin-inline:auto}
@@ -26,7 +26,7 @@ body.gi-one-page{margin:0;background:#fffdf8;color:#22343f;font-family:Inter,ui-
 .gi-site .button:hover{transform:translateY(-2px)}
 .gi-site .button:focus-visible,.gi-site a:focus-visible,.gi-site button:focus-visible,.gi-site summary:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
 .gi-site .button-small{min-height:40px;padding:10px 17px;background:var(--forest);color:#fff;font-size:12px}
-.gi-site .button-accent{background:var(--accent);color:var(--forest-deep)}
+.gi-site .button-accent{background:var(--accent);color:var(--on-sun)}
 .gi-site .button-accent:hover{background:var(--sun-hover);box-shadow:0 8px 24px rgb(var(--shade) / .2)}
 .gi-site .button-primary{background:var(--forest);color:#fff}
 .gi-site .button-primary:hover,.gi-site .button-small:hover{background:var(--lake-hover);box-shadow:0 8px 20px rgb(var(--shade) / .16)}
@@ -44,7 +44,7 @@ body.admin-bar .gi-site .site-header{top:32px}
 .gi-site .desktop-nav a{position:relative;color:#fff;font-size:12px;font-weight:550;white-space:nowrap}
 .gi-site .desktop-nav a::after{content:"";position:absolute;left:0;right:100%;bottom:-8px;height:1px;background:#fff;transition:right .2s}
 .gi-site .desktop-nav a:hover::after{right:0}
-.gi-site .header-cta{margin-left:8px;background:var(--accent);color:var(--forest-deep)}
+.gi-site .header-cta{margin-left:8px;background:var(--accent);color:var(--on-sun)}
 .gi-site .menu-toggle{display:none;margin-left:auto;border:0;background:transparent;padding:8px;color:#fff;cursor:pointer}
 .gi-site .menu-toggle .gi-icon{width:25px;height:25px}
 .gi-site .mobile-nav{display:flex;flex-direction:column;padding:10px 22px 20px;border-top:1px solid var(--line);background:var(--paper);color:var(--ink)}
@@ -90,8 +90,8 @@ body.admin-bar .gi-site .site-header{top:32px}
 .gi-real-booking input::placeholder{color:var(--field-hint,#5f7380);opacity:1}
 .gi-real-booking input:focus,.gi-real-booking select:focus{border-color:var(--forest);outline:2px solid rgba(29,99,128,.14)}
 .gi-real-booking .s_submit{display:flex;align-items:flex-end;margin:0;padding:0}
-.gi-real-booking .ovabrw_btn_submit{min-height:56px;display:inline-flex;align-items:center;justify-content:center;padding:0 32px;border:0;border-radius:14px;background:var(--sun,#f7b267);color:var(--mountain,#1b3a4b);font-size:15px;font-weight:700;letter-spacing:.01em;white-space:nowrap;cursor:pointer;box-shadow:0 10px 24px -6px rgba(214,124,46,.45);text-transform:none;transition:background .2s ease,transform .2s ease,box-shadow .2s ease}
-.gi-real-booking .ovabrw_btn_submit:hover{background:var(--sun-hover,#f9c283);color:var(--mountain,#1b3a4b);transform:translateY(-1px);box-shadow:0 14px 28px -8px rgba(214,124,46,.5)}
+.gi-real-booking .ovabrw_btn_submit{min-height:56px;display:inline-flex;align-items:center;justify-content:center;padding:0 32px;border:0;border-radius:14px;background:var(--sun,#f7b267);color:var(--on-sun,#11293a);font-size:15px;font-weight:700;letter-spacing:.01em;white-space:nowrap;cursor:pointer;box-shadow:0 10px 24px -6px rgba(214,124,46,.45);text-transform:none;transition:background .2s ease,transform .2s ease,box-shadow .2s ease}
+.gi-real-booking .ovabrw_btn_submit:hover{background:var(--sun-hover,#f9c283);color:var(--on-sun,#11293a);transform:translateY(-1px);box-shadow:0 14px 28px -8px rgba(214,124,46,.5)}
 .gi-booking-trust{display:flex;align-items:center;gap:18px;padding:16px 24px;border-top:1px solid var(--line);background:var(--paper,#fffdf8)}
 .gi-booking-trust img{width:90px;height:auto;flex:0 0 auto}
 .gi-booking-trust p{margin:0;color:var(--muted);font-size:11px;line-height:1.6}
@@ -156,14 +156,14 @@ body.admin-bar .gi-site .site-header{top:32px}
 .gi-site .events-calendar{position:relative;padding:105px 0;background:var(--meadow-50);color:var(--ink);scroll-margin-top:30px}
 .gi-site .calendar-layout{display:grid;grid-template-columns:.78fr 1.22fr;gap:80px}
 .gi-site .calendar-intro{position:relative;align-self:start}
-.gi-site .calendar-intro .eyebrow{color:var(--accent)}
+.gi-site .calendar-intro .eyebrow{color:var(--meadow-deep)}
 .gi-site .calendar-year{margin:22px 0 8px;color:var(--accent-dark);font-family:var(--display);font-size:64px;line-height:1;letter-spacing:-.04em}
 .gi-site .calendar-intro h2{max-width:360px;margin:0 0 20px;font-size:44px;line-height:1.08;color:var(--forest)}
 .gi-site .calendar-intro>p{max-width:400px;color:var(--muted);font-size:13px;line-height:1.8}
 .gi-site .calendar-watermark{width:120px;height:auto;margin-top:15px;opacity:.16;filter:brightness(0) saturate(100%)}
 .gi-site .calendar-filters{display:flex;flex-wrap:wrap;gap:7px;margin-top:24px}
 .gi-site .calendar-filters button{padding:8px 12px;border:1px solid rgba(27,58,75,.22);background:transparent;color:var(--forest);font-size:10px;cursor:pointer}
-.gi-site .calendar-filters button:hover,.gi-site .calendar-filters button.active{border-color:var(--accent);background:var(--accent);color:var(--forest-deep)}
+.gi-site .calendar-filters button:hover,.gi-site .calendar-filters button.active{border-color:var(--accent);background:var(--accent);color:var(--on-sun)}
 .gi-site .calendar-list{border-top:1px solid rgba(27,58,75,.16)}
 .gi-site .calendar-event{display:grid;grid-template-columns:36px 1fr;gap:17px;align-items:start;padding:23px 0;border-bottom:1px solid rgba(27,58,75,.16)}
 .gi-site .calendar-event-icon{padding-top:3px;color:var(--accent-dark);font-family:var(--display);font-size:18px}
@@ -260,7 +260,7 @@ body.gi-lightbox-open{overflow:hidden}
   .gi-site .home-events-detail .events-calendar{margin-top:42px;padding:46px 0}.gi-site .calendar-layout{gap:34px}.gi-site .calendar-year{font-size:54px}.gi-site .calendar-intro h2{font-size:39px}.gi-site .calendar-event h3{font-size:21px}
   .gi-site .home-accommodation-note{align-items:flex-start;text-align:left}.gi-site .home-reviews{padding:46px 0}.gi-site .home-reviews>.container{gap:28px}.gi-site .home-review-cards{grid-template-columns:1fr}.gi-site .home-review-cards blockquote>p{font-size:20px}
   .gi-site .footer-grid{grid-template-columns:1fr}.gi-site .footer-bottom{flex-direction:column;gap:12px}
-  .gi-site .mobile-booking-cta{position:fixed;z-index:45;right:12px;bottom:10px;left:12px;display:flex;align-items:center;justify-content:center;gap:10px;min-height:48px;background:var(--accent);color:var(--forest-deep);box-shadow:0 8px 30px rgb(var(--shade) / .24);font-size:13px;font-weight:700}
+  .gi-site .mobile-booking-cta{position:fixed;z-index:45;right:12px;bottom:10px;left:12px;display:flex;align-items:center;justify-content:center;gap:10px;min-height:48px;background:var(--accent);color:var(--on-sun);box-shadow:0 8px 30px rgb(var(--shade) / .24);font-size:13px;font-weight:700}
   #gi-lightbox{padding:70px 12px 90px}#gi-lightbox .lightbox-arrow{top:auto;bottom:20px;width:46px;height:46px;transform:none}#gi-lightbox .lightbox-arrow.previous{left:calc(50% - 58px)}#gi-lightbox .lightbox-arrow.next{right:calc(50% - 58px)}#gi-lightbox .lightbox-close{top:14px;right:14px}#gi-lightbox figcaption{font-size:10px}
 }
 @media (max-width:782px){body.admin-bar .gi-site .site-header{top:46px}}

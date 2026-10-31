@@ -12,6 +12,7 @@ body.single-product {
     --gi-accent: #f7b267;        /* Soare: butoanele de rezervare */
     --gi-accent-hover: #f9c283;
     --gi-accent-dark: #a3561f;   /* Chihlimbar */
+    --gi-on-sun: #11293a;        /* textul de pe butoanele de soare: 8,2:1 */
     --gi-ink: #22343f;
     --gi-muted: #536773;
     --gi-line: rgba(27, 58, 75, .14);
@@ -58,7 +59,7 @@ body.single-product .woocommerce input:focus-visible,
 body.single-product .woocommerce select:focus-visible,
 body.single-product .woocommerce textarea:focus-visible,
 body.single-product .woocommerce summary:focus-visible {
-    outline: 3px solid var(--gi-accent) !important;
+    outline: 3px solid var(--gi-forest) !important; /* lac adânc: 6,6:1 pe hârtie (soarele ar avea doar 1,8:1) */
     outline-offset: 3px;
 }
 
@@ -254,12 +255,12 @@ body.single-product .ovabrw-form .single_add_to_cart_button {
 body.post-type-archive-product.woocommerce-shop .ovabrw-card-btn .ovabrw-button {
     width: 100%;
     background: var(--gi-accent);
-    color: var(--gi-forest-deep);
+    color: var(--gi-on-sun);
 }
 
 body.post-type-archive-product.woocommerce-shop .ovabrw-card-btn .ovabrw-button:hover {
     background: var(--gi-accent-hover);
-    color: var(--gi-forest-deep);
+    color: var(--gi-on-sun);
     box-shadow: 0 7px 18px rgb(var(--gi-shade) / .14);
 }
 
@@ -742,7 +743,7 @@ body.single-product .ovabrw-form button.submit {
     border: 1px solid transparent;
     border-radius: 6px;
     background: var(--gi-accent) !important;
-    color: var(--gi-forest-deep) !important;
+    color: var(--gi-on-sun) !important;
     font-family: var(--gi-sans);
     font-size: 13px;
     font-weight: 700;
@@ -756,7 +757,7 @@ body.single-product .ovabrw-form button.submit {
 
 body.post-type-archive-product.woocommerce-shop .product-information .wd-add-btn a.button:hover {
     background: var(--gi-accent-hover) !important;
-    color: var(--gi-forest-deep) !important;
+    color: var(--gi-on-sun) !important;
 }
 
 body.single-product .main-page-wrapper > .container-fluid {
@@ -896,12 +897,12 @@ body.single-product .ovabrw-form .terms-conditions > label {
 body.single-product .ovabrw-form button.submit {
     min-height: 50px;
     background: var(--gi-accent) !important;
-    color: var(--gi-forest-deep) !important;
+    color: var(--gi-on-sun) !important;
 }
 
 body.single-product .ovabrw-form button.submit:hover {
     background: var(--gi-accent-hover) !important;
-    color: var(--gi-forest-deep) !important;
+    color: var(--gi-on-sun) !important;
 }
 
 @media (max-width: 1024px) {
