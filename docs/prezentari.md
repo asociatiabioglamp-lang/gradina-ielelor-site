@@ -979,6 +979,12 @@ Listă deduplicată. După fiecare fapt: sursele în care apare. **⚠** = docum
 - **Câini:** câini mici, până la 15 kg, conform regulamentului de pe site.
 - **Pavilioane (evenimente private):** le punem noi la dispoziție sau le aduce clientul, după caz și preferință.
 - **Băi:** 8 băi publice și 4 băi proprii, câte una la fiecare bungalow. [B] pagina 4 spune greșit „8 băi proprii, în bungalow-uri” (sunt 4 bungalow-uri); corectat în varianta nouă a PDF-ului. Site-ul spune „8 băi publice” și „baie proprie în fiecare bungalow”.
+- **Variante corectate ale PDF-urilor (31.10.2026):** create ca fișiere noi, originalele din Drive neatinse (unealta: `tools/pdf-corectura.py`, necesită PyMuPDF):
+  - Boot camp: sezon 1 mai – 1 octombrie (pagina 1 și 13) și „4 băi proprii, în bungalow-uri” (pagina 4);
+  - Festivaluri: sezon 1 mai – 1 octombrie (slide 12 și 13);
+  - Festival familie: „mai ales pentru lunile de vară” (slide 12);
+  - Tabere: neschimbat („Sezon 2027”, fără interval).
+  Rămân de aliniat în prezentări: „8 bungalow-uri” (Festivaluri și fișa tehnică), „8 dușuri și 12 toalete” (față de „8 băi publice + 4 băi proprii”), 9 ha față de 6 ha de camping.
 - **Suprafața:** 6 ha de camping (împrejmuite, pază 24/7); 9 ha în regim de festival, plus o parcare suplimentară de 9 ha.
 
 ## Lipsuri / neclarități
