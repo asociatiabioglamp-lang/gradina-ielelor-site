@@ -31,6 +31,7 @@ Sursă de adevăr pentru conflictele dintre documente. Se completează pe măsur
 | 2026-10-31 | Design | **Aprobat:** formularul de rezervare de pe prima pagină (câmpuri rotunjite, buton mare „Caută disponibilitatea”) și designul paginilor | Unirea în `main` rămâne la aprobarea finală, după staging |
 | 2026-10-31 | Fotografii | **Muntele e piesa de rezistență:** pozele importante au Munții Făgăraș în spate („ca la Paris, cu Turnul Eiffel”). Prima pagină: în dreapta, lacul cu munții; terasa din stânga rămâne | Pozele de interior (baie, dormitor, bucătărie) rămân doar în galerii, unde informează |
 | 2026-10-31 | Canale | Pe **Airbnb și Booking** se vând **numai Glamping și Bungalow** | Calendarele (iCal) se leagă numai pentru Glamping 1–4 și Bungalow 1–4 (`docs/5stardesk-integrare.md`) |
+| 2026-10-31 | LoftLoader | **Oprit pe site-ul live** de proprietar (Personalizare → LoftLoader Lite → Enable LoftLoader, debifat, Publică). Verificat din exterior: ecranul de încărcare nu mai apare | Se repornește din același loc. Pe live, prima imagine apare acum în ~5 s pe telefon (test fără limitare de rețea); restul vine odată cu designul nou și cache-ul |
 
 ## Întrebări deschise înainte de lansare (31.10.2026)
 
