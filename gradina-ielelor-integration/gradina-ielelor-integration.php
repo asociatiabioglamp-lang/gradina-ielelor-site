@@ -3,7 +3,7 @@
  * Plugin Name: Grădina Ielelor — Site + BRW
  * Plugin URI: https://gradina-ielelor.ro/
  * Description: Template-uri server-side pentru pagina principală și paginile dedicate celor cinci categorii (Bungalow, Glamping, Camping, Rulote, Festivaluri & evenimente), cu WooCommerce + OVABRW drept singur motor de rezervări. Nu include și nu pornește formularul React demonstrativ.
- * Version: 1.1.0
+ * Version: 1.2.0
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Author: Echipa Grădina Ielelor
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('GI_VERSION', '1.1.0');
+define('GI_VERSION', '1.2.0');
 define('GI_FILE', __FILE__);
 define('GI_PATH', plugin_dir_path(__FILE__));
 define('GI_URL', plugin_dir_url(__FILE__));
