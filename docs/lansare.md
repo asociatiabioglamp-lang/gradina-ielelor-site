@@ -421,11 +421,11 @@ Softaculous → **Instalări** → rândul site-ului → **Backups** → **Resto
 
 **Facturile FGO (în primele zile):** la **prima comandă reală** după lansare verifici că factura a ajuns la client (sau în FGO) cu datele corecte (persoană fizică sau juridică, suma, seria). Dacă nu, revino la R1 și spune-mi.
 
-**Contul vechi de administrator `a.min` (ID 1) — nu înainte de lansare, în trei pași, după D+7:**
-1. **Acum:** nimic. Proprietara spune cine e `a.min` și dacă mai lucrează cu el. Coloana „Last Login” din Utilizatori arată când s-a autentificat ultima oară.
-2. **D+7 (14.11), cu backup proaspăt:** i se schimbă parola (aleasă la întâmplare, lungă) și emailul contului, cu al proprietarei; se pornește 2FA pe contul ei. Așa nu mai poate intra nimeni cu el, fără să ștergem nimic.
-3. **D+14, dacă nimic nu s-a stricat** (comenzi, facturi FGO, rezervări BRW, calendare iCal, emailuri): se șterge contul, cu toate articolele și paginile lui atribuite contului proprietarei. Revenire: restaurarea din backup.
-De ce nu mai devreme: pe `a.min` pot rula, fără să se vadă, modulul FGO, sincronizarea iCal sau emailurile; o ștergere chiar înaintea lansării ar fi un risc inutil.
+**Contul vechi de administrator `a.min` (ID 1) — închis ACUM, la cererea proprietarei (31.10.2026: „preluăm controlul chiar dacă el face ceva greșit până atunci”):**
+1. **Cu copiile de siguranță existente** (Softaculous de pe 31.10 și 28.10, în Drive): Utilizatori → `a.min` → Editează: parolă nouă generată de WordPress, pe care **nu o păstrează nimeni**; emailul contului schimbat cu al asociației; „Deconectează-te de pe toate sesiunile”; Actualizează. Dacă ceva se strică, parola se reface prin „Ai uitat parola?” pe emailul asociației.
+2. **Ce se urmărește în zilele următoare:** facturile FGO la prima comandă, calendarele iCal (Airbnb, Booking), emailurile site-ului. Dacă ceva nu merge, se spune imediat.
+3. **D+14 (21.11):** dacă nimic nu s-a stricat, contul se șterge, cu articolele și paginile lui atribuite contului proprietarei.
+**Alte conturi ale programatorului**, în ordinea importanței (fiecare, separat): parola cPanel cu 2FA; parola zonei de client Romarg și titularul domeniului; cheile REST din WooCommerce (Setări → Avansat → REST API); utilizatorii din NETOPIA și FGO; Google (Analytics, Tag Manager, Search Console); Meta; licențele (tema WoodMart, Elementor Pro, BRW). Lista completă: `docs/independenta.md`.
 
 **[TU]** Zilnic, aproximativ 10 minute:
 1. **Comenzi:** **WooCommerce → Comenzi**. Nicio comandă plătită nu trebuie să rămână „Plată în așteptare” mai mult de o oră. Dacă rămâne, compar-o cu NETOPIA (pasul 2) și spune-i lui Claude.
