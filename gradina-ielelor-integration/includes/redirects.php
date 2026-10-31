@@ -23,7 +23,7 @@ if (!defined('ABSPATH')) {
  * Adresa veche (cheie) → adresa nouă (valoare), ca drumuri față de pagina principală.
  *
  * Valori: '/' = pagina principală nouă (hub-ul de rezervare), activă numai după ce e setată ca prima pagină;
- * '/bungalow/', '/glamping/', '/camping/', '/rulote/', '/evenimente/' = paginile dedicate din gi_offers()
+ * '/bungalow/', '/glamping/', '/camping/' și celelalte pagini dedicate din gi_offers()
  * (se caută după template, deci funcționează și dacă pagina are alt slug);
  * orice alt drum = o pagină WordPress publicată cu acel drum (ex. '/despre-noi/').
  */
@@ -33,7 +33,9 @@ function gi_redirect_map() {
         // /glamping/ și /camping/ își păstrează adresa (pagina existentă primește template-ul nou), deci nu apar aici.
         '/cazare-bungalow/' => '/bungalow/',
         '/camping-cort/' => '/camping/',
-        '/camping-rulota/' => '/rulote/',
+        '/camping-rulota/' => '/camping/',
+        // Rulote are acum aceeași pagină cu Camping (decizia din 31.10.2026).
+        '/rulote/' => '/camping/',
 
         // Evenimente: pagina veche din „Totul despre ea” → pagina dedicată.
         '/gradina-ielelor-totul-despre-ea/evenimente/' => '/evenimente/',

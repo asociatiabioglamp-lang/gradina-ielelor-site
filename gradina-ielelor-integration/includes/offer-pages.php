@@ -210,139 +210,56 @@ function gi_offer_pages() {
     );
 
     $pages['camping'] = array(
-        'title' => 'Camping',
+        'title' => 'Camping & rulote',
         'booking_type' => 'camping-cort',
         'cta' => 'Verifică disponibilitatea',
+        // Al doilea buton: același modul de rezervare, cu „Rulote” preselectat.
+        'cta_alt' => array('label' => 'Ai rulotă? Rezervă aici', 'booking_type' => 'camping-rulota'),
         'hero' => array(
             'image' => 'camping-munte-1600.webp',
             'alt' => 'Zona de camping văzută de sus: corturi, lacul și Munții Făgăraș în fundal',
-            'h1' => 'Camping la',
-            'h1_em' => 'poalele Făgărașului',
-            'lead' => 'Vino cu cortul tău. Ai dușuri calde, bucătării comune și un lac în care se înoată, într-un domeniu privat și păzit.',
+            'h1' => 'Camping cu cortul',
+            'h1_em' => 'sau cu rulota',
+            'lead' => 'Vino cu cortul, cu rulota sau cu autorulota. Ai dușuri calde, bucătării comune și un lac în care se înoată, într-un domeniu privat și păzit, la poalele Făgărașului.',
         ),
         'facts' => array(
             array('value' => '2', 'label' => 'lacuri, unul în care se înoată'),
-            array('value' => '30', 'label' => 'de hamace, plus vetre de foc'),
+            array('value' => '8', 'label' => 'dușuri cu apă caldă, non-stop'),
             array('value' => '20 min', 'label' => 'până la Transfăgărășan'),
-            array('value' => '80 lei', 'label' => 'pe noapte'),
+            array('value' => '80 lei', 'label' => 'pe noapte, cort sau rulotă'),
         ),
         'story' => array(
-            'eyebrow' => 'Cum e să campezi aici',
+            'eyebrow' => 'Cum e să stai aici',
             'title' => 'Libertate în aer liber.',
             'title_em' => 'Cu tot ce ai nevoie aproape.',
             'paragraphs' => array(
                 'Îți întinzi cortul pe un domeniu privat de șase hectare, împrejmuit și păzit permanent. Dușurile calde, bucătăriile și focul de seară sunt aproape.',
+                'Vii cu rulota sau cu autorulota? O parchezi în zona de camping, aproape de lac. Ai racorduri și servicii pe loc, plus internet.',
                 'Lacul mare are 8.000 de metri pătrați și un metru adâncime, așa că se înoată în el. Lacul mic are o terasă din lemn construită direct pe apă, de 7 pe 12 metri, unde încape toată gașca.',
             ),
             'image' => 'camping-corturi-munte-960.webp',
             'alt' => 'Corturi în zona de camping, cu Munții Făgăraș în fundal',
         ),
-        'gallery' => array('title' => 'Vezi unde îți pui cortul', 'images' => array(
+        'gallery' => array('title' => 'Vezi unde îți pui cortul sau rulota', 'images' => array(
             array('src' => 'camping-lac-1280.webp', 'alt' => 'Lacul și corturile de pe mal, cu Munții Făgăraș în fundal', 'caption' => 'Corturi lângă lac'),
+            array('src' => 'rulote-lac-munte-960.webp', 'alt' => 'Autorulote parcate lângă lac, cu Munții Făgăraș în fundal', 'caption' => 'Autorulote lângă lac'),
             array('src' => 'camping-day-960.webp', 'alt' => 'Corturi și sălcii în campingul Grădina Ielelor, cu Munții Făgăraș în fundal', 'caption' => 'Camping în zi însorită'),
+            array('src' => 'domeniu-aerian-1280.webp', 'alt' => 'Domeniul Grădina Ielelor văzut de sus, cu rulote și Munții Făgăraș în fundal', 'caption' => 'Domeniul, văzut de sus'),
             array('src' => 'festival-lake-640.webp', 'alt' => 'Lacul cu pontonul din lemn, cu Munții Făgăraș în fundal', 'caption' => 'Acces la lac și ponton'),
-            array('src' => 'home-hero-chill-640.webp', 'alt' => 'Foișor din lemn cu scaune-hamac și fotolii pentru relaxare', 'caption' => 'Loc de relaxare'),
+            array('src' => 'rulote-aerian-960.webp', 'alt' => 'Rulote și autorulote parcate pe domeniu, văzute de sus, cu munții în fundal', 'caption' => 'Rulote pe domeniu, văzute de sus'),
             array('src' => 'camping-bucatarie-960.webp', 'alt' => 'Bucătărie comună în aer liber, sub un acoperiș din lemn', 'caption' => 'Bucătărie comună'),
             array('src' => 'camping-sanitare-960.webp', 'alt' => 'Grupul sanitar din camping, cu chiuvete și oglinzi', 'caption' => 'Grup sanitar'),
         )),
         'included' => array(
             'title' => 'Tot ce-ți trebuie, nimic în plus',
             'groups' => array(
-                array('icon' => 'tent', 'title' => 'La cortul tău', 'items' => array(
+                array('icon' => 'tent', 'title' => 'La locul tău', 'items' => array(
                     'Spațiu generos pentru cort',
-                    'Loc lângă lac',
-                    'Acces la toate facilitățile',
+                    'Loc pentru rulotă sau autorulotă, cu racorduri și servicii pe loc',
+                    'Aproape de lac',
                     'Internet și parcare proprie',
                     'Câinii sunt bineveniți',
-                ), 'note' => array('text' => 'Vii cu rulota? ', 'link_text' => 'Vezi pagina Rulote', 'link_offer' => 'rulote')),
-                array('icon' => 'trees', 'title' => 'În Grădină', 'items' => array(
-                    'Opt dușuri cu apă caldă, non-stop',
-                    'Douăsprezece toalete',
-                    'Două bucătării comune',
-                    'Două lacuri, unul în care se înoată',
-                    'Terasă din lemn construită pe apă',
-                    'Treizeci de hamace și vetre de foc',
-                    'Pescuit sportiv și ponton',
-                    'Domeniu împrejmuit, pază 24 din 24',
                 ), 'note' => array('text' => 'Nu ai cort? Avem corturi cu pat, gata pregătite: ', 'link_text' => 'alege glampingul', 'link_offer' => 'glamping')),
-            ),
-        ),
-        'reviews' => array('title' => 'De la cei care au campat aici', 'authors' => array('Rebeca Teban', 'Mihaela Mocanu')),
-        'prices' => array(
-            'title' => 'Simplu, fără surprize',
-            'text' => 'Prețul final îl vezi când alegi datele, înainte să plătești.',
-            'unit' => '/ noapte',
-            'rows' => array(
-                array('label' => 'Camping cu cortul tău', 'value' => '80 lei'),
-            ),
-        ),
-        'notes' => array(
-            array('icon' => 'droplet', 'title' => 'Apa de la robinet nu e potabilă', 'text' => 'E pentru duș, spălat și toalete. Apa de băut o găsești la dozatoarele din camping și îmbuteliată, la recepție.'),
-            array('icon' => 'sun', 'title' => 'Energie proprie, din soare și GPL', 'text' => 'Ai curent, apă caldă și internet. Te rugăm doar să lași acasă electrocasnicele mari.'),
-            array('icon' => 'flame', 'title' => 'Focul, doar în vetrele amenajate', 'text' => 'Avem vetre de foc pregătite pe domeniu. Seara, acolo se adună toată lumea.'),
-        ),
-        'faq' => array(
-            array('q' => 'Ce găsesc la camping?', 'a' => 'Spațiu pentru cortul tău, opt dușuri cu apă caldă non-stop, douăsprezece toalete și două bucătării comune. Plus două lacuri, treizeci de hamace și vetre de foc.'),
-            array('q' => 'Se poate înota?', 'a' => 'Da, în lacul mare. Are 8.000 de metri pătrați și un metru adâncime pe toată suprafața, fără zone adânci.'),
-            array('q' => 'Am curent și internet?', 'a' => 'Da. Domeniul funcționează pe energie proprie, solară și GPL, așa că ai curent, apă caldă și internet. Lasă acasă doar aparatele electrice mari.'),
-            array('q' => 'Ce pot face prin zonă?', 'a' => 'Transfăgărășanul e la circa 20 de minute, iar Mănăstirea Brâncoveanu e chiar în Sâmbăta de Sus. Prin satele de sub munte găsești drumuri de țară bune de bicicletă și producători locali.'),
-            array('q' => 'Trebuie să rezerv din timp?', 'a' => 'Îți recomandăm, mai ales pentru weekendurile de vară și cât timp e deschis Transfăgărășanul.'),
-            array('q' => 'Cât costă o noapte?', 'a' => 'Tariful de referință este 80 lei pe noapte. Prețul final îl vezi când alegi datele.'),
-        ),
-        'closing' => array('title' => 'Gata de o noapte', 'title_em' => 'la cort, sub Făgăraș?', 'image' => 'camping-lac-munte-1280.webp'),
-        'seo' => array(
-            'title' => 'Camping Făgăraș, aproape de Transfăgărășan | Grădina Ielelor',
-            'description' => 'Vino cu cortul în Grădina Ielelor, Sâmbăta de Sus (Brașov): două lacuri, dușuri calde non-stop, bucătării comune și vetre de foc. La 20 min de Transfăgărășan.',
-            'image' => 'camping-munte-1600.webp',
-        ),
-    );
-
-    $pages['rulote'] = array(
-        'title' => 'Rulote',
-        'booking_type' => 'camping-rulota',
-        'cta' => 'Verifică disponibilitatea',
-        'hero' => array(
-            'image' => 'rulote-hero-1600.webp',
-            'alt' => 'Autorulote parcate lângă lac, cu Munții Făgăraș în fundal',
-            'h1' => 'Cu rulota în',
-            'h1_em' => 'Grădina Ielelor',
-            'lead' => 'Rulotă sau autorulotă? Ai racorduri și servicii pe loc, lângă lac, la poalele Munților Făgăraș.',
-        ),
-        'facts' => array(
-            array('value' => '8', 'label' => 'dușuri cu apă caldă, non-stop'),
-            array('value' => '2', 'label' => 'bucătării comune'),
-            array('value' => '20 min', 'label' => 'până la Transfăgărășan'),
-            array('value' => '80 lei', 'label' => 'pe noapte'),
-        ),
-        'story' => array(
-            'eyebrow' => 'Cum e să stai aici',
-            'title' => 'Vii cu casa ta.',
-            'title_em' => 'Restul îl găsești aici.',
-            'paragraphs' => array(
-                'Parchezi rulota sau autorulota în zona de camping, aproape de lac. Ai racorduri și servicii pe loc, plus internet.',
-                'Când cobori, ai toată Grădina: dușuri calde non-stop, două bucătării comune, hamace și vetre de foc. Iar lacul mare, de 8.000 de metri pătrați și un metru adâncime, te așteaptă la o baie.',
-            ),
-            'image' => 'rulote-lac-munte-960.webp',
-            'alt' => 'Autorulote parcate lângă lac, cu Munții Făgăraș în fundal',
-        ),
-        'gallery' => array('title' => 'Vezi locul înainte să vii', 'images' => array(
-            array('src' => 'domeniu-aerian-1280.webp', 'alt' => 'Domeniul Grădina Ielelor văzut de sus, cu rulote și Munții Făgăraș în fundal', 'caption' => 'Domeniul, văzut de sus'),
-            array('src' => 'rulote-aerian-960.webp', 'alt' => 'Rulote și autorulote parcate pe domeniu, văzute de sus, cu munții în fundal', 'caption' => 'Rulote pe domeniu, văzute de sus'),
-            array('src' => 'festival-lake-640.webp', 'alt' => 'Lacul cu pontonul din lemn, cu Munții Făgăraș în fundal', 'caption' => 'Acces la lac și ponton'),
-            array('src' => 'rulote-zona-960.webp', 'alt' => 'Vedere aeriană cu oaspeți, corturi și rulote în Grădina Ielelor', 'caption' => 'Corturi și rulote, lângă lacuri'),
-            array('src' => 'camping-bucatarie-960.webp', 'alt' => 'Bucătărie comună în aer liber, sub un acoperiș din lemn', 'caption' => 'Bucătărie comună'),
-            array('src' => 'camping-sanitare-960.webp', 'alt' => 'Grupul sanitar din camping, cu chiuvete și oglinzi', 'caption' => 'Grup sanitar'),
-        )),
-        'included' => array(
-            'title' => 'Tot ce-ți trebuie, nimic în plus',
-            'groups' => array(
-                array('icon' => 'map-pin', 'title' => 'La locul tău', 'items' => array(
-                    'Loc pentru rulotă sau autorulotă',
-                    'Racorduri și servicii pe loc',
-                    'Aproape de lac',
-                    'Internet în zona de camping',
-                    'Câinii sunt bineveniți',
-                ), 'note' => array('text' => 'Vii cu cortul? ', 'link_text' => 'Vezi pagina Camping', 'link_offer' => 'camping')),
                 array('icon' => 'trees', 'title' => 'În Grădină', 'items' => array(
                     'Opt dușuri cu apă caldă, non-stop',
                     'Douăsprezece toalete',
@@ -355,32 +272,35 @@ function gi_offer_pages() {
                 ), 'note' => array('text' => 'Vrei o noapte cu baie proprie? ', 'link_text' => 'Alege un bungalow', 'link_offer' => 'bungalow')),
             ),
         ),
-        'reviews' => array('title' => 'De la cei care au stat aici', 'authors' => array('Mihaela Mocanu', 'Rebeca Teban')),
+        'reviews' => array('title' => 'De la cei care au stat aici', 'authors' => array('Rebeca Teban', 'Mihaela Mocanu')),
         'prices' => array(
             'title' => 'Simplu, fără surprize',
             'text' => 'Prețul final îl vezi când alegi datele, înainte să plătești.',
             'unit' => '/ noapte',
             'rows' => array(
-                array('label' => 'Rulotă sau autorulotă', 'value' => '80 lei'),
+                array('label' => 'Loc de cort', 'value' => '80 lei'),
+                array('label' => 'Loc de rulotă sau autorulotă', 'value' => '80 lei'),
             ),
         ),
         'notes' => array(
             array('icon' => 'droplet', 'title' => 'Apa de la robinet nu e potabilă', 'text' => 'E pentru duș, spălat și toalete. Apa de băut o găsești la dozatoarele din camping și îmbuteliată, la recepție.'),
             array('icon' => 'sun', 'title' => 'Energie proprie, din soare și GPL', 'text' => 'Ai curent, apă caldă și internet. Te rugăm doar să lași acasă electrocasnicele mari.'),
-            array('icon' => 'calendar', 'title' => 'Vara, rezervă din timp', 'text' => 'Mai ales pentru weekendurile de vară și cât timp e deschis Transfăgărășanul.'),
+            array('icon' => 'flame', 'title' => 'Focul, doar în vetrele amenajate', 'text' => 'Avem vetre de foc pregătite pe domeniu. Seara, acolo se adună toată lumea.'),
         ),
         'faq' => array(
-            array('q' => 'Primiți și autorulote?', 'a' => 'Da, și rulote, și autorulote. Ai racorduri și servicii pe loc, în zona de camping. Dacă ai întrebări despre rulota ta, sună-ne la 0721 333 164.'),
-            array('q' => 'Unde fac duș?', 'a' => 'În băile comune: opt dușuri cu apă caldă, disponibile oricând, și douăsprezece toalete.'),
-            array('q' => 'Pot să gătesc și afară din rulotă?', 'a' => 'Da. Ai două bucătării comune, iar seara focul se aprinde în vetrele amenajate.'),
+            array('q' => 'Ce găsesc la camping?', 'a' => 'Spațiu pentru cortul tău, opt dușuri cu apă caldă non-stop, douăsprezece toalete și două bucătării comune. Plus două lacuri, treizeci de hamace și vetre de foc.'),
+            array('q' => 'Primiți și rulote sau autorulote?', 'a' => 'Da, și rulote, și autorulote. Ai racorduri și servicii pe loc, în zona de camping. Dacă ai întrebări despre rulota ta, sună-ne la 0721 333 164.'),
             array('q' => 'Se poate înota?', 'a' => 'Da, în lacul mare. Are 8.000 de metri pătrați și un metru adâncime pe toată suprafața, fără zone adânci.'),
-            array('q' => 'Cât costă o noapte?', 'a' => 'Tariful de referință este 80 lei pe noapte. Prețul final îl vezi când alegi datele.'),
+            array('q' => 'Am curent și internet?', 'a' => 'Da. Domeniul funcționează pe energie proprie, solară și GPL, așa că ai curent, apă caldă și internet. Lasă acasă doar aparatele electrice mari.'),
+            array('q' => 'Ce pot face prin zonă?', 'a' => 'Transfăgărășanul e la circa 20 de minute, iar Mănăstirea Brâncoveanu e chiar în Sâmbăta de Sus. Prin satele de sub munte găsești drumuri de țară bune de bicicletă și producători locali.'),
+            array('q' => 'Trebuie să rezerv din timp?', 'a' => 'Îți recomandăm, mai ales pentru weekendurile de vară și cât timp e deschis Transfăgărășanul.'),
+            array('q' => 'Cât costă o noapte?', 'a' => 'Tariful de referință este 80 lei pe noapte, pentru cort sau pentru rulotă. Prețul final îl vezi când alegi datele.'),
         ),
-        'closing' => array('title' => 'Gata de drum', 'title_em' => 'spre poalele Făgărașului?', 'image' => 'home-hero-lake-centered-1280.webp'),
+        'closing' => array('title' => 'Gata de o noapte', 'title_em' => 'la cort sau în rulotă, sub Făgăraș?', 'image' => 'camping-lac-munte-1280.webp'),
         'seo' => array(
-            'title' => 'Camping rulote și autorulote, Brașov | Grădina Ielelor',
-            'description' => 'Loc pentru rulotă sau autorulotă în Grădina Ielelor, Sâmbăta de Sus: racorduri și servicii pe loc, dușuri calde non-stop, bucătării comune și lac, sub Făgăraș.',
-            'image' => 'rulote-hero-1600.webp',
+            'title' => 'Camping cu cortul și rulota, sub Munții Făgăraș | Grădina Ielelor',
+            'description' => 'Camping cu cortul, rulota sau autorulota la Sâmbăta de Sus (Brașov): două lacuri, dușuri calde non-stop, bucătării comune, vetre de foc. La 20 min de Transfăgărășan.',
+            'image' => 'camping-munte-1600.webp',
         ),
     );
 

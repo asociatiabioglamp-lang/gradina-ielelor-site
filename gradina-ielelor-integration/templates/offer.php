@@ -40,6 +40,8 @@ if ($gi_season) {
     $gi_page['faq'][] = array('q' => 'Când e deschis?', 'a' => 'Sezonul pentru ' . strtolower(gi_offers()[$gi_key]['label']) . ': ' . $gi_season . '.');
 }
 $gi_payment_note = function_exists('gi_onsite_surcharge_notice') ? gi_onsite_surcharge_notice() : '';
+// Al doilea buton de rezervare (ex. Camping & rulote: „Ai rulotă? Rezervă aici”, cu rulota preselectată).
+$gi_alt = empty($gi_page['cta_alt']) ? null : array('label' => $gi_page['cta_alt']['label'], 'url' => gi_home_booking_url($gi_page['cta_alt']['booking_type']));
 
 /**
  * Atributele srcset/sizes din variantele existente ale aceleiași fotografii (nume-640.webp, nume-960.webp ...).
@@ -82,6 +84,7 @@ gi_part('header');
                 <p><?php echo esc_html($gi_page['hero']['lead']); ?></p>
                 <div class="gi-page-hero-actions">
                     <a class="button button-accent" href="<?php echo esc_url($gi_book_url); ?>" data-gi-book><?php echo esc_html($gi_page['cta']); ?> <?php echo gi_icon('arrow-right'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
+                    <?php if ($gi_alt) : ?><a class="gi-hero-link" href="<?php echo esc_url($gi_alt['url']); ?>" data-gi-book><?php echo esc_html($gi_alt['label']); ?></a><?php endif; ?>
                     <a class="gi-hero-link" href="#galerie">Vezi pozele</a>
                 </div>
             </div>
@@ -202,6 +205,7 @@ gi_part('header');
                         </dl>
                         <div class="gi-prices-actions">
                             <a class="button button-accent" href="<?php echo esc_url($gi_book_url); ?>" data-gi-book><?php echo esc_html($gi_page['cta']); ?> <?php echo gi_icon('arrow-right'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
+                            <?php if ($gi_alt) : ?><a class="gi-hero-link" href="<?php echo esc_url($gi_alt['url']); ?>" data-gi-book><?php echo esc_html($gi_alt['label']); ?></a><?php endif; ?>
                             <a class="gi-hero-link" href="tel:+40721333164"><?php echo gi_icon('phone'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> sau sună-ne la 0721 333 164</a>
                         </div>
                     </div>

@@ -122,7 +122,7 @@ Fără nume, date sau istorie inventate: povestea e doar cea de pe pagina veche 
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Vii cu <a href="/camping/">cortul tău</a> sau cu <a href="/rulote/">rulota</a>. Sau dormi într-un <a href="/glamping/">cort de glamping</a> cu pat, pe platformă de lemn, ori într-un <a href="/bungalow/">bungalow</a> cu baie proprie. Iar dacă pregătești un festival sau un eveniment de familie, avem loc și pentru asta: <a href="/evenimente/">festivaluri și evenimente</a>.</p>
+<p>Vii cu <a href="/camping/">cortul tău</a> sau cu <a href="/camping/">rulota</a>. Sau dormi într-un <a href="/glamping/">cort de glamping</a> cu pat, pe platformă de lemn, ori într-un <a href="/bungalow/">bungalow</a> cu baie proprie. Iar dacă pregătești un festival sau un eveniment de familie, avem loc și pentru asta: <a href="/evenimente/">festivaluri și evenimente</a>.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading -->

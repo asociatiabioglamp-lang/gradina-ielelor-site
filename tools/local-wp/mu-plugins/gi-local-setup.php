@@ -5,7 +5,7 @@
  * cu textul din docs/pagini-continut.md (marcaj de blocuri, exact ca în editorul WordPress).
  */
 add_action('init', function () {
-    if (get_option('gi_local_setup_done') === '6') {
+    if (get_option('gi_local_setup_done') === '7') {
         return;
     }
     $active = (array) get_option('active_plugins', array());
@@ -22,7 +22,6 @@ add_action('init', function () {
         'glamping' => array('Glamping', 'gi-glamping.php'),
         'bungalow' => array('Bungalow', 'gi-bungalow.php'),
         'camping' => array('Camping', 'gi-camping.php'),
-        'rulote' => array('Rulote', 'gi-rulote.php'),
         'evenimente' => array('Festivaluri & evenimente', 'gi-evenimente.php'),
         'despre-noi' => array('Despre noi', 'gi-content.php'),
         'regulament-politici' => array('Regulament & politici', 'gi-content.php'),
@@ -51,7 +50,7 @@ add_action('init', function () {
     kses_init();
 
     flush_rewrite_rules();
-    update_option('gi_local_setup_done', '6');
+    update_option('gi_local_setup_done', '7');
 }, 99);
 
 // Paginile legale ale site-ului actual (aceleași adrese ca pe live) și pagina de blog, pentru linkurile din subsol.
@@ -133,7 +132,7 @@ function gi_local_content_pages() {
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Vii cu <a href="/camping/">cortul tău</a> sau cu <a href="/rulote/">rulota</a>. Sau dormi într-un <a href="/glamping/">cort de glamping</a> cu pat, pe platformă de lemn, ori într-un <a href="/bungalow/">bungalow</a> cu baie proprie. Iar dacă pregătești un festival sau un eveniment de familie, avem loc și pentru asta: <a href="/evenimente/">festivaluri și evenimente</a>.</p>
+<p>Vii cu <a href="/camping/">cortul tău</a> sau cu <a href="/camping/">rulota</a>. Sau dormi într-un <a href="/glamping/">cort de glamping</a> cu pat, pe platformă de lemn, ori într-un <a href="/bungalow/">bungalow</a> cu baie proprie. Iar dacă pregătești un festival sau un eveniment de familie, avem loc și pentru asta: <a href="/evenimente/">festivaluri și evenimente</a>.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading -->

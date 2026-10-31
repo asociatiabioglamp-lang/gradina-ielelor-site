@@ -11,7 +11,6 @@
 .gi-page-bungalow .gi-page-hero-media img { view-transition-name: gi-photo-bungalow; }
 .gi-page-glamping .gi-page-hero-media img { view-transition-name: gi-photo-glamping; }
 .gi-page-camping .gi-page-hero-media img { view-transition-name: gi-photo-camping; }
-.gi-page-rulote .gi-page-hero-media img { view-transition-name: gi-photo-rulote; }
 .gi-page-evenimente .gi-page-hero-media img { view-transition-name: gi-photo-evenimente; }
 ::view-transition-group(*) { animation-timing-function: cubic-bezier(.2, .8, .2, 1); }
 

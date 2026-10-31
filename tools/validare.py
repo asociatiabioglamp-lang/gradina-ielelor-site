@@ -19,7 +19,7 @@ import urllib.request
 from pathlib import Path
 
 PLUGIN = Path(__file__).resolve().parents[1] / 'gradina-ielelor-integration'
-PAGINI = ['/', '/bungalow/', '/glamping/', '/camping/', '/rulote/', '/evenimente/', '/despre-noi/', '/regulament-politici/', '/contact/']
+PAGINI = ['/', '/bungalow/', '/glamping/', '/camping/', '/evenimente/', '/despre-noi/', '/regulament-politici/', '/contact/']
 # Pagini care nu fac parte din plugin; pe site-ul real există, local pot lipsi.
 EXTERNE_PLUGINULUI = ('/festival/', '/shop/', '/produs/')
 

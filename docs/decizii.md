@@ -34,6 +34,7 @@ Sursă de adevăr pentru conflictele dintre documente. Se completează pe măsur
 | 2026-10-31 | Canale | Pe **Airbnb și Booking** se vând **numai Glamping și Bungalow** | Calendarele (iCal) se leagă numai pentru Glamping 1–4 și Bungalow 1–4 (`docs/5stardesk-integrare.md`) |
 | 2026-10-31 | LoftLoader | **Oprit pe site-ul live** de proprietar (Personalizare → LoftLoader Lite → Enable LoftLoader, debifat, Publică). Verificat din exterior: ecranul de încărcare nu mai apare | Se repornește din același loc. Pe live, prima imagine apare acum în ~5 s pe telefon (test fără limitare de rețea); restul vine odată cu designul nou și cache-ul |
 | 2026-10-31 | Culori | Cerere: **culori mai luminoase, care să dea o stare de bine**. Propunere: paleta „O zi senină la munte” (cer, lac, pajiște, soare); butoanele de rezervare în culoarea soarelui | Așteaptă confirmarea proprietarului (`capturi/culori-inainte-dupa.jpg`, `capturi/paleta-noua.png`). Butonul „Caută disponibilitatea” trece din verde închis în soare |
+| 2026-10-31 | Categorii | **Bungalow · Glamping · Camping (corturi & rulote, o singură pagină) · Festivaluri & tabere · Evenimente private.** „Festivaluri & evenimente” dispare | `/rulote/` și `/camping-rulota/` duc la `/camping/`. Pe pagina Camping: al doilea buton „Ai rulotă? Rezervă aici”, cu rulota preselectată |
 
 ## Întrebări deschise înainte de lansare (31.10.2026)
 

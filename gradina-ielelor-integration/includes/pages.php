@@ -37,8 +37,7 @@ function gi_offers() {
     return array(
         'bungalow' => array('label' => 'Bungalow', 'anchor' => 'bungalow', 'template' => 'gi-bungalow.php'),
         'glamping' => array('label' => 'Glamping', 'anchor' => 'glamping', 'template' => 'gi-glamping.php'),
-        'camping' => array('label' => 'Camping', 'anchor' => 'camping', 'template' => 'gi-camping.php'),
-        'rulote' => array('label' => 'Rulote', 'anchor' => 'camping', 'template' => 'gi-rulote.php'),
+        'camping' => array('label' => 'Camping & rulote', 'anchor' => 'camping', 'template' => 'gi-camping.php'),
         'evenimente' => array('label' => 'Festivaluri & evenimente', 'anchor' => 'evenimente', 'template' => 'gi-evenimente.php'),
     );
 }
