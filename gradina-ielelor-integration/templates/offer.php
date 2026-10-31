@@ -34,6 +34,12 @@ if (!empty($gi_page['reviews']['authors'])) {
     }));
 }
 $gi_related = array_diff_key(gi_offer_cards(), array($gi_key => true));
+// Sezonul și regula plății în locație vin din Setări → Grădina Ielelor, ca proprietarul să le poată schimba singur.
+$gi_season = gi_season($gi_key);
+if ($gi_season) {
+    $gi_page['faq'][] = array('q' => 'Când e deschis?', 'a' => 'Sezonul pentru ' . strtolower(gi_offers()[$gi_key]['label']) . ': ' . $gi_season . '.');
+}
+$gi_payment_note = function_exists('gi_onsite_surcharge_notice') ? gi_onsite_surcharge_notice() : '';
 
 /**
  * Atributele srcset/sizes din variantele existente ale aceleiași fotografii (nume-640.webp, nume-960.webp ...).
@@ -182,6 +188,12 @@ gi_part('header');
                             <span class="eyebrow"><?php echo gi_icon('calendar'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Prețuri</span>
                             <h2 id="prices-title"><?php echo esc_html($gi_page['prices']['title']); ?></h2>
                             <p><?php echo esc_html($gi_page['prices']['text']); ?></p>
+                            <?php if ($gi_season) : ?>
+                                <p class="gi-prices-season"><strong>Sezon:</strong> <?php echo esc_html($gi_season); ?></p>
+                            <?php endif; ?>
+                            <?php if ($gi_payment_note) : ?>
+                                <p class="gi-prices-note"><?php echo esc_html($gi_payment_note); ?></p>
+                            <?php endif; ?>
                         </div>
                         <dl class="gi-price-list">
                             <?php foreach ($gi_page['prices']['rows'] as $gi_price) : ?>

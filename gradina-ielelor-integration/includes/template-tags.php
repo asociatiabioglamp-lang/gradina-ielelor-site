@@ -13,15 +13,28 @@ function gi_default_options() {
         'category_bungalow' => 'bungalow',
         // 0 = redirecționări temporare (302) în săptămâna lansării, ca revenirea R1 să fie curată; 1 = permanente (301), de la D+7.
         'redirects_permanent' => 0,
-        // Plata la locație: oprită până la avizul avocatului (includes/plata-la-locatie.php).
+        // Plata la locație: prețul de pe site + 10% (decizia proprietarului, 31.10.2026). Se pornește din setări, după ce se bifează metoda.
         'onsite_surcharge_enabled' => 0,
-        'onsite_surcharge_percent' => 30,
+        'onsite_surcharge_percent' => 10,
         'onsite_surcharge_gateways' => array('cod'),
+        // Sezonul afișat pe paginile ofertelor (text liber; gol = nu se afișează).
+        'season_bungalow' => '1 iunie – 1 octombrie',
+        'season_glamping' => '15 mai – 1 octombrie',
+        'season_camping' => '1 mai – 1 octombrie',
+        'season_rulote' => '1 mai – 1 octombrie',
     );
 }
 
 function gi_options() {
     return wp_parse_args(get_option('gi_integration_options', array()), gi_default_options());
+}
+
+/**
+ * Sezonul unei oferte (ex. „15 mai – 1 octombrie”), din Setări → Grădina Ielelor; '' dacă nu e completat.
+ */
+function gi_season($key) {
+    $options = gi_options();
+    return isset($options['season_' . $key]) ? trim((string) $options['season_' . $key]) : '';
 }
 
 function gi_asset_url($path) {

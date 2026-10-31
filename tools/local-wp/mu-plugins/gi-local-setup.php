@@ -5,7 +5,7 @@
  * cu textul din docs/pagini-continut.md (marcaj de blocuri, exact ca în editorul WordPress).
  */
 add_action('init', function () {
-    if (get_option('gi_local_setup_done') === '5') {
+    if (get_option('gi_local_setup_done') === '6') {
         return;
     }
     $active = (array) get_option('active_plugins', array());
@@ -51,7 +51,7 @@ add_action('init', function () {
     kses_init();
 
     flush_rewrite_rules();
-    update_option('gi_local_setup_done', '5');
+    update_option('gi_local_setup_done', '6');
 }, 99);
 
 // Paginile legale ale site-ului actual (aceleași adrese ca pe live) și pagina de blog, pentru linkurile din subsol.
@@ -84,7 +84,7 @@ add_action('init', function () {
 function gi_local_content_pages() {
     return array(
         'despre-noi' => array(
-            'excerpt' => 'Grădina Ielelor e un domeniu de 9 hectare la poalele Munților Făgăraș, la Sâmbăta de Sus. Un loc făcut cu grijă, pentru odihnă în natură.',
+            'excerpt' => 'Grădina Ielelor: șase hectare de natură la poalele Munților Făgăraș, la Sâmbăta de Sus. Un loc făcut cu grijă, pentru odihnă în natură.',
             'content' => <<<'GI_DESPRE_NOI'
 <!-- wp:paragraph {"className":"gi-lead"} -->
 <p class="gi-lead">Un cort sub clar de lună. O grădină cu trandafiri. O vatră de foc, ca pe vremuri. O livadă bună de plimbat și un lac pe malul căruia merge o carte bună. Pe scurt: odihnă, natură, liniște. Pe scurt, Grădina Ielelor.</p>
@@ -107,7 +107,7 @@ function gi_local_content_pages() {
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Un domeniu privat de 9 hectare la Sâmbăta de Sus, în județul Brașov, cu Munții Făgăraș în față. Șase hectare sunt împrejmuite și păzite zi și noapte. Alte trei hectare sunt parcarea, în afara gardului.</p>
+<p>Un domeniu privat de șase hectare la Sâmbăta de Sus, în județul Brașov, cu Munții Făgăraș în față, împrejmuit și păzit zi și noapte. Alte trei hectare sunt parcarea, în afara gardului. La festivaluri folosim toate cele nouă hectare și deschidem încă o parcare, de nouă hectare.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
@@ -262,7 +262,11 @@ GI_DESPRE_NOI
 
 <!-- wp:details {"showContent":true} -->
 <details class="wp-block-details" open><summary>Rezervare și anulare</summary><!-- wp:paragraph -->
-<p>Rezervi și plătești online, direct pe site-ul nostru. Rezervi un tip de loc, nu un loc anume.</p>
+<p>Rezervi și plătești online, direct pe site-ul nostru, cu cardul, inclusiv cu cardurile de vacanță Edenred, Pluxee și Up. Rezervi un tip de loc, nu un loc anume.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Tarifele de pe site sunt pentru plata online, cu rezervarea garantată. Dacă alegi plata în locație, tariful e cu 10% mai mare, iar rezervarea nu e garantată.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:group {"className":"gi-caseta"} -->

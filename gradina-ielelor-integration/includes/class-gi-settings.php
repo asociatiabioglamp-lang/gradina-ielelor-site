@@ -32,6 +32,9 @@ final class GI_Settings {
         $output['onsite_surcharge_percent'] = max(0, min(100, $percent));
         $gateways = isset($input['onsite_surcharge_gateways']) ? (array) wp_unslash($input['onsite_surcharge_gateways']) : array();
         $output['onsite_surcharge_gateways'] = array_values(array_filter(array_map('sanitize_key', $gateways)));
+        foreach (array('bungalow', 'glamping', 'camping', 'rulote') as $key) {
+            $output['season_' . $key] = isset($input['season_' . $key]) ? sanitize_text_field(wp_unslash($input['season_' . $key])) : $defaults['season_' . $key];
+        }
         return $output;
     }
 
@@ -112,9 +115,18 @@ final class GI_Settings {
                                 ?>
                                 <label style="display:block;margin:4px 0;"><input type="checkbox" name="gi_integration_options[onsite_surcharge_gateways][]" value="<?php echo esc_attr($gateway_id); ?>" <?php checked(in_array($gateway_id, (array) $options['onsite_surcharge_gateways'], true)); ?>> <?php echo esc_html(wp_strip_all_tags($gateway->get_method_title())); ?> <code><?php echo esc_html($gateway_id); ?></code><?php echo 'yes' === $gateway->enabled ? '' : ' (inactivă)'; ?></label>
                             <?php endforeach; ?>
-                            <p class="description">Bifează numai metodele de plată la locație, niciodată NETOPIA. Majorarea apare ca rând separat înainte de plată și rămâne în comandă. Pornește-o numai după avizul avocatului (docs/decizii.md).</p>
+                            <p class="description">Bifează numai metodele de plată la locație, niciodată NETOPIA. Majorarea apare ca rând separat înainte de plată și rămâne în comandă. Când e pornită, paginile spun și vizitatorilor: „Prețurile sunt pentru plata online, cu rezervarea garantată. Dacă alegi plata în locație, tariful e cu 10% mai mare, iar rezervarea nu e garantată.”</p>
                         </td>
                     </tr>
+                    <?php foreach (array('bungalow' => 'Bungalow', 'glamping' => 'Glamping', 'camping' => 'Camping', 'rulote' => 'Rulote') as $key => $label) : ?>
+                        <tr>
+                            <th scope="row"><label for="gi-season-<?php echo esc_attr($key); ?>">Sezon <?php echo esc_html($label); ?></label></th>
+                            <td>
+                                <input class="regular-text" type="text" id="gi-season-<?php echo esc_attr($key); ?>" name="gi_integration_options[season_<?php echo esc_attr($key); ?>]" value="<?php echo esc_attr($options['season_' . $key]); ?>">
+                                <p class="description">Apare pe pagina <?php echo esc_html($label); ?>, lângă prețuri și la întrebări (ex. „15 mai – 1 octombrie”). Gol = nu se afișează. Zilele din afara sezonului se închid separat, în fiecare produs BRW.</p>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                 </table>
                 <?php submit_button('Salvează integrarea'); ?>
             </form>

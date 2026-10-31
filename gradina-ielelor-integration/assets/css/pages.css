@@ -166,6 +166,8 @@
 .gi-prices { padding-top: var(--gi-section); }
 .gi-prices-band { --gi-focus: var(--accent); --gi-eyebrow: var(--sage); display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); grid-template-areas: "intro list" "actions list"; gap: 8px clamp(28px, 6vw, 96px); align-items: start; padding: clamp(28px, 5vw, 64px); border-radius: var(--gi-radius); color: #fff; background: radial-gradient(90% 120% at 100% 0%, rgba(109, 132, 99, .5) 0%, rgba(109, 132, 99, 0) 60%), var(--forest); }
 .gi-prices-intro { grid-area: intro; }
+.gi-site .gi-prices-intro .gi-prices-season { margin-top: 14px; }
+.gi-site .gi-prices-intro .gi-prices-note { margin-top: 10px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, .16); font-size: 14px; line-height: 1.6; }
 .gi-dedicated .gi-prices h2 { color: #fff; margin-top: .25em; }
 .gi-dedicated .gi-prices p { color: rgba(255, 255, 255, .84); margin: 0; }
 .gi-price-list { grid-area: list; align-self: center; margin: 0; }

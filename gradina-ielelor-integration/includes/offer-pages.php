@@ -434,6 +434,7 @@ function gi_offer_pages() {
                     '6 ha împrejmuite, pază 24 din 24',
                     'Trei zone separate, pe același domeniu',
                     'Parcare de 3 ha, cca. 1.000 de locuri',
+                    'La festivaluri, încă o parcare, de 9 ha',
                     '58 de unități de cazare, plus camping și rulote',
                     'Bucătărie licențiată pe domeniu',
                     'Opt dușuri calde non-stop, douăsprezece toalete',

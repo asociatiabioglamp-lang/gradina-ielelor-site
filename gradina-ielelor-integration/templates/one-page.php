@@ -50,7 +50,7 @@ if (!defined('ABSPATH')) {
                 <div class="booking-panel">
                     <?php gi_render_booking('', false); ?>
                 </div>
-                <p class="booking-integration-note">Tarifele de pe site sunt orientative. Prețul final și condițiile le vezi la rezervare, înainte de plată.</p>
+                <p class="booking-integration-note">Tarifele de pe site sunt orientative. Prețul final și condițiile le vezi la rezervare, înainte de plată.<?php $gi_payment_note = function_exists('gi_onsite_surcharge_notice') ? gi_onsite_surcharge_notice() : ''; echo $gi_payment_note ? ' ' . esc_html($gi_payment_note) : ''; ?></p>
             </div>
         </section>
 
@@ -98,7 +98,7 @@ if (!defined('ABSPATH')) {
                 <a class="gi-home-info-card" href="<?php echo esc_url(gi_clean_page_url('despre-noi')); ?>">
                     <?php echo gi_icon('trees'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                     <strong>Despre noi</strong>
-                    <span>Cine suntem și cum arată locul: nouă hectare la poalele Făgărașului.</span>
+                    <span>Cine suntem și cum arată locul: șase hectare la poalele Făgărașului.</span>
                     <em>Citește povestea <?php echo gi_icon('arrow-right'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></em>
                 </a>
                 <a class="gi-home-info-card" href="<?php echo esc_url(gi_clean_page_url('regulament-politici')); ?>">

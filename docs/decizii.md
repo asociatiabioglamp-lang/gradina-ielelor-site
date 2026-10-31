@@ -25,8 +25,10 @@ Sursă de adevăr pentru conflictele dintre documente. Se completează pe măsur
 | 2026-10-30 | Grădina Ielelor Hub | Pagină privată în contul Claude al proprietarului (cea mai sigură și stabilă), cu emailurile, recenziile și rezervările într-un singur loc; link pe desktop și pe telefon | Citește **rezervari@ și office@** prin Gmail, după redirecționarea lor din cPanel către asociatia.bioglamp@gmail.com |
 | 2026-10-31 | Termen și priorități | **Lansare în 7 zile.** Prioritate maximă: **design modern, viteză**, fără dependență de programatori | Implicit (până la altă decizie): design nou pe WordPress-ul existent, rezervări prin sistemul actual (OVABRW + NETOPIA); 5starDesk și WordPress curat după lansare |
 | 2026-10-31 | Plăți | Clienții plătesc online cu cardul, inclusiv cu **cardurile de vacanță Edenred, Pluxee și Up**, prin NETOPIA | NETOPIA rămâne obligatoriu, și după trecerea pe 5starDesk |
-| 2026-10-31 | Începutul sezonului | **Camping cort și rulotă: din 1 mai · Glamping: din 15 mai · Bungalow: din 1 iunie** | Se setează în OVABRW (zilele de dinainte, indisponibile). Sfârșitul sezonului: de confirmat (întrebarea 9) |
-| 2026-10-31 | Preț la plata în locație | Tarifele de pe site sunt pentru plata online. Plata în locație **nu garantează rezervarea**, iar tariful crește automat cu **30%** la finalizare | Cod gata pe ramura `plata-la-locatie`, **oprit** până la avizul avocatului (întrebarea 8). Nu e încă în versiunea de lansare |
+| 2026-10-31 | Preț la plata în locație | **Prețul de pe site + 10%.** Formularea aprobată de proprietar: „Prețurile sunt pentru plata online, cu rezervarea garantată. Dacă alegi plata în locație, tariful e cu 10% mai mare, iar rezervarea nu e garantată.” | Unit în `site-nou`. Se pornește din Setări → Grădina Ielelor (bifa, 10%, metoda de plată la locație). Textul apare lângă prețuri, la rezervare și în Regulament |
+| 2026-10-31 | Sezonul | **Camping cort și rulotă: 1 mai – 1 octombrie · Glamping: 15 mai – 1 octombrie · Bungalow: 1 iunie – 1 octombrie** („momentan”) | Afișat pe pagini, editabil din Setări → Grădina Ielelor; zilele din afara sezonului se închid în fiecare produs BRW |
+| 2026-10-31 | Suprafața | **6 ha de camping** (împrejmuite, pază 24/7); **9 ha în regim de festival**, când se deschide și **o parcare suplimentară de 9 ha** | Texte actualizate: Despre noi, Camping, prima pagină, Festivaluri & evenimente |
+| 2026-10-31 | Design | **Aprobat:** formularul de rezervare de pe prima pagină (câmpuri rotunjite, buton mare „Caută disponibilitatea”) și designul paginilor | Unirea în `main` rămâne la aprobarea finală, după staging |
 
 ## Întrebări deschise înainte de lansare (31.10.2026)
 
@@ -41,6 +43,3 @@ Contradicții între regulamentul vechi (2022) și textele noi ale proprietarulu
 | 5 | Voucher | — | Valabil până la 31.12 anul următor anulării, folosibil parțial | Se poate transfera altei persoane? |
 | 6 | Confidențialitate și cookies | Texte vechi (menționează Privacy Shield) | — | Actualizare de jurist pentru serviciile noi |
 | 7 | Link ODR (litigii online) | Pe site-ul vechi | Păstrat, cu notă | Platforma UE ODR s-a închis în 2025: juristul confirmă ce o înlocuiește |
-| 8 | Majorarea de 30% la plata în locație | — | Cod pregătit, oprit | Avocatul: legea interzice taxe pentru un mijloc de plată mai mari decât costul real al comerciantului (directiva drepturilor consumatorilor, art. 19, preluată prin OUG 34/2014). Formulare sigură de verificat: două tarife diferite prin condiții (online = garantat; la locație = fără garanție, preț standard), afișate clar înainte de rezervare |
-| 9 | Sfârșitul sezonului | — | — | Până când se poate rezerva fiecare tip de cazare? |
-| 10 | Suprafața | Despre noi: 9 ha în total, din care 6 ha împrejmuite; evenimente: „9 ha” | Proprietarul (31.10): „6 hectare” | Ce cifră folosim în texte: 6 ha (împrejmuit) sau 9 ha (cu parcarea)? |

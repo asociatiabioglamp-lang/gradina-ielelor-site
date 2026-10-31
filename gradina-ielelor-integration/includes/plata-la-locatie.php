@@ -1,13 +1,14 @@
 <?php
 /**
- * Plata la locație: tariful crește automat cu un procent (implicit 30%) la finalizarea rezervării.
+ * Plata la locație: prețul de pe site + un procent (implicit 10%), adăugat automat la finalizarea rezervării.
  *
  * Tarifele de pe site sunt pentru plata online (NETOPIA, inclusiv cardurile de vacanță). Dacă clientul alege
  * o metodă de plată la locație (ex. „Plată la livrare”, id `cod`), coșul primește o linie în plus, vizibilă înainte
  * de plată și salvată în comandă. Plata online rămâne la prețul afișat.
  *
- * Oprit implicit. Se pornește din Setări → Grădina Ielelor, numai după ce avocatul confirmă formularea
- * (docs/decizii.md: o taxă pentru un mijloc de plată nu poate depăși costul real al comerciantului).
+ * Regula și formularea: decizia proprietarului din 31.10.2026 (docs/decizii.md). Tarifele de pe site sunt pentru plata
+ * online, cu rezervarea garantată; la plata în locație tariful e mai mare, iar rezervarea nu e garantată.
+ * Se pornește din Setări → Grădina Ielelor, bifând metoda de plată la locație de pe site.
  */
 
 if (!defined('ABSPATH')) {
@@ -64,3 +65,14 @@ function gi_onsite_surcharge_refresh_script() {
     wp_add_inline_script('wc-checkout', 'jQuery(function($){$("form.checkout").on("change","input[name=payment_method]",function(){$(document.body).trigger("update_checkout");});});');
 }
 add_action('wp_enqueue_scripts', 'gi_onsite_surcharge_refresh_script', 20);
+
+/**
+ * Textul pentru vizitatori, lângă prețuri și lângă rezervare; gol când majorarea e oprită.
+ */
+function gi_onsite_surcharge_notice() {
+    $settings = gi_onsite_surcharge_settings();
+    if (!$settings['enabled'] || $settings['percent'] <= 0 || !$settings['gateways']) {
+        return '';
+    }
+    return sprintf('Prețurile sunt pentru plata online, cu rezervarea garantată. Dacă alegi plata în locație, tariful e cu %s%% mai mare, iar rezervarea nu e garantată.', wc_format_localized_decimal($settings['percent']));
+}

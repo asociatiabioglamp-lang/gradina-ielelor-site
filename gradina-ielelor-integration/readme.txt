@@ -53,6 +53,8 @@ Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai 
 * SEO: titlul setat în Yoast / Rank Math are prioritate; un singur canonical fără plugin SEO.
 * Redirecționările de la adresele vechi sunt temporare (302) până când bifezi „Redirecționări permanente (301)” în Setări → Grădina Ielelor (la D+7).
 * Blocurile cu clasa gi-nota-editor nu ajung la vizitatori nicăieri (pagină, căutare, REST, rezumate).
+* Plata la locație: prețul de pe site + 10% (rând separat în coș și în comandă), cu textul pentru vizitatori lângă prețuri și la rezervare. Se pornește din setări.
+* Sezonul fiecărei oferte, editabil din setări: apare lângă prețuri și la întrebări.
 * Formularul de rezervare de pe prima pagină: câmpuri rotunjite pe un rând, buton mare „Caută disponibilitatea”, texte prietenoase („Alege cazarea”, „Alege data”).
 
 = 1.1.0 =

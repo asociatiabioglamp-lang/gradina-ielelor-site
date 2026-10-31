@@ -157,6 +157,10 @@ Din acest moment, magazinul și paginile de produs primesc stilul nou. E normal.
 ### A3. Setările pluginului
 **Setări → Grădina Ielelor**: verifică dacă „URL rezultate” arată spre pagina magazinului (nu spre blog) și dacă sunt completate slug-urile categoriilor. Dacă ai dubii, fă o captură și trimite-o lui Claude. Apasă **Salvează** numai dacă ai schimbat ceva.
 
+Tot aici, două lucruri noi:
+- **Plata la locație:** bifează „Tarif majorat când clientul alege plata la locație”, lasă **10** la procent și bifează metoda ta de plată la locație (niciodată NETOPIA). Apasă **Salvează integrarea**. Apoi, în **WooCommerce → Setări → Plăți** → metoda de plată la locație → **Descriere**, scrie: „Tariful e cu 10% mai mare decât plata online, iar rezervarea nu e garantată.” Pe staging, fă o comandă de test cu această metodă: la total trebuie să apară rândul „Tarif pentru plata la locație (+10%)”.
+- **Sezonul:** verifică cele patru câmpuri „Sezon” (ex. „15 mai – 1 octombrie”). Ce scrie aici apare pe pagini; zilele din afara sezonului le închizi în fiecare produs BRW.
+
 ### A4. Notează cum e acum (pentru revenire)
 Pe site-ul live, verificat la 31.10.2026, toate paginile de mai jos folosesc **„Șablon implicit” (Default template)**, cu conținut Elementor. Pe staging (o copie a live-ului) ar trebui să fie la fel. Verifică la două pagini (Acasă și Glamping): **Pagini (Pages)** → treci cu mouse-ul peste titlu → **Editare rapidă (Quick Edit)** → câmpul **Șablon (Template)**. Dacă scrie altceva decât „Șablon implicit”, notează și spune-i lui Claude.
 

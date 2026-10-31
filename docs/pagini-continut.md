@@ -68,9 +68,9 @@ Nu am preluat: `/info-util/info-covid-19/` (depășită) și textul de pe `/grad
 - **Titlu:** Despre noi
 - **Slug:** `despre-noi`
 - **Șablon:** Grădina Ielelor — Pagină simplă
-- **Rezumat:** Grădina Ielelor e un domeniu de 9 hectare la poalele Munților Făgăraș, la Sâmbăta de Sus. Un loc făcut cu grijă, pentru odihnă în natură.
+- **Rezumat:** Grădina Ielelor: șase hectare de natură la poalele Munților Făgăraș, la Sâmbăta de Sus. Un loc făcut cu grijă, pentru odihnă în natură.
 
-**Structura:** un paragraf de deschidere (imaginile de pe pagina veche) · Cine suntem (gazdele care au construit Grădina) · Ce este, de fapt, Grădina (9 ha, din care 6 împrejmuite și păzite, plus 3 ha de parcare; cele trei zone) · Cum poți sta la noi (linkuri spre cele cinci oferte) · Energie din soare, apă din puțul nostru · Ce găsești aici (listă) · Cum trece timpul aici, cu un citat de pe pagina veche · Prin împrejurimi · două butoane: „Alege cum vrei să stai” și „Scrie-ne”.
+**Structura:** un paragraf de deschidere (imaginile de pe pagina veche) · Cine suntem (gazdele care au construit Grădina) · Ce este, de fapt, Grădina (6 ha de camping, împrejmuite și păzite, plus 3 ha de parcare; la festivaluri, toate cele 9 ha și încă o parcare, de 9 ha; cele trei zone) · Cum poți sta la noi (linkuri spre cele cinci oferte) · Energie din soare, apă din puțul nostru · Ce găsești aici (listă) · Cum trece timpul aici, cu un citat de pe pagina veche · Prin împrejurimi · două butoane: „Alege cum vrei să stai” și „Scrie-ne”.
 
 Fără nume, date sau istorie inventate: povestea e doar cea de pe pagina veche („de la faza de gând și vis până la faza de cheie”).
 
@@ -96,7 +96,7 @@ Fără nume, date sau istorie inventate: povestea e doar cea de pe pagina veche 
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Un domeniu privat de 9 hectare la Sâmbăta de Sus, în județul Brașov, cu Munții Făgăraș în față. Șase hectare sunt împrejmuite și păzite zi și noapte. Alte trei hectare sunt parcarea, în afara gardului.</p>
+<p>Un domeniu privat de șase hectare la Sâmbăta de Sus, în județul Brașov, cu Munții Făgăraș în față, împrejmuit și păzit zi și noapte. Alte trei hectare sunt parcarea, în afara gardului. La festivaluri folosim toate cele nouă hectare și deschidem încă o parcare, de nouă hectare.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
@@ -286,7 +286,11 @@ Apoi, mereu vizibile: **Cine suntem** (datele firmei de pe site-ul actual) · **
 
 <!-- wp:details {"showContent":true} -->
 <details class="wp-block-details" open><summary>Rezervare și anulare</summary><!-- wp:paragraph -->
-<p>Rezervi și plătești online, direct pe site-ul nostru. Rezervi un tip de loc, nu un loc anume.</p>
+<p>Rezervi și plătești online, direct pe site-ul nostru, cu cardul, inclusiv cu cardurile de vacanță Edenred, Pluxee și Up. Rezervi un tip de loc, nu un loc anume.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Tarifele de pe site sunt pentru plata online, cu rezervarea garantată. Dacă alegi plata în locație, tariful e cu 10% mai mare, iar rezervarea nu e garantată.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:group {"className":"gi-caseta"} -->
