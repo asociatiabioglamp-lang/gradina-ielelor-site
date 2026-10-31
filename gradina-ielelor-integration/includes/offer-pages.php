@@ -320,7 +320,7 @@ function gi_offer_pages() {
                 'Parchezi rulota sau autorulota în zona de camping, aproape de lac. Ai racorduri și servicii pe loc, plus internet.',
                 'Când cobori, ai toată Grădina: dușuri calde non-stop, două bucătării comune, hamace și vetre de foc. Iar lacul mare, de 8.000 de metri pătrați și un metru adâncime, te așteaptă la o baie.',
             ),
-            'image' => 'home-hero-festival-640.webp',
+            'image' => 'rulote-zona-960.webp',
             'alt' => 'Vedere aeriană cu oaspeți, corturi și rulote în Grădina Ielelor',
         ),
         'gallery' => array('title' => 'Vezi locul înainte să vii', 'images' => array(

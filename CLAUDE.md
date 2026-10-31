@@ -33,4 +33,4 @@ Proprietar: Asociația Bioglamp. Comunicarea cu proprietarul se face în român�
 - Versiunea pluginului: 1.1.0 (ramura `main`).
 - Gata: hub-ul de pe pagina principală și pagina dedicată Glamping.
 - Următoarele: paginile Camping & rulote, Bungalow, Festivaluri & evenimente (același model ca Glamping), apoi pozele reale.
-- Pozele: în `assets/images/` (lista în `binary-manifest.tsv`); originalele sunt în Google Drive, folderul `kimi/gradina ielelor hub/lucru/01-poze-siglate`.
+- Pozele: în `assets/images/` (WebP optimizat, fără metadate), preluate de pe site-ul live; sursa fiecăreia e în `binary-manifest.tsv`. Alte fotografii ale proprietarului: Google Drive, `kimi/gradina ielelor hub/lucru/01-poze-siglate`.
