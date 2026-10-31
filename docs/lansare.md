@@ -421,11 +421,15 @@ Softaculous → **Instalări** → rândul site-ului → **Backups** → **Resto
 
 **Facturile FGO (în primele zile):** la **prima comandă reală** după lansare verifici că factura a ajuns la client (sau în FGO) cu datele corecte (persoană fizică sau juridică, suma, seria). Dacă nu, revino la R1 și spune-mi.
 
-**Contul vechi de administrator `a.min` (ID 1) — închis ACUM, la cererea proprietarei (31.10.2026: „preluăm controlul chiar dacă el face ceva greșit până atunci”):**
-1. **Cu copiile de siguranță existente** (Softaculous de pe 31.10 și 28.10, în Drive): Utilizatori → `a.min` → Editează: parolă nouă generată de WordPress, pe care **nu o păstrează nimeni**; emailul contului schimbat cu al asociației; „Deconectează-te de pe toate sesiunile”; Actualizează. Dacă ceva se strică, parola se reface prin „Ai uitat parola?” pe emailul asociației.
-2. **Ce se urmărește în zilele următoare:** facturile FGO la prima comandă, calendarele iCal (Airbnb, Booking), emailurile site-ului. Dacă ceva nu merge, se spune imediat.
-3. **D+14 (21.11):** dacă nimic nu s-a stricat, contul se șterge, cu articolele și paginile lui atribuite contului proprietarei.
-**Alte conturi ale programatorului**, în ordinea importanței (fiecare, separat): parola cPanel cu 2FA; parola zonei de client Romarg și titularul domeniului; cheile REST din WooCommerce (Setări → Avansat → REST API); utilizatorii din NETOPIA și FGO; Google (Analytics, Tag Manager, Search Console); Meta; licențele (tema WoodMart, Elementor Pro, BRW). Lista completă: `docs/independenta.md`.
+**Contul vechi de administrator `a.min` (ID 1) — rămâne neatins până după lansare; se închide pe D+7 (14.11), la cererea proprietarei (31.10.2026: „mergem pe varianta cu 14.11”):**
+1. **Până atunci: nimic la `a.min`** (nu i se schimbă parola, emailul sau rolul). Dacă s-ar strica ceva în săptămâna lansării, nu am ști dacă vine de la noi sau de la o schimbare la contul lui.
+2. **D+7 (sâmbătă 14.11), cu o copie de siguranță proaspătă** (Softaculous → Backup): Utilizatori → `a.min` → Editează: parolă nouă generată de WordPress, pe care **nu o păstrează nimeni**; emailul contului schimbat cu `asociatia.bioglamp+admin@gmail.com` (aceeași căsuță, dar adresă diferită de a contului tău); „Deconectează-te de pe toate sesiunile”; Actualizează. Dacă ceva se strică, parola se reface prin „Ai uitat parola?” pe emailul asociației.
+3. **Ce se urmărește după:** facturile FGO la prima comandă, calendarele iCal (Airbnb, Booking), emailurile site-ului. Dacă ceva nu merge, se spune imediat.
+4. **D+14 (21.11):** dacă nimic nu s-a stricat, contul se șterge, cu articolele și paginile lui atribuite contului proprietarei.
+
+**Plasă de siguranță (decizia din 31.10: „în extremis trecem pagina în construcție”):** nu avem rezervări în perioada asta, deci, dacă ceva nu poate fi reparat repede, site-ul se trece pe „în construcție” până se repară. Se face numai cu „da” de la proprietară, după o copie de siguranță, și se oprește oricând. Mai întâi se încearcă R1 (oprește pluginul), care e mai simplu.
+
+**Alte conturi ale programatorului** (cele din afara WordPress-ului, adică parola cPanel cu 2FA și parola zonei de client Romarg, se fac **acum**, din 31.10: nu ating site-ul), în ordinea importanței (fiecare, separat): parola cPanel cu 2FA; parola zonei de client Romarg și titularul domeniului; cheile REST din WooCommerce (Setări → Avansat → REST API); utilizatorii din NETOPIA și FGO; Google (Analytics, Tag Manager, Search Console); Meta; licențele (tema WoodMart, Elementor Pro, BRW). Lista completă: `docs/independenta.md`.
 
 **[TU]** Zilnic, aproximativ 10 minute:
 1. **Comenzi:** **WooCommerce → Comenzi**. Nicio comandă plătită nu trebuie să rămână „Plată în așteptare” mai mult de o oră. Dacă rămâne, compar-o cu NETOPIA (pasul 2) și spune-i lui Claude.
