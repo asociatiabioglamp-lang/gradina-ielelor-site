@@ -27,6 +27,11 @@ final class GI_Settings {
             $output[$key] = !empty($input[$key]) ? sanitize_title(wp_unslash($input[$key])) : $defaults[$key];
         }
         $output['redirects_permanent'] = empty($input['redirects_permanent']) ? 0 : 1;
+        $output['onsite_surcharge_enabled'] = empty($input['onsite_surcharge_enabled']) ? 0 : 1;
+        $percent = isset($input['onsite_surcharge_percent']) ? (float) str_replace(',', '.', (string) wp_unslash($input['onsite_surcharge_percent'])) : $defaults['onsite_surcharge_percent'];
+        $output['onsite_surcharge_percent'] = max(0, min(100, $percent));
+        $gateways = isset($input['onsite_surcharge_gateways']) ? (array) wp_unslash($input['onsite_surcharge_gateways']) : array();
+        $output['onsite_surcharge_gateways'] = array_values(array_filter(array_map('sanitize_key', $gateways)));
         return $output;
     }
 
@@ -94,6 +99,20 @@ final class GI_Settings {
                         <td>
                             <label><input type="checkbox" name="gi_integration_options[redirects_permanent]" value="1" <?php checked(!empty($options['redirects_permanent'])); ?>> Redirecționări permanente (301)</label>
                             <p class="description">Lasă nebifat în prima săptămână după lansare: redirecționările sunt temporare, iar dacă revii la site-ul vechi, browserele vizitatorilor nu rămân pe adresele noi. Bifează după 7 zile fără probleme (D+7), ca Google să mute definitiv adresele.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Plata la locație</th>
+                        <td>
+                            <label><input type="checkbox" name="gi_integration_options[onsite_surcharge_enabled]" value="1" <?php checked(!empty($options['onsite_surcharge_enabled'])); ?>> Tarif majorat când clientul alege plata la locație</label>
+                            <p><label>Majorare: <input class="small-text" type="number" min="0" max="100" step="1" name="gi_integration_options[onsite_surcharge_percent]" value="<?php echo esc_attr($options['onsite_surcharge_percent']); ?>"> %</label></p>
+                            <?php
+                            $gateways = function_exists('WC') && WC()->payment_gateways() ? WC()->payment_gateways()->payment_gateways() : array();
+                            foreach ($gateways as $gateway_id => $gateway) :
+                                ?>
+                                <label style="display:block;margin:4px 0;"><input type="checkbox" name="gi_integration_options[onsite_surcharge_gateways][]" value="<?php echo esc_attr($gateway_id); ?>" <?php checked(in_array($gateway_id, (array) $options['onsite_surcharge_gateways'], true)); ?>> <?php echo esc_html(wp_strip_all_tags($gateway->get_method_title())); ?> <code><?php echo esc_html($gateway_id); ?></code><?php echo 'yes' === $gateway->enabled ? '' : ' (inactivă)'; ?></label>
+                            <?php endforeach; ?>
+                            <p class="description">Bifează numai metodele de plată la locație, niciodată NETOPIA. Majorarea apare ca rând separat înainte de plată și rămâne în comandă. Pornește-o numai după avizul avocatului (docs/decizii.md).</p>
                         </td>
                     </tr>
                 </table>

@@ -13,6 +13,10 @@ function gi_default_options() {
         'category_bungalow' => 'bungalow',
         // 0 = redirecționări temporare (302) în săptămâna lansării, ca revenirea R1 să fie curată; 1 = permanente (301), de la D+7.
         'redirects_permanent' => 0,
+        // Plata la locație: oprită până la avizul avocatului (includes/plata-la-locatie.php).
+        'onsite_surcharge_enabled' => 0,
+        'onsite_surcharge_percent' => 30,
+        'onsite_surcharge_gateways' => array('cod'),
     );
 }
 
