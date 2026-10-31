@@ -68,7 +68,7 @@ Contradicții între regulamentul vechi (2022) și textele noi ale proprietarulu
 
 | # | Subiect | Regulamentul 2022 / site-ul vechi | Paginile noi | De confirmat |
 |---|---|---|---|---|
-| 1 | Operatorul site-ului | AGRICOLA MEDICINALE 2002 SRL (CUI 33073262) | Facturare prin Asociația Bioglamp (prezentări) | Ce firmă apare în termeni și pe facturi |
+| 1 | Operatorul site-ului | AGRICOLA MEDICINALE 2002 SRL (CUI 33073262) | Facturare prin Asociația Bioglamp (prezentări) | ~~**Rezolvat parțial 31.10:** rezervările de pe site se facturează prin FGO de **AGRICOLA MEDICINALE 2002 SRL**; paginile legale rămân pe datele AGRICOLA.~~ Rămâne: ofertele pentru grupuri (Boot camp, p. 14 și 15, „Facturăm prin Asociația Bioglamp”): tot AGRICOLA sau Asociația? |
 | 2 | Înot în lac | Interzis | Permis în lacul mare (1 m adâncime) — scris pe Glamping, Bungalow, Camping | ~~**Rezolvat 31.10:** se poate înota în lacul mare (proprietarul).~~ Copia corectată a regulamentului: interdicția rămâne doar pentru lacul mic, rezervat pescuitului. De confirmat că așa vrei |
 | 13 | Băi pe zone | — | — | ~~**Rezolvat 31.10:** Zona 1: 4 dușuri + 4 toalete; Zona 2: 4 toalete; Zona 3: 4 dușuri + 4 toalete.~~ |
 | 14 | Locuri de parcare | Prezentările: „cca. 1.000 de locuri” pe 3 ha | 60.000 mp în interior, la cerere încă 30.000 mp în vecinătate, cca. 1.000 de mașini în total | ~~**Rezolvat 31.10:** 1.000 de mașini în total; 60.000 + 30.000 mp = 9 ha, adică „parcarea suplimentară de 9 ha”, oferită la cerere la evenimentele mari.~~ ~~Cei 30.000 mp din vecinătate: ai unui partener extern (31.10).~~ |
