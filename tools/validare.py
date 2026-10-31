@@ -21,9 +21,9 @@ from pathlib import Path
 PLUGIN = Path(__file__).resolve().parents[1] / 'gradina-ielelor-integration'
 PAGINI = ['/', '/bungalow/', '/glamping/', '/camping/', '/festivaluri-si-tabere/', '/evenimente-private/', '/despre-noi/', '/regulament-politici/', '/contact/']
 # Butoane „Cere ofertă” care nu duc la modulul de rezervare: pagina pentru organizatori și Contact (Evenimente private).
-CERERI_OFERTA = ('/festival/', '/contact/')
+CERERI_OFERTA = ('/festival/', '/cotatie/', '/contact/')
 # Pagini care nu fac parte din plugin; pe site-ul real există, local pot lipsi.
-EXTERNE_PLUGINULUI = ('/festival/', '/shop/', '/produs/')
+EXTERNE_PLUGINULUI = ('/festival/', '/cotatie/', '/shop/', '/produs/')
 
 
 class Pagina(html.parser.HTMLParser):

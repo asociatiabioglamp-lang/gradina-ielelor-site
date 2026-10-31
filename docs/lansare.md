@@ -190,7 +190,7 @@ Pe site-ul live, verificat la 31.10.2026, toate paginile de mai jos folosesc **�
 | `/despre-noi/` | nu există | pagină nouă „Despre noi” | **Grădina Ielelor — Pagină simplă** |
 | `/regulament-politici/` | nu există | pagină nouă „Regulament & politici” | **Grădina Ielelor — Pagină simplă** |
 | `/contact/` | există: pagina „Contact” (nu crea alta: ar primi adresa `/contact-2/`) | schimbi șablonul | **Grădina Ielelor — Pagină simplă** |
-| `/festival/` | există | **nu o atingi** | — |
+| `/festival/` și `/cotatie/` (modulul de ofertare pentru festivaluri, `/cotatie/?tip=festival`) | există | **nu le atingi** | — |
 
 Dacă `docs/seo-migrare.md` sau Claude îți spun altceva pentru o pagină, urmează-i pe ei. Acel document e mai nou.
 

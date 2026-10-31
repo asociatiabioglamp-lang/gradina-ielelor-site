@@ -41,7 +41,7 @@ if ($gi_season) {
 }
 $gi_payment_note = function_exists('gi_onsite_surcharge_notice') ? gi_onsite_surcharge_notice() : '';
 // Al doilea buton de rezervare (ex. Camping & rulote: „Ai rulotă? Rezervă aici”, cu rulota preselectată).
-$gi_alt = empty($gi_page['cta_alt']) ? null : array('label' => $gi_page['cta_alt']['label'], 'url' => gi_home_booking_url($gi_page['cta_alt']['booking_type']));
+$gi_alt = empty($gi_page['cta_alt']) ? null : array('label' => $gi_page['cta_alt']['label'], 'url' => !empty($gi_page['cta_alt']['url']) ? $gi_page['cta_alt']['url'] : gi_home_booking_url($gi_page['cta_alt']['booking_type']));
 
 /**
  * Atributele srcset/sizes din variantele existente ale aceleiași fotografii (nume-640.webp, nume-960.webp ...).

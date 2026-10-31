@@ -31,7 +31,7 @@ function gi_distances() {
  * reviews{title, authors[]}, prices{title, text, unit, rows[]} sau null, notes[], faq[],
  * closing{title, title_em, image}, seo{title, description, image}.
  * Opționale: cta_url (acțiune principală diferită de rezervare), phone (true = telefonul lângă butonul din hero),
- * calendar{title, text} (afișează gi_events_2027()), cta_alt{label, booking_type} (al doilea buton de rezervare).
+ * calendar{title, text} (afișează gi_events_2027()), cta_alt{label, booking_type | url} (al doilea buton: rezervare sau o adresă).
  */
 function gi_offer_page($key) {
     $pages = gi_offer_pages();
@@ -311,8 +311,10 @@ function gi_offer_pages() {
         'title' => 'Festivaluri & tabere',
         'booking_type' => '',
         'cta' => 'Cere ofertă',
-        // Pagina pentru organizatori de pe site-ul actual: fișa tehnică și formularul de cerere.
-        'cta_url' => home_url('/festival/'),
+        // Modulul de ofertare pentru festivaluri (adresa există pe site-ul actual, nu face parte din plugin) și,
+        // lângă el, pagina pentru organizatori cu fișa tehnică (/festival/).
+        'cta_url' => home_url('/cotatie/?tip=festival'),
+        'cta_alt' => array('label' => 'Pagina pentru organizatori', 'url' => home_url('/festival/')),
         'phone' => true,
         'hero' => array(
             'image' => 'evenimente-munte-1600.webp',
