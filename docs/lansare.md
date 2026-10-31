@@ -172,7 +172,7 @@ Pe site-ul live, verificat la 31.10.2026, toate paginile de mai jos folosesc **�
 | `/evenimente/` | pagina veche e la `/gradina-ielelor-totul-despre-ea/evenimente/` | pagină **nouă** „Festivaluri & evenimente”, fără părinte. Pe cea veche **nu o atingi**: adresa ei va duce singură spre pagina nouă | **Grădina Ielelor — Festivaluri & evenimente** |
 | `/despre-noi/` | nu există | pagină nouă „Despre noi” | **Grădina Ielelor — Pagină simplă** |
 | `/regulament-politici/` | nu există | pagină nouă „Regulament & politici” | **Grădina Ielelor — Pagină simplă** |
-| `/contact/` | există | schimbi șablonul | **Grădina Ielelor — Pagină simplă** |
+| `/contact/` | există: pagina „Contact” (nu crea alta: ar primi adresa `/contact-2/`) | schimbi șablonul | **Grădina Ielelor — Pagină simplă** |
 | `/festival/` | există | **nu o atingi** | — |
 
 Dacă `docs/seo-migrare.md` sau Claude îți spun altceva pentru o pagină, urmează-i pe ei. Acel document e mai nou.
@@ -193,6 +193,7 @@ Dacă `docs/seo-migrare.md` sau Claude îți spun altceva pentru o pagină, urme
 1. **Pagini** → treci cu mouse-ul peste titlu → **Editare rapidă (Quick Edit)**.
 2. **Șablon (Template)** → cel din tabel → **Actualizează (Update)**.
 3. Conținutul vechi (Elementor) nu se șterge; rămâne salvat, pentru revenire.
+4. Doar la **Glamping** și **Camping**: titlul și descrierea vechi din Yoast (cu greșeala „Sambata se Sus”) se șterg sau se înlocuiesc, după `docs/seo-migrare.md`, secțiunea 4.1. La pagina principală, titlul din Yoast rămâne deocamdată.
 
 **Ordinea:** întâi paginile ofertelor și Despre noi / Regulament / Contact, **la final pagina principală**.
 
@@ -342,9 +343,10 @@ Revenirea din secțiunea 8. Întâi revii, apoi analizăm.
 ### C10. Search Console (în aceeași zi)
 1. **[TU]** Deschide search.google.com/search-console și alege proprietatea gradina-ielelor.ro.
 2. **Sitemapuri (Sitemaps)** → adaugă `sitemap_index.xml` → **Trimite (Submit)**.
-3. **Inspectarea adresei URL (URL inspection)**: pe rând, pentru `https://gradina-ielelor.ro/`, `/bungalow/`, `/glamping/`, `/camping/`, `/rulote/`, `/evenimente/`, apasă **Solicită indexarea (Request indexing)**. Google permite doar câteva cereri pe zi; continuă a doua zi dacă e nevoie.
+3. **Inspectarea adresei URL (URL inspection)**: pe rând, pentru `https://gradina-ielelor.ro/`, `/bungalow/`, `/glamping/`, `/camping/`, `/rulote/`, `/evenimente/`, `/despre-noi/`, apasă **Solicită indexarea (Request indexing)**. Google permite doar câteva cereri pe zi; continuă a doua zi dacă e nevoie.
 4. **Google Analytics → Rapoarte → În timp real (Realtime)**: deschide site-ul pe telefon și verifică dacă vizita apare.
 5. **Profilul de companie Google:** linkul site-ului rămâne `https://gradina-ielelor.ro/`. Nu trebuie schimbat nimic.
+6. Restul verificărilor din ziua lansării: `docs/seo-migrare.md`, secțiunea 7.
 
 ---
 
@@ -356,7 +358,7 @@ Alegi **R1** dacă e urgent (ceva important nu merge) și **R2** dacă vrei să 
 1. **Module (Plugins)** → la „Grădina Ielelor — Site + BRW” → **Dezactivează (Deactivate)**.
 2. Golește cache-ul (pasul A8) și verifică pagina principală într-o fereastră privată: trebuie să apară designul vechi.
 
-Ce se întâmplă: paginile existente revin singure la designul vechi (conținutul Elementor e neatins), iar redirecționările se opresc. Paginile **noi** (Bungalow, Rulote, Festivaluri & evenimente, Despre noi, Regulament & politici) rămân goale. Treci-le pe **Ciornă** când ai timp (Editare rapidă → Stare: Ciornă). Nu e urgent, pentru că meniul vechi nu duce la ele.
+Ce se întâmplă: paginile existente revin singure la designul vechi (conținutul Elementor e neatins), iar redirecționările se opresc. Dacă ai trecut deja pe Ciornă paginile vechi (secțiunea 9, D+2), le **publici din nou**, ca adresele vechi să nu dea „pagină negăsită”. Paginile **noi** (Bungalow, Rulote, Festivaluri & evenimente, Despre noi, Regulament & politici) rămân goale. Treci-le pe **Ciornă** când ai timp (Editare rapidă → Stare: Ciornă). Nu e urgent, pentru că meniul vechi nu duce la ele.
 
 Ca să revii la designul nou: **Activează** pluginul. Paginile își păstrează șabloanele alese.
 
@@ -381,6 +383,8 @@ Softaculous → **Instalări** → rândul site-ului → **Backups** → **Resto
 5. **Site-ul pe telefon:** pagina principală și o pagină dedicată se deschid normal.
 
 **[CLAUDE]** Zilnic, la cererea ta (sau programat), verificarea automată a site-ului live (doar citire): pagini, poze, linkuri, redirecționări, versiunea. Îți trimite rezumatul.
+
+**[TU]** În **D+2**, dacă totul a mers 48 de ore: treci pe **Ciornă** paginile vechi care au acum redirecționare (`/cazare-bungalow/`, `/camping-cort/`, `/camping-rulota/`, `/tarife/`, `/tarife-2026/`, `/acasa2023/`, `/gradina-ielelor-totul-despre-ea/evenimente/`), după `docs/seo-migrare.md`, secțiunea 5. Nu mai devreme: până atunci, revenirea R1 rămâne de un singur clic.
 
 **[TU]** În D+2 și D+7, în **Search Console**:
 - **Indexare → Pagini (Pages):** numărul de pagini „Negăsită (404)” nu crește. Trimite-i lui Claude lista adreselor noi cu 404.
