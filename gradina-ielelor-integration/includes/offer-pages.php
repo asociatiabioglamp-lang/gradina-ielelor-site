@@ -367,7 +367,7 @@ function gi_offer_pages() {
                     'Bucătărie autorizată și loc pentru food trucks',
                     'Parcare în interiorul Grădinii, pe 60.000 mp. La evenimentele mari, la cerere, se adaugă încă 30.000 mp în vecinătate, la un partener: în total 9 ha, cu loc pentru cca. 1.000 de mașini',
                     'Cea mai apropiată casă, la circa 2 km',
-                ), 'note' => array('text' => 'Cazare pentru artiști și echipă? ', 'link_text' => 'Vezi bungalow-urile', 'link_offer' => 'bungalow')),
+                ), 'action' => array('label' => 'Cere ofertă pentru festival', 'url' => home_url('/cotatie/?tip=festival')), 'note' => array('text' => 'Cazare pentru artiști și echipă? ', 'link_text' => 'Vezi bungalow-urile', 'link_offer' => 'bungalow')),
                 array('icon' => 'tent', 'title' => 'Pentru tabere', 'items' => array(
                     'Șase hectare împrejmuite, cu o singură intrare',
                     'Pază 24 din 24, pe toată durata șederii',
@@ -377,7 +377,7 @@ function gi_offer_pages() {
                     'Opt dușuri publice cu apă caldă non-stop și douăsprezece toalete publice, repartizate pe zone',
                     'Bucătărie autorizată și două bucătării comune',
                     'Internet și iluminat în zonele comune',
-                ), 'note' => array('text' => 'Vrei o nuntă, un botez sau un majorat? ', 'link_text' => 'Vezi evenimentele private', 'link_offer' => 'private')),
+                ), 'action' => array('label' => 'Cere ofertă pentru tabără', 'url' => home_url('/cotatie/?tip=tabara')), 'note' => array('text' => 'Vrei o nuntă, un botez sau un majorat? ', 'link_text' => 'Vezi evenimentele private', 'link_offer' => 'private')),
                 array('icon' => 'flame', 'title' => 'Ieșiri cu echipa și retreaturi', 'items' => array(
                     'Ieșire cu echipa: 8–30 de oameni, o zi, două sau trei',
                     'Programul îl ținem noi, cu obiectivul stabilit dinainte',
@@ -388,7 +388,7 @@ function gi_offer_pages() {
                     'Noi pregătim corturile, mesele, curățenia și gunoiul',
                     'Poți rezerva o zonă sau toată Grădina',
                     'Un om de contact, prezent tot timpul',
-                )),
+                ), 'action' => array('label' => 'Cere ofertă pentru echipa ta', 'url' => home_url('/cotatie/?tip=retreat'))),
                 array('icon' => 'trees', 'title' => 'Boot camp pentru tineri', 'items' => array(
                     'Cinci zile în care tinerii învață pe un teren adevărat: pământ, apă, energie, construcție naturală',
                     'La final rămâne ceva construit, nu doar o diplomă',
@@ -398,7 +398,7 @@ function gi_offer_pages() {
                     'Numele tău pe materialele ediției',
                     'O zi de voluntariat pentru echipa ta, în timpul bootcampului',
                     'Prima opțiune pe ediția următoare',
-                )),
+                ), 'action' => array('label' => 'Cere ofertă pentru sponsorizare sau grup', 'url' => home_url('/cotatie/?tip=retreat'))),
             ),
         ),
         'reviews' => array('title' => 'Ce spun oaspeții', 'authors' => array()),
@@ -434,7 +434,9 @@ function gi_offer_pages() {
         'title' => 'Evenimente private',
         'booking_type' => '',
         'cta' => 'Cere ofertă',
-        'cta_url' => gi_clean_page_url('contact'),
+        // Nunți, botezuri și majorate au configuratorul lor de ofertă (modulul /cotatie/, tip nuntă); Contact rămâne alături.
+        'cta_url' => home_url('/cotatie/?tip=nunta'),
+        'cta_alt' => array('label' => 'Sau scrie-ne', 'url' => gi_clean_page_url('contact')),
         'phone' => true,
         'hero' => array(
             'image' => 'lac-ponton-1280.webp',

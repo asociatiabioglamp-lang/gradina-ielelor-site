@@ -162,6 +162,9 @@ gi_part('header');
                             <?php if (!empty($gi_group['note'])) : ?>
                                 <p class="gi-included-note"><?php echo esc_html($gi_group['note']['text']); ?><a href="<?php echo esc_url(gi_offer_url($gi_group['note']['link_offer'])); ?>"><?php echo esc_html($gi_group['note']['link_text']); ?></a>.</p>
                             <?php endif; ?>
+                            <?php if (!empty($gi_group['action'])) : ?>
+                                <p class="gi-included-action"><a class="button button-small" href="<?php echo esc_url($gi_group['action']['url']); ?>"><?php echo esc_html($gi_group['action']['label']); ?></a></p>
+                            <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
                 </div>

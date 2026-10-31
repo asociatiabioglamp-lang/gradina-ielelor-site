@@ -170,6 +170,8 @@
 .gi-included-tent .gi-check-list .gi-icon { background: #fff; }
 .gi-dedicated .gi-included-note { margin: 24px 0 0; padding: 14px 18px; border-radius: var(--gi-radius-sm); background: var(--sun-50); color: var(--ink); font-size: 1rem; max-width: none; }
 .gi-dedicated .gi-included-note a { text-decoration-color: var(--accent-dark); }
+.gi-dedicated .gi-included-action { margin: 18px 0 0; }
+.gi-dedicated .gi-included-action a { text-decoration: none; }
 
 /* ---------- Recenzii: citate libere, fără cutii ---------- */
 .gi-page-reviews { padding-top: var(--gi-section); }
