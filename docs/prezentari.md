@@ -978,13 +978,13 @@ Listă deduplicată. După fiecare fapt: sursele în care apare. **⚠** = docum
 - **Copii:** bineveniți și încurajați, fără limită de vârstă (răspunsul la „Venim cu copii sau cu câinele?” din [B], pagina 15).
 - **Câini:** câini mici, până la 15 kg, conform regulamentului de pe site.
 - **Pavilioane (evenimente private):** le punem noi la dispoziție sau le aduce clientul, după caz și preferință.
-- **Băi:** publice: 8 dușuri cu apă caldă și 12 toalete; în plus, fiecare dintre cele 4 bungalow-uri are baie proprie, cu toaletă și duș. [B] pagina 4 spune greșit „8 băi proprii, în bungalow-uri”, iar [F] slide 9 și fișa tehnică spun greșit „8 bungalow-uri” (sunt 4); corectate în variantele noi ale PDF-urilor.
+- **Băi:** publice: 8 dușuri cu apă caldă și 12 toalete; în plus, fiecare dintre cele 4 bungalow-uri are baie proprie, cu toaletă și duș. [B] pagina 4 spune greșit „8 băi proprii, în bungalow-uri”, iar [F] slide 9 și ciorna fișei tehnice spun greșit „8 bungalow-uri” (sunt 4); corectate în variantele noi ale PDF-urilor, iar fișa tehnică de trimis era deja corectă.
 - **Variante corectate ale PDF-urilor (31.10.2026):** create ca fișiere noi, originalele din Drive neatinse (unealta: `tools/pdf-corectura.py`, necesită PyMuPDF):
   - Boot camp: sezon 1 mai – 1 octombrie (pagina 1 și 13), „4 băi proprii, în bungalow-uri” (pagina 4) și răspunsul la „Venim cu copii sau cu câinele?” (pagina 15);
   - Festivaluri: sezon 1 mai – 1 octombrie (slide 12 și 13) și „4 bungalow-uri” (slide 9);
   - Festival familie: „mai ales pentru lunile de vară” (slide 12);
   - Tabere: neschimbat („Sezon 2027”, fără interval).
-  Rămâne de corectat „bungalowuri 8” în fișa tehnică (PDF-ul de 32 KB; trebuie atașat în conversație ca să poată fi editat).
+  Fișa tehnică de trimis (`Fisa-tehnica-de-trimis.pdf`, actualizată septembrie 2026) este corectă: 4 bungalowuri, 8 dușuri publice, 12 toalete fixe. Ciorna `Gradina-Ielelor-fisa-tehnica-festival.pdf` (cu câmpuri necompletate și „bungalowuri 8”) nu se folosește.
 - **Suprafața:** 6 ha de camping (împrejmuite, pază 24/7); 9 ha în regim de festival, plus o parcare suplimentară de 9 ha.
 
 ## Lipsuri / neclarități
