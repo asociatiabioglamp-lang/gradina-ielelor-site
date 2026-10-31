@@ -100,8 +100,9 @@
 .gi-page-hero-media { position: absolute; inset: 0; margin: 0; z-index: -2; }
 .gi-page-hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: center 60%; background: var(--forest); }
 .gi-page-hero-overlay { position: absolute; inset: 0; z-index: -1; background:
-  linear-gradient(180deg, rgb(var(--shade) / .46) 0%, rgb(var(--shade) / 0) 22%),
-  linear-gradient(0deg, rgb(var(--shade) / .42) 0%, rgb(var(--shade) / .16) 40%, rgb(var(--shade) / 0) 64%); }
+  linear-gradient(180deg, rgb(var(--shade) / .5) 0%, rgb(var(--shade) / 0) 22%),
+  linear-gradient(0deg, rgb(var(--shade) / .42) 0%, rgb(var(--shade) / .16) 40%, rgb(var(--shade) / 0) 64%),
+  linear-gradient(90deg, rgb(var(--shade) / .38) 0%, rgb(var(--shade) / 0) 46%); }
 .gi-page-hero .gi-breadcrumb,
 .gi-dedicated .gi-page-hero .eyebrow { text-shadow: 0 1px 10px rgb(var(--shade) / .55); }
 .gi-page-hero-content { --gi-hero-pad: 140px; position: relative; padding-top: var(--gi-hero-pad); padding-bottom: clamp(92px, 10vw, 128px); }

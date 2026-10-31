@@ -12,7 +12,7 @@ $gi_shell_class = isset($args['shell_class']) ? $args['shell_class'] : 'site-she
 <head>
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#173f35">
+    <meta name="theme-color" content="#1b3a4b">
     <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>

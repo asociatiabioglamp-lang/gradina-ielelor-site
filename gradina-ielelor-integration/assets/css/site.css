@@ -2,7 +2,7 @@
 body.gi-one-page{margin:0;background:#fffdf8;color:#22343f;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
 /* Paleta „O zi senină la munte” (31.10.2026): cer, lac, pajiște și soare, pe alb cald. Contrastele sunt măsurate (WCAG AA).
    Numele vechi (--forest, --moss, --cream…) rămân ca roluri, ca toate fișierele să le folosească în continuare. */
-.gi-site{--sky-50:#f0f7fb;--sky-100:#e1eff8;--sky-200:#cfe6f4;--sky:#8fc6e6;--lake:#2c7fa0;--lake-deep:#1d6380;--lake-hover:#174f67;--mountain:#1b3a4b;--meadow-50:#eef6e7;--meadow:#7db56a;--meadow-deep:#356b3b;--meadow-em:#4d8a45;--sun-50:#fff3e4;--sun-100:#ffe6c8;--sun:#f7b267;--sun-hover:#f9c283;--sun-light:#ffd8a8;--sun-deep:#a3561f;--on-sun:#11293a;--shade:16 40 56;--ink-soft:#33454f;--text-2:#475b66;--field-line:#6a8796;--field-hint:#5f7380;
+.gi-site{--sky-50:#f0f7fb;--sky-100:#e1eff8;--sky-200:#cfe6f4;--lake:#2c7fa0;--lake-deep:#1d6380;--lake-hover:#174f67;--mountain:#1b3a4b;--meadow-50:#eef6e7;--meadow-deep:#356b3b;--meadow-em:#4d8a45;--sun-50:#fff3e4;--sun-100:#ffe6c8;--sun:#f7b267;--sun-hover:#f9c283;--sun-light:#ffd8a8;--sun-deep:#a3561f;--on-sun:#11293a;--shade:16 40 56;--ink-soft:#33454f;--text-2:#475b66;--field-line:#6a8796;--field-hint:#5f7380;
 --forest:var(--lake-deep);--forest-deep:var(--mountain);--moss:var(--meadow-deep);--sage:var(--sky-200);--cream:var(--sky-50);--paper:#fffdf8;--sand:var(--sky-100);--accent:var(--sun);--accent-dark:var(--sun-deep);--ink:#22343f;--muted:#536773;--line:rgba(27,58,75,.14);--display:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;--sans:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow:clip;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.4}
 .gi-site *,.gi-site *::before,.gi-site *::after{box-sizing:border-box}
 .gi-site img{display:block;max-width:100%}
@@ -193,8 +193,9 @@ body.admin-bar .gi-site .site-header{top:32px}
 .gi-site .home-review-cards footer strong{margin-bottom:6px;font-size:11px}
 .gi-site .home-review-cards footer span{color:var(--muted);font-size:9px}
 
-/* Footer: cer luminos la orizont; logo-ul alb devine exact varianta închisă (aceeași formă, #2b2b2b). */
-.gi-site .site-footer{padding:60px 0 24px;background:linear-gradient(180deg,var(--sky-100) 0%,var(--sky-200) 100%);color:var(--ink)}
+/* Footer: cer luminos (culoare plină, ca verificările automate de contrast să o poată citi);
+   logo-ul alb devine exact varianta închisă (cele două fișiere au aceeași formă), fără schimbări în PHP. */
+.gi-site .site-footer{padding:60px 0 24px;background:var(--sky-100);color:var(--ink)}
 .gi-site .site-footer .official-brand img{filter:brightness(0) invert(.17)}
 .gi-site .footer-grid{display:grid;grid-template-columns:1.35fr .85fr 1fr 1.25fr;gap:42px;padding-bottom:45px}
 .gi-site .footer-official-brand{width:155px}

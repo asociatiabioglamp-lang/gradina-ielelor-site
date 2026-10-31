@@ -56,6 +56,8 @@ Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai 
 * Plata la locație: prețul de pe site + 10% (rând separat în coș și în comandă), cu textul pentru vizitatori lângă prețuri și la rezervare. Se pornește din setări.
 * Sezonul fiecărei oferte, editabil din setări: apare lângă prețuri și la întrebări.
 * Prima pagină: în partea din dreapta a imaginii de sus, lacul cu munții (în locul vederii aeriene).
+* Paleta „O zi senină la munte”: cer, lac, pajiște și soare în locul verdelui închis; toate butoanele de rezervare au culoarea soarelui. Contrastul măsurat (WCAG AA), accesibilitate 100.
+* Pozele importante au Munții Făgăraș în spate (imaginile mari, cardurile, pozele de lângă text, finalul paginilor).
 * Formularul de rezervare de pe prima pagină: câmpuri rotunjite pe un rând, buton mare „Caută disponibilitatea”, texte prietenoase („Alege cazarea”, „Alege data”).
 
 = 1.1.0 =

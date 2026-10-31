@@ -84,7 +84,7 @@
 
 @media (max-width: 700px) {
   /* Pe telefon textul ocupă jumătatea de jos a fotografiei: umbra de jos urcă până la titlu. */
-  .gi-site.home-page .home-hero-overlay { background: linear-gradient(0deg, rgb(var(--shade) / .86) 0%, rgb(var(--shade) / .64) 42%, rgb(var(--shade) / .3) 72%, rgb(var(--shade) / .14) 100%); }
+  .gi-site.home-page .home-hero-overlay { background: linear-gradient(0deg, rgb(var(--shade) / .86) 0%, rgb(var(--shade) / .64) 42%, rgb(var(--shade) / .26) 70%, rgb(var(--shade) / .04) 100%); }
 
   /* Butonul fix „Rezervă cazare” se ascunde cât timp formularul, butonul din hero sau footer-ul sunt pe ecran (site.js). */
   .gi-site.home-page .mobile-booking-cta { transition: transform .4s cubic-bezier(.2, .8, .2, 1), opacity .3s ease, visibility 0s linear 0s; }
