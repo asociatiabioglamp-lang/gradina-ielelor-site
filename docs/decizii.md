@@ -24,6 +24,9 @@ Sursă de adevăr pentru conflictele dintre documente. Se completează pe măsur
 | 2026-10-30 | Agenți / bloggeri | **10% din suma plătită** revine agentului; clientul plătește prețul întreg | Rămâne de stabilit momentul plății comisionului (propunere: după sejur) și ce se întâmplă cu comisionul când rezervarea devine voucher |
 | 2026-10-30 | Grădina Ielelor Hub | Pagină privată în contul Claude al proprietarului (cea mai sigură și stabilă), cu emailurile, recenziile și rezervările într-un singur loc; link pe desktop și pe telefon | Citește **rezervari@ și office@** prin Gmail, după redirecționarea lor din cPanel către asociatia.bioglamp@gmail.com |
 | 2026-10-31 | Termen și priorități | **Lansare în 7 zile.** Prioritate maximă: **design modern, viteză**, fără dependență de programatori | Implicit (până la altă decizie): design nou pe WordPress-ul existent, rezervări prin sistemul actual (OVABRW + NETOPIA); 5starDesk și WordPress curat după lansare |
+| 2026-10-31 | Plăți | Clienții plătesc online cu cardul, inclusiv cu **cardurile de vacanță Edenred, Pluxee și Up**, prin NETOPIA | NETOPIA rămâne obligatoriu, și după trecerea pe 5starDesk |
+| 2026-10-31 | Începutul sezonului | **Camping cort și rulotă: din 1 mai · Glamping: din 15 mai · Bungalow: din 1 iunie** | Se setează în OVABRW (zilele de dinainte, indisponibile). Sfârșitul sezonului: de confirmat (întrebarea 9) |
+| 2026-10-31 | Preț la plata în locație | Tarifele de pe site sunt pentru plata online. Plata în locație **nu garantează rezervarea**, iar tariful crește automat cu **30%** la finalizare | Cod gata pe ramura `plata-la-locatie`, **oprit** până la avizul avocatului (întrebarea 8). Nu e încă în versiunea de lansare |
 
 ## Întrebări deschise înainte de lansare (31.10.2026)
 
@@ -38,3 +41,6 @@ Contradicții între regulamentul vechi (2022) și textele noi ale proprietarulu
 | 5 | Voucher | — | Valabil până la 31.12 anul următor anulării, folosibil parțial | Se poate transfera altei persoane? |
 | 6 | Confidențialitate și cookies | Texte vechi (menționează Privacy Shield) | — | Actualizare de jurist pentru serviciile noi |
 | 7 | Link ODR (litigii online) | Pe site-ul vechi | Păstrat, cu notă | Platforma UE ODR s-a închis în 2025: juristul confirmă ce o înlocuiește |
+| 8 | Majorarea de 30% la plata în locație | — | Cod pregătit, oprit | Avocatul: legea interzice taxe pentru un mijloc de plată mai mari decât costul real al comerciantului (directiva drepturilor consumatorilor, art. 19, preluată prin OUG 34/2014). Formulare sigură de verificat: două tarife diferite prin condiții (online = garantat; la locație = fără garanție, preț standard), afișate clar înainte de rezervare |
+| 9 | Sfârșitul sezonului | — | — | Până când se poate rezerva fiecare tip de cazare? |
+| 10 | Suprafața | Despre noi: 9 ha în total, din care 6 ha împrejmuite; evenimente: „9 ha” | Proprietarul (31.10): „6 hectare” | Ce cifră folosim în texte: 6 ha (împrejmuit) sau 9 ha (cu parcarea)? |

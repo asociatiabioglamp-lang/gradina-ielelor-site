@@ -229,7 +229,7 @@ function gi_offer_pages() {
             'title' => 'Libertate în aer liber.',
             'title_em' => 'Cu tot ce ai nevoie aproape.',
             'paragraphs' => array(
-                'Îți întinzi cortul pe un domeniu privat de nouă hectare, împrejmuit și păzit permanent. Dușurile calde, bucătăriile și focul de seară sunt aproape.',
+                'Îți întinzi cortul pe un domeniu privat de șase hectare, împrejmuit și păzit permanent. Dușurile calde, bucătăriile și focul de seară sunt aproape.',
                 'Lacul mare are 8.000 de metri pătrați și un metru adâncime, așa că se înoată în el. Lacul mic are o terasă din lemn construită direct pe apă, de 7 pe 12 metri, unde încape toată gașca.',
             ),
             'image' => 'camping-night-960.webp',
