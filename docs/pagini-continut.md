@@ -22,10 +22,10 @@ Marcajul de blocuri de mai jos a fost verificat în editorul WordPress 7.1.2: se
 
 - Orice text, titlu, listă, tabel, poză sau buton: folosește blocurile obișnuite din WordPress. Pagina le aranjează singură.
 - Pentru întrebări care „se deschid la apăsare”, folosește blocul **Detalii** (sau **Acordeon**).
-- Trei **clase** speciale (selectezi blocul → bara din dreapta → **Avansat** → **Clasă CSS suplimentară**):
+- Două **clase** speciale (selectezi blocul → bara din dreapta → **Avansat** → **Clasă CSS suplimentară**):
   - `gi-lead`: paragraf de deschidere, cu literă mai mare;
   - `gi-caseta`: casetă caldă pentru ce e important (ex. voucherul). Se pune pe un bloc **Grup**;
-  - `gi-nota-editor`: notă **doar pentru tine**. O vezi când ești autentificat; vizitatorii nu o primesc deloc. Se pune pe un bloc **Grup**.
+- **Notele pentru tine nu se pun în pagină.** Tot ce scrii în editor poate ajunge la public (căutare, Google, alte module). Notele de verificare stau în acest document.
 - Textul de sub titlu este **Rezumatul** paginii. Dacă îl lași gol, sub titlu nu apare nimic.
 
 ---
@@ -236,14 +236,14 @@ Fără nume, date sau istorie inventate: povestea e doar cea de pe pagina veche 
 
 > **⚠ Notă doar pentru editor, nu se publică.**
 > Textele juridice de pe această pagină (anularea, termenii, datele personale, cookie-urile) **trebuie verificate de un avocat înainte de publicare**. Sunt rescrise pe înțeles după paginile actuale ale site-ului și după decizia proprietarului despre voucher. **Nu sunt consultanță juridică.** Întrebările de lămurit sunt la finalul documentului.
-> Pe pagină, aceeași notă stă într-un bloc cu clasa `gi-nota-editor`: o vezi doar tu, autentificat; vizitatorii nu o primesc. Șterge-o după verificare.
+> Nota nu se pune pe pagină; rămâne aici, în document.
 
 - **Titlu:** Regulament & politici
 - **Slug:** `regulament-politici`
 - **Șablon:** Grădina Ielelor — Pagină simplă
 - **Rezumat:** Regulile Grădinii Ielelor, pe scurt și pe înțeles: sosire și plecare, liniște, foc, animale, anulare cu voucher, termeni, date personale și cookie-uri.
 
-**Structura:** nota pentru editor · **Pe scurt** (tabel: sosire, plecare, ore de odihnă, animale, anulare) · **Regulile, pe teme**: câte un bloc Detalii pentru fiecare temă:
+**Structura:** **Pe scurt** (tabel: sosire, plecare, ore de odihnă, animale, anulare) · **Regulile, pe teme**: câte un bloc Detalii pentru fiecare temă:
 
 1. Rezervare și anulare (deschis din start; noua politică stă într-o casetă `gi-caseta`)
 2. Sosire și plecare
@@ -259,23 +259,15 @@ Fără nume, date sau istorie inventate: povestea e doar cea de pe pagina veche 
 12. Datele tale personale
 13. Cookie-uri
 
-Apoi, mereu vizibile: **Cine suntem** (datele firmei de pe site-ul actual) · **Protecția consumatorului** (ANPC, SAL, ODR), cu o a doua notă pentru editor despre linkul ODR · contact.
+Apoi, mereu vizibile: **Cine suntem** (datele firmei de pe site-ul actual) · **Protecția consumatorului** (ANPC, SAL, ODR) · contact. Despre linkul ODR: vezi nota de mai jos și întrebarea 13.
 
 **Noua politică de anulare, exact cum a decis proprietarul** (`docs/decizii.md`): banii nu se returnează; clientul primește un **voucher cu toată suma plătită**, fără nicio reținere, **valabil până la 31 decembrie a anului următor**, folosibil pentru altă rezervare, **și parțial** (restul rămâne pe voucher). Restul regulilor de rezervare (anulare pentru toată perioada, plecare mai devreme, prelungire negarantată) vin din politica de anulare de pe site-ul actual.
 
 **Linkurile pentru consumatori:** ANPC (https://anpc.ro/), SAL (https://anpc.ro/categorie/1271/sal) și ODR (https://ec.europa.eu/consumers/odr/main/index.cfm?event=main.home2.show&lng=RO) sunt cele din footer-ul site-ului actual. **Linkul ODR redirecționează acum.** Adresa nouă nu am putut-o verifica: mediul de lucru blochează accesul la ec.europa.eu și anpc.ro. Așa că a rămas linkul vechi, cu notă pentru avocat (întrebarea 13).
 
+> **⚠ Notă despre ODR, nu se publică.** Linkul ODR este cel de pe site-ul actual și în prezent redirecționează. Platforma europeană ODR ar fi fost închisă în iulie 2025; avocatul confirmă dacă linkul mai e necesar și cu ce se înlocuiește, și dacă trebuie afișate pictogramele ANPC pentru SAL și SOL.
+
 ```html
-<!-- wp:group {"className":"gi-nota-editor"} -->
-<div class="wp-block-group gi-nota-editor"><!-- wp:paragraph -->
-<p><strong>Notă pentru editor (vizitatorii nu o văd).</strong> Textele juridice de pe această pagină (anulare, termeni, date personale, cookie-uri) trebuie verificate de un avocat înainte de publicare. Sunt rescrise pe înțeles după paginile actuale ale site-ului și după decizia ta despre voucher. Nu sunt consultanță juridică.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>De lămurit: ce firmă apare ca operator (pe site-ul actual, AGRICOLA MEDICINALE 2002 SRL; în prezentări, facturarea e prin Asociația Bioglamp); datele personale și cookie-urile pentru serviciile noi (5starDesk, NETOPIA, linkurile de afiliere, recenziile); înotul în lacul mare (regulamentul din 2022 îl interzicea); linkul ODR; data ultimei actualizări. Șterge nota după verificare.</p>
-<!-- /wp:paragraph --></div>
-<!-- /wp:group -->
-
 <!-- wp:heading -->
 <h2 class="wp-block-heading">Pe scurt</h2>
 <!-- /wp:heading -->
@@ -689,12 +681,6 @@ Apoi, mereu vizibile: **Cine suntem** (datele firmei de pe site-ul actual) · **
 <li><a href="https://ec.europa.eu/consumers/odr/main/index.cfm?event=main.home2.show&amp;lng=RO">Comisia Europeană, Soluționarea online a litigiilor (SOL / ODR)</a></li>
 <!-- /wp:list-item --></ul>
 <!-- /wp:list -->
-
-<!-- wp:group {"className":"gi-nota-editor"} -->
-<div class="wp-block-group gi-nota-editor"><!-- wp:paragraph -->
-<p><strong>Notă pentru editor (vizitatorii nu o văd).</strong> Linkul ODR de mai sus este cel de pe site-ul actual și în prezent redirecționează. Adresa nouă nu a putut fi verificată, așa că a rămas cea veche. Platforma europeană ODR ar fi fost închisă în iulie 2025; avocatul confirmă dacă linkul mai e necesar și cu ce se înlocuiește. Tot el confirmă dacă trebuie afișate și pictogramele ANPC pentru SAL și SOL.</p>
-<!-- /wp:paragraph --></div>
-<!-- /wp:group -->
 
 <!-- wp:paragraph -->
 <p>Ai o nelămurire? Scrie-ne la <a href="mailto:office@gradina-ielelor.ro">office@gradina-ielelor.ro</a> sau sună-ne la <a href="tel:+40721333164">0721 333 164</a>. Preferăm oricând să lămurim lucrurile direct, între noi.</p>

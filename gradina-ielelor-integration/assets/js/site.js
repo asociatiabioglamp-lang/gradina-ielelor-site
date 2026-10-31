@@ -9,7 +9,7 @@
     }
   }
 
-  // Tranziția foto card ↔ pagină dedicată se înregistrează imediat (nu la DOMContentLoaded), ca să prindă pagereveal.
+  // La plecarea de pe pagina principală (pageswap); sosirea (pagereveal) e tratată în head, de booking_arrival_script().
   initPhotoTransitions();
 
   ready(function () {
@@ -51,7 +51,8 @@
   /**
    * Fotografia unui card zboară spre pagina dedicată (și înapoi) numai dacă acel card e pe ecran.
    * Un card din afara ecranului își pierde numele de tranziție, iar pagina face doar o trecere lină.
-   * pageswap = la plecarea de pe pagina principală; pagereveal = la sosire (sigur la paginile preîncărcate).
+   * Aici: pageswap, la plecarea de pe pagina principală. Sosirea (pagereveal) are aceeași regulă în scriptul din head,
+   * pentru că acest fișier se încarcă la final, după pagereveal.
    */
   function initPhotoTransitions() {
     function onScreen(element) {
@@ -65,7 +66,6 @@
       });
     }
     window.addEventListener('pageswap', dropOffscreenCards);
-    window.addEventListener('pagereveal', dropOffscreenCards);
   }
 
   function initMenu() {

@@ -5,7 +5,7 @@
  * cu textul din docs/pagini-continut.md (marcaj de blocuri, exact ca în editorul WordPress).
  */
 add_action('init', function () {
-    if (get_option('gi_local_setup_done') === '4') {
+    if (get_option('gi_local_setup_done') === '5') {
         return;
     }
     $active = (array) get_option('active_plugins', array());
@@ -51,7 +51,7 @@ add_action('init', function () {
     kses_init();
 
     flush_rewrite_rules();
-    update_option('gi_local_setup_done', '4');
+    update_option('gi_local_setup_done', '5');
 }, 99);
 
 // Paginile legale ale site-ului actual (aceleași adrese ca pe live) și pagina de blog, pentru linkurile din subsol.
@@ -244,16 +244,6 @@ GI_DESPRE_NOI
         'regulament-politici' => array(
             'excerpt' => 'Regulile Grădinii Ielelor, pe scurt și pe înțeles: sosire și plecare, liniște, foc, animale, anulare cu voucher, termeni, date personale și cookie-uri.',
             'content' => <<<'GI_REGULAMENT'
-<!-- wp:group {"className":"gi-nota-editor"} -->
-<div class="wp-block-group gi-nota-editor"><!-- wp:paragraph -->
-<p><strong>Notă pentru editor (vizitatorii nu o văd).</strong> Textele juridice de pe această pagină (anulare, termeni, date personale, cookie-uri) trebuie verificate de un avocat înainte de publicare. Sunt rescrise pe înțeles după paginile actuale ale site-ului și după decizia ta despre voucher. Nu sunt consultanță juridică.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>De lămurit: ce firmă apare ca operator (pe site-ul actual, AGRICOLA MEDICINALE 2002 SRL; în prezentări, facturarea e prin Asociația Bioglamp); datele personale și cookie-urile pentru serviciile noi (5starDesk, NETOPIA, linkurile de afiliere, recenziile); înotul în lacul mare (regulamentul din 2022 îl interzicea); linkul ODR; data ultimei actualizări. Șterge nota după verificare.</p>
-<!-- /wp:paragraph --></div>
-<!-- /wp:group -->
-
 <!-- wp:heading -->
 <h2 class="wp-block-heading">Pe scurt</h2>
 <!-- /wp:heading -->
@@ -667,12 +657,6 @@ GI_DESPRE_NOI
 <li><a href="https://ec.europa.eu/consumers/odr/main/index.cfm?event=main.home2.show&amp;lng=RO">Comisia Europeană, Soluționarea online a litigiilor (SOL / ODR)</a></li>
 <!-- /wp:list-item --></ul>
 <!-- /wp:list -->
-
-<!-- wp:group {"className":"gi-nota-editor"} -->
-<div class="wp-block-group gi-nota-editor"><!-- wp:paragraph -->
-<p><strong>Notă pentru editor (vizitatorii nu o văd).</strong> Linkul ODR de mai sus este cel de pe site-ul actual și în prezent redirecționează. Adresa nouă nu a putut fi verificată, așa că a rămas cea veche. Platforma europeană ODR ar fi fost închisă în iulie 2025; avocatul confirmă dacă linkul mai e necesar și cu ce se înlocuiește. Tot el confirmă dacă trebuie afișate și pictogramele ANPC pentru SAL și SOL.</p>
-<!-- /wp:paragraph --></div>
-<!-- /wp:group -->
 
 <!-- wp:paragraph -->
 <p>Ai o nelămurire? Scrie-ne la <a href="mailto:office@gradina-ielelor.ro">office@gradina-ielelor.ro</a> sau sună-ne la <a href="tel:+40721333164">0721 333 164</a>. Preferăm oricând să lămurim lucrurile direct, între noi.</p>

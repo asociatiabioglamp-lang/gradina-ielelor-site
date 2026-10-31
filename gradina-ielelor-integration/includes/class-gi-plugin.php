@@ -10,6 +10,8 @@ final class GI_Plugin {
         add_action('wp_enqueue_scripts', array(__CLASS__, 'enqueue_assets'));
         add_action('wp_enqueue_scripts', array(__CLASS__, 'trim_dedicated_assets'), 999);
         add_action('wp_footer', array(__CLASS__, 'trim_dedicated_assets'), 1); // wc-blocks-style se adaugă târziu.
+        add_filter('render_block', array(__CLASS__, 'hide_editor_note'), 10, 2);
+        add_filter('get_the_excerpt', array(__CLASS__, 'excerpt_without_notes'), 9, 2);
         add_filter('body_class', array(__CLASS__, 'body_class'));
         add_action('wp_head', array(__CLASS__, 'favicon'), 1);
         add_action('wp_head', array(__CLASS__, 'booking_arrival_script'), 3);
@@ -46,7 +48,8 @@ final class GI_Plugin {
      * Rămân și sourcebuster-js / wc-order-attribution: rețin de unde a venit vizitatorul care face apoi comanda.
      */
     public static function trim_dedicated_assets() {
-        if (!gi_is_dedicated_page()) {
+        // Pagina simplă poate primi blocuri WooCommerce de la proprietar: acolo nu se scoate nimic.
+        if (!gi_is_dedicated_page() || 'content' === gi_current_page_key()) {
             return;
         }
         foreach (array('woocommerce-layout', 'woocommerce-smallscreen', 'woocommerce-general', 'woocommerce-blocktheme', 'wc-blocks-style') as $handle) {
@@ -55,6 +58,29 @@ final class GI_Plugin {
         foreach (array('wc-add-to-cart', 'woocommerce', 'wc-cart-fragments', 'js-cookie', 'jquery-blockui') as $handle) {
             wp_dequeue_script($handle);
         }
+    }
+
+    /**
+     * Plasă de siguranță: un bloc cu clasa `gi-nota-editor` nu ajunge la vizitatori (pagină, căutare, REST, flux).
+     * Notele nu se pun în pagină (docs/pagini-continut.md); cine poate edita pagini le vede în continuare.
+     */
+    public static function hide_editor_note($content, $block) {
+        if (empty($block['attrs']['className']) || current_user_can('edit_pages')) {
+            return $content;
+        }
+        $classes = preg_split('/\s+/', (string) $block['attrs']['className']);
+        return in_array('gi-nota-editor', $classes, true) ? '' : $content;
+    }
+
+    /**
+     * Rezumatul automat (căutare, REST) se face din blocuri randate, deci fără note; rezumatul scris de mână rămâne.
+     */
+    public static function excerpt_without_notes($excerpt, $post = null) {
+        if ('' !== trim((string) $excerpt) || !($post instanceof WP_Post) || false === strpos($post->post_content, 'gi-nota-editor') || current_user_can('edit_pages')) {
+            return $excerpt;
+        }
+        $text = wp_strip_all_tags(do_blocks(strip_shortcodes($post->post_content)));
+        return wp_trim_words($text, (int) apply_filters('excerpt_length', 55), apply_filters('excerpt_more', ' [&hellip;]'));
     }
 
     public static function enqueue_assets() {
@@ -107,13 +133,14 @@ final class GI_Plugin {
     /**
      * Pe pagina principală: la sosirea în modulul de rezervări (/#rezervare-<tip>) fotografia cardului
      * nu participă la tranziție, ca imaginea paginii dedicate să nu zboare spre un card din afara ecranului.
-     * Rulează în head, înainte de prima afișare; la pagina preîncărcată, la activare (pagereveal).
+     * La orice sosire cu tranziție (pagereveal), cardurile din afara ecranului își pierd numele de tranziție.
+     * Rulează în head, ca să prindă pagereveal (site.js se încarcă prea târziu pentru el).
      */
     public static function booking_arrival_script() {
         if (!gi_is_one_page()) {
             return;
         }
-        echo "<script>(function(){var r=document.documentElement;function m(){r.classList.toggle('gi-booking-arrival',/^#rezervare/.test(location.hash));}m();addEventListener('pagereveal',m);addEventListener('hashchange',m);addEventListener('pageswap',function(){r.classList.remove('gi-booking-arrival');});}());</script>\n";
+        echo "<script>(function(){var r=document.documentElement;function m(){r.classList.toggle('gi-booking-arrival',/^#rezervare/.test(location.hash));}m();addEventListener('pagereveal',function(e){m();if(!e.viewTransition)return;document.querySelectorAll('.gi-offer-card img').forEach(function(i){var b=i.getBoundingClientRect();i.style.viewTransitionName=(b.bottom>0&&b.top<innerHeight)?'':'none';});});addEventListener('hashchange',m);addEventListener('pageswap',function(){r.classList.remove('gi-booking-arrival');});}());</script>\n";
     }
 
     /**

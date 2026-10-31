@@ -109,6 +109,8 @@ Titlurile și descrierile scrise de tine în Yoast **nu se pierd**: sunt salvate
 
 ### 3.1 Redirecționări 301 (8). Sunt în `includes/redirects.php`
 
+În prima săptămână după lansare sunt **temporare (302)**, ca revenirea la site-ul vechi să fie curată. La D+7, proprietarul bifează **Setări → Grădina Ielelor → Redirecționări permanente (301)** (`docs/lansare.md`, secțiunea 9). Verificările de mai jos așteaptă 302 până atunci, 301 după.
+
 Fiecare redirecționare pornește singură **numai după ce pagina nouă e publicată**. Până atunci, adresa veche funcționează ca acum, fără „pagină negăsită”.
 
 | Adresa veche | Ce era | Adresa nouă | Pornește când |

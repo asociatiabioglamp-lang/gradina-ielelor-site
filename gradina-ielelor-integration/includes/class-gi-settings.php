@@ -26,6 +26,7 @@ final class GI_Settings {
         foreach (array('category_camping_cort', 'category_camping_rulota', 'category_glamping', 'category_bungalow') as $key) {
             $output[$key] = !empty($input[$key]) ? sanitize_title(wp_unslash($input[$key])) : $defaults[$key];
         }
+        $output['redirects_permanent'] = empty($input['redirects_permanent']) ? 0 : 1;
         return $output;
     }
 
@@ -88,6 +89,13 @@ final class GI_Settings {
                             </td>
                         </tr>
                     <?php endforeach; ?>
+                    <tr>
+                        <th scope="row">Adresele vechi</th>
+                        <td>
+                            <label><input type="checkbox" name="gi_integration_options[redirects_permanent]" value="1" <?php checked(!empty($options['redirects_permanent'])); ?>> Redirecționări permanente (301)</label>
+                            <p class="description">Lasă nebifat în prima săptămână după lansare: redirecționările sunt temporare, iar dacă revii la site-ul vechi, browserele vizitatorilor nu rămân pe adresele noi. Bifează după 7 zile fără probleme (D+7), ca Google să mute definitiv adresele.</p>
+                        </td>
+                    </tr>
                 </table>
                 <?php submit_button('Salvează integrarea'); ?>
             </form>

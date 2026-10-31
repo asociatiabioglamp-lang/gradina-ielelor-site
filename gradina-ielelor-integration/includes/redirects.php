@@ -1,17 +1,16 @@
 <?php
 /**
- * Redirecționări 301 de la adresele vechi ale site-ului spre paginile noi.
+ * Redirecționări de la adresele vechi ale site-ului spre paginile noi.
  *
- * Modul de sine stătător, ÎNCĂ NEÎNCĂRCAT de plugin. Se activează după verificare, adăugând în
- * gradina-ielelor-integration.php, după linia cu includes/pages.php:
- *     require_once GI_PATH . 'includes/redirects.php';
+ * Temporare (302) până când proprietarul bifează „Redirecționări permanente (301)” în Setări → Grădina Ielelor
+ * (la D+7, docs/lansare.md): un 301 rămâne ținut minte de browsere și ar strica revenirea la site-ul vechi.
  *
  * Reguli:
  * - se redirecționează numai adresele din gi_redirect_map(), verificate pe site-ul live la 31.10.2026;
  * - numai dacă pagina nouă există și este publicată; până atunci adresa veche funcționează ca acum;
  * - nu se ating previzualizările administratorilor, paginile WooCommerce (magazin, produs, coș,
  *   finalizare, cont), căutările din modulul de rezervări (BRW), cererile POST, AJAX, REST sau cron;
- * - restul parametrilor din adresă (utm_*, fbclid, gclid, ref) se păstrează, ca sursa vizitei să nu se piardă.
+ * - parametrii din adresă (ex. utm_*, fbclid, gclid, ref) trec neschimbați, ca sursa vizitei să nu se piardă.
  *
  * Motivul fiecărei redirecționări și lista de verificare: docs/seo-migrare.md.
  */
@@ -204,7 +203,7 @@ function gi_redirect_query_string() {
 }
 
 /**
- * 301 de la o adresă veche din hartă spre pagina nouă, dacă aceasta există.
+ * Redirecționare de la o adresă veche din hartă spre pagina nouă, dacă aceasta există.
  * Rulează înaintea redirecționărilor WordPress (prioritatea 1), ca vizitatorul să facă un singur salt.
  */
 function gi_redirect_old_urls() {
@@ -234,7 +233,13 @@ function gi_redirect_old_urls() {
         $target .= (false === strpos($target, '?') ? '?' : '&') . $query;
     }
 
-    wp_safe_redirect($target, 301, 'Gradina Ielelor');
+    $options = gi_options();
+    if (empty($options['redirects_permanent'])) {
+        nocache_headers();
+        wp_safe_redirect($target, 302, 'Gradina Ielelor');
+    } else {
+        wp_safe_redirect($target, 301, 'Gradina Ielelor');
+    }
     exit;
 }
 

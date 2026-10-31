@@ -46,7 +46,7 @@ final class GI_SEO {
             return $custom;
         }
         $social = get_post_meta(get_queried_object_id(), '_yoast_wpseo_opengraph-title', true);
-        return $social ? $title : self::title_value('');
+        return $social ? $title : self::title_value($title);
     }
 
     public static function og_description($description) {
@@ -58,7 +58,7 @@ final class GI_SEO {
             return $custom;
         }
         $social = get_post_meta(get_queried_object_id(), '_yoast_wpseo_opengraph-description', true);
-        return $social ? $description : self::description_value('');
+        return $social ? $description : self::description_value($description);
     }
 
     public static function canonical($url) {

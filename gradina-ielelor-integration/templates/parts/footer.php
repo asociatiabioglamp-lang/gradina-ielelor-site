@@ -43,13 +43,14 @@ $gi_mobile_cta_url = isset($args['mobile_cta_url']) ? $args['mobile_cta_url'] : 
 <?php
 /*
  * Pe paginile dedicate, butonul „Rezervă” duce mereu la aceeași pagină (modulul de rezervări de pe prima pagină).
- * Pe telefon nu există „hover”, deci regula WordPress (la hover) pornește prea târziu: descărcăm din timp numai
- * documentul HTML al acelei pagini (prefetch, fără scripturi, fără statistici umflate). Doar unde WordPress
- * are regulile active (nu pentru utilizatorii autentificați).
+ * Pe telefon nu există „hover”, deci regula WordPress (la hover) nu pornește: descărcăm documentul HTML al acelei
+ * pagini în clipa atingerii (prefetch „conservative”, fără scripturi). Nu „immediate”: fiecare vizită ar cere
+ * încă o dată pagina principală, cu încărcare dublă pe server și vizite fantomă în statisticile de pe server.
+ * Doar unde WordPress are regulile active (nu pentru utilizatorii autentificați).
  */
 if (gi_is_dedicated_page() && function_exists('wp_get_speculation_rules_configuration') && wp_get_speculation_rules_configuration()) :
     ?>
-<script type="speculationrules">{"prefetch":[{"source":"document","where":{"selector_matches":"[data-gi-book]"},"eagerness":"immediate"}]}</script>
+<script type="speculationrules">{"prefetch":[{"source":"document","where":{"selector_matches":"[data-gi-book]"},"eagerness":"conservative"}]}</script>
 <?php endif; ?>
 
 <?php wp_footer(); ?>

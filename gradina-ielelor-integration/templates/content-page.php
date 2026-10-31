@@ -4,28 +4,14 @@
  * WordPress, între header-ul și footer-ul Grădinii. Proprietarul schimbă textul din editor; template-ul doar îl așază.
  *
  * - „Rezumatul” paginii (excerpt) apare sub titlu și devine descrierea SEO.
- * - Blocurile cu clasa CSS `gi-nota-editor` (Avansat → Clasă CSS suplimentară) sunt note pentru editor:
- *   le vede doar cine poate edita pagina; vizitatorii nu le primesc deloc.
+ * - Notele pentru editor nu se pun în pagină (docs/pagini-continut.md). Dacă totuși apare un bloc cu clasa
+ *   `gi-nota-editor`, GI_Plugin::hide_editor_note() îl ascunde de vizitatori peste tot (pagină, rezumat, căutare, REST).
  */
 if (!defined('ABSPATH')) {
     exit;
 }
 
 $gi_back_url = gi_home_booking_url('');
-$gi_can_edit = current_user_can('edit_post', get_queried_object_id());
-
-add_filter(
-    'render_block',
-    function ($content, $block) use ($gi_can_edit) {
-        if ($gi_can_edit || empty($block['attrs']['className'])) {
-            return $content;
-        }
-        $classes = preg_split('/\s+/', (string) $block['attrs']['className']);
-        return in_array('gi-nota-editor', $classes, true) ? '' : $content;
-    },
-    10,
-    2
-);
 
 gi_part('document-start', array('shell_class' => 'site-shell gi-site gi-dedicated gi-content-site'));
 gi_part('header');

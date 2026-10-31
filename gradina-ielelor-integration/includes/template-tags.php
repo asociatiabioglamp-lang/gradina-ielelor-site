@@ -11,6 +11,8 @@ function gi_default_options() {
         'category_camping_rulota' => 'rulote',
         'category_glamping' => 'glamping',
         'category_bungalow' => 'bungalow',
+        // 0 = redirecționări temporare (302) în săptămâna lansării, ca revenirea R1 să fie curată; 1 = permanente (301), de la D+7.
+        'redirects_permanent' => 0,
     );
 }
 
@@ -52,7 +54,8 @@ function gi_clean_page_url($path) {
  * și autoritățile pentru protecția consumatorului (aceleași linkuri ca pe site-ul actual; ODR: vezi docs/decizii.md).
  */
 function gi_legal_links() {
-    $terms_id = function_exists('wc_terms_and_conditions_page_id') ? wc_terms_and_conditions_page_id() : 0;
+    $terms_id = function_exists('wc_terms_and_conditions_page_id') ? (int) wc_terms_and_conditions_page_id() : 0;
+    $terms_id = ($terms_id && 'publish' === get_post_status($terms_id)) ? $terms_id : 0;
     $pages = array(
         'Termeni și condiții' => $terms_id ? get_permalink($terms_id) : 'info-util/termeni-si-conditii',
         'Confidențialitate' => get_privacy_policy_url() ? get_privacy_policy_url() : 'info-util/politica-de-confidentialitate',

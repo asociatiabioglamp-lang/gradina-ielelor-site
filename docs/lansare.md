@@ -52,7 +52,7 @@ Lansarea (D0) este **sâmbătă 7.11.2026, ora 10:00**. Lansarea nu atinge plă�
 ### D-5 — luni 2.11: instalare pe staging
 - **[CLAUDE]** Îți dă linkul exact spre arhivă (secțiunea 3), cu versiunea și amprenta ei.
 - **[TU]** Procedura A pe staging (secțiunea 4) (1 oră). Îi trimiți lui Claude **doar adresa** staging-ului (fără parolă).
-- **[CLAUDE]** Verifică paginile staging-ului din exterior (dacă adresa e accesibilă): pagini, poze, linkuri, butoane „Rezervă”, versiunea pluginului. Îți trimite lista de probleme, dacă există.
+- **[CLAUDE]** Verifică paginile staging-ului din exterior (dacă adresa e accesibilă): pagini, poze, linkuri, butoane „Rezervă”, versiunea pluginului, erorile JavaScript pe fiecare pagină (cu tema și pluginurile reale) și viteza pe telefon. Îți trimite lista de probleme, dacă există.
 
 ### D-4 — marți 3.11: plata de test
 - **[TU]** Procedura B (secțiunea 5) (45 min). Dacă cheile tot nu se potrivesc, suni la NETOPIA (zi lucrătoare).
@@ -358,7 +358,7 @@ Alegi **R1** dacă e urgent (ceva important nu merge) și **R2** dacă vrei să 
 1. **Module (Plugins)** → la „Grădina Ielelor — Site + BRW” → **Dezactivează (Deactivate)**.
 2. Golește cache-ul (pasul A8) și verifică pagina principală într-o fereastră privată: trebuie să apară designul vechi.
 
-Ce se întâmplă: paginile existente revin singure la designul vechi (conținutul Elementor e neatins), iar redirecționările se opresc. Dacă ai trecut deja pe Ciornă paginile vechi (secțiunea 9, D+2), le **publici din nou**, ca adresele vechi să nu dea „pagină negăsită”. Paginile **noi** (Bungalow, Rulote, Festivaluri & evenimente, Despre noi, Regulament & politici) rămân goale. Treci-le pe **Ciornă** când ai timp (Editare rapidă → Stare: Ciornă). Nu e urgent, pentru că meniul vechi nu duce la ele.
+Ce se întâmplă: paginile existente revin singure la designul vechi (conținutul Elementor e neatins), iar redirecționările se opresc. Până la D+7 redirecționările sunt temporare (302), așa că nici browserele vizitatorilor nu rămân pe adresele noi. Dacă ai trecut deja pe Ciornă paginile vechi (secțiunea 9, D+2), le **publici din nou**, ca adresele vechi să nu dea „pagină negăsită”. Paginile **noi** (Bungalow, Rulote, Festivaluri & evenimente, Despre noi, Regulament & politici) rămân goale. Treci-le pe **Ciornă** când ai timp (Editare rapidă → Stare: Ciornă). Nu e urgent, pentru că meniul vechi nu duce la ele.
 
 Ca să revii la designul nou: **Activează** pluginul. Paginile își păstrează șabloanele alese.
 
@@ -393,6 +393,8 @@ Softaculous → **Instalări** → rândul site-ului → **Backups** → **Resto
 **[TU]** În D+7, în **Google Analytics**: vizitele și rezervările, comparate cu săptămâna de dinainte.
 
 **Când revii imediat (R1):** plățile nu se mai confirmă; modulul de rezervare nu apare sau nu caută; pagina principală dă eroare; mai mulți oaspeți îți spun că nu pot rezerva.
+
+**[TU]** În **D+7**, dacă totul a mers o săptămână: **Setări → Grădina Ielelor** → bifează **Redirecționări permanente (301)** → **Salvează integrarea**. Abia acum Google mută definitiv adresele vechi spre cele noi. După acest pas, revenirea R1 nu mai oprește redirecționările în browserele celor care le-au folosit deja.
 
 **În D+7:** **[TU + CLAUDE]** Scurt bilanț. Claude îl notează în `docs/decizii.md` și propune pașii următori (WordPress curat, 5starDesk).
 
