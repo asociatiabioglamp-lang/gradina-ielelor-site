@@ -34,6 +34,13 @@ require_once GI_PATH . 'includes/redirects.php';
 require_once GI_PATH . 'includes/plata-la-locatie.php';
 require_once GI_PATH . 'includes/acceptare-regulament.php';
 
+add_action('before_woocommerce_init', function () {
+    if (class_exists('\\Automattic\\WooCommerce\\Utilities\\FeaturesUtil')) {
+        // Comenzile se citesc și se scriu numai prin metodele WooCommerce (compatibil cu tabelele de comenzi noi).
+        \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true);
+    }
+});
+
 GI_Plugin::init();
 GI_SEO::init();
 GI_Settings::init();

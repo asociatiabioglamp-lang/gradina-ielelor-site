@@ -29,7 +29,7 @@ final class GI_Settings {
         $output['redirects_permanent'] = empty($input['redirects_permanent']) ? 0 : 1;
         $output['onsite_surcharge_enabled'] = empty($input['onsite_surcharge_enabled']) ? 0 : 1;
         $output['roi_required'] = empty($input['roi_required']) ? 0 : 1;
-        $roi_version = isset($input['roi_version']) ? sanitize_text_field(wp_unslash($input['roi_version'])) : '';
+        $roi_version = isset($input['roi_version']) ? mb_substr(sanitize_text_field(wp_unslash($input['roi_version'])), 0, 60) : '';
         $output['roi_version'] = '' !== $roi_version ? $roi_version : $defaults['roi_version'];
         $percent = isset($input['onsite_surcharge_percent']) ? (float) str_replace(',', '.', (string) wp_unslash($input['onsite_surcharge_percent'])) : $defaults['onsite_surcharge_percent'];
         $output['onsite_surcharge_percent'] = max(0, min(100, $percent));
@@ -115,12 +115,20 @@ final class GI_Settings {
                             <p class="description">Se salvează în fiecare comandă, împreună cu data, limba aleasă și un cod al textului exact. Când modifici regulamentul, schimbă aici versiunea (de exemplu, data). Textul vine din pagina „Regulament &amp; politici”.</p>
                             <?php
                             $roi_page = function_exists('gi_roi_page') ? gi_roi_page() : null;
-                            $checkout_id = function_exists('wc_get_page_id') ? (int) wc_get_page_id('checkout') : 0;
-                            $checkout_blocks = $checkout_id > 0 && function_exists('has_block') && has_block('woocommerce/checkout', get_post($checkout_id));
+                            $checkout_blocks = function_exists('gi_roi_checkout_uses_blocks') && gi_roi_checkout_uses_blocks();
+                            $roi_archive = array_reverse((array) get_option('gi_roi_arhiva', array()), true);
                             ?>
-                            <p class="description"><strong>Pagina regulamentului:</strong> <?php echo $roi_page ? '✓ găsită și publicată' : '✗ lipsește (pagina „Regulament &amp; politici” trebuie publicată)'; ?><br>
+                            <p class="description"><strong>Pagina regulamentului:</strong> <?php echo $roi_page ? '✓ găsită și publicată' : '✗ lipsește (pagina „Regulament &amp; politici” trebuie publicată; până atunci nu se cere bifa)'; ?><br>
                             <strong>Pagina de finalizare:</strong> <?php echo $checkout_blocks ? '✗ folosește blocuri: caseta cu regulamentul nu apare acolo. Revino la pagina clasică (shortcode [woocommerce_checkout])' : '✓ clasică'; ?><br>
-                            <strong>Versiuni arhivate:</strong> <?php echo esc_html((string) count((array) get_option('gi_roi_arhiva', array()))); ?> (textul exact acceptat, păstrat pentru dovadă)</p>
+                            <strong>Versiuni arhivate:</strong> <?php echo esc_html((string) count($roi_archive)); ?> (textul exact acceptat, păstrat pentru dovadă; nu se șterge)</p>
+                            <?php if ($roi_archive) : ?>
+                                <?php foreach ($roi_archive as $roi_hash => $roi_entry) : ?>
+                                    <details style="margin:4px 0;"><summary>Versiunea <?php echo esc_html(isset($roi_entry['versiune']) ? $roi_entry['versiune'] : ''); ?> · prima acceptare <?php echo esc_html(isset($roi_entry['data']) ? str_replace('T', ' ', substr($roi_entry['data'], 0, 19)) : ''); ?> UTC · cod <?php echo esc_html(substr((string) $roi_hash, 0, 12)); ?></summary>
+                                        <p><strong>Bifa:</strong> <?php echo esc_html(isset($roi_entry['eticheta']) ? $roi_entry['eticheta'] : ''); ?></p>
+                                        <pre style="white-space:pre-wrap;max-height:320px;overflow:auto;background:#fff;border:1px solid #ccd0d4;padding:8px;"><?php echo esc_html(isset($roi_entry['text']) ? $roi_entry['text'] : ''); ?></pre>
+                                    </details>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </td>
                     </tr>
                     <tr>

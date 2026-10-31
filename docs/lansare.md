@@ -271,7 +271,9 @@ Pe staging, emailurile către clienți sunt oprite, ca oaspeții reali (care exi
 - [ ] Fără bifă, rezervarea nu pleacă: apare mesajul „Ca să finalizezi rezervarea, citește regulamentul…”.
 - [ ] Alege altă limbă din steagul de limbi, apoi mergi la plată: textul din casetă e tradus.
 - [ ] Textul din casetă nu se poate selecta, copia sau tipări.
-- [ ] După plată, în WooCommerce → Comenzi → comanda ta apare „Regulament acceptat” (data, versiunea, limba) și o notă a comenzii.
+- [ ] După plată, în WooCommerce → Comenzi → comanda ta apare „Regulament acceptat” (data, versiunea, limba, derulat, secunde, cod) și o notă a comenzii. Textul acceptat se vede în Setări → Grădina Ielelor.
+- [ ] Dacă în WooCommerce e setată și pagina „Termeni și condiții”, la plată apar două bife (Termeni și Regulament). E în regulă: sunt documente diferite.
+- [ ] Schimbi metoda de plată (NETOPIA ↔ plata la locație): bifa și derularea rămân, nu trebuie derulat din nou.
 - [ ] Dacă caseta nu apare, pagina de finalizare folosește blocuri noi. Setări → Grădina Ielelor → „Regulamentul la plată” arată asta; pagina trebuie să fie cea clasică, cu `[woocommerce_checkout]`.
 
 ### B5. Cum arată reușita

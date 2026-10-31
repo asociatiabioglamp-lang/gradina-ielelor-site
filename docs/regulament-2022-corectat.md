@@ -17,6 +17,21 @@ Nu am schimbat aceste locuri fără o decizie scrisă a proprietarului:
 - **PDF-ul vechi din 2022 trebuie șters de pe site** (WordPress → Media → caută „ROI”), altfel poate fi descărcat. Copia nouă (`…-PROIECT.pdf`) rămâne la tine și la avocat, nu se pune pe site.
 - Protecția oprește gesturile obișnuite (selectare, copiere, clic dreapta, tipărire). O captură de ecran nu poate fi oprită de niciun site.
 
+## Ce se păstrează despre acceptare, și ce nu dovedește
+- În fiecare comandă: data (UTC), versiunea, limba aleasă pe site, un cod al textului exact (cu eticheta bifei), „derulat până jos” și secundele de la prima afișare. Textul acceptat se păstrează într-o arhivă și se vede în Setări → Grădina Ielelor → „Regulamentul la plată”.
+- „Derulat” e ce declară browserul clientului; nu dovedește că a citit. Dovada puternică e **acceptarea explicită, a textului exact, la momentul rezervării**.
+- WooCommerce salvează deja în comandă și **adresa IP** a clientului. Politica de confidențialitate trebuie să o menționeze.
+- La trecerea pe WordPress-ul nou, arhiva (`gi_roi_arhiva`, în baza de date) se mută **împreună cu comenzile**. Nu pune în pagina regulamentului conținut care se schimbă singur (date, formulare): ar crea un cod nou la fiecare comandă.
+- Traducerea e automată; lângă bifă scrie că versiunea în română este cea valabilă.
+
+## Întrebări pentru avocat
+1. Clientul trebuie să poată păstra o copie? Regula „nu se descarcă” se poate ciocni cu informațiile pe care clientul trebuie să le primească înainte de contract, pe suport durabil. Eventual, condițiile esențiale (anulare, voucher) în emailul de confirmare.
+2. E suficientă formularea „versiunea în română este cea valabilă” lângă textul tradus automat?
+3. Cât timp se păstrează dovada acceptării (comenzi și arhiva textului)?
+4. Termenii și condițiile și Politica de confidențialitate au nevoie de bife separate, sau le acoperă bifa de la plată?
+5. Cine acceptă când rezervarea se face pentru altcineva?
+6. Ce valoare are un „derulat până jos” declarat, față de o acceptare explicită?
+
 ## Pașii proprietarului
 1. Un jurist (sau tu) citește copia nouă.
 2. Ce nu se potrivește se corectează în Word și se exportă PDF nou (sau îmi spui și îl corectez).
