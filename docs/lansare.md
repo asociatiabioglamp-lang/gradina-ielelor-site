@@ -175,10 +175,11 @@ Pe site-ul live, verificat la 31.10.2026, toate paginile de mai jos folosesc **�
 |---|---|---|---|
 | `/` (pagina principală) | există: pagina „Acasă2025” | schimbi șablonul | **Grădina Ielelor — Pagina principală (rezervare)** |
 | `/glamping/` | există: pagina „Cazare Glamping” | schimbi șablonul | **Grădina Ielelor — Glamping** |
-| `/camping/` | există: pagina „Camping” | schimbi șablonul | **Grădina Ielelor — Camping** |
+| `/camping/` | există: pagina „Camping” | schimbi șablonul | **Grădina Ielelor — Camping & rulote** |
 | `/bungalow/` | nu există | pagină nouă „Bungalow” | **Grădina Ielelor — Bungalow** |
-| `/rulote/` | nu există | pagină nouă „Rulote” | **Grădina Ielelor — Rulote** |
-| `/evenimente/` | pagina veche e la `/gradina-ielelor-totul-despre-ea/evenimente/` | pagină **nouă** „Festivaluri & evenimente”, fără părinte. Pe cea veche **nu o atingi**: adresa ei va duce singură spre pagina nouă | **Grădina Ielelor — Festivaluri & evenimente** |
+| `/rulote/` | nu există | **nu creezi nimic**: rulotele sunt pe pagina Camping & rulote, iar adresa `/rulote/` duce singură acolo | — |
+| `/festivaluri-si-tabere/` | nu există (azi, `/evenimente/` arată pagina veche de evenimente) | pagină **nouă** „Festivaluri & tabere”, fără părinte. Adresa `/evenimente/` va duce singură aici | **Grădina Ielelor — Festivaluri & tabere** |
+| `/evenimente-private/` | nu există; pagina veche de evenimente e la `/gradina-ielelor-totul-despre-ea/evenimente/` | pagină **nouă** „Evenimente private”, fără părinte. Pe cea veche **nu o atingi**: adresa ei va duce singură spre pagina nouă | **Grădina Ielelor — Evenimente private** |
 | `/despre-noi/` | nu există | pagină nouă „Despre noi” | **Grădina Ielelor — Pagină simplă** |
 | `/regulament-politici/` | nu există | pagină nouă „Regulament & politici” | **Grădina Ielelor — Pagină simplă** |
 | `/contact/` | există: pagina „Contact” (nu crea alta: ar primi adresa `/contact-2/`) | schimbi șablonul | **Grădina Ielelor — Pagină simplă** |
@@ -186,17 +187,18 @@ Pe site-ul live, verificat la 31.10.2026, toate paginile de mai jos folosesc **�
 
 Dacă `docs/seo-migrare.md` sau Claude îți spun altceva pentru o pagină, urmează-i pe ei. Acel document e mai nou.
 
-**Pagină nouă (Bungalow, Rulote, Festivaluri & evenimente, Despre noi, Regulament & politici):**
+**Pagină nouă (Bungalow, Festivaluri & tabere, Evenimente private, Despre noi, Regulament & politici):**
 1. **Pagini → Adaugă pagină (Add New Page)**.
 2. Titlul exact din tabel. Pentru Despre noi, Regulament & politici și Contact, lipește textul din `docs/pagini-continut.md` (Claude ți-l dă gata de lipit). La paginile ofertelor, conținutul vine din plugin; lași pagina goală.
 3. Apasă **Salvează ciorna (Save draft)**, nu Publică. Închide editorul.
 4. În lista **Pagini**: treci cu mouse-ul peste pagina nouă → **Editare rapidă (Quick Edit)**:
-   - **Descriptor (Slug):** exact ca în tabel, fără bare: `bungalow`, `rulote`, `evenimente`, `despre-noi`, `regulament-politici`;
+   - **Descriptor (Slug):** exact ca în tabel, fără bare: `bungalow`, `festivaluri-si-tabere`, `evenimente-private`, `despre-noi`, `regulament-politici`;
    - **Părinte (Parent):** fără părinte (pagină principală, „Main Page”);
    - **Șablon (Template):** cel din tabel;
    - **Stare (Status):** lași **Ciornă (Draft)** deocamdată.
 5. **Actualizează (Update)**.
-6. Dacă după salvare descriptorul apare cu „-2” (ex. `evenimente-2`), **oprește-te** și spune-i lui Claude. Înseamnă că adresa e deja ocupată.
+6. Dacă după salvare descriptorul apare cu „-2” (ex. `evenimente-private-2`), **oprește-te** și spune-i lui Claude. Înseamnă că adresa e deja ocupată.
+7. Dacă pe staging ai creat deja, după planul vechi, paginile „Rulote” (`/rulote/`) sau „Festivaluri & evenimente” (`/evenimente/`), trece-le pe **Ciornă (Draft)**. Șabloanele lor nu mai există, iar adresele lor duc singure la Camping & rulote, respectiv la Festivaluri & tabere.
 
 **Pagină existentă (Acasă, Glamping, Camping, Contact):**
 1. **Pagini** → treci cu mouse-ul peste titlu → **Editare rapidă (Quick Edit)**.
@@ -293,7 +295,7 @@ Fă-o pe **telefon** și pe **calculator**, într-o fereastră privată.
 **Pagina principală**
 - [ ] Se deschide cu designul nou. Modulul de rezervare se vede sus, fără să derulezi mult.
 - [ ] O căutare cu date reale arată rezultate și prețuri.
-- [ ] Cardurile Bungalow · Glamping · Camping · Rulote · Festivaluri & evenimente deschid fiecare pagina lor, în același tab.
+- [ ] Cardurile Bungalow · Glamping · Camping & rulote · Festivaluri & tabere · Evenimente private deschid fiecare pagina lor, în același tab.
 - [ ] Linkurile Despre noi, Regulament & politici, Contact și Festival se deschid (nu „Pagina nu a fost găsită”).
 - [ ] Recenziile și blogul apar.
 
@@ -352,7 +354,7 @@ Revenirea din secțiunea 8. Întâi revii, apoi analizăm.
 ### C10. Search Console (în aceeași zi)
 1. **[TU]** Deschide search.google.com/search-console și alege proprietatea gradina-ielelor.ro.
 2. **Sitemapuri (Sitemaps)** → adaugă `sitemap_index.xml` → **Trimite (Submit)**.
-3. **Inspectarea adresei URL (URL inspection)**: pe rând, pentru `https://gradina-ielelor.ro/`, `/bungalow/`, `/glamping/`, `/camping/`, `/rulote/`, `/evenimente/`, `/despre-noi/`, apasă **Solicită indexarea (Request indexing)**. Google permite doar câteva cereri pe zi; continuă a doua zi dacă e nevoie.
+3. **Inspectarea adresei URL (URL inspection)**: pe rând, pentru `https://gradina-ielelor.ro/`, `/bungalow/`, `/glamping/`, `/camping/`, `/festivaluri-si-tabere/`, `/evenimente-private/`, `/despre-noi/`, apasă **Solicită indexarea (Request indexing)**. Google permite doar câteva cereri pe zi; continuă a doua zi dacă e nevoie.
 4. **Google Analytics → Rapoarte → În timp real (Realtime)**: deschide site-ul pe telefon și verifică dacă vizita apare.
 5. **Profilul de companie Google:** linkul site-ului rămâne `https://gradina-ielelor.ro/`. Nu trebuie schimbat nimic.
 6. Restul verificărilor din ziua lansării: `docs/seo-migrare.md`, secțiunea 7.

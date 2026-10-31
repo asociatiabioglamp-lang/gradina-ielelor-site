@@ -229,7 +229,9 @@
 
 /* ---------- Alte oferte: poză + două rânduri, fără chenar ---------- */
 .gi-related { padding-top: var(--gi-section); }
-.gi-related-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2vw, 28px); }
+/* Celelalte patru categorii: patru pe un rând pe ecran lat, 2 × 2 pe tabletă (pe telefon, rândul se derulează). */
+.gi-related-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(16px, 2vw, 28px); }
+@media (max-width: 1100px) { .gi-related-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .gi-related-card { position: relative; display: flex; flex-direction: column; gap: 14px; padding-bottom: 6px; color: var(--ink); border-radius: var(--gi-radius); }
 .gi-related-media { display: block; overflow: hidden; border-radius: var(--gi-radius); background: var(--sand); }
 .gi-related-media img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; transition: transform .5s var(--gi-ease); }

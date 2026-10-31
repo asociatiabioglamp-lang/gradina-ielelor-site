@@ -117,8 +117,10 @@ Fiecare redirecționare pornește singură **numai după ce pagina nouă e publi
 |---|---|---|---|
 | `/cazare-bungalow/` | „Cazare Bungalow” din meniu | `/bungalow/` (pagină nouă) | e publicată pagina cu template-ul Bungalow |
 | `/camping-cort/` | „Camping Cort” din meniu | `/camping/` | pagina `/camping/` primește template-ul Camping |
-| `/camping-rulota/` | „Camping Rulotă” din meniu | `/rulote/` (pagină nouă) | e publicată pagina cu template-ul Rulote |
-| `/gradina-ielelor-totul-despre-ea/evenimente/` | „Evenimente” (nunți, majorate, teambuilding) | `/evenimente/` (pagină nouă) | e publicată pagina cu template-ul Festivaluri & evenimente |
+| `/camping-rulota/` | „Camping Rulotă” din meniu | `/camping/` | pagina `/camping/` primește template-ul Camping & rulote |
+| `/rulote/` | nu există pe live (pagină din planul inițial) | `/camping/` | la fel |
+| `/gradina-ielelor-totul-despre-ea/evenimente/` | „Evenimente” (nunți, botezuri, majorate, seminarii, teambuilding) | `/evenimente-private/` (pagină nouă) | e publicată pagina cu template-ul Evenimente private |
+| `/evenimente/` | arată azi aceeași pagină veche „Evenimente” | `/festivaluri-si-tabere/` (pagină nouă) | e publicată pagina cu template-ul Festivaluri & tabere |
 | `/gradina-ielelor-totul-despre-ea/` | „Despre Noi” din meniu | `/despre-noi/` (pagină nouă) | e publicată pagina `/despre-noi/` |
 | `/tarife/` | „Tarife”, sezon 2026 | `/` (pagina principală) | hub-ul de rezervare e setat ca prima pagină |
 | `/tarife-2026/` | dublura identică a paginii Tarife | `/` | la fel |
@@ -170,8 +172,8 @@ Categoriile de blog goale *Plante din Grădina Ielelor*, *Uncategorized* și *Un
 
 | Adresa | Azi pe live | Cine o face |
 |---|---|---|
-| `/bungalow/`, `/rulote/` | „pagină negăsită” (404) | pagini noi cu template-urile Bungalow și Rulote |
-| `/evenimente/` | arată vechea pagină Evenimente | pagină nouă cu template-ul Festivaluri & evenimente; o înlocuiește automat |
+| `/bungalow/` | „pagină negăsită” (404) | pagină nouă cu template-ul Bungalow |
+| `/festivaluri-si-tabere/`, `/evenimente-private/` | „pagină negăsită” (404) | pagini noi cu template-urile Festivaluri & tabere și Evenimente private. `/evenimente/` (azi vechea pagină Evenimente) duce singură la Festivaluri & tabere |
 | `/despre-noi/`, `/regulament-politici/` | „pagină negăsită” (404) | pagini noi, cu template-ul *Pagină simplă*. **Sunt legate din header și footer pe toate paginile noi** |
 
 Două atenționări:
@@ -191,7 +193,7 @@ Linkurile de pe alte site-uri (Facebook, camping.info, Booking, agenții) le ved
 ### 4.1 Atenție: pe paginile reutilizate, Yoast are prioritate
 Pluginul nou are titluri și descrieri gata scrise pentru fiecare pagină dedicată. **Dacă pagina are deja titlu sau descriere în Yoast, se folosește textul din Yoast.**
 
-- **Pagini noi** (`/bungalow/`, `/rulote/`, `/evenimente/`): se folosesc automat textele din plugin. Nu ai nimic de făcut.
+- **Pagini noi** (`/bungalow/`, `/festivaluri-si-tabere/`, `/evenimente-private/`): se folosesc automat textele din plugin. Nu ai nimic de făcut.
 - **Pagini reutilizate** (`/glamping/`, `/camping/`): păstrează azi textele vechi:
   - „Glamping in Romania - Gradina Ielelor - Glamping Sambata **se** Sus”;
   - „Camping in Romania - … Camping Sambata **se** Sus”, cu descrierea „Facilitati **All Inclusive**”.
@@ -208,7 +210,8 @@ Am comparat titlurile din `includes/offer-pages.php` (cheile `seo`) cu ce caută
 | `/bungalow/` | Bungalow Sâmbăta de Sus, Brașov \| Grădina Ielelor | **Bungalow pe malul lacului, Brașov \| Grădina Ielelor** (51) | **Rămâne** cea din plugin (patru bungalow-uri, baie proprie, încălzire, malul lacului). | Lacul e diferența față de alte bungalow-uri. Răspunde la „bungalow lac brasov”. |
 | `/camping/` | Camping Sâmbăta de Sus, Brașov \| Grădina Ielelor | **Camping Făgăraș, aproape de Transfăgărășan \| Grădina Ielelor** (60) | **Ajustată**, ca locul să rămână în text: „Vino cu cortul în Grădina Ielelor, Sâmbăta de Sus (Brașov): două lacuri, dușuri calde non-stop, bucătării comune și vetre de foc. La 20 min de Transfăgărășan.” (158) | „camping fagaras” și „camping transfagarasan” sunt căutările turistice de vară. „cca. 20 min” e deja în pagină. |
 | `/rulote/` | Rulote și autorulote, Sâmbăta de Sus \| Grădina Ielelor | **Camping rulote și autorulote, Brașov \| Grădina Ielelor** (54) | **Rămâne** cea din plugin. | Oamenii caută „camping rulote” sau „camping autorulote” plus județul. |
-| `/evenimente/` | Festivaluri și evenimente, Brașov \| Grădina Ielelor | **Locație evenimente în aer liber, Brașov \| Grădina Ielelor** (57) | **Rămâne** cea din plugin (9 ha, aviz ISU 5.000, scenă, lacuri, cazare). | Cine caută „locatie festival brasov” e organizator. Pentru el, cea mai bună pagină e `/festival/`. Ca cele două pagini să nu concureze, `/evenimente/` țintește „locație evenimente”, iar descrierea păstrează „festivaluri”. Butonul „Cere ofertă” duce deja la `/festival/`. |
+| `/festivaluri-si-tabere/` | – (pagină nouă) | **Festivaluri și tabere sub Munții Făgăraș \| Grădina Ielelor** (58) | **Rămâne** cea din plugin (aviz ISU 5.000, scenă permanentă, două lacuri, cazare, tabere de copii). | Cine caută „locatie festival brasov” e organizator. De aici ajunge, prin „Cere ofertă”, la `/festival/`, cu fișa tehnică. |
+| `/evenimente-private/` | – (pagină nouă) | **Evenimente private și ieșiri cu echipa \| Grădina Ielelor** (56) | **Rămâne** cea din plugin. | Preia căutările paginii vechi „Evenimente” (nunți, majorate, teambuilding), care duce acum aici. |
 | `/` (Yoast) | – | La lansare **rămâne** titlul de acum. Mai târziu: **Glamping, camping și bungalow Brașov \| Grădina Ielelor** (54) | Mai târziu: „Glamping, camping, rulote și bungalow-uri la poalele Munților Făgăraș, în Sâmbăta de Sus, Brașov. Două lacuri, dușuri calde non-stop. Rezervă online.” (149) | Pagina principală e cea mai puternică. O schimbăm separat de lansare, ca să știm ce efect a avut. |
 | `/festival/` (fișier separat) | „Locație privată pentru festivaluri — 9 ha, aviz ISU 5.000 persoane, Brașov \| Grădina Ielelor — Camping and Nature Resort” (120) | **Locație privată pentru festivaluri, Brașov \| Grădina Ielelor** (60) | Rămâne. | Titlul de acum e tăiat în Google la jumătate. Se schimbă în fișierul de pe server (FTP sau cPanel), nu din WordPress. Opțional. |
 
@@ -236,7 +239,7 @@ După 4–6 săptămâni de la lansare, verificăm în Search Console → **Perf
 - [ ] Repari „dev24” (secțiunea 2). Poate fi făcut de acum.
 
 **Paginile**
-- [ ] Publicate: `/bungalow/`, `/rulote/`, `/evenimente/`, `/despre-noi/`, `/regulament-politici/`.
+- [ ] Publicate: `/bungalow/`, `/festivaluri-si-tabere/`, `/evenimente-private/`, `/despre-noi/`, `/regulament-politici/`.
 - [ ] Template-uri puse pe paginile existente: `/glamping/` (Glamping), `/camping/` (Camping), pagina principală „Acasă2025” (Pagina principală).
 - [ ] Yoast pe `/glamping/` și `/camping/`: titlu și descriere vechi șterse sau înlocuite (secțiunea 4.1).
 - [ ] Adăugată lângă titlul mare al paginii principale o frază cu cuvintele căutate (riscul 4).
@@ -279,7 +282,7 @@ Harta din secțiunea 3 rămâne aceeași. În plus:
 - [ ] Harta conține paginile noi și **nu** conține paginile trecute pe Ciornă.
 - [ ] Cache-ul golit (**LiteSpeed Cache → Golește tot**, dacă pluginul e instalat).
 - [ ] **Search Console → Sitemaps:** retrimite `sitemap_index.xml`.
-- [ ] **Search Console → Inspectare URL** → **Solicită indexarea** pentru `/`, `/bungalow/`, `/glamping/`, `/camping/`, `/rulote/`, `/evenimente/`, `/despre-noi/`.
+- [ ] **Search Console → Inspectare URL** → **Solicită indexarea** pentru `/`, `/bungalow/`, `/glamping/`, `/camping/`, `/festivaluri-si-tabere/`, `/evenimente-private/`, `/despre-noi/`.
 - [ ] Testul de rezervare complet: căutare din pagina principală → produs → coș → finalizare (în modul de test).
 
 **În prima săptămână**
@@ -551,18 +554,18 @@ Legendă:
 3. **H1 multiple:** articolul „Locație perfectă de campare…” (3 × H1), plantele Agrișul și Socul (2), categoriile de produse Glamping, Rulote, Oricare (H1 dublat de temă).
 4. **Yoast trimite în sitemap pagini noindex** (coș, finalizare, cont). Vezi 3.3.
 5. **Primul click pe site setează cookie-ul Meta Pixel (`_fbp`) înainte de acord**, observat pe răspunsul sitemap-ului. Nu e SEO, dar e de verificat la consimțământ (inventarul din 24.10.2026).
-6. `/evenimente/` și `/timp-liber/` răspund azi 200 cu paginile-copil vechi, cu canonical corect spre adresa lungă. Nu e o problemă. După publicarea paginii noi `/evenimente/`, adresa scurtă devine pagina nouă.
+6. `/evenimente/` și `/timp-liber/` răspund azi 200 cu paginile-copil vechi, cu canonical corect spre adresa lungă. Nu e o problemă. După publicarea paginii Festivaluri & tabere, adresa scurtă `/evenimente/` duce acolo (redirecționare).
 
 ## H. Comenzi de verificare (staging sau live, după activare)
 ```sh
 # Redirecționări: așteptat 301 și ținta corectă, dintr-un singur salt
-for u in cazare-bungalow camping-cort camping-rulota tarife tarife-2026 acasa2023 \
+for u in cazare-bungalow camping-cort camping-rulota rulote evenimente tarife tarife-2026 acasa2023 \
          gradina-ielelor-totul-despre-ea gradina-ielelor-totul-despre-ea/evenimente; do
   curl -s -o /dev/null -w "%{http_code} /$u/ -> %{redirect_url}\n" "https://gradina-ielelor.ro/$u/"
 done
 
 # Paginile noi și cele păstrate: așteptat 200
-for u in "" bungalow glamping camping rulote evenimente despre-noi regulament-politici festival \
+for u in "" bungalow glamping camping festivaluri-si-tabere evenimente-private despre-noi regulament-politici festival \
          info-qr info-qr/menta contact blog-2 galerie-foto info-util shop; do
   curl -s -o /dev/null -w "%{http_code} /$u\n" "https://gradina-ielelor.ro/$u/"
 done

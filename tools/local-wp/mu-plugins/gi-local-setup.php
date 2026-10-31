@@ -5,7 +5,7 @@
  * cu textul din docs/pagini-continut.md (marcaj de blocuri, exact ca în editorul WordPress).
  */
 add_action('init', function () {
-    if (get_option('gi_local_setup_done') === '7') {
+    if (get_option('gi_local_setup_done') === '8') {
         return;
     }
     $active = (array) get_option('active_plugins', array());
@@ -22,7 +22,8 @@ add_action('init', function () {
         'glamping' => array('Glamping', 'gi-glamping.php'),
         'bungalow' => array('Bungalow', 'gi-bungalow.php'),
         'camping' => array('Camping', 'gi-camping.php'),
-        'evenimente' => array('Festivaluri & evenimente', 'gi-evenimente.php'),
+        'festivaluri-si-tabere' => array('Festivaluri & tabere', 'gi-festivaluri.php'),
+        'evenimente-private' => array('Evenimente private', 'gi-evenimente-private.php'),
         'despre-noi' => array('Despre noi', 'gi-content.php'),
         'regulament-politici' => array('Regulament & politici', 'gi-content.php'),
         'contact' => array('Contact', 'gi-content.php'),
@@ -39,6 +40,13 @@ add_action('init', function () {
         }
     }
 
+    // „Festivaluri & evenimente” nu mai există (decizia din 31.10.2026): pagina veche de test trece pe ciornă,
+    // iar /evenimente/ duce la Festivaluri & tabere prin redirecționarea pluginului.
+    $old_events = get_page_by_path('evenimente');
+    if ($old_events && 'gi-evenimente.php' === get_page_template_slug($old_events)) {
+        wp_update_post(array('ID' => $old_events->ID, 'post_status' => 'draft'));
+    }
+
     // Textul paginilor simple, salvat neschimbat (fără filtrul kses al vizitatorului neautentificat).
     kses_remove_filters();
     foreach (gi_local_content_pages() as $slug => $page) {
@@ -50,7 +58,7 @@ add_action('init', function () {
     kses_init();
 
     flush_rewrite_rules();
-    update_option('gi_local_setup_done', '7');
+    update_option('gi_local_setup_done', '8');
 }, 99);
 
 // Paginile legale ale site-ului actual (aceleași adrese ca pe live) și pagina de blog, pentru linkurile din subsol.
@@ -132,7 +140,7 @@ function gi_local_content_pages() {
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Vii cu <a href="/camping/">cortul tău</a> sau cu <a href="/camping/">rulota</a>. Sau dormi într-un <a href="/glamping/">cort de glamping</a> cu pat, pe platformă de lemn, ori într-un <a href="/bungalow/">bungalow</a> cu baie proprie. Iar dacă pregătești un festival sau un eveniment de familie, avem loc și pentru asta: <a href="/evenimente/">festivaluri și evenimente</a>.</p>
+<p>Vii cu <a href="/camping/">cortul tău</a> sau cu <a href="/camping/">rulota</a>. Sau dormi într-un <a href="/glamping/">cort de glamping</a> cu pat, pe platformă de lemn, ori într-un <a href="/bungalow/">bungalow</a> cu baie proprie. Iar dacă pregătești un festival, o tabără sau un eveniment privat, avem loc și pentru asta: <a href="/festivaluri-si-tabere/">festivaluri și tabere</a> sau <a href="/evenimente-private/">evenimente private</a>.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading -->
@@ -732,11 +740,11 @@ GI_REGULAMENT
 <!-- /wp:paragraph -->
 
 <!-- wp:heading -->
-<h2 class="wp-block-heading">Organizezi un festival sau un eveniment?</h2>
+<h2 class="wp-block-heading">Organizezi un festival, o tabără sau un eveniment privat?</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Pentru festivaluri, tabere, evenimente de firmă sau de familie avem o pagină dedicată organizatorilor, cu fișa tehnică a domeniului și cererea de ofertă.</p>
+<p>Pentru festivaluri și tabere avem o pagină dedicată organizatorilor, cu fișa tehnică a domeniului și cererea de ofertă. Pentru ieșiri cu echipa, retreaturi sau petreceri de familie, sună-ne sau scrie-ne la adresele de mai sus: câți sunteți, ce perioadă ai în minte și ce ți-ar plăcea să se întâmple.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:buttons -->

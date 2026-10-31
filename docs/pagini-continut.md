@@ -42,7 +42,7 @@ Site-ul live a fost doar citit (31.10.2026); nu s-a schimbat nimic pe el.
 | **Regulament & politici** | https://gradina-ielelor.ro/info-util/ (întrebări frecvente: grătar, garanție, pescuit, seif, apă) · https://gradina-ielelor.ro/info-util/politica-de-anulare/ · https://gradina-ielelor.ro/info-util/termeni-si-conditii/ · https://gradina-ielelor.ro/info-util/politica-de-confidentialitate/ · https://gradina-ielelor.ro/info-util/politica-cookies/ · regulamentul de ordine interioară, PDF din 10.06.2022: https://gradina-ielelor.ro/wp-content/uploads/2022/06/ROI-GRADINA-IELELOR-ver-10.06.2022.pdf · footer-ul live (linkurile ANPC, SAL, ODR) · **noua politică de anulare:** `docs/decizii.md` și `docs/plan-site-nou.md` |
 | **Contact** | https://gradina-ielelor.ro/contact/ · footer-ul live (Facebook: https://www.facebook.com/IELELEgradina) · `gi_distances()` din `includes/offer-pages.php` · https://gradina-ielelor.ro/festival/ |
 
-Nu am preluat: `/info-util/info-covid-19/` (depășită) și textul de pe `/gradina-ielelor-totul-despre-ea/evenimente/` (îl acoperă pagina Festivaluri & evenimente). Nici formulări greu de dovedit de pe pagina veche, ca „cel mai mare spațiu pentru corturi și rulote din România”.
+Nu am preluat: `/info-util/info-covid-19/` (depășită) și textul de pe `/gradina-ielelor-totul-despre-ea/evenimente/` (îl acoperă pagina Evenimente private: nunți, botezuri, majorate, seminarii, echipe de firmă). Nici formulări greu de dovedit de pe pagina veche, ca „cel mai mare spațiu pentru corturi și rulote din România”.
 
 ## Adresele vechi și paginile noi (redirecționări 301 propuse)
 
@@ -50,7 +50,8 @@ Nu am preluat: `/info-util/info-covid-19/` (depășită) și textul de pe `/grad
 |---|---|
 | `/gradina-ielelor-totul-despre-ea/` | `/despre-noi/` |
 | `/gradina-ielelor-totul-despre-ea/timp-liber/` | `/despre-noi/` |
-| `/gradina-ielelor-totul-despre-ea/evenimente/` | `/evenimente/` |
+| `/gradina-ielelor-totul-despre-ea/evenimente/` | `/evenimente-private/` |
+| `/evenimente/` | `/festivaluri-si-tabere/` |
 | `/info-util/` | `/regulament-politici/` |
 | `/info-util/politica-de-anulare/` | `/regulament-politici/` |
 | `/info-util/termeni-si-conditii/` | `/regulament-politici/` |
@@ -122,7 +123,7 @@ Fără nume, date sau istorie inventate: povestea e doar cea de pe pagina veche 
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Vii cu <a href="/camping/">cortul tău</a> sau cu <a href="/camping/">rulota</a>. Sau dormi într-un <a href="/glamping/">cort de glamping</a> cu pat, pe platformă de lemn, ori într-un <a href="/bungalow/">bungalow</a> cu baie proprie. Iar dacă pregătești un festival sau un eveniment de familie, avem loc și pentru asta: <a href="/evenimente/">festivaluri și evenimente</a>.</p>
+<p>Vii cu <a href="/camping/">cortul tău</a> sau cu <a href="/camping/">rulota</a>. Sau dormi într-un <a href="/glamping/">cort de glamping</a> cu pat, pe platformă de lemn, ori într-un <a href="/bungalow/">bungalow</a> cu baie proprie. Iar dacă pregătești un festival, o tabără sau un eveniment privat, avem loc și pentru asta: <a href="/festivaluri-si-tabere/">festivaluri și tabere</a> sau <a href="/evenimente-private/">evenimente private</a>.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading -->
@@ -768,11 +769,11 @@ Apoi, mereu vizibile: **Cine suntem** (datele firmei de pe site-ul actual) · **
 <!-- /wp:paragraph -->
 
 <!-- wp:heading -->
-<h2 class="wp-block-heading">Organizezi un festival sau un eveniment?</h2>
+<h2 class="wp-block-heading">Organizezi un festival, o tabără sau un eveniment privat?</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Pentru festivaluri, tabere, evenimente de firmă sau de familie avem o pagină dedicată organizatorilor, cu fișa tehnică a domeniului și cererea de ofertă.</p>
+<p>Pentru festivaluri și tabere avem o pagină dedicată organizatorilor, cu fișa tehnică a domeniului și cererea de ofertă. Pentru ieșiri cu echipa, retreaturi sau petreceri de familie, sună-ne sau scrie-ne la adresele de mai sus: câți sunteți, ce perioadă ai în minte și ce ți-ar plăcea să se întâmple.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:buttons -->
