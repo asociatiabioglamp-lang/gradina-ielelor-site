@@ -26,6 +26,26 @@ if (!empty($gi_page['reviews']['authors'])) {
 }
 $gi_related = array_diff_key(gi_offer_cards(), array($gi_key => true));
 
+/**
+ * Atributele srcset/sizes din variantele existente ale aceleiași fotografii (nume-640.webp, nume-960.webp ...).
+ * Fără variante pe disc nu adaugă nimic; când apar fișierele mai mici, telefoanele le primesc automat.
+ */
+$gi_srcset = function ($file, $sizes) {
+    if (!preg_match('/^(.+)-\d+\.webp$/', $file, $gi_m)) {
+        return '';
+    }
+    $set = array();
+    foreach (array(480, 640, 960, 1280, 1600, 1920) as $w) {
+        $name = $gi_m[1] . '-' . $w . '.webp';
+        $path = GI_PATH . 'assets/images/' . $name;
+        if (file_exists($path)) {
+            $size = @getimagesize($path);
+            $set[] = esc_url(gi_image_url($name)) . ' ' . ($size ? (int) $size[0] : $w) . 'w';
+        }
+    }
+    return count($set) > 1 ? ' srcset="' . implode(', ', $set) . '" sizes="' . esc_attr($sizes) . '"' : '';
+};
+
 gi_part('document-start', array('shell_class' => 'site-shell gi-site gi-dedicated'));
 gi_part('header');
 ?>
@@ -33,7 +53,7 @@ gi_part('header');
     <main id="continut">
         <section class="gi-page-hero" aria-labelledby="page-title">
             <figure class="gi-page-hero-media">
-                <img src="<?php echo esc_url(gi_image_url($gi_page['hero']['image'])); ?>" alt="<?php echo esc_attr($gi_page['hero']['alt']); ?>" width="1600" height="900" fetchpriority="high">
+                <img src="<?php echo esc_url(gi_image_url($gi_page['hero']['image'])); ?>" alt="<?php echo esc_attr($gi_page['hero']['alt']); ?>"<?php echo $gi_srcset($gi_page['hero']['image'], '100vw'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- atribute escapate în $gi_srcset. ?> width="1600" height="900" fetchpriority="high">
             </figure>
             <div class="gi-page-hero-overlay"></div>
             <div class="container gi-page-hero-content">
@@ -70,7 +90,7 @@ gi_part('header');
                     <?php endforeach; ?>
                 </div>
                 <figure class="gi-story-media">
-                    <img src="<?php echo esc_url(gi_image_url($gi_page['story']['image'])); ?>" alt="<?php echo esc_attr($gi_page['story']['alt']); ?>" width="640" height="800" loading="lazy" decoding="async">
+                    <img src="<?php echo esc_url(gi_image_url($gi_page['story']['image'])); ?>" alt="<?php echo esc_attr($gi_page['story']['alt']); ?>"<?php echo $gi_srcset($gi_page['story']['image'], '(max-width: 900px) calc(100vw - 32px), 45vw'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> width="640" height="800" loading="lazy" decoding="async">
                 </figure>
             </div>
         </section>
@@ -135,7 +155,8 @@ gi_part('header');
                         <span class="eyebrow">Ce spun oaspeții</span>
                         <h2 id="reviews-title"><?php echo esc_html($gi_page['reviews']['title']); ?></h2>
                     </div>
-                    <div class="home-review-cards gi-swipe">
+                    <?php // Pe telefon rândul se derulează orizontal: îl facem accesibil și de la tastatură. ?>
+                    <div class="home-review-cards gi-swipe" role="group" aria-label="Recenzii" tabindex="0">
                         <?php foreach ($gi_reviews as $gi_review) : ?>
                             <blockquote><?php echo gi_icon('quote'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><p>„<?php echo esc_html($gi_review['text']); ?>”</p><footer><strong><?php echo esc_html($gi_review['author']); ?></strong><span><?php echo esc_html($gi_review['context']); ?> · ★★★★★</span></footer></blockquote>
                         <?php endforeach; ?>
@@ -236,7 +257,7 @@ gi_part('header');
                 <div class="gi-related-grid gi-swipe">
                     <?php foreach ($gi_related as $gi_related_key => $gi_item) : ?>
                         <a class="gi-related-card" href="<?php echo esc_url(gi_offer_url($gi_related_key)); ?>">
-                            <span class="gi-related-media"><img src="<?php echo esc_url(gi_image_url($gi_item['image'])); ?>" alt="" width="960" height="720" loading="lazy" decoding="async"></span>
+                            <span class="gi-related-media"><img src="<?php echo esc_url(gi_image_url($gi_item['image'])); ?>" alt=""<?php echo $gi_srcset($gi_item['image'], '(max-width: 700px) 80vw, (max-width: 1240px) 33vw, 400px'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> width="960" height="720" loading="lazy" decoding="async"></span>
                             <span class="gi-related-body">
                                 <strong><?php echo esc_html(gi_offers()[$gi_related_key]['label']); ?></strong>
                                 <span><?php echo esc_html($gi_item['text']); ?></span>
@@ -249,7 +270,7 @@ gi_part('header');
         </section>
 
         <section class="gi-closing" aria-labelledby="closing-title">
-            <img class="gi-closing-media" src="<?php echo esc_url(gi_image_url($gi_page['closing']['image'])); ?>" alt="" width="1280" height="720" loading="lazy" decoding="async">
+            <img class="gi-closing-media" src="<?php echo esc_url(gi_image_url($gi_page['closing']['image'])); ?>" alt=""<?php echo $gi_srcset($gi_page['closing']['image'], '100vw'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> width="1280" height="720" loading="lazy" decoding="async">
             <div class="container gi-closing-inner">
                 <h2 id="closing-title"><?php echo esc_html($gi_page['closing']['title']); ?><br><em><?php echo esc_html($gi_page['closing']['title_em']); ?></em></h2>
                 <div class="gi-closing-actions">

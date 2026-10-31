@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 
     <main id="continut">
         <section class="home-hero" aria-labelledby="home-hero-title">
-            <div class="home-hero-slices" aria-label="Lac, relaxare și evenimente în Grădina Ielelor">
+            <div class="home-hero-slices" role="group" aria-label="Lac, relaxare și evenimente în Grădina Ielelor">
                 <figure class="home-hero-slice home-hero-slice-lake">
                     <picture>
                         <source media="(max-width: 640px)" srcset="<?php echo esc_url(gi_image_url('home-hero-lake-centered-mobile-640.webp')); ?> 640w, <?php echo esc_url(gi_image_url('home-hero-lake-centered-mobile-960.webp')); ?> 960w" sizes="100vw">
@@ -20,10 +20,10 @@ if (!defined('ABSPATH')) {
                     </picture>
                 </figure>
                 <figure class="home-hero-slice home-hero-slice-festival">
-                    <img src="<?php echo esc_url(gi_image_url('home-hero-festival-640.webp')); ?>" alt="Vedere aeriană cu oaspeți, corturi și rulote în Grădina Ielelor" width="640" height="480">
+                    <img src="<?php echo esc_url(gi_image_url('home-hero-festival-640.webp')); ?>" alt="Vedere aeriană cu oaspeți, corturi și rulote în Grădina Ielelor" width="640" height="480" fetchpriority="low" decoding="async">
                 </figure>
                 <figure class="home-hero-slice home-hero-slice-chill">
-                    <img src="<?php echo esc_url(gi_image_url('home-hero-chill-640.webp')); ?>" alt="Foișor din lemn cu scaune-hamac și fotolii pentru relaxare" width="640" height="480">
+                    <img src="<?php echo esc_url(gi_image_url('home-hero-chill-640.webp')); ?>" alt="Foișor din lemn cu scaune-hamac și fotolii pentru relaxare" width="640" height="480" fetchpriority="low" decoding="async">
                 </figure>
             </div>
             <div class="home-hero-overlay"></div>
@@ -63,7 +63,8 @@ if (!defined('ABSPATH')) {
                 <div class="gi-offers-grid">
                     <?php foreach (gi_offer_cards() as $gi_key => $gi_card) : ?>
                         <a class="gi-offer-card gi-offer-card-<?php echo esc_attr($gi_key); ?>" href="<?php echo esc_url(gi_offer_url($gi_key)); ?>">
-                            <img src="<?php echo esc_url(gi_image_url($gi_card['image'])); ?>" alt="<?php echo esc_attr($gi_card['alt']); ?>" width="960" height="720" loading="lazy" decoding="async">
+                            <?php // Numele ofertei e deja textul linkului: fotografia e decorativă aici (alt gol, fără dublare). ?>
+                            <img src="<?php echo esc_url(gi_image_url($gi_card['image'])); ?>" alt="" width="960" height="720" loading="lazy" decoding="async">
                             <span class="gi-offer-card-body">
                                 <strong><?php echo esc_html(gi_offers()[$gi_key]['label']); ?></strong>
                                 <span><?php echo esc_html($gi_card['text']); ?></span>

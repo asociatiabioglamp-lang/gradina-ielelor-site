@@ -1,0 +1,2 @@
+# Scripturile shell rulează și din Git Bash pe Windows (D:\proiect site gi): păstrăm finalul de linie LF.
+*.sh text eol=lf

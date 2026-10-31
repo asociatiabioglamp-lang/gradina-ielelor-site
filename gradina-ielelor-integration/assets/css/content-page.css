@@ -18,7 +18,8 @@
 .gi-prose { line-height: 1.7; color: var(--ink); overflow-wrap: break-word; }
 .gi-prose::after { content: ""; display: block; clear: both; }
 .gi-prose > * { margin-block: 0; }
-.gi-prose > * + * { margin-top: 1.15em; }
+/* Spațiu între blocuri; .gi-content-site ca să treacă peste „.gi-site p { margin-top: 0 }” din site.css. */
+.gi-content-site .gi-prose > * + * { margin-top: 1.15em; }
 .gi-content-site .gi-prose :is(p, li) { max-width: none; font-size: inherit; line-height: 1.7; color: #33433b; }
 .gi-prose strong { color: var(--ink); font-weight: 650; }
 .gi-content-site .gi-prose a:not(.wp-block-button__link):not(.wp-block-file__button) { color: var(--forest); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: .2em; transition: text-decoration-color .2s ease; }
@@ -33,8 +34,8 @@
 .gi-content-site .gi-prose h2 { margin-top: 2.1em; font-size: clamp(1.7rem, 3.2vw, 2.25rem); }
 .gi-content-site .gi-prose h3 { margin-top: 1.8em; font-size: clamp(1.3rem, 2.2vw, 1.55rem); }
 .gi-content-site .gi-prose h4 { margin-top: 1.6em; font-family: var(--sans); font-size: 1.05rem; font-weight: 700; letter-spacing: 0; }
-.gi-prose > :is(h2, h3, h4) + * { margin-top: .6em; }
-.gi-prose > :first-child { margin-top: 0; }
+.gi-content-site .gi-prose > :is(h2, h3, h4) + * { margin-top: .6em; }
+.gi-content-site .gi-prose > :first-child { margin-top: 0; }
 
 /* ---------- Liste ---------- */
 .gi-prose :is(ul, ol) { margin-bottom: 0; padding-left: 1.5em; }
@@ -60,7 +61,8 @@
 .gi-prose .wp-block-quote,
 .gi-prose blockquote { margin: 1.7em 0; padding: 4px 0 4px 24px; border: 0; border-left: 3px solid var(--accent); }
 .gi-content-site .gi-prose blockquote p { font-family: var(--display); font-size: clamp(1.25rem, 2vw, 1.45rem); font-style: italic; line-height: 1.45; color: var(--forest-deep); }
-.gi-prose blockquote > * + * { margin-top: .6em; }
+.gi-content-site .gi-prose blockquote > * { margin-block: 0; }
+.gi-content-site .gi-prose blockquote > * + * { margin-top: .6em; }
 .gi-prose blockquote cite { display: block; margin-top: 12px; font-size: .9rem; font-style: normal; color: var(--muted); }
 .gi-prose blockquote cite::before { content: "— "; }
 .gi-prose .wp-block-pullquote { margin: 2em 0; padding: 28px 8px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); text-align: center; }
@@ -89,13 +91,13 @@
 
 /* ---------- Detalii (blocul „Detalii”): linii fine, ca la întrebările de pe paginile ofertelor ---------- */
 .gi-prose .wp-block-details { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.gi-prose > .wp-block-details + .wp-block-details { margin-top: 0; border-top: 0; }
+.gi-content-site .gi-prose > .wp-block-details + .wp-block-details { margin-top: 0; border-top: 0; }
 .gi-prose .wp-block-details > summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 62px; padding: 16px 2px; border-radius: 8px; color: var(--forest-deep); font-size: 1.06rem; font-weight: 650; line-height: 1.35; list-style: none; cursor: pointer; }
 .gi-prose .wp-block-details > summary::-webkit-details-marker { display: none; }
 .gi-prose .wp-block-details > summary::after { content: ""; flex: 0 0 30px; height: 30px; border-radius: 50%; background: linear-gradient(var(--forest), var(--forest)) center / 12px 2px no-repeat, linear-gradient(var(--forest), var(--forest)) center / 2px 12px no-repeat, var(--sand); transition: background-color .25s ease; }
 .gi-prose .wp-block-details[open] > summary::after { background: linear-gradient(var(--forest-deep), var(--forest-deep)) center / 12px 2px no-repeat, var(--accent); }
 .gi-prose .wp-block-details > summary:hover { color: var(--forest); }
-.gi-prose .wp-block-details > :not(summary) { margin: 0; padding-right: 46px; }
+.gi-prose .wp-block-details > :not(summary) { margin: 0; }
 .gi-prose .wp-block-details > :not(summary) + :not(summary) { margin-top: .9em; }
 .gi-prose .wp-block-details > :last-child:not(summary) { margin-bottom: 24px; }
 @supports (interpolate-size: allow-keywords) {
@@ -114,7 +116,7 @@
 .gi-prose .wp-block-accordion-heading__toggle-icon { display: grid; place-items: center; flex: 0 0 30px; height: 30px; border-radius: 50%; background: var(--sand); color: var(--forest); font-size: 1.2rem; line-height: 1; transition: background-color .25s ease, transform .25s ease; }
 .gi-prose .wp-block-accordion-item.is-open .wp-block-accordion-heading__toggle-icon,
 .gi-prose .wp-block-accordion-heading__toggle[aria-expanded="true"] .wp-block-accordion-heading__toggle-icon { background: var(--accent); transform: rotate(45deg); }
-.gi-prose .wp-block-accordion-panel { padding: 0 46px 22px 2px; }
+.gi-prose .wp-block-accordion-panel { padding: 0 2px 22px; }
 .gi-prose .wp-block-accordion-panel > * + * { margin-top: .9em; }
 
 /* ---------- Casete ---------- */
@@ -147,8 +149,6 @@
   .gi-content-hero-mark { right: -18%; bottom: -12%; }
   .gi-content-body,
   .gi-content-end { font-size: 1.03rem; }
-  .gi-prose .wp-block-details > :not(summary) { padding-right: 0; }
-  .gi-prose .wp-block-accordion-panel { padding-right: 2px; }
   .gi-prose .wp-block-buttons > .wp-block-button { flex: 1 1 100%; }
   .gi-content-site .gi-prose .wp-block-button__link { width: 100%; }
   .gi-content-site .gi-prose :is(th, td) { padding: 11px 12px; }

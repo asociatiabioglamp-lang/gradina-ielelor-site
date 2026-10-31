@@ -19,8 +19,36 @@
   @view-transition { navigation: none; }
 }
 
-.gi-site .desktop-nav a[aria-current="page"],
-.gi-site .mobile-nav a[aria-current="page"] { color: var(--accent); }
+/* Pagina curentă: piersică pe header-ul închis; pe meniul mobil (fundal deschis) verde și subliniat (contrast 4,5:1). */
+.gi-site .desktop-nav a[aria-current="page"] { color: var(--accent); }
+.gi-site .mobile-nav a[aria-current="page"] { color: var(--forest); font-weight: 700; text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: .3em; }
+
+/* ---------- Focus de tastatură pe toate paginile Grădinii (WCAG 2.4.7 / 2.4.11) ----------
+   Verde pe fundaluri deschise, piersică pe cele închise (header peste fotografie, hero, footer): minimum 3:1 peste tot. */
+.gi-site { --gi-focus: var(--forest); }
+.gi-site :is(.skip-link, .site-header, .site-footer, .home-hero, .gi-page-hero, .gi-prices-band, .gi-closing) { --gi-focus: var(--accent); }
+.gi-site .mobile-nav,
+.gi-site .mobile-booking-cta { --gi-focus: var(--forest-deep); }
+.gi-site :is(a, button, summary, select, input, textarea, [tabindex]):focus-visible { outline: 3px solid var(--gi-focus); outline-offset: 3px; }
+/* Câmpurile BRW: contur plin, nu doar o umbră de 12%. */
+.gi-site .gi-real-booking :is(input, select, textarea, button):focus-visible { outline: 3px solid var(--forest); outline-offset: 2px; border-color: var(--forest); }
+
+/* ---------- Contrast (WCAG 1.4.3) pe elementele comune din site.css ---------- */
+.gi-site .footer-bottom { color: rgba(255, 255, 255, .72); font-size: 12px; }
+#gi-lightbox figcaption span:last-child { color: rgba(255, 255, 255, .72); }
+#gi-lightbox button:focus-visible { outline: 3px solid var(--accent, #efb783); outline-offset: 3px; }
+
+/* Header peste fotografie: umbra de sus puțin mai densă, ca meniul (12–13,5px) să rămână lizibil pe cer luminos. */
+.gi-site .site-header { background: linear-gradient(180deg, rgba(8, 28, 23, .8) 0%, rgba(8, 28, 23, .5) 55%, rgba(8, 28, 23, 0) 100%); }
+.gi-site .desktop-nav a { text-shadow: 0 1px 8px rgba(0, 0, 0, .4); }
+
+/* ---------- Zone de atingere de minimum 44px pe telefon ---------- */
+.gi-site .menu-toggle { min-width: 44px; min-height: 44px; }
+@media (max-width: 700px) {
+  .gi-site .footer-grid > div:not(:first-child) a { align-items: center; min-height: 44px; margin: 0; }
+  /* Butonul fix de rezervare nu acoperă elementul primit cu Tab: derularea lasă loc deasupra lui (WCAG 2.4.11). */
+  html:has(.gi-site .mobile-booking-cta) { scroll-padding-bottom: 84px; }
+}
 
 /* ---------- Ritm general al paginilor dedicate ---------- */
 .gi-dedicated {
@@ -47,13 +75,15 @@
 .gi-dedicated .gi-section-head { margin-bottom: clamp(22px, 3vw, 40px); }
 .gi-dedicated .gi-section-head h2 { margin-bottom: 0; }
 
-/* Focus vizibil pe orice fundal: verde pe hârtie, piersică pe fundalurile închise. */
-.gi-dedicated :is(a, button, summary, [tabindex]):focus-visible { outline: 3px solid var(--gi-focus); outline-offset: 3px; }
-
 /* Mai prietenos decât stilul compact al paginii principale: texte mai mari, butoane rotunjite. */
 .gi-dedicated .button { border-radius: 999px; min-height: 52px; padding: 14px 26px; font-size: 15px; }
-.gi-dedicated .header-cta.button { min-height: 42px; padding: 10px 18px; font-size: 13px; }
-.gi-dedicated .desktop-nav a { font-size: 13.5px; }
+/* Între 901 și 1150 px meniul păstrează dimensiunile compacte din site.css (altfel apare scroll orizontal
+   și butonul „Rezervă” iese din ecran); textele mai mari numai unde încap. */
+.gi-dedicated .header-cta.button { min-height: 40px; padding: 10px 17px; font-size: 12px; }
+@media (min-width: 1151px) {
+  .gi-dedicated .header-cta.button { min-height: 42px; padding: 10px 18px; font-size: 13px; }
+  .gi-dedicated .desktop-nav a { font-size: 13.5px; }
+}
 .gi-dedicated .home-photo-gallery button,
 .gi-dedicated .home-photo-gallery img { border-radius: var(--gi-radius-sm); }
 .gi-dedicated .home-photo-gallery > button > span { font-size: 13px; border-radius: 12px; }
@@ -67,10 +97,13 @@
 .gi-page-hero { --gi-focus: var(--accent); position: relative; min-height: min(88svh, 820px); display: flex; align-items: flex-end; color: #fff; isolation: isolate; border-radius: 0 0 clamp(28px, 4vw, 56px) clamp(28px, 4vw, 56px); overflow: hidden; background: var(--forest-deep); }
 .gi-page-hero-media { position: absolute; inset: 0; margin: 0; z-index: -2; }
 .gi-page-hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: center 60%; background: var(--forest); }
+/* Umbra urcă până la firul de navigare (breadcrumb), ca textul mic să aibă 4,5:1 și pe fotografiile luminoase. */
 .gi-page-hero-overlay { position: absolute; inset: 0; z-index: -1; background:
-  linear-gradient(180deg, rgba(10, 32, 26, .5) 0%, rgba(10, 32, 26, 0) 22%),
-  linear-gradient(0deg, rgba(10, 32, 26, .9) 0%, rgba(10, 32, 26, .66) 30%, rgba(10, 32, 26, .3) 56%, rgba(10, 32, 26, 0) 80%),
-  linear-gradient(90deg, rgba(10, 32, 26, .42) 0%, rgba(10, 32, 26, 0) 62%); }
+  linear-gradient(180deg, rgba(10, 32, 26, .55) 0%, rgba(10, 32, 26, 0) 24%),
+  linear-gradient(0deg, rgba(10, 32, 26, .9) 0%, rgba(10, 32, 26, .7) 32%, rgba(10, 32, 26, .5) 60%, rgba(10, 32, 26, .18) 76%, rgba(10, 32, 26, 0) 90%),
+  linear-gradient(90deg, rgba(10, 32, 26, .5) 0%, rgba(10, 32, 26, .12) 50%, rgba(10, 32, 26, 0) 66%); }
+.gi-page-hero .gi-breadcrumb,
+.gi-dedicated .gi-page-hero .eyebrow { text-shadow: 0 1px 10px rgba(0, 0, 0, .45); }
 .gi-page-hero-content { padding-top: 140px; padding-bottom: clamp(92px, 10vw, 128px); }
 .gi-page-hero-content > * { max-width: 640px; }
 .gi-page-hero h1 { font-family: var(--display); font-weight: 500; font-size: clamp(2.75rem, 7vw, 5.4rem); line-height: .98; letter-spacing: -.03em; margin: .28em 0 .32em; color: #fff; text-shadow: 0 2px 28px rgba(0, 0, 0, .22); }
@@ -305,4 +338,4 @@
 .gi-calendar-list li { display: grid; gap: 6px; align-content: start; padding: 20px 22px; border-radius: var(--gi-radius-sm); background: var(--cream); }
 .gi-calendar-list strong { font-family: var(--display); font-size: 1.25rem; font-weight: 500; color: var(--forest-deep); }
 .gi-calendar-list small { font-size: 14px; color: #4d5b53; }
-.gi-calendar-tag { justify-self: start; padding: 3px 10px; border-radius: 999px; background: var(--paper); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent-dark); }
+.gi-calendar-tag { justify-self: start; padding: 3px 10px; border-radius: 999px; background: var(--paper); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #985c33; /* accent-dark mai închis: 5,3:1 pe hârtie */ }

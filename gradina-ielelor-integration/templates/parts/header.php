@@ -12,10 +12,13 @@ $gi_links = array();
 foreach (gi_offers() as $gi_key => $gi_offer) {
     $gi_links[] = array('label' => $gi_offer['label'], 'url' => gi_offer_url($gi_key), 'current' => $gi_key === $gi_current);
 }
-$gi_info_links = array(
-    array('label' => 'Despre noi', 'url' => gi_clean_page_url('despre-noi'), 'current' => false),
-    array('label' => 'Regulament & politici', 'url' => gi_clean_page_url('regulament-politici'), 'current' => false),
-);
+// aria-current și pentru paginile simple (Despre noi, Regulament), comparând adresa paginii afișate.
+$gi_here = is_singular() ? untrailingslashit((string) get_permalink(get_queried_object_id())) : '';
+$gi_info_links = array();
+foreach (array('despre-noi' => 'Despre noi', 'regulament-politici' => 'Regulament & politici') as $gi_slug => $gi_label) {
+    $gi_url = gi_clean_page_url($gi_slug);
+    $gi_info_links[] = array('label' => $gi_label, 'url' => $gi_url, 'current' => '' !== $gi_here && untrailingslashit($gi_url) === $gi_here);
+}
 ?>
     <header class="site-header shared-header header-overlay">
         <div class="container header-inner">

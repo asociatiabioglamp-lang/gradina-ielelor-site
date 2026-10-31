@@ -33,4 +33,15 @@
   } else {
     init();
   }
+
+  /*
+   * Tranziția foto: la plecarea spre o pagină nouă (logo, „Acasă”, „Rezervă”), pagina principală se deschide sus,
+   * cu cardul ofertei în afara ecranului, așa că fotografia mare nu mai „zboară” spre el; rămâne trecerea lină.
+   * La „Înapoi” (traverse) păstrăm zborul: pagina principală revine unde era cardul, iar site.js verifică la sosire.
+   */
+  window.addEventListener('pageswap', function (event) {
+    if (!event.viewTransition || (event.activation && event.activation.navigationType === 'traverse')) return;
+    var hero = document.querySelector('.gi-page-hero-media img');
+    if (hero) hero.style.viewTransitionName = 'none';
+  });
 }());

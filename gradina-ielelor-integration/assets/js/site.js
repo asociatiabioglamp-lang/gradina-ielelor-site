@@ -9,12 +9,36 @@
     }
   }
 
+  // Tranziția foto card ↔ pagină dedicată se înregistrează imediat (nu la DOMContentLoaded), ca să prindă pagereveal.
+  initPhotoTransitions();
+
   ready(function () {
     initMenu();
     initEventFilters();
     initGalleries();
+    initBrwLabels();
     initBrwPreselection();
   });
+
+  /**
+   * Fotografia unui card zboară spre pagina dedicată (și înapoi) numai dacă acel card e pe ecran.
+   * Un card din afara ecranului își pierde numele de tranziție, iar pagina face doar o trecere lină.
+   * pageswap = la plecarea de pe pagina principală; pagereveal = la sosire (sigur la paginile preîncărcate).
+   */
+  function initPhotoTransitions() {
+    function onScreen(element) {
+      var rect = element.getBoundingClientRect();
+      return rect.bottom > 0 && rect.right > 0 && rect.top < window.innerHeight && rect.left < window.innerWidth;
+    }
+    function dropOffscreenCards(event) {
+      if (!event.viewTransition) return;
+      document.querySelectorAll('.gi-offer-card img').forEach(function (image) {
+        image.style.viewTransitionName = onScreen(image) ? '' : 'none';
+      });
+    }
+    window.addEventListener('pageswap', dropOffscreenCards);
+    window.addEventListener('pagereveal', dropOffscreenCards);
+  }
 
   function initMenu() {
     var toggle = document.querySelector('[data-menu-toggle]');
@@ -38,6 +62,14 @@
 
     menu.querySelectorAll('a').forEach(function (link) {
       link.addEventListener('click', function () { setOpen(false); });
+    });
+
+    // Esc închide meniul deschis și duce focusul înapoi pe buton.
+    document.addEventListener('keydown', function (event) {
+      if (event.key !== 'Escape' || menu.hidden) return;
+      var focusInside = menu.contains(document.activeElement) || document.activeElement === toggle;
+      setOpen(false);
+      if (focusInside) toggle.focus();
     });
   }
 
@@ -71,6 +103,7 @@
     var closeButton = lightbox.querySelector('[data-lightbox-close]');
     var previousButton = lightbox.querySelector('[data-lightbox-previous]');
     var nextButton = lightbox.querySelector('[data-lightbox-next]');
+    var shell = document.querySelector('.site-shell');
     var images = [];
     var activeIndex = 0;
     var trigger = null;
@@ -93,6 +126,8 @@
       render();
       lightbox.hidden = false;
       document.body.classList.add('gi-lightbox-open');
+      // Restul paginii devine inert cât timp galeria e deschisă (și pentru cititoarele de ecran).
+      if (shell) shell.inert = true;
       closeButton.focus();
     }
 
@@ -100,6 +135,7 @@
       if (lightbox.hidden) return;
       lightbox.hidden = true;
       document.body.classList.remove('gi-lightbox-open');
+      if (shell) shell.inert = false;
       image.src = '';
       if (trigger) trigger.focus();
     }
@@ -175,6 +211,36 @@
       preselectCategory(region, categories[match[1]]);
     });
     section.scrollIntoView({ block: 'start' });
+
+    // Preselecția se face o singură dată: la reîncărcare sau la „Înapoi” nu mai suprascrie alegerea vizitatorului.
+    // Cât timp pagina e doar preîncărcată, adresa rămâne neschimbată; se curăță la activare (prerenderingchange).
+    if (!document.prerendering && window.history && history.replaceState) {
+      history.replaceState(history.state, '', window.location.pathname + window.location.search + '#rezervare');
+    }
+  }
+
+  /**
+   * Câmpurile formularului BRW primesc un nume accesibil din eticheta lor vizibilă, dacă pluginul nu l-a legat
+   * (ex. <label> fără „for”). Nu schimbă valori, validări sau trimiterea formularului.
+   */
+  function initBrwLabels() {
+    var counter = 0;
+    document.querySelectorAll('.gi-real-booking').forEach(function (region) {
+      region.querySelectorAll('select, input:not([type="hidden"]):not([type="submit"]), textarea').forEach(function (field) {
+        if ((field.labels && field.labels.length) || field.getAttribute('aria-label') || field.getAttribute('aria-labelledby')) return;
+        var wrapper = field.closest('.s_field, .ovabrw-search-field, .label-field') || field.parentElement;
+        var label = wrapper && wrapper.querySelector('label, .label');
+        if (!label || !label.textContent.trim()) return;
+        counter += 1;
+        if (label.tagName === 'LABEL' && !label.htmlFor) {
+          if (!field.id) field.id = 'gi-brw-field-' + counter;
+          label.htmlFor = field.id;
+        } else {
+          if (!label.id) label.id = 'gi-brw-label-' + counter;
+          field.setAttribute('aria-labelledby', label.id);
+        }
+      });
+    });
   }
 
   function preselectCategory(region, category) {
