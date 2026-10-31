@@ -11,9 +11,18 @@ if (!defined('ABSPATH')) {
 $gi_key = gi_current_page_key();
 $gi_page = gi_offer_page($gi_key);
 if (!$gi_page) {
-    // Template-ul a rămas pe o pagină fără conținut definit: afișăm pagina principală în locul unei pagini goale.
-    wp_safe_redirect(home_url('/'));
-    exit;
+    // Template-ul a rămas pe o pagină fără conținut definit: „pagina nu există”, fără redirecționări în buclă.
+    global $wp_query;
+    $wp_query->set_404();
+    status_header(404);
+    nocache_headers();
+    $gi_404 = get_404_template();
+    if ($gi_404) {
+        include $gi_404;
+    } else {
+        wp_die('Pagina nu a fost găsită.', 'Pagina nu a fost găsită', array('response' => 404));
+    }
+    return;
 }
 
 $gi_book_url = gi_current_cta_url();

@@ -8,6 +8,8 @@ final class GI_Plugin {
         add_filter('theme_page_templates', array(__CLASS__, 'register_template'), 10, 4);
         add_filter('template_include', array(__CLASS__, 'load_template'), 99);
         add_action('wp_enqueue_scripts', array(__CLASS__, 'enqueue_assets'));
+        add_action('wp_enqueue_scripts', array(__CLASS__, 'trim_dedicated_assets'), 999);
+        add_action('wp_footer', array(__CLASS__, 'trim_dedicated_assets'), 1); // wc-blocks-style se adaugă târziu.
         add_filter('body_class', array(__CLASS__, 'body_class'));
         add_action('wp_head', array(__CLASS__, 'favicon'), 1);
         add_action('wp_head', array(__CLASS__, 'booking_arrival_script'), 3);
@@ -36,6 +38,23 @@ final class GI_Plugin {
             return GI_PATH . 'templates/' . $templates[$slug]['file'];
         }
         return $template;
+    }
+
+    /**
+     * Paginile ofertelor nu au coș și nici formularul de rezervare: fișierele WooCommerce doar le încetinesc
+     * (aprox. 1 s pe telefon, docs/qa-performanta-accesibilitate.md). Pe prima pagină rămân toate, pentru BRW.
+     * Rămân și sourcebuster-js / wc-order-attribution: rețin de unde a venit vizitatorul care face apoi comanda.
+     */
+    public static function trim_dedicated_assets() {
+        if (!gi_is_dedicated_page()) {
+            return;
+        }
+        foreach (array('woocommerce-layout', 'woocommerce-smallscreen', 'woocommerce-general', 'woocommerce-blocktheme', 'wc-blocks-style') as $handle) {
+            wp_dequeue_style($handle);
+        }
+        foreach (array('wc-add-to-cart', 'woocommerce', 'wc-cart-fragments', 'js-cookie', 'jquery-blockui') as $handle) {
+            wp_dequeue_script($handle);
+        }
     }
 
     public static function enqueue_assets() {

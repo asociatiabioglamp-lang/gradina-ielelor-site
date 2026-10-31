@@ -47,6 +47,7 @@
 .gi-site .menu-toggle { min-width: 44px; min-height: 44px; }
 @media (max-width: 700px) {
   .gi-site .footer-grid > div:not(:first-child) a { align-items: center; min-height: 44px; margin: 0; }
+  .gi-site .footer-legal a { min-height: 44px; }
   /* Butonul fix de rezervare nu acoperă elementul primit cu Tab: derularea lasă loc deasupra lui (WCAG 2.4.11). */
   html:has(.gi-site .mobile-booking-cta) { scroll-padding-bottom: 84px; }
 }

@@ -118,7 +118,7 @@ function gi_category_for_type($type) {
 
 function gi_render_gallery($images, $label) {
     ?>
-    <div class="home-photo-gallery" aria-label="<?php echo esc_attr($label); ?>">
+    <div class="home-photo-gallery" role="group" aria-label="<?php echo esc_attr($label); ?>">
         <?php foreach ($images as $index => $image) : ?>
             <button type="button" class="gi-gallery-trigger" data-gallery-index="<?php echo esc_attr($index); ?>" aria-label="Mărește fotografia: <?php echo esc_attr($image['caption']); ?>">
                 <img src="<?php echo esc_url(gi_image_url($image['src'])); ?>" alt="<?php echo esc_attr($image['alt']); ?>" width="960" height="720" loading="lazy" decoding="async" data-caption="<?php echo esc_attr($image['caption']); ?>">

@@ -46,6 +46,11 @@ Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai 
 * Prima pagină = pagina de rezervare: 5 carduri, Festival (ofertă organizatori), Despre noi, Regulament, recenzii selectate (fără medie calculată), blog.
 * Link „Înapoi la rezervare” la finalul fiecărei pagini dedicate; calendar 2027 pe pagina de evenimente.
 * Versiune nouă pentru reîmprospătarea CSS/JS în browsere și CDN.
+* Pagini simple (Despre noi, Regulament & politici, Contact), editabile în WordPress; redirecționări 301 de la adresele vechi.
+* Subsol cu linkurile legale: termeni, confidențialitate, cookies, politica de anulare, ANPC, SAL, SOL; Contact și Blog.
+* Accesibilitate: focus vizibil, contrast, ținte de atingere de 44 px, galerie și meniu din tastatură (axe: 0 probleme).
+* Viteză: fără fișierele WooCommerce pe paginile ofertelor; poze principale în 960/1280/1600 px, după ecran.
+* SEO: titlul setat în Yoast / Rank Math are prioritate; un singur canonical fără plugin SEO.
 
 = 1.1.0 =
 * Pagină dedicată Glamping (template nou), cu ton prietenos și fără jargon tehnic pentru vizitatori.

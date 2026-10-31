@@ -87,6 +87,11 @@
 @media (max-width: 700px) {
   /* Pe telefon textul ocupă jumătatea de jos a fotografiei: umbra de jos urcă până la titlu. */
   .gi-site.home-page .home-hero-overlay { background: linear-gradient(0deg, rgba(10, 35, 27, .86) 0%, rgba(10, 35, 27, .62) 42%, rgba(10, 35, 27, .3) 72%, rgba(10, 35, 27, .14) 100%); }
+
+  /* Butonul fix „Rezervă cazare” se ascunde cât timp formularul, butonul din hero sau footer-ul sunt pe ecran (site.js). */
+  .gi-site.home-page .mobile-booking-cta { transition: transform .4s cubic-bezier(.2, .8, .2, 1), opacity .3s ease, visibility 0s linear 0s; }
+  .gi-site.home-page .mobile-booking-cta.is-managed:not(.is-visible) { transform: translateY(calc(100% + 24px)); opacity: 0; visibility: hidden; transition: transform .3s ease, opacity .2s ease, visibility 0s linear .3s; }
+  body.gi-one-page:has(.home-page .mobile-booking-cta.is-managed) { padding-bottom: 0; }
 }
 
 @media (max-width: 560px) {

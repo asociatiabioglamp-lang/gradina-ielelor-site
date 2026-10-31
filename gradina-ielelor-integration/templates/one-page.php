@@ -54,6 +54,15 @@ if (!defined('ABSPATH')) {
             </div>
         </section>
 
+        <?php
+        // Secțiunile detaliate care rămân pe prima pagină: o ofertă fără pagină dedicată trimite la ele (ex. Rulote → #camping).
+        $gi_home_sections = array();
+        foreach (gi_offers() as $gi_offer_key => $gi_offer) {
+            if (!gi_offer_has_page($gi_offer_key)) {
+                $gi_home_sections[$gi_offer['anchor']] = true;
+            }
+        }
+        ?>
         <section id="experiente" class="gi-offers" aria-labelledby="offers-title">
             <div class="container">
                 <div class="gi-offers-head">
@@ -62,7 +71,8 @@ if (!defined('ABSPATH')) {
                 </div>
                 <div class="gi-offers-grid">
                     <?php foreach (gi_offer_cards() as $gi_key => $gi_card) : ?>
-                        <a class="gi-offer-card gi-offer-card-<?php echo esc_attr($gi_key); ?>" href="<?php echo esc_url(gi_offer_url($gi_key)); ?>">
+                        <?php // Adresele vechi (/#glamping) ajung la card când secțiunea cu același nume nu mai e pe pagină. ?>
+                        <a<?php echo empty($gi_home_sections[$gi_key]) ? ' id="' . esc_attr($gi_key) . '"' : ''; ?> class="gi-offer-card gi-offer-card-<?php echo esc_attr($gi_key); ?>" href="<?php echo esc_url(gi_offer_url($gi_key)); ?>">
                             <?php // Numele ofertei e deja textul linkului: fotografia e decorativă aici (alt gol, fără dublare). ?>
                             <img src="<?php echo esc_url(gi_image_url($gi_card['image'])); ?>" alt="" width="960" height="720" loading="lazy" decoding="async">
                             <span class="gi-offer-card-body">
@@ -102,14 +112,7 @@ if (!defined('ABSPATH')) {
 
         <?php foreach (gi_experiences() as $id => $experience) : ?>
             <?php
-            // Secțiunea rămâne cât timp o ofertă care trimite la ea (ex. Rulote → #camping) nu are pagină dedicată.
-            $gi_needed = false;
-            foreach (gi_offers() as $gi_offer_key => $gi_offer) {
-                if ($gi_offer['anchor'] === $id && !gi_offer_has_page($gi_offer_key)) {
-                    $gi_needed = true;
-                }
-            }
-            if (!$gi_needed) {
+            if (empty($gi_home_sections[$id])) {
                 continue;
             }
             ?>

@@ -18,7 +18,35 @@
     initGalleries();
     initBrwLabels();
     initBrwPreselection();
+    initHomeBookingCta();
   });
+
+  /**
+   * Pagina principală, pe telefon: butonul fix „Rezervă cazare” apare doar când nici butonul din hero,
+   * nici modulul de rezervări, nici footer-ul nu sunt pe ecran, ca să nu acopere formularul.
+   * (Paginile dedicate au aceeași logică în pages.js.) Fără IntersectionObserver butonul rămâne mereu vizibil.
+   */
+  function initHomeBookingCta() {
+    var shell = document.querySelector('.home-page');
+    var cta = shell && shell.querySelector('.mobile-booking-cta');
+    if (!cta || !('IntersectionObserver' in window)) return;
+
+    var watched = Array.prototype.slice.call(shell.querySelectorAll('.home-hero-actions .button, #rezervare, .site-footer'));
+    if (!watched.length) return;
+
+    var onScreen = [];
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var index = onScreen.indexOf(entry.target);
+        if (entry.isIntersecting && index === -1) onScreen.push(entry.target);
+        if (!entry.isIntersecting && index !== -1) onScreen.splice(index, 1);
+      });
+      cta.classList.toggle('is-visible', onScreen.length === 0);
+    });
+
+    cta.classList.add('is-managed');
+    watched.forEach(function (element) { observer.observe(element); });
+  }
 
   /**
    * Fotografia unui card zboară spre pagina dedicată (și înapoi) numai dacă acel card e pe ecran.
