@@ -140,6 +140,8 @@ Arhiva se construiește automat în GitHub, verificată (sintaxa PHP pe PHP 7.4 
 
 ## 4. Procedura A — instalarea pe staging (D-5)
 
+> **Schimbare 1.11.2026:** staging-ul de pe adresa tehnică `…cpanel.site` nu se deschide (eroare 428 „Technical Domain”). Staging-ul se face pe **`test.gradina-ielelor.ro`**: subdomeniu creat în cPanel (Domenii → Creează un domeniu nou), apoi **Clone** din site-ul live în Softaculous (nu „Staging”). Rămân neschimbate A0 (rolul de Administrator), FGO oprit (A3b), `noindex` și emailurile către clienți oprite. Copia se șterge după lansare: are date reale de comenzi. Pașii și adresa se confirmă pe măsură ce se fac.
+
 Timp: aproximativ o oră. Toți pașii sunt **[TU]**, în WordPress-ul de **staging**. Verifică adresa din bara browserului înainte de fiecare pas: trebuie să fie adresa staging-ului, nu gradina-ielelor.ro.
 
 ### A0. Contul tău pe staging (la fel ca pe live, făcut o singură dată)
