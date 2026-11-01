@@ -15,7 +15,7 @@ Surse: pachetul din Drive `FESTIVAL OFERTARE` (`CITESTE-MA-INTAI.md`, `ORDINEA-D
 
 ## Ce am verificat în cod (`cotatie.php`)
 - **Bun:** datele sunt curățate de etichete și de rânduri noi (fără injecție în antetele emailului); subiectul e codat; există un câmp-capcană anti-spam; cererea se salvează chiar dacă emailul eșuează; `.htaccess` blochează descărcarea lui `cereri.csv` (`Require all denied`).
-- **De verificat în practică (numai proprietara poate):** `gradina-ielelor.ro/cotatie/cereri.csv` trebuie să dea eroare (403 sau 404), nu să descarce fișierul. Fișierul conține nume, telefoane și emailuri.
+- **Verificat de proprietară pe 1.11.2026:** `gradina-ielelor.ro/cotatie/cereri.csv` dă **eroare 403**, deci fișierul nu se poate descărca (în fereastră privată). De repetat după orice schimbare în folderul `cotatie`. Fișierul conține nume, telefoane și emailuri.
 - **De îmbunătățit după lansare, nu înainte:**
   1. Valorile care încep cu `=`, `+`, `-` sau `@` pot fi interpretate ca formule când se deschide `cereri.csv` în Excel: se prefixează cu un apostrof.
   2. Fără protecție împotriva spamului în afara câmpului-capcană (de exemplu o limită de cereri pe oră de la aceeași adresă).
