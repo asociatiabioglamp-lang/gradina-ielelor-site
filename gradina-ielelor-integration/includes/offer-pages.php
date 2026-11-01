@@ -235,7 +235,7 @@ function gi_offer_pages() {
             'title_em' => 'Cu tot ce ai nevoie aproape.',
             'paragraphs' => array(
                 'Îți întinzi cortul pe un domeniu privat de șase hectare, împrejmuit și păzit permanent. Dușurile calde, bucătăriile și focul de seară sunt aproape.',
-                'Vii cu rulota sau cu autorulota? O parchezi în zona de camping, aproape de lac. Ai racorduri și servicii pe loc, plus internet.',
+                'Vii cu rulota sau cu autorulota? O parchezi în zona de camping, aproape de lac. Locul nu are racorduri. Îți încarci telefonul și laptopul în spațiile comune, iar stația de golire e în zona 1.',
                 'Lacul mare are 8.000 de metri pătrați și un metru adâncime, așa că se înoată în el, iar pe apă faci și activități nautice. Pescuiești pe ambele lacuri. Lacul mic are, în mijloc, o terasă acoperită din lemn, de 7 pe 12 metri, unde încape toată gașca.',
             ),
             'image' => 'camping-corturi-munte-960.webp',
@@ -256,9 +256,10 @@ function gi_offer_pages() {
             'groups' => array(
                 array('icon' => 'tent', 'title' => 'La locul tău', 'items' => array(
                     'Spațiu generos pentru cort',
-                    'Loc pentru rulotă sau autorulotă, cu racorduri și servicii pe loc',
+                    'Loc pentru rulotă sau autorulotă, fără racorduri',
+                    'Stație de golire pentru rulote, în zona 1',
                     'Aproape de lac',
-                    'Internet și parcare proprie',
+                    'Parcare proprie',
                     'Câinii mici (până la 15 kg) sunt bineveniți',
                 ), 'note' => array('text' => 'Nu ai cort? Avem corturi cu pat, gata pregătite: ', 'link_text' => 'alege glampingul', 'link_offer' => 'glamping')),
                 array('icon' => 'trees', 'title' => 'În Grădină', 'items' => array(
@@ -269,6 +270,8 @@ function gi_offer_pages() {
                     'Terasă acoperită din lemn, construită pe apă',
                     'Treizeci de hamace și vetre de foc',
                     'Pescuit sportiv și ponton',
+                    'Curent pentru telefon și laptop, în spațiile comune',
+                    'Wi-Fi în zona teraselor și în zonele marcate',
                     'Domeniu împrejmuit, pază 24 din 24',
                 ), 'note' => array('text' => 'Vrei o noapte cu baie proprie? ', 'link_text' => 'Alege un bungalow', 'link_offer' => 'bungalow')),
             ),
@@ -285,14 +288,14 @@ function gi_offer_pages() {
         ),
         'notes' => array(
             array('icon' => 'droplet', 'title' => 'Apa de la robinet nu e potabilă', 'text' => 'E pentru duș, spălat și toalete. Apa de băut o găsești la dozatoarele din camping și îmbuteliată, la recepție.'),
-            array('icon' => 'sun', 'title' => 'Energie proprie, din soare și GPL', 'text' => 'Ai curent, apă caldă și internet. Te rugăm doar să lași acasă electrocasnicele mari.'),
+            array('icon' => 'sun', 'title' => 'Energie proprie, din soare și GPL', 'text' => 'La locul rulotei nu e curent. Telefonul și laptopul și le încarci în spațiile comune. Wi-Fi ai în zona teraselor și în zonele marcate, iar la dușuri, apă caldă non-stop.'),
             array('icon' => 'flame', 'title' => 'Focul, doar în vetrele amenajate', 'text' => 'Avem vetre de foc pregătite pe domeniu. Seara, acolo se adună toată lumea.'),
         ),
         'faq' => array(
             array('q' => 'Ce găsesc la camping?', 'a' => 'Spațiu pentru cortul tău, opt dușuri publice cu apă caldă non-stop, douăsprezece toalete publice și două bucătării comune. Plus două lacuri, treizeci de hamace și vetre de foc.'),
-            array('q' => 'Primiți și rulote sau autorulote?', 'a' => 'Da, și rulote, și autorulote. Ai racorduri și servicii pe loc, în zona de camping. Dacă ai întrebări despre rulota ta, sună-ne la 0721 333 164.'),
+            array('q' => 'Primiți și rulote sau autorulote?', 'a' => 'Da, și rulote, și autorulote, în zona de camping. Locul rulotei nu are racorduri: fără curent, apă sau canalizare. Stația de golire e doar în zona 1. Telefonul și laptopul le încarci în spațiile comune. Dacă ai întrebări despre rulota ta, sună-ne la 0721 333 164.'),
             array('q' => 'Se poate înota?', 'a' => 'Da, în lacul mare. Are 8.000 de metri pătrați și un metru adâncime pe toată suprafața, fără zone adânci.'),
-            array('q' => 'Am curent și internet?', 'a' => 'Da. Domeniul funcționează pe energie proprie, solară și GPL, așa că ai curent, apă caldă și internet. Lasă acasă doar aparatele electrice mari.'),
+            array('q' => 'Am curent și internet?', 'a' => 'La locul rulotei nu e curent. În spațiile comune îți poți încărca telefonul și laptopul. Wi-Fi ai în zona teraselor și în zonele marcate. La dușuri e apă caldă non-stop. Domeniul funcționează pe energie proprie, solară și GPL, așa că lasă acasă electrocasnicele mari.'),
             array('q' => 'Ce pot face prin zonă?', 'a' => 'Transfăgărășanul e la circa 20 de minute, iar Mănăstirea Brâncoveanu e chiar în Sâmbăta de Sus. Prin satele de sub munte găsești drumuri de țară bune de bicicletă și producători locali.'),
             array('q' => 'Trebuie să rezerv din timp?', 'a' => 'Îți recomandăm, mai ales pentru weekendurile de vară și cât timp e deschis Transfăgărășanul.'),
             array('q' => 'Cât costă o noapte?', 'a' => 'Tariful de referință este 80 lei pe noapte, pentru cort sau pentru rulotă. Prețul final îl vezi când alegi datele.'),
