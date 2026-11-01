@@ -53,11 +53,49 @@ function gi_pagini_find($slug) {
         'post_type' => 'page',
         'name' => $slug,
         'post_parent' => 0,
-        'post_status' => array('publish', 'draft', 'pending', 'private', 'future', 'trash'),
+        'post_status' => array('publish', 'draft', 'pending', 'private', 'future'),
         'numberposts' => 1,
         'suppress_filters' => true,
     ));
+    if (!$found) {
+        // WordPress redenumește pagina mutată în coș în „adresa__trashed”.
+        $found = get_posts(array(
+            'post_type' => 'page',
+            'name' => $slug . '__trashed',
+            'post_parent' => 0,
+            'post_status' => 'trash',
+            'numberposts' => 1,
+            'suppress_filters' => true,
+        ));
+    }
     return $found ? $found[0] : null;
+}
+
+/**
+ * Adresa e liberă pentru o pagină publicată? WordPress nu verifică unicitatea la ciorne, iar adresa poate fi ocupată
+ * de altă pagină sau de un fișier din Media; atunci pagina ar fi publicată la „adresa-2”.
+ */
+function gi_pagini_adresa_libera($slug, $post_id = 0, $parent = 0) {
+    return wp_unique_post_slug($slug, $post_id, 'publish', 'page', $parent) === $slug;
+}
+
+/**
+ * Blocare scurtă: o dublă apăsare nu rulează două acțiuni deodată. Expiră după 60 de secunde.
+ */
+function gi_pagini_lock() {
+    $acum = time();
+    $t = (int) get_option('gi_pagini_lock');
+    if ($t && ($acum - $t) < 60) {
+        return false;
+    }
+    if ($t) {
+        delete_option('gi_pagini_lock');
+    }
+    return add_option('gi_pagini_lock', $acum, '', 'no');
+}
+
+function gi_pagini_unlock() {
+    delete_option('gi_pagini_lock');
 }
 
 /**
@@ -108,6 +146,10 @@ function gi_pagini_creeaza() {
             $mesaje[] = 'EROARE: lipsește textul „' . $s['file'] . '” din plugin; „' . $s['title'] . '” nu s-a creat. Reinstalează arhiva completă.';
             continue;
         }
+        if (!gi_pagini_adresa_libera($slug)) {
+            $mesaje[] = 'EROARE: adresa /' . $slug . '/ e ocupată (de altă pagină sau de un fișier din Media): nu creez „' . $s['title'] . '”. Spune-i lui Claude.';
+            continue;
+        }
         $id = wp_insert_post(wp_slash(array(
             'post_type' => 'page',
             'post_status' => 'draft',
@@ -122,8 +164,7 @@ function gi_pagini_creeaza() {
         }
         gi_pagini_set_template($id, $s['template']);
         update_post_meta($id, '_gi_pagina_creata', '1');
-        $created = get_post($id);
-        $mesaje[] = 'Creată ciornă: „' . $s['title'] . '” la /' . ($created ? $created->post_name : $slug) . '/' . (($created && $created->post_name !== $slug) ? ' (ATENȚIE: adresa nu e /' . $slug . '/, oprește-te și spune-i lui Claude)' : '') . '.';
+        $mesaje[] = 'Creată ciornă: „' . $s['title'] . '” (/' . $slug . '/).';
     }
     kses_init();
     return $mesaje;
@@ -183,20 +224,29 @@ function gi_pagini_contact() {
     if ('' === $content) {
         return array('EROARE: lipsește textul „' . $s['file'] . '” din plugin. Reinstalează arhiva completă.');
     }
+    $sablon_vechi = gi_pagini_tpl($page);
+    $sablon_salvat_acum = !metadata_exists('post', $page->ID, '_gi_sablon_anterior');
     update_post_meta($page->ID, '_gi_continut_anterior', wp_slash($page->post_content));
     update_post_meta($page->ID, '_gi_rezumat_anterior', wp_slash($page->post_excerpt));
     update_post_meta($page->ID, '_gi_elementor_anterior', wp_slash((string) get_post_meta($page->ID, '_elementor_edit_mode', true)));
-    if (!metadata_exists('post', $page->ID, '_gi_sablon_anterior')) {
-        update_post_meta($page->ID, '_gi_sablon_anterior', gi_pagini_tpl($page));
+    if ($sablon_salvat_acum) {
+        update_post_meta($page->ID, '_gi_sablon_anterior', $sablon_vechi);
     }
-    delete_post_meta($page->ID, '_elementor_edit_mode'); // altfel Elementor ar afișa în continuare designul vechi, nu textul nou
+    gi_pagini_set_template($page->ID, $s['template']); // întâi șablonul nostru: un șablon vechi care nu mai există ar bloca salvarea
     kses_remove_filters();
     $r = wp_update_post(wp_slash(array('ID' => $page->ID, 'post_content' => $content, 'post_excerpt' => $s['excerpt'])), true);
     kses_init();
-    if (is_wp_error($r)) {
-        return array('EROARE la Contact: ' . $r->get_error_message());
+    if (is_wp_error($r) || !$r) {
+        gi_pagini_set_template($page->ID, $sablon_vechi);
+        delete_post_meta($page->ID, '_gi_continut_anterior');
+        delete_post_meta($page->ID, '_gi_rezumat_anterior');
+        delete_post_meta($page->ID, '_gi_elementor_anterior');
+        if ($sablon_salvat_acum) {
+            delete_post_meta($page->ID, '_gi_sablon_anterior');
+        }
+        return array('EROARE la Contact: ' . (is_wp_error($r) ? $r->get_error_message() : 'salvarea a eșuat') . '. Nu am schimbat nimic; poți încerca din nou.');
     }
-    gi_pagini_set_template($page->ID, $s['template']);
+    delete_post_meta($page->ID, '_elementor_edit_mode'); // altfel Elementor ar afișa în continuare designul vechi, nu textul nou
     return array('Contact: textul nou e pus. Textul vechi (Elementor) rămâne păstrat și revine cu „Revino”.');
 }
 
@@ -210,8 +260,17 @@ function gi_pagini_publica() {
         return array('Nu e nicio ciornă creată de plugin de publicat.');
     }
     foreach ($pagini as $page) {
+        if (!gi_pagini_adresa_libera($page->post_name, $page->ID, (int) $page->post_parent)) {
+            $mesaje[] = 'EROARE: adresa /' . $page->post_name . '/ e ocupată (de altă pagină sau de un fișier din Media): „' . $page->post_title . '” rămâne ciornă. Spune-i lui Claude.';
+            continue;
+        }
         $r = wp_update_post(array('ID' => $page->ID, 'post_status' => 'publish'), true);
-        $mesaje[] = is_wp_error($r) ? 'EROARE la „' . $page->post_title . '”: ' . $r->get_error_message() : 'Publicată: „' . $page->post_title . '” (/' . $page->post_name . '/).';
+        if (is_wp_error($r) || !$r) {
+            $mesaje[] = 'EROARE la „' . $page->post_title . '”: ' . (is_wp_error($r) ? $r->get_error_message() : 'publicarea a eșuat');
+            continue;
+        }
+        $acum = get_post($page->ID);
+        $mesaje[] = 'Publicată: „' . $page->post_title . '” (/' . ($acum ? $acum->post_name : $page->post_name) . '/).';
     }
     return $mesaje;
 }
@@ -221,33 +280,39 @@ function gi_pagini_publica() {
  */
 function gi_pagini_revino() {
     $mesaje = array();
-    $cu_sablon = get_posts(array('post_type' => 'page', 'post_status' => 'any', 'meta_key' => '_gi_sablon_anterior', 'numberposts' => -1, 'suppress_filters' => true));
+    $toate = array('publish', 'draft', 'pending', 'private', 'future', 'trash');
+    $cu_sablon = get_posts(array('post_type' => 'page', 'post_status' => $toate, 'meta_key' => '_gi_sablon_anterior', 'numberposts' => -1, 'suppress_filters' => true));
     foreach ($cu_sablon as $page) {
         $inainte = get_post_meta($page->ID, '_gi_sablon_anterior', true);
         gi_pagini_set_template($page->ID, $inainte ? $inainte : 'default');
         delete_post_meta($page->ID, '_gi_sablon_anterior');
         $mesaje[] = '„' . $page->post_title . '”: șablonul vechi (' . ($inainte ? $inainte : 'default') . ') e înapoi.';
     }
-    $cu_text = get_posts(array('post_type' => 'page', 'post_status' => 'any', 'meta_key' => '_gi_continut_anterior', 'numberposts' => -1, 'suppress_filters' => true));
+    $cu_text = get_posts(array('post_type' => 'page', 'post_status' => $toate, 'meta_key' => '_gi_continut_anterior', 'numberposts' => -1, 'suppress_filters' => true));
     foreach ($cu_text as $page) {
         $vechi = get_post_meta($page->ID, '_gi_continut_anterior', true);
         $rezumat = get_post_meta($page->ID, '_gi_rezumat_anterior', true);
         $elementor = get_post_meta($page->ID, '_gi_elementor_anterior', true);
+        update_post_meta($page->ID, '_gi_continut_nou', wp_slash($page->post_content)); // copie a textului de acum (cu editările tale), păstrată
         kses_remove_filters();
-        wp_update_post(wp_slash(array('ID' => $page->ID, 'post_content' => (string) $vechi, 'post_excerpt' => (string) $rezumat)));
+        $r = wp_update_post(wp_slash(array('ID' => $page->ID, 'post_content' => (string) $vechi, 'post_excerpt' => (string) $rezumat)), true);
         kses_init();
+        if (is_wp_error($r) || !$r) {
+            $mesaje[] = 'EROARE la „' . $page->post_title . '”: nu am putut readuce textul vechi. Nu am șters nimic.';
+            continue;
+        }
         if ('' !== (string) $elementor) {
             update_post_meta($page->ID, '_elementor_edit_mode', $elementor);
         }
         delete_post_meta($page->ID, '_gi_continut_anterior');
         delete_post_meta($page->ID, '_gi_rezumat_anterior');
         delete_post_meta($page->ID, '_gi_elementor_anterior');
-        $mesaje[] = '„' . $page->post_title . '”: textul vechi e înapoi.';
+        $mesaje[] = '„' . $page->post_title . '”: textul vechi e înapoi. Copia textului nou (cu editările tale) e păstrată în pagină; spune-i lui Claude dacă vrei s-o recuperezi.';
     }
     $publicate = get_posts(array('post_type' => 'page', 'post_status' => 'publish', 'meta_key' => '_gi_pagina_creata', 'meta_value' => '1', 'numberposts' => -1, 'suppress_filters' => true));
     foreach ($publicate as $page) {
         wp_update_post(array('ID' => $page->ID, 'post_status' => 'draft'));
-        $mesaje[] = '„' . $page->post_title . '”: a trecut pe ciornă (nu e ștearsă).';
+        $mesaje[] = '„' . $page->post_title . '”: a trecut pe ciornă (nu e ștearsă).' . ('regulament-politici' === $page->post_name ? ' ATENȚIE: cât timp Regulamentul e ciornă, caseta cu regulamentul de la plată nu apare.' : '');
     }
     return $mesaje ? $mesaje : array('Nu era nimic de desfăcut.');
 }
@@ -258,6 +323,11 @@ function gi_pagini_handler() {
     }
     check_admin_referer('gi_pagini');
     $actiune = isset($_POST['gi_actiune']) ? sanitize_key(wp_unslash($_POST['gi_actiune'])) : '';
+    if (!gi_pagini_lock()) {
+        set_transient('gi_pagini_rezultat_' . get_current_user_id(), array('Altă acțiune rulează chiar acum. Așteaptă un minut și apasă din nou.'), 300);
+        wp_safe_redirect(admin_url('options-general.php?page=gi-integration#gi-pagini'));
+        exit;
+    }
     switch ($actiune) {
         case 'creeaza':
             $mesaje = gi_pagini_creeaza();
@@ -277,6 +347,7 @@ function gi_pagini_handler() {
         default:
             $mesaje = array('Acțiune necunoscută.');
     }
+    gi_pagini_unlock();
     set_transient('gi_pagini_rezultat_' . get_current_user_id(), $mesaje, 300);
     wp_safe_redirect(admin_url('options-general.php?page=gi-integration#gi-pagini'));
     exit;
@@ -356,6 +427,7 @@ function gi_pagini_render() {
     <p class="description">Ordinea la lansare: 1, 2, 3, apoi (după ce te uiți pe ciorne, cu „Previzualizează”) 4. După pasul 2, pagina principală și paginile ofertelor arată deja designul nou, pentru toți vizitatorii.</p>
     <p>
         <?php gi_pagini_buton('revino', 'Revino: șabloanele vechi, textul vechi la Contact, paginile create trec pe ciornă'); ?>
+        <br><span class="description">Atenție: „Revino” trece pe ciornă și pagina Regulament &amp; politici. Cât timp e ciornă, caseta cu regulamentul de la plată nu apare.</span>
     </p>
     <?php
 }

@@ -104,6 +104,46 @@ const NOUA = ['bungalow', 'festivaluri-si-tabere', 'evenimente-private', 'despre
   r = await (async () => { await page.goto(BASE + '/wp-admin/options-general.php?page=gi-integration', { waitUntil: 'networkidle' }); return rows(); })();
   ok(NOUA.every(s => r.some(x => x[0] === '/' + s + '/' && /ciornă/.test(x[1]))), 'paginile create au rămas (ciorne), nu au fost șterse');
 
+  // 9. Cazurile din verificarea independentă
+  async function ajutor(q) { await page.goto(BASE + '/?' + q, { waitUntil: 'domcontentloaded' }); return page.content(); }
+  async function stare() { await page.goto(BASE + '/wp-admin/options-general.php?page=gi-integration', { waitUntil: 'networkidle' }); return rows(); }
+
+  // 9a. Adresă ocupată de un fișier din Media: nu se creează ciorna, cu mesaj clar
+  await ajutor('gi_reset=1'); await ajutor('gi_ocupa=bungalow');
+  notice = await apasa('1. Creează');
+  ok(/EROARE: adresa \/bungalow\/ e ocupată/.test(notice), 'adresă ocupată: pasul 1 refuză, cu mesaj');
+  r = await stare();
+  ok(r.some(x => x[0] === '/bungalow/' && /lipsește/.test(x[1])) && r.some(x => x[0] === '/despre-noi/' && /ciornă/.test(x[1])), 'adresă ocupată: restul paginilor se creează, Bungalow lipsește');
+  await ajutor('gi_elibereaza=bungalow');
+  notice = await apasa('1. Creează');
+  ok(/Creată ciornă: „Bungalow”/.test(notice), 'după ce adresa se eliberează, Bungalow se creează');
+
+  // 9b. Pagină în coșul de gunoi: recunoscută, fără duplicat
+  await ajutor('gi_cos=despre-noi');
+  notice = await apasa('1. Creează');
+  ok(/Despre noi[^.]*coșul de gunoi/.test(notice), 'pagina din coș e recunoscută (mesaj), fără pagină nouă');
+  r = await stare();
+  ok(r.some(x => x[0] === '/despre-noi/' && /coș/.test(x[1])), 'tabelul arată pagina din coș');
+
+  // 9c. Blocare la dublă apăsare
+  await ajutor('gi_lock=1');
+  notice = await apasa('2. Pune șabloanele');
+  ok(/Altă acțiune rulează/.test(notice), 'cât timp o acțiune rulează, a doua e refuzată cu mesaj');
+  await ajutor('gi_unlock=1');
+  notice = await apasa('2. Pune șabloanele');
+  ok(!/Altă acțiune rulează/.test(notice) && /șablonul/.test(notice), 'după eliberare, acțiunea merge');
+  ok((await ajutor('gi_meta=1')).length > 0, 'ajutorul de test răspunde');
+
+  // 9d. Editări la Contact după pasul 3, apoi Revino: copia textului nou se păstrează
+  await ajutor('gi_reset=1');
+  await apasa('1. Creează'); await apasa('2. Pune șabloanele'); await apasa('3. Pune textul');
+  await ajutor('gi_edit_contact=1');
+  notice = await apasa('Revino');
+  ok(/Copia textului nou/.test(notice), 'Revino: mesaj despre copia textului nou');
+  const meta = await ajutor('gi_meta=1');
+  ok(/meta:CONTACT EDITAT DE PROPRIETARA/.test(meta) && /elementor:builder/.test(meta), 'Revino: editările de la Contact sunt păstrate într-o copie, iar modul Elementor revine');
+  ok(/TEXT VECHI ELEMENTOR/.test((await vizitator('/contact/')).body), 'Revino: Contact arată iar textul vechi');
+
   await browser.close();
   console.log(failures ? '\n' + failures + ' verificări au picat' : '\nToate verificările au trecut');
   process.exit(failures ? 1 : 0);

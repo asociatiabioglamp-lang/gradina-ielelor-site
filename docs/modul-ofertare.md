@@ -8,7 +8,7 @@ Surse: pachetul din Drive `FESTIVAL OFERTARE` (`CITESTE-MA-INTAI.md`, `ORDINEA-D
 3. `cotatie.php` primește cererea, o **scrie în `cereri.csv`** (în folderul `cotatie`) și **trimite email la `rezervari@gradina-ielelor.ro`** (expeditor `site@gradina-ielelor.ro`). Dacă emailul nu pleacă, cererea rămâne în `cereri.csv`.
 4. `Generator-oferte.html` (instrument intern, pe calculatorul proprietarei, nu pe server) construiește oferta în PDF pe baza cererii.
 
-## Unde e legat din site (plugin `1.3.0`)
+## Unde e legat din site (plugin `1.3.1`)
 - Festivaluri & tabere: butonul mare „Cere ofertă” → `?tip=festival`; „Pagina pentru organizatori” → `/festival/`; pe cardurile Festivaluri, Tabere, Echipe și retreaturi, Boot camp: câte un buton „Cere ofertă pentru …” → `festival`, `tabara`, `retreat`, `retreat`.
 - Evenimente private (nunți, botezuri, majorate): „Cere ofertă” → `?tip=nunta`; „Sau scrie-ne” → Contact.
 - Tipul `camping` rămâne fără legătură din site: campingul se rezervă direct, prin modulul de rezervare.

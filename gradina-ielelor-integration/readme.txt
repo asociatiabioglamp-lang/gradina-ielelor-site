@@ -3,7 +3,7 @@ Contributors: gradina-ielelor
 Tags: one-page, woocommerce, booking, ovabrw, seo
 Requires at least: 6.0
 Requires PHP: 7.4
-Stable tag: 1.3.0
+Stable tag: 1.3.1
 License: GPLv2 or later
 
 Template-uri server-side pentru pagina principală (hub de rezervare) și paginile dedicate ofertelor Grădina Ielelor, cu WooCommerce + OVABRW drept singur motor de rezervări.
@@ -40,6 +40,9 @@ Nu. Constanta GI_REACT_DEMO_ENABLED este false, bundle-ul React nu este inclus, 
 Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai opțiunile acestui plugin.
 
 == Changelog ==
+
+= 1.3.1 =
+* „Pregătește paginile”, corecturi din verificarea independentă: adresă ocupată (de alt fișier sau pagină) oprește crearea și publicarea; blocare la dublă apăsare; pagini din coș recunoscute; „Revino” păstrează copia textului nou de la Contact și nu șterge nimic dacă salvarea eșuează; pasul „Contact” se desface singur dacă eșuează.
 
 = 1.3.0 =
 * Unealta „Pregătește paginile” (Setări → Grădina Ielelor): creează paginile care lipsesc ca ciorne, pune șabloanele pe paginile existente, pune textul nou la Contact (cel vechi se păstrează) și publică paginile create; „Revino” desface totul, fără să șteargă nimic. Textele paginilor simple vin din content/pagini/.
