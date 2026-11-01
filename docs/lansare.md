@@ -151,6 +151,22 @@ Staging-ul a fost clonat pe 28.10, înainte ca pe live contul tău să devină A
 3. Rulezi întâi comanda de citire din `docs/regulament-2022-corectat.md`-ul echivalent: `SELECT u.ID, u.user_login, m.meta_value FROM <prefix>users u JOIN <prefix>usermeta m ON m.user_id = u.ID WHERE m.meta_key LIKE '%capabilities';` (prefixul tabelelor, de exemplu `wp_`, se vede în lista de tabele din stânga). Cauți contul `g.ielelor` și ID-ul lui (pe live: 6).
 4. Îmi trimiți captura; îți dau comanda `UPDATE` exactă, cu ID-ul și prefixul potrivite. Nu rulezi nimic înainte.
 
+### A0b. Copia de test nu trimite emailuri și nu vorbește cu FGO (făcut pe 1.11.2026 pe `asociatia-ropam.ro/gi-test`)
+Copia e clonată din site-ul live, deci are comenzile și emailurile clienților reali. Înainte de orice test:
+1. **Module → FGO Premium → Dezactivează** (doar pe copie). Modulul „Facturare - Persoana Fizica sau Juridica” rămâne activ: adaugă doar câmpurile din formular.
+2. În cPanel → **File Manager**, în `wp-content` al copiei, creezi dosarul `mu-plugins` (dacă nu există) și în el fișierul `gi-test-fara-email.php` cu:
+```php
+<?php
+// Copie de test: nu trimite emailuri, nu rulează sarcini automate, nu vorbește cu FGO.
+add_filter('pre_wp_mail', '__return_false');
+if (!defined('DISABLE_WP_CRON')) { define('DISABLE_WP_CRON', true); }
+add_filter('pre_http_request', function ($pre, $args, $url) {
+    return (false !== stripos($url, 'fgo.ro')) ? new WP_Error('gi_test', 'Blocat pe copia de test') : $pre;
+}, 10, 3);
+```
+3. Dacă după salvare pagina dă eroare, ștergi fișierul (numai pe copie) și îmi spui.
+4. Fișierul se pune **numai** pe copia de test. Pe site-ul live nu se pune niciodată. După lansare, copia se șterge din Softaculous (Remove), cu fișiere și bază de date.
+
 ### A1. Backup
 Secțiunea 2, pentru staging. Nu treci mai departe fără el.
 
