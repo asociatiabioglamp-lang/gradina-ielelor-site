@@ -29,3 +29,6 @@ node tools/shot.js http://127.0.0.1:9400/glamping/ capturi/glamping
 python3 tools/slice.py capturi/glamping
 ```
 Produc capturi pe mobil (390 px) și desktop (1440 px) și verifică să nu existe scroll orizontal.
+
+## Testul uneltei „Pregătește paginile” (pluginul 1.3.0)
+`test-pregatire-pagini.js` verifică de la un capăt la altul cele patru butoane și „Revino” (creare ciorne, șabloane, text Contact, publicare, idempotență, nonce). Are nevoie de un mu-plugin de test, numai local, `gi-test-reset.php`, care readuce site-ul la starea de pe live (fără paginile noi, șabloane implicite, Contact cu text vechi) la deschiderea adresei `/?gi_reset=1` de un administrator. Rulează cu `node tools/local-wp/test-pregatire-pagini.js`.

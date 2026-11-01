@@ -158,6 +158,8 @@ final class GI_Settings {
                 <?php submit_button('Salvează integrarea'); ?>
             </form>
 
+            <?php if (function_exists('gi_pagini_render')) { gi_pagini_render(); } ?>
+
             <h2>Activarea paginii</h2>
             <ol>
                 <li>Creează sau editează pagina principală WordPress.</li>
