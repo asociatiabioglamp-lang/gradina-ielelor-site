@@ -151,21 +151,36 @@ Staging-ul a fost clonat pe 28.10, înainte ca pe live contul tău să devină A
 3. Rulezi întâi comanda de citire din `docs/regulament-2022-corectat.md`-ul echivalent: `SELECT u.ID, u.user_login, m.meta_value FROM <prefix>users u JOIN <prefix>usermeta m ON m.user_id = u.ID WHERE m.meta_key LIKE '%capabilities';` (prefixul tabelelor, de exemplu `wp_`, se vede în lista de tabele din stânga). Cauți contul `g.ielelor` și ID-ul lui (pe live: 6).
 4. Îmi trimiți captura; îți dau comanda `UPDATE` exactă, cu ID-ul și prefixul potrivite. Nu rulezi nimic înainte.
 
-### A0b. Copia de test nu trimite emailuri și nu vorbește cu FGO (făcut pe 1.11.2026 pe `asociatia-ropam.ro/gi-test`)
+### A0b. Copia de test nu trimite emailuri către clienți și nu vorbește cu FGO (făcut pe 1.11.2026 pe `asociatia-ropam.ro/gi-test`)
 Copia e clonată din site-ul live, deci are comenzile și emailurile clienților reali. Înainte de orice test:
 1. **Module → FGO Premium → Dezactivează** (doar pe copie). Modulul „Facturare - Persoana Fizica sau Juridica” rămâne activ: adaugă doar câmpurile din formular.
-2. În cPanel → **File Manager**, în `wp-content` al copiei, creezi dosarul `mu-plugins` (dacă nu există) și în el fișierul `gi-test-fara-email.php` cu:
+2. În cPanel → **File Manager**, în `wp-content` al copiei, dosarul `mu-plugins` (îl creezi dacă nu există) și în el fișierul `gi-test-fara-email.php`. **Înainte de testul de plată** (B3) fișierul are varianta de mai jos, în care emailurile pleacă **numai către adresele tale**: în `$permise` pui adresele tale, cu litere mici (adresa cu care faci comanda de test și adresa la care ajunge „Comandă nouă”). Orice email către altcineva se oprește. Până atunci poate sta o variantă care oprește totul (`add_filter('pre_wp_mail', '__return_false');`).
 ```php
 <?php
-// Copie de test: nu trimite emailuri, nu rulează sarcini automate, nu vorbește cu FGO.
-add_filter('pre_wp_mail', '__return_false');
+// Copie de test: emailurile pleacă DOAR către adresele permise de mai jos; nu rulează sarcini automate; nu vorbește cu FGO.
+add_filter('pre_wp_mail', function ($pre, $atts) {
+    $permise = array('adresa-ta@exemplu.ro'); // adresele tale, cu litere mici
+    $to = isset($atts['to']) ? $atts['to'] : array();
+    $to = is_array($to) ? $to : explode(',', (string) $to);
+    foreach ($to as $adresa) {
+        $adresa = strtolower(trim(preg_replace('/^.*<(.+)>$/', '$1', trim($adresa))));
+        if ('' !== $adresa && !in_array($adresa, $permise, true)) {
+            return false;
+        }
+    }
+    $h = isset($atts['headers']) ? (is_array($atts['headers']) ? implode("\n", $atts['headers']) : (string) $atts['headers']) : '';
+    if (preg_match('/^\s*b?cc\s*:/im', $h)) {
+        return false;
+    }
+    return $pre;
+}, 10, 2);
 if (!defined('DISABLE_WP_CRON')) { define('DISABLE_WP_CRON', true); }
 add_filter('pre_http_request', function ($pre, $args, $url) {
     return (false !== stripos($url, 'fgo.ro')) ? new WP_Error('gi_test', 'Blocat pe copia de test') : $pre;
 }, 10, 3);
 ```
 3. Dacă după salvare pagina dă eroare, ștergi fișierul (numai pe copie) și îmi spui.
-4. Fișierul se pune **numai** pe copia de test. Pe site-ul live nu se pune niciodată. După lansare, copia se șterge din Softaculous (Remove), cu fișiere și bază de date.
+4. Fișierul se pune **numai** pe copia de test. Pe site-ul live nu se pune niciodată. După lansare, copia se șterge din Softaculous (Remove), cu fișiere și bază de date. Adresele tale reale nu se scriu în depozit.
 
 ### A1. Backup
 Secțiunea 2, pentru staging. Nu treci mai departe fără el.
