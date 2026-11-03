@@ -265,7 +265,7 @@ gi_part('header');
                 <div>
                     <span class="eyebrow">Întrebări</span>
                     <h2 id="faq-title">Ce ne întreabă lumea</h2>
-                    <p>Nu găsești răspunsul? Scrie-ne la <a href="mailto:rezervari@gradina-ielelor.ro">rezervari@gradina-ielelor.ro</a>.</p>
+                    <p>Nu găsești răspunsul? Scrie-ne la <a href="mailto:rezervari@gradina-ielelor.ro">rezervari@gradina-ielelor.ro</a> sau la <a href="mailto:office@gradina-ielelor.ro">office@gradina-ielelor.ro</a>.</p>
                 </div>
                 <div class="gi-faq-list">
                     <?php foreach ($gi_page['faq'] as $gi_index => $gi_item) : ?>

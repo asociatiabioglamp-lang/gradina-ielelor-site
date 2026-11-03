@@ -24,7 +24,6 @@ function gi_experiences() {
             'facilities' => array('Băi și dușuri comune', 'Loc de joacă', 'Lac pentru pescuit', 'Două bucătării dotate', 'Hamace și vetre de foc', 'Apă curentă și Wi-Fi', 'Două terase', 'Parcare gratuită'),
             'images' => array(
                 array('src' => 'camping-day-960.webp', 'alt' => 'Corturi și sălcii în campingul Grădina Ielelor, cu Munții Făgăraș în fundal', 'caption' => 'Camping în zi însorită'),
-                array('src' => 'home-hero-sunny-960.webp', 'alt' => 'Autorulote lângă lac, cu munții în fundal', 'caption' => 'Rulote lângă lac'),
                 array('src' => 'festival-lake-640.webp', 'alt' => 'Lacul cu pontonul din lemn, cu Munții Făgăraș în fundal', 'caption' => 'Acces la lac și ponton'),
                 array('src' => 'camping-night-960.webp', 'alt' => 'Vetre de foc cu bănci și ghirlande de lumini, la apus, în Grădina Ielelor', 'caption' => 'Seara, la vatra de foc'),
             ),

@@ -250,11 +250,8 @@ function gi_offer_pages() {
         ),
         'gallery' => array('title' => 'Vezi unde îți pui cortul sau rulota', 'images' => array(
             array('src' => 'camping-lac-1280.webp', 'alt' => 'Lacul și corturile de pe mal, cu Munții Făgăraș în fundal', 'caption' => 'Corturi lângă lac'),
-            array('src' => 'rulote-lac-munte-960.webp', 'alt' => 'Autorulote parcate lângă lac, cu Munții Făgăraș în fundal', 'caption' => 'Autorulote lângă lac'),
             array('src' => 'camping-day-960.webp', 'alt' => 'Corturi și sălcii în campingul Grădina Ielelor, cu Munții Făgăraș în fundal', 'caption' => 'Camping în zi însorită'),
-            array('src' => 'domeniu-aerian-1280.webp', 'alt' => 'Domeniul Grădina Ielelor văzut de sus, cu rulote și Munții Făgăraș în fundal', 'caption' => 'Domeniul, văzut de sus'),
             array('src' => 'festival-lake-640.webp', 'alt' => 'Lacul cu pontonul din lemn, cu Munții Făgăraș în fundal', 'caption' => 'Acces la lac și ponton'),
-            array('src' => 'rulote-aerian-960.webp', 'alt' => 'Rulote și autorulote parcate pe domeniu, văzute de sus, cu munții în fundal', 'caption' => 'Rulote pe domeniu, văzute de sus'),
             array('src' => 'camping-bucatarie-960.webp', 'alt' => 'Bucătărie comună în aer liber, sub un acoperiș din lemn', 'caption' => 'Bucătărie comună'),
             array('src' => 'camping-sanitare-960.webp', 'alt' => 'Grupul sanitar din camping, cu chiuvete și oglinzi', 'caption' => 'Grup sanitar'),
         )),

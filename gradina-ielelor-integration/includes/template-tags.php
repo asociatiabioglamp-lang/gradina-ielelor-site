@@ -240,7 +240,7 @@ function gi_render_booking($default_type = '', $show_trust = true) {
         <?php else : ?>
             <div class="gi-booking-unavailable" role="status">
                 <strong>Rezervările online nu pot fi afișate momentan.</strong>
-                <p>Ne poți contacta la <a href="tel:+40721333164">+40 721 333 164</a> sau <a href="mailto:rezervari@gradina-ielelor.ro">rezervari@gradina-ielelor.ro</a>.</p>
+                <p>Ne poți contacta la <a href="tel:+40721333164">+40 721 333 164</a> sau <a href="mailto:rezervari@gradina-ielelor.ro">rezervari@gradina-ielelor.ro</a> sau <a href="mailto:office@gradina-ielelor.ro">office@gradina-ielelor.ro</a>.</p>
                 <?php if (current_user_can('manage_options')) : ?>
                     <p><strong>Diagnostic administrator:</strong> activează WooCommerce și OVABRW; shortcode-ul necesar este <code>[ovabrw_search]</code>.</p>
                 <?php endif; ?>

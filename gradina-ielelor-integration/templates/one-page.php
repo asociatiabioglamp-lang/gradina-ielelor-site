@@ -12,12 +12,12 @@ if (!defined('ABSPATH')) {
 
     <main id="continut">
         <section class="home-hero" aria-labelledby="home-hero-title">
-            <div class="home-hero-slices" role="group" aria-label="Cerul și munții, lacul, focul de seară și terasa din lemn din Grădina Ielelor">
+            <div class="home-hero-slices" role="group" aria-label="Cerul, munții și corturile, lacul cu paddle board și focul de seară în Grădina Ielelor">
                 <figure class="home-hero-slice home-hero-slice-lake">
                     <img src="<?php echo esc_url(gi_image_url('home-cer-corturi-1920.webp')); ?>" srcset="<?php echo esc_url(gi_image_url('home-cer-corturi-1280.webp')); ?> 1280w, <?php echo esc_url(gi_image_url('home-cer-corturi-1920.webp')); ?> 1920w" sizes="100vw" alt="Corturi clopot pe iarbă, sub un cer senin, cu Munții Făgăraș în fundal" width="1920" height="1280" fetchpriority="high" decoding="async">
                 </figure>
                 <figure class="home-hero-slice home-hero-slice-shore">
-                    <img src="<?php echo esc_url(gi_image_url('lac-ponton-1280.webp')); ?>" alt="Lacul și corturile de pe mal, cu Munții Făgăraș în fundal" width="1280" height="720" fetchpriority="low" decoding="async">
+                    <img src="<?php echo esc_url(gi_image_url('home-lac-sup-1280.webp')); ?>" alt="Lacul într-o zi senină, cu oameni pe paddle board, corturi pe mal și Munții Făgăraș în fundal" width="1280" height="703" fetchpriority="low" decoding="async">
                 </figure>
                 <figure class="home-hero-slice home-hero-slice-foc">
                     <?php // Fotografia e încadrată pe lățimea primei pagini: focul și oamenii cad în triunghiul de jos. ?>
@@ -25,9 +25,6 @@ if (!defined('ABSPATH')) {
                         <source media="(max-width: 700px)" srcset="<?php echo esc_url(gi_image_url('home-hero-foc-mobil-1280.webp')); ?> 1280w" sizes="100vw">
                         <img src="<?php echo esc_url(gi_image_url('home-hero-foc-1920.webp')); ?>" srcset="<?php echo esc_url(gi_image_url('home-hero-foc-1280.webp')); ?> 1280w, <?php echo esc_url(gi_image_url('home-hero-foc-1920.webp')); ?> 1920w" sizes="100vw" alt="Oaspeți în jurul focului, seara, cu tobe, în Grădina Ielelor" width="1920" height="753" fetchpriority="low" decoding="async">
                     </picture>
-                </figure>
-                <figure class="home-hero-slice home-hero-slice-terasa">
-                    <img src="<?php echo esc_url(gi_image_url('terasa-lemn-interior-960.webp')); ?>" alt="Terasa acoperită din lemn, cu fotolii, hamace și vedere spre lac" width="960" height="837" fetchpriority="low" decoding="async">
                 </figure>
             </div>
             <div class="home-hero-overlay"></div>
