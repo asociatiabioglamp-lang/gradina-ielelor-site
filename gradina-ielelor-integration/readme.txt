@@ -3,7 +3,7 @@ Contributors: gradina-ielelor
 Tags: one-page, woocommerce, booking, ovabrw, seo
 Requires at least: 6.0
 Requires PHP: 7.4
-Stable tag: 1.3.2
+Stable tag: 1.3.3
 License: GPLv2 or later
 
 Template-uri server-side pentru pagina principală (hub de rezervare) și paginile dedicate ofertelor Grădina Ielelor, cu WooCommerce + OVABRW drept singur motor de rezervări.
@@ -40,6 +40,13 @@ Nu. Constanta GI_REACT_DEMO_ENABLED este false, bundle-ul React nu este inclus, 
 Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai opțiunile acestui plugin.
 
 == Changelog ==
+
+= 1.3.3 =
+* Design: pagini mai luminoase (umbre mai ușoare, doar în spatele textului) și scris mai mare, cu scară tipografică în variabile CSS (`--fs-*`); meniul trece în hamburger sub 1300 px.
+* Prima pagină: colaj nou, cu cerul, munții și corturile în stânga (în spatele textului) și, pe diagonală, în dreapta: lacul, terasa din lemn și focul. Pe telefon rămâne doar cerul cu munții.
+* Poze noi alese de proprietară (Drive): Bungalow (cer senin, malul lacului cu baldachin, dormitor, zonă de relaxare, baie) și Glamping (cele 4 glamping-uri permanente, pe platformă, exterior și interior), în locul pozelor de festival.
+* Bungalow: baie și duș propriu, calorifere, zonă privată cu acces la lac, bucătării dotate, iluminat pe perimetru, Wi-Fi gratuit inclusiv în zona bungalow-urilor. Glamping: 4 permanente pe platformă; la cerere și la evenimente, până la 50.
+* Titlurile primesc culoarea explicit, ca tema să nu o poată suprascrie (titlul din prima pagină era invizibil pe poză).
 
 = 1.3.2 =
 * „Pregătește paginile”: o pagină veche din coșul de gunoi (ex. un „Despre noi” șters demult) rămâne acolo, neatinsă, iar pagina nouă se creează alături.
