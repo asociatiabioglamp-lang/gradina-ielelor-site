@@ -178,7 +178,7 @@ function gi_offer_pages() {
                     'Terasă acoperită din lemn, construită pe apă',
                     'Treizeci de hamace și vetre de foc, în zona special amenajată',
                     'Pescuit sportiv',
-                    'Wi-Fi gratuit în zona teraselor și în zonele marcate',
+                    'Wi-Fi gratuit, inclusiv în zona bungalow-urilor',
                     'Parcare proprie',
                     'Domeniu împrejmuit, cu iluminat pe perimetru noaptea și pază 24 din 24',
                 ), 'note' => array('text' => 'Vrei să dormi în cort, dar pe un pat adevărat? ', 'link_text' => 'Alege glampingul', 'link_offer' => 'glamping')),
