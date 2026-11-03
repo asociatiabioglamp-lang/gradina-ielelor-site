@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
                     <img src="<?php echo esc_url(gi_image_url('home-cer-corturi-1920.webp')); ?>" srcset="<?php echo esc_url(gi_image_url('home-cer-corturi-1280.webp')); ?> 1280w, <?php echo esc_url(gi_image_url('home-cer-corturi-1920.webp')); ?> 1920w" sizes="100vw" alt="Corturi clopot pe iarbă, sub un cer senin, cu Munții Făgăraș în fundal" width="1920" height="1280" fetchpriority="high" decoding="async">
                 </figure>
                 <figure class="home-hero-slice home-hero-slice-shore">
-                    <img src="<?php echo esc_url(gi_image_url('home-lac-sup-1280.webp')); ?>" alt="Lacul într-o zi senină, cu oameni pe paddle board, corturi pe mal și Munții Făgăraș în fundal" width="1280" height="703" fetchpriority="low" decoding="async">
+                    <img src="<?php echo esc_url(gi_image_url('home-lac-sup-1280.webp')); ?>" alt="Lacul într-o zi senină, cu paddle board-uri în prim-plan, corturi pe malul opus și Munții Făgăraș în fundal" width="1280" height="797" fetchpriority="low" decoding="async">
                 </figure>
                 <figure class="home-hero-slice home-hero-slice-foc">
                     <?php // Fotografia e încadrată pe lățimea primei pagini: focul și oamenii cad în triunghiul de jos. ?>

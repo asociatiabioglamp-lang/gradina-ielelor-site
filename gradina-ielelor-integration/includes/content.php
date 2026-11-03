@@ -39,7 +39,8 @@ function gi_experiences() {
             'booking_label' => 'Rezervă glamping',
             'facilities' => array('4 unități de glamping', '2 + 1 oaspeți', 'Băi și dușuri comune', 'Loc de joacă și lac', 'Două bucătării dotate', 'Hamace și vetre de foc', 'Wi-Fi și două terase', 'Parcare gratuită'),
             'images' => array(
-                array('src' => 'glamping-platforma-exterior-960.webp', 'alt' => 'Cort de glamping pe platformă de lemn, cu două scaune, o măsuță și un covor la intrare', 'caption' => 'Pe platformă, cu masă la intrare'),
+                array('src' => 'glamping-exterior-soare-960.webp', 'alt' => 'Cort de glamping cu foișor alb, două scaune și un covor, într-o zi însorită', 'caption' => 'Cu masă și scaune la intrare'),
+                array('src' => 'glamping-cort-margarete-960.webp', 'alt' => 'Cort de glamping într-o zi însorită, cu margarete în prim-plan', 'caption' => 'Soare și margarete'),
                 array('src' => 'glamping-interior-paturi-720.webp', 'alt' => 'Interiorul unui cort de glamping, cu două paturi, comodă, noptieră și covoare', 'caption' => 'Interior cu paturi adevărate'),
                 array('src' => 'glamping-interior-comoda-720.webp', 'alt' => 'Interiorul unui cort de glamping, cu pat, comodă, covor și un puf', 'caption' => 'Mobilier în interior'),
             ),
