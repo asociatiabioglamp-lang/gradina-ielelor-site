@@ -10,3 +10,8 @@ Sursa: mesajele ei din conversație, unele dictate. Ea aduce creația, eu o pun 
 | 4 | **Cerul luminos, vizibil în toate pozele și în toată povestea paginii** („impact psihologic”). Fundalul e prea întunecat și cerul se pierde | De făcut: decupaje de poze cu cerul la vedere, fără overlay întunecat peste cer |
 | 5 | **Colajul din prima pagină:** poza de sus (cerul și munții) importantă și vizibilă; apoi lacul; a treia poză cu focul; în stânga, **a patra poză, de pe terasă, integrată în colaj** | De făcut, după ce ea alege poza de pe terasă (contact sheet trimis: 6 variante din pozele existente) |
 | 6 | O frază dictată neclară: „Poza de atât să fie unul arat” | De lămurit cu ea |
+| 7 | **Scrisul mic poate fi prea mic; proporțiile între mărimile de scris** (ea nu știe dacă e bine; „dacă zici tu că e bine așa, mergi pe varianta cea mai bună”) | Decis de mine: scara tipografică se echilibrează și textul mic crește (în lucru la agentul de design) |
+| 8 | **Bungalow:** textele din lista dictată (baie și duș propriu, calorifere, zonă privată cu acces la lac etc.) | Făcut în `offer-pages.php` (1.3.3) |
+| 9 | **Bungalow: poze.** Poza de pe terasă e blurată; vrea una de pe terasă cu baldachinele de pe malul lacului (dedicate zonei de bungalow); interioare mai bune | Așteaptă pozele (Drive) |
+| 10 | **Glamping: poze greșite** (de festival, pe pământ). Trebuie cele 4 permanente, pe platformă, cu mobilier. 4 permanente; la cerere și la evenimente, până la 50 | Textul e făcut; pozele așteaptă |
+| 11 | La „Alege camping” (în modulul de rezervare), mesajul să fie mai mare | De lămurit ce mesaj anume |
