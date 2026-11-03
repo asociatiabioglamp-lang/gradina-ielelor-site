@@ -67,8 +67,8 @@ function gi_offer_pages() {
                 'Te culci comod, te trezești cu muntele în față și ai timp doar pentru tine.',
                 'Ziua ai la dispoziție două lacuri, unul în care se înoată, și o terasă acoperită din lemn, construită pe apă. Seara, focul se aprinde în vetrele amenajate, iar hamacele sunt la câțiva pași.',
             ),
-            'image' => 'glamping-pajiste-960.webp',
-            'alt' => 'Corturi de glamping pe pajiște, cu Munții Făgăraș sub nori în fundal',
+            'image' => 'glamping-platforma-exterior-960.webp',
+            'alt' => 'Cort de glamping pe platformă de lemn, cu două scaune, o măsuță și un covor la intrare',
         ),
         'gallery' => array('title' => 'Vezi exact unde dormi', 'images' => $experiences['glamping']['images']),
         'included' => array(
@@ -131,8 +131,8 @@ function gi_offer_pages() {
         'booking_type' => 'bungalow',
         'cta' => 'Verifică disponibilitatea',
         'hero' => array(
-            'image' => 'bungalow-detail-1600.webp',
-            'alt' => 'Bungalow în Grădina Ielelor, cu terasă',
+            'image' => 'bungalow-hero-cer-1600.webp',
+            'alt' => 'Bungalow cu terasă, sub un cer albastru, în Grădina Ielelor',
             'h1' => 'Bungalow în',
             'h1_em' => 'Grădina Ielelor',
             'lead' => 'Pereți, baie proprie și încălzire, pe malul lacului mare. Pentru cine vrea intimitate la poalele Munților Făgăraș.',
@@ -151,15 +151,17 @@ function gi_offer_pages() {
                 'Ai dormitor, zonă de relaxare, baie proprie și încălzire. Ieși pe terasă și ești deja în natură.',
                 'Bungalow-urile stau pe malul lacului mare, care are 8.000 de metri pătrați și un metru adâncime. Se înoată în el. Cea mai apropiată casă e la circa doi kilometri, așa că seara se aude apa și atât.',
             ),
-            'image' => 'bungalow-terasa-lac-960.webp',
-            'alt' => 'Vedere de pe terasa unui bungalow spre lac și Munții Făgăraș',
+            'image' => 'bungalow-lac-baldachin-1280.webp',
+            'alt' => 'Lacul cu reflexii, pontonul și Munții Făgăraș, văzute de lângă baldachinul de pe mal',
         ),
-        // Fotografia cu muntele deschide galeria; pozele de interior rămân, pentru că informează.
-        'gallery' => array('title' => 'Vezi unde te cazezi', 'images' => array_merge(array(
+        // Fotografiile alese de proprietară (3.11.2026, din Drive, folderul „GI”): bungalow-ul sub cer senin, malul lacului, interiorul.
+        'gallery' => array('title' => 'Vezi unde te cazezi', 'images' => array(
             array('src' => 'lac-ponton-1280.webp', 'alt' => 'Lacul cu pontonul din lemn, cu Munții Făgăraș în fundal', 'caption' => 'Lacul și pontonul'),
-        ), $experiences['bungalow']['images'], array(
-            array('src' => 'bungalow-baie-960.webp', 'alt' => 'Baia unui bungalow, cu duș, chiuvetă și toaletă', 'caption' => 'Baie proprie'),
-        ))),
+            array('src' => 'bungalow-malul-lacului-960.webp', 'alt' => 'Malul lacului, cu bungalow-uri și un baldachin alb, sub cer și munți', 'caption' => 'Bungalow-urile, pe malul lacului'),
+            array('src' => 'bungalow-dormitor-alb-960.webp', 'alt' => 'Dormitor cu două paturi albe într-un bungalow, cu jaluzele de lemn', 'caption' => 'Dormitorul'),
+            array('src' => 'bungalow-relaxare-720.webp', 'alt' => 'Zona de relaxare dintr-un bungalow, cu canapea, covor și paravan de lemn', 'caption' => 'Zona de relaxare'),
+            array('src' => 'bungalow-baie-720.webp', 'alt' => 'Baia unui bungalow, cu chiuvetă pe suport de lemn și oglindă', 'caption' => 'Baie proprie'),
+        )),
         'included' => array(
             'title' => 'Tot ce-ți trebuie, nimic în plus',
             'groups' => array(
@@ -211,7 +213,7 @@ function gi_offer_pages() {
         'seo' => array(
             'title' => 'Bungalow pe malul lacului, Brașov | Grădina Ielelor',
             'description' => 'Patru bungalow-uri cu baie proprie și încălzire, pe malul lacului din Grădina Ielelor, la poalele Munților Făgăraș. Vezi pozele și verifică disponibilitatea.',
-            'image' => 'bungalow-detail-1600.webp',
+            'image' => 'bungalow-hero-cer-1600.webp',
         ),
     );
 

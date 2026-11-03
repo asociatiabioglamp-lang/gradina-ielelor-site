@@ -40,12 +40,9 @@ function gi_experiences() {
             'booking_label' => 'Rezervă glamping',
             'facilities' => array('4 unități de glamping', '2 + 1 oaspeți', 'Băi și dușuri comune', 'Loc de joacă și lac', 'Două bucătării dotate', 'Hamace și vetre de foc', 'Wi-Fi și două terase', 'Parcare gratuită'),
             'images' => array(
-                array('src' => 'glamping-corturi-960.webp', 'alt' => 'Corturi de glamping pe pajiște, cu Munții Făgăraș în fundal', 'caption' => 'Glamping cu vedere la munte'),
-                array('src' => 'glamping-panorama-1280.webp', 'alt' => 'Șir de corturi de glamping sub cerul senin, cu munții în fundal', 'caption' => 'Zi senină în Grădina Ielelor'),
-                array('src' => 'glamping-6-1280.webp', 'alt' => 'Interiorul unui cort de glamping, cu pat dublu, pat single și noptieră', 'caption' => 'Interior cald și luminos'),
-                array('src' => 'glamping-intrare-960.webp', 'alt' => 'Intrarea unui cort de glamping, cu masă și scaune pe platforma din lemn', 'caption' => 'Masă și scaune la intrare'),
-                array('src' => 'glamping-5-640.webp', 'alt' => 'Cort de glamping pe platformă din lemn, la apus', 'caption' => 'Platformă proprie'),
-                array('src' => 'glamping-3-640.webp', 'alt' => 'Corturi de glamping lângă un pâlc de copaci', 'caption' => 'Natura chiar la intrare'),
+                array('src' => 'glamping-platforma-exterior-960.webp', 'alt' => 'Cort de glamping pe platformă de lemn, cu două scaune, o măsuță și un covor la intrare', 'caption' => 'Pe platformă, cu masă la intrare'),
+                array('src' => 'glamping-interior-paturi-720.webp', 'alt' => 'Interiorul unui cort de glamping, cu două paturi, comodă, noptieră și covoare', 'caption' => 'Interior cu paturi adevărate'),
+                array('src' => 'glamping-interior-comoda-720.webp', 'alt' => 'Interiorul unui cort de glamping, cu pat, comodă, covor și un puf', 'caption' => 'Mobilier în interior'),
             ),
         ),
         'bungalow' => array(
@@ -59,10 +56,10 @@ function gi_experiences() {
             'booking_label' => 'Rezervă bungalow',
             'facilities' => array('Baie proprie', 'Terasă și dormitor', 'Loc de joacă și lac', 'Două bucătării dotate', 'Hamace și vetre de foc', 'Apă curentă și Wi-Fi', 'Două terase', 'Parcare gratuită'),
             'images' => array(
-                array('src' => 'bungalow-card-960.webp', 'alt' => 'Bungalow cu terasă, într-o zi senină, în Grădina Ielelor', 'caption' => 'Bungalow cu terasă'),
-                array('src' => 'spiral-bungalow-640.webp', 'alt' => 'Terasa unui bungalow, cu două scaune și o măsuță', 'caption' => 'Natura la ușă'),
-                array('src' => 'bungalow-living-960.webp', 'alt' => 'Interior de bungalow, cu canapea, pat dublu și lumină caldă', 'caption' => 'Interior și zonă de relaxare'),
-                array('src' => 'bungalow-dormitor-960.webp', 'alt' => 'Dormitor cu două paturi într-un bungalow din Grădina Ielelor', 'caption' => 'Dormitorul'),
+                array('src' => 'bungalow-hero-cer-1600.webp', 'alt' => 'Bungalow cu terasă, sub un cer albastru, în Grădina Ielelor', 'caption' => 'Bungalow cu terasă'),
+                array('src' => 'bungalow-dormitor-alb-960.webp', 'alt' => 'Dormitor cu două paturi albe într-un bungalow, cu jaluzele de lemn', 'caption' => 'Dormitorul'),
+                array('src' => 'bungalow-relaxare-720.webp', 'alt' => 'Zona de relaxare dintr-un bungalow, cu canapea, covor și paravan de lemn', 'caption' => 'Zona de relaxare'),
+                array('src' => 'bungalow-lac-baldachin-1280.webp', 'alt' => 'Lacul cu reflexii, pontonul și Munții Făgăraș, văzute de lângă baldachinul de pe mal', 'caption' => 'Lacul, la câțiva pași'),
             ),
         ),
     );
