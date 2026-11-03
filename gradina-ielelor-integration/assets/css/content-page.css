@@ -10,40 +10,40 @@
 .gi-content-site .site-header .official-brand img { filter: brightness(0) invert(.17); }
 .gi-content-site .desktop-nav a,
 .gi-content-site .desktop-nav a[aria-current="page"],
-.gi-content-site .menu-toggle { color: var(--mountain); text-shadow: none; }
+.gi-content-site .menu-toggle { color: var(--mountain); text-shadow: none; background: transparent; }
 .gi-content-site .desktop-nav a::after { background: var(--mountain); }
 .gi-content-site .gi-content-hero .gi-breadcrumb { color: var(--text-2); }
 .gi-content-site .gi-content-hero .gi-breadcrumb a { color: var(--forest); text-decoration-color: rgba(29, 99, 128, .4); }
 .gi-content-hero-inner { padding-top: clamp(128px, 13vw, 168px); padding-bottom: clamp(48px, 7vw, 88px); }
 .gi-content-hero-inner > * { max-width: 780px; }
-.gi-content-site .gi-content-hero h1 { margin: .18em 0 0; font-family: var(--display); font-weight: 500; font-size: clamp(2.6rem, 6.2vw, 4.6rem); line-height: 1; letter-spacing: -.03em; color: var(--mountain); }
-.gi-content-site .gi-content-lead { max-width: 52ch; margin: 20px 0 0; font-size: clamp(1.06rem, 1.5vw, 1.22rem); line-height: 1.55; color: var(--text-2); }
+.gi-content-site .gi-content-hero h1 { margin: .18em 0 0; font-family: var(--display); font-weight: 500; font-size: clamp(42px, 6.4vw, 76px); line-height: 1; letter-spacing: -.03em; color: var(--mountain); }
+.gi-content-site .gi-content-lead { max-width: 52ch; margin: 20px 0 0; font-size: var(--fs-lead); line-height: 1.5; color: var(--text-2); }
 .gi-content-hero-mark { position: absolute; z-index: -1; right: -3%; bottom: -22%; width: clamp(240px, 36vw, 520px); height: auto; aspect-ratio: 1; color: rgba(44, 127, 160, .14); stroke-width: .5; }
 
 /* ---------- Coloana de text: rând de lectură confortabil (~68 de caractere) ---------- */
 .gi-content-site main { padding-bottom: var(--gi-section); }
 .gi-content-body,
-.gi-content-end { max-width: 68ch; margin-inline: auto; font-size: 1.0625rem; }
+.gi-content-end { max-width: 70ch; margin-inline: auto; font-size: var(--fs-text); }
 .gi-content-body { margin-top: clamp(40px, 6vw, 72px); }
-.gi-prose { line-height: 1.7; color: var(--ink); overflow-wrap: break-word; }
+.gi-prose { line-height: var(--lh-text); color: var(--ink); overflow-wrap: break-word; }
 .gi-prose::after { content: ""; display: block; clear: both; }
 .gi-prose > * { margin-block: 0; }
 /* Spațiu între blocuri; .gi-content-site ca să treacă peste „.gi-site p { margin-top: 0 }” din site.css. */
 .gi-content-site .gi-prose > * + * { margin-top: 1.15em; }
-.gi-content-site .gi-prose :is(p, li) { max-width: none; font-size: inherit; line-height: 1.7; color: var(--ink-soft); }
+.gi-content-site .gi-prose :is(p, li) { max-width: none; font-size: inherit; line-height: var(--lh-text); color: var(--ink-soft); }
 .gi-prose strong { color: var(--ink); font-weight: 650; }
 .gi-content-site .gi-prose a:not(.wp-block-button__link):not(.wp-block-file__button) { color: var(--forest); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: .2em; transition: text-decoration-color .2s ease; }
 .gi-content-site .gi-prose a:not(.wp-block-button__link):not(.wp-block-file__button):hover { text-decoration-color: var(--forest); }
 .gi-prose :is(h2, h3, h4, details, [id]) { scroll-margin-top: 24px; }
 
 /* Paragraf de deschidere (clasa „gi-lead”) */
-.gi-content-site .gi-prose .gi-lead { font-family: var(--display); font-size: clamp(1.3rem, 2.2vw, 1.55rem); line-height: 1.45; color: var(--forest-deep); }
+.gi-content-site .gi-prose .gi-lead { font-family: var(--display); font-size: clamp(24px, 2.3vw, 29px); line-height: 1.45; color: var(--forest-deep); }
 
 /* ---------- Titluri ---------- */
 .gi-content-site .gi-prose :is(h2, h3, h4) { margin-bottom: 0; font-family: var(--display); font-weight: 500; line-height: 1.15; letter-spacing: -.015em; color: var(--forest-deep); }
-.gi-content-site .gi-prose h2 { margin-top: 2.1em; font-size: clamp(1.7rem, 3.2vw, 2.25rem); }
-.gi-content-site .gi-prose h3 { margin-top: 1.8em; font-size: clamp(1.3rem, 2.2vw, 1.55rem); }
-.gi-content-site .gi-prose h4 { margin-top: 1.6em; font-family: var(--sans); font-size: 1.05rem; font-weight: 700; letter-spacing: 0; }
+.gi-content-site .gi-prose h2 { margin-top: 2.1em; font-size: clamp(31px, 3.4vw, 43px); }
+.gi-content-site .gi-prose h3 { margin-top: 1.8em; font-size: clamp(25px, 2.4vw, 31px); }
+.gi-content-site .gi-prose h4 { margin-top: 1.6em; font-family: var(--sans); font-size: 21px; font-weight: 700; letter-spacing: 0; }
 .gi-content-site .gi-prose > :is(h2, h3, h4) + * { margin-top: .6em; }
 .gi-content-site .gi-prose > :first-child { margin-top: 0; }
 
@@ -58,29 +58,29 @@
 
 /* ---------- Tabele ---------- */
 .gi-prose .wp-block-table { margin-inline: 0; overflow-x: auto; }
-.gi-prose table { width: 100%; border-collapse: separate; border-spacing: 0; overflow: hidden; border: 1px solid var(--line); border-radius: var(--gi-radius-sm); background: #fff; font-size: .97rem; line-height: 1.5; }
+.gi-prose table { width: 100%; border-collapse: separate; border-spacing: 0; overflow: hidden; border: 1px solid var(--line); border-radius: var(--gi-radius-sm); background: #fff; font-size: var(--fs-ui); line-height: 1.5; }
 .gi-prose .wp-block-table :is(thead, tfoot) { border: 0; }
-.gi-content-site .gi-prose :is(th, td) { padding: 12px 16px; border: 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.gi-content-site .gi-prose :is(th, td) { padding: 14px 18px; border: 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
 .gi-content-site .gi-prose tbody tr:last-child > * { border-bottom: 0; }
-.gi-content-site .gi-prose thead th { background: var(--cream); color: var(--forest-deep); font-size: .8rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+.gi-content-site .gi-prose thead th { background: var(--cream); color: var(--forest-deep); font-size: var(--fs-label); font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
 .gi-content-site .gi-prose tbody td:first-child { color: var(--forest-deep); font-weight: 600; }
 .gi-prose .wp-block-table.is-style-stripes tbody tr:nth-child(odd) { background: var(--cream); }
-.gi-prose :is(.wp-element-caption, figcaption) { margin-top: 10px; font-size: .9rem; line-height: 1.5; color: var(--muted); text-align: center; }
+.gi-prose :is(.wp-element-caption, figcaption) { margin-top: 10px; font-size: var(--fs-note); line-height: 1.5; color: var(--muted); text-align: center; }
 
 /* ---------- Citate ---------- */
 .gi-prose .wp-block-quote,
 .gi-prose blockquote { margin: 1.7em 0; padding: 4px 0 4px 24px; border: 0; border-left: 3px solid var(--accent); }
-.gi-content-site .gi-prose blockquote p { font-family: var(--display); font-size: clamp(1.25rem, 2vw, 1.45rem); font-style: italic; line-height: 1.45; color: var(--forest-deep); }
+.gi-content-site .gi-prose blockquote p { font-family: var(--display); font-size: clamp(23px, 2.1vw, 28px); font-style: italic; line-height: 1.45; color: var(--forest-deep); }
 .gi-content-site .gi-prose blockquote > * { margin-block: 0; }
 .gi-content-site .gi-prose blockquote > * + * { margin-top: .6em; }
-.gi-prose blockquote cite { display: block; margin-top: 12px; font-size: .9rem; font-style: normal; color: var(--muted); }
+.gi-prose blockquote cite { display: block; margin-top: 12px; font-size: var(--fs-note); font-style: normal; color: var(--muted); }
 .gi-prose blockquote cite::before { content: "— "; }
 .gi-prose .wp-block-pullquote { margin: 2em 0; padding: 28px 8px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); text-align: center; }
 .gi-prose .wp-block-pullquote blockquote { padding: 0; border: 0; }
 
 /* ---------- Butoane ---------- */
 .gi-prose .wp-block-buttons { display: flex; flex-wrap: wrap; gap: 10px 14px; margin-top: 1.4em; }
-.gi-content-site .gi-prose .wp-block-button__link { display: inline-flex; align-items: center; justify-content: center; min-height: 50px; padding: 13px 24px; border: 1.5px solid var(--forest); border-radius: 999px; background: var(--forest); color: #fff; font-family: var(--sans); font-size: 15px; font-weight: 650; line-height: 1.2; text-align: center; text-decoration: none; transition: transform .2s, background-color .2s, color .2s, box-shadow .2s; }
+.gi-content-site .gi-prose .wp-block-button__link { display: inline-flex; align-items: center; justify-content: center; min-height: 56px; padding: 14px 30px; border: 1.5px solid var(--forest); border-radius: 999px; background: var(--forest); color: #fff; font-family: var(--sans); font-size: var(--fs-ui); font-weight: 650; line-height: 1.2; text-align: center; text-decoration: none; transition: transform .2s, background-color .2s, color .2s, box-shadow .2s; }
 .gi-content-site .gi-prose .wp-block-button__link:hover { transform: translateY(-2px); background: var(--lake-hover); box-shadow: 0 8px 20px rgb(var(--shade) / .16); }
 .gi-content-site .gi-prose .is-style-outline .wp-block-button__link { background: transparent; color: var(--forest); }
 .gi-content-site .gi-prose .is-style-outline .wp-block-button__link:hover { background: var(--forest); color: #fff; }
@@ -102,10 +102,10 @@
 /* ---------- Detalii (blocul „Detalii”): linii fine, ca la întrebările de pe paginile ofertelor ---------- */
 .gi-prose .wp-block-details { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .gi-content-site .gi-prose > .wp-block-details + .wp-block-details { margin-top: 0; border-top: 0; }
-.gi-prose .wp-block-details > summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 62px; padding: 16px 2px; border-radius: 8px; color: var(--forest-deep); font-size: 1.06rem; font-weight: 650; line-height: 1.35; list-style: none; cursor: pointer; }
+.gi-prose .wp-block-details > summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 72px; padding: 18px 2px; border-radius: 8px; color: var(--forest-deep); font-size: 21px; font-weight: 650; line-height: 1.3; list-style: none; cursor: pointer; }
 .gi-prose .wp-block-details > summary::-webkit-details-marker { display: none; }
-.gi-prose .wp-block-details > summary::after { content: ""; flex: 0 0 30px; height: 30px; border-radius: 50%; background: linear-gradient(var(--forest), var(--forest)) center / 12px 2px no-repeat, linear-gradient(var(--forest), var(--forest)) center / 2px 12px no-repeat, var(--sand); transition: background-color .25s ease; }
-.gi-prose .wp-block-details[open] > summary::after { background: linear-gradient(var(--forest-deep), var(--forest-deep)) center / 12px 2px no-repeat, var(--accent); }
+.gi-prose .wp-block-details > summary::after { content: ""; flex: 0 0 36px; height: 36px; border-radius: 50%; background: linear-gradient(var(--forest), var(--forest)) center / 14px 2px no-repeat, linear-gradient(var(--forest), var(--forest)) center / 2px 14px no-repeat, var(--sand); transition: background-color .25s ease; }
+.gi-prose .wp-block-details[open] > summary::after { background: linear-gradient(var(--forest-deep), var(--forest-deep)) center / 14px 2px no-repeat, var(--accent); }
 .gi-prose .wp-block-details > summary:hover { color: var(--forest); }
 .gi-prose .wp-block-details > :not(summary) { margin: 0; }
 .gi-prose .wp-block-details > :not(summary) + :not(summary) { margin-top: .9em; }
@@ -121,9 +121,9 @@
 /* ---------- Acordeon (blocul „Acordeon”, WordPress 6.9+) ---------- */
 .gi-prose .wp-block-accordion { border-top: 1px solid var(--line); }
 .gi-prose .wp-block-accordion-item { border-bottom: 1px solid var(--line); }
-.gi-content-site .gi-prose .wp-block-accordion-heading { margin: 0; font-family: var(--sans); font-size: 1.06rem; font-weight: 650; letter-spacing: 0; }
-.gi-prose .wp-block-accordion-heading__toggle { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; min-height: 62px; padding: 16px 2px; border: 0; border-radius: 8px; background: none; color: var(--forest-deep); font: inherit; text-align: left; cursor: pointer; }
-.gi-prose .wp-block-accordion-heading__toggle-icon { display: grid; place-items: center; flex: 0 0 30px; height: 30px; border-radius: 50%; background: var(--sand); color: var(--forest); font-size: 1.2rem; line-height: 1; transition: background-color .25s ease, transform .25s ease; }
+.gi-content-site .gi-prose .wp-block-accordion-heading { margin: 0; font-family: var(--sans); font-size: 21px; font-weight: 650; letter-spacing: 0; }
+.gi-prose .wp-block-accordion-heading__toggle { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; min-height: 72px; padding: 18px 2px; border: 0; border-radius: 8px; background: none; color: var(--forest-deep); font: inherit; text-align: left; cursor: pointer; }
+.gi-prose .wp-block-accordion-heading__toggle-icon { display: grid; place-items: center; flex: 0 0 36px; height: 36px; border-radius: 50%; background: var(--sand); color: var(--forest); font-size: 1.2rem; line-height: 1; transition: background-color .25s ease, transform .25s ease; }
 .gi-prose .wp-block-accordion-item.is-open .wp-block-accordion-heading__toggle-icon,
 .gi-prose .wp-block-accordion-heading__toggle[aria-expanded="true"] .wp-block-accordion-heading__toggle-icon { background: var(--accent); transform: rotate(45deg); }
 .gi-prose .wp-block-accordion-panel { padding: 0 2px 22px; }
@@ -138,7 +138,7 @@
 .gi-prose .wp-block-group > * + * { margin-top: .8em; }
 /* Notă pentru editor (clasa „gi-nota-editor”): vizitatorii nu o primesc deloc; aici e doar aspectul pentru cine e autentificat. */
 .gi-prose .gi-nota-editor { padding: 18px 20px; border: 2px dashed var(--accent-dark); border-radius: var(--gi-radius-sm); background: var(--sun-50); }
-.gi-content-site .gi-prose .gi-nota-editor :is(p, li) { font-size: .95rem; line-height: 1.6; color: var(--ink); }
+.gi-content-site .gi-prose .gi-nota-editor :is(p, li) { font-size: var(--fs-note); line-height: 1.6; color: var(--ink); }
 
 /* ---------- Alte blocuri ---------- */
 .gi-prose :is(.wp-block-separator, hr) { width: 100%; height: 1px; margin: 2.4em auto; border: 0; background: var(--line); opacity: 1; }
@@ -146,22 +146,20 @@
 .gi-prose .wp-block-columns { gap: clamp(20px, 3vw, 32px); }
 .gi-prose code { padding: .1em .35em; border-radius: 6px; background: var(--sand); font-size: .9em; }
 .gi-prose .wp-block-file { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; padding: 16px 20px; border-radius: var(--gi-radius-sm); background: var(--cream); }
-.gi-content-site .gi-prose .wp-block-file__button { display: inline-flex; align-items: center; min-height: 44px; padding: 10px 18px; border-radius: 999px; background: var(--forest); color: #fff; font-size: 14px; font-weight: 650; text-decoration: none; }
+.gi-content-site .gi-prose .wp-block-file__button { display: inline-flex; align-items: center; min-height: 48px; padding: 10px 22px; border-radius: 999px; background: var(--forest); color: #fff; font-size: var(--fs-note); font-weight: 650; text-decoration: none; }
 
 /* ---------- Final: înapoi la rezervare ---------- */
 .gi-content-end { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px; margin-top: clamp(48px, 7vw, 88px); padding: clamp(20px, 3vw, 28px); border-radius: var(--gi-radius); background: var(--cream); }
-.gi-content-end .gi-text-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 15px; font-weight: 600; }
-.gi-content-end .gi-icon { width: 18px; height: 18px; }
+.gi-content-end .gi-text-link { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; font-size: var(--fs-ui); font-weight: 600; }
+.gi-content-end .gi-icon { width: 20px; height: 20px; }
 
 /* ---------- Mobil ---------- */
 @media (max-width: 700px) {
   .gi-content-hero-inner { padding-top: 112px; padding-bottom: 44px; }
   .gi-content-hero-mark { right: -18%; bottom: -12%; }
-  .gi-content-body,
-  .gi-content-end { font-size: 1.03rem; }
   .gi-prose .wp-block-buttons > .wp-block-button { flex: 1 1 100%; }
   .gi-content-site .gi-prose .wp-block-button__link { width: 100%; }
-  .gi-content-site .gi-prose :is(th, td) { padding: 11px 12px; }
+  .gi-content-site .gi-prose :is(th, td) { padding: 12px 12px; }
   .gi-content-end { flex-direction: column; align-items: stretch; text-align: center; }
   .gi-content-end .gi-text-link { justify-content: center; }
 }

@@ -35,29 +35,29 @@
 .gi-site .gi-real-booking :is(input, select, textarea, button):focus-visible { outline: 3px solid var(--forest); outline-offset: 2px; border-color: var(--forest); }
 
 /* ---------- Contrast (WCAG 1.4.3) pe elementele comune din site.css ---------- */
-.gi-site .footer-bottom { color: var(--text-2); font-size: 12px; }
+.gi-site .footer-bottom { color: var(--text-2); font-size: var(--fs-note); }
 #gi-lightbox figcaption span:last-child { color: rgba(255, 255, 255, .72); }
 #gi-lightbox button:focus-visible { outline: 3px solid var(--accent, #f7b267); outline-offset: 3px; }
 
-/* Header peste fotografie: o umbră albastră de munte (nu negru-verde), cât să rămână lizibil meniul (12–13,5px) pe cer luminos. */
-.gi-site .site-header { background: linear-gradient(180deg, rgb(var(--shade) / .82) 0%, rgb(var(--shade) / .52) 55%, rgb(var(--shade) / 0) 100%); }
-.gi-site .desktop-nav a { text-shadow: 0 1px 8px rgb(var(--shade) / .5); }
+/* Header peste fotografie: o umbră albastră de munte (nu negru-verde), cât să rămână lizibil meniul pe cer luminos (umbra se reglează cu --veil din site.css). */
+.gi-site .site-header { background: linear-gradient(180deg, rgb(var(--shade) / calc(.74 * var(--veil))) 0%, rgb(var(--shade) / calc(.66 * var(--veil))) 50%, rgb(var(--shade) / 0) 100%); }
+.gi-site .desktop-nav a { text-shadow: 0 1px 2px rgb(var(--shade) / .4), 0 1px 10px rgb(var(--shade) / .5); }
 
-/* Între 901 și 1100 px cele opt linkuri nu încap lângă „Rezervă” (derulare orizontală): trec în butonul de meniu,
-   ca pe tabletă, iar „Rezervă” rămâne la vedere. */
-@media (min-width: 901px) and (max-width: 1100px) {
+/* Cu textul mai mare, cele opt linkuri încap lângă „Rezervă” numai de la 1300 px în sus (măsurat cu fontul Inter, cel mai lat dintre cele posibile);
+   mai jos trec în butonul de meniu, ca pe tabletă, iar „Rezervă” rămâne la vedere. */
+@media (min-width: 901px) and (max-width: 1299px) {
   .gi-site .desktop-nav { display: none; }
   .gi-site .header-cta { margin-left: auto; }
   .gi-site .menu-toggle { display: block; margin-left: 0; }
 }
 
 /* ---------- Zone de atingere de minimum 44px pe telefon ---------- */
-.gi-site .menu-toggle { min-width: 44px; min-height: 44px; }
+.gi-site .menu-toggle { min-width: 48px; min-height: 48px; }
 @media (max-width: 700px) {
   .gi-site .footer-grid > div:not(:first-child) a { align-items: center; min-height: 44px; margin: 0; }
   .gi-site .footer-legal a { min-height: 44px; }
   /* Butonul fix de rezervare nu acoperă elementul primit cu Tab: derularea lasă loc deasupra lui (WCAG 2.4.11). */
-  html:has(.gi-site .mobile-booking-cta) { scroll-padding-bottom: 84px; }
+  html:has(.gi-site .mobile-booking-cta) { scroll-padding-bottom: 96px; }
 }
 
 /* ---------- Ritm general al paginilor dedicate ---------- */
@@ -76,69 +76,62 @@
   html:has(.gi-dedicated) { scroll-behavior: smooth; }
 }
 
-.gi-dedicated main h2 { font-family: var(--display); font-weight: 500; font-size: clamp(1.95rem, 4.2vw, 3.1rem); line-height: 1.06; letter-spacing: -.02em; margin: .3em 0 .4em; color: var(--forest-deep); }
+.gi-dedicated main h2 { font-family: var(--display); font-weight: 500; font-size: clamp(36px, 4.4vw, 56px); line-height: 1.08; letter-spacing: -.02em; margin: .3em 0 .4em; color: var(--forest-deep); }
 .gi-dedicated main h2 em { font-style: italic; color: var(--meadow-em); }
-.gi-dedicated main p { font-size: 1.06rem; line-height: 1.65; color: var(--muted); max-width: 62ch; }
+.gi-dedicated main p { font-size: var(--fs-text); line-height: var(--lh-text); color: var(--muted); max-width: 62ch; }
 .gi-dedicated main p a,
 .gi-dedicated .gi-text-link { color: var(--forest); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: .2em; text-decoration-thickness: 2px; }
-.gi-dedicated main .eyebrow { font-size: 12px; color: var(--gi-eyebrow); }
+.gi-dedicated main .eyebrow { font-size: var(--fs-label); color: var(--gi-eyebrow); }
 .gi-dedicated .gi-section-head { margin-bottom: clamp(22px, 3vw, 40px); }
 .gi-dedicated .gi-section-head h2 { margin-bottom: 0; }
 
 /* Mai prietenos decât stilul compact al paginii principale: texte mai mari, butoane rotunjite. */
-.gi-dedicated .button { border-radius: 999px; min-height: 52px; padding: 14px 26px; font-size: 15px; }
-/* Între 901 și 1199 px meniul păstrează dimensiunile compacte din site.css (altfel apare scroll orizontal
-   și butonul „Rezervă” iese din ecran); textele mai mari numai unde încap (opt linkuri: cinci categorii, Despre noi, Review & blog, Regulament). */
-.gi-dedicated .header-cta.button { min-height: 40px; padding: 10px 17px; font-size: 12px; }
-@media (min-width: 1200px) {
-  .gi-dedicated .header-cta.button { min-height: 42px; padding: 10px 18px; font-size: 13px; }
-}
-@media (min-width: 1360px) {
-  .gi-dedicated .desktop-nav a { font-size: 13.5px; }
-}
+.gi-dedicated .button { border-radius: 999px; min-height: 58px; padding: 15px 32px; font-size: var(--fs-ui); }
+/* Butonul „Rezervă” din antet: aceeași mărime ca meniul (--fs-nav, din site.css). */
+.gi-dedicated .header-cta.button { min-height: 48px; padding: 10px 22px; font-size: var(--fs-nav); }
 .gi-dedicated .home-photo-gallery button,
 .gi-dedicated .home-photo-gallery img { border-radius: var(--gi-radius-sm); }
-.gi-dedicated .home-photo-gallery > button > span { font-size: 13px; border-radius: 12px; }
+.gi-dedicated .home-photo-gallery > button > span { font-size: var(--fs-label); border-radius: 12px; }
 
 /* Link secundar alb (lângă butoanele de pe fundal închis): zonă de atingere de minimum 44px. */
-.gi-hero-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 4px; color: #fff; font-size: 16px; font-weight: 600; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .45); text-underline-offset: .3em; transition: text-decoration-color .2s ease; }
+.gi-hero-link { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 4px; color: #fff; font-size: var(--fs-ui); font-weight: 600; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .45); text-underline-offset: .3em; transition: text-decoration-color .2s ease; }
 .gi-hero-link:hover { text-decoration-color: var(--accent); }
 .gi-hero-link .gi-icon { width: 18px; height: 18px; }
 
 /* ---------- Hero: fotografia rămâne luminoasă; doar coloana de text stă pe o umbră albastră de munte ---------- */
 .gi-page-hero { --gi-focus: var(--accent); position: relative; min-height: min(88svh, 820px); display: flex; align-items: flex-end; color: #fff; isolation: isolate; border-radius: 0 0 clamp(28px, 4vw, 56px) clamp(28px, 4vw, 56px); overflow: hidden; background: var(--forest-deep); }
 .gi-page-hero-media { position: absolute; inset: 0; margin: 0; z-index: -2; }
-.gi-page-hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: center 60%; background: var(--forest); }
+.gi-page-hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: center 60%; background: var(--forest); filter: var(--photo-filter); }
 .gi-page-hero-overlay { position: absolute; inset: 0; z-index: -1; background:
-  linear-gradient(180deg, rgb(var(--shade) / .5) 0%, rgb(var(--shade) / 0) 22%),
-  linear-gradient(0deg, rgb(var(--shade) / .42) 0%, rgb(var(--shade) / .16) 40%, rgb(var(--shade) / 0) 64%),
-  linear-gradient(90deg, rgb(var(--shade) / .38) 0%, rgb(var(--shade) / 0) 46%); }
+  linear-gradient(180deg, rgb(var(--shade) / calc(.34 * var(--veil))) 0%, rgb(var(--shade) / 0) 22%),
+  linear-gradient(0deg, rgb(var(--shade) / calc(.26 * var(--veil))) 0%, rgb(var(--shade) / calc(.08 * var(--veil))) 40%, rgb(var(--shade) / 0) 64%),
+  linear-gradient(90deg, rgb(var(--shade) / calc(.22 * var(--veil))) 0%, rgb(var(--shade) / 0) 46%); }
 .gi-page-hero .gi-breadcrumb,
 .gi-dedicated .gi-page-hero .eyebrow { text-shadow: 0 1px 10px rgb(var(--shade) / .55); }
 .gi-page-hero-content { --gi-hero-pad: 140px; position: relative; padding-top: var(--gi-hero-pad); padding-bottom: clamp(92px, 10vw, 128px); }
-.gi-page-hero-content > * { max-width: 640px; }
+.gi-page-hero-content > * { max-width: 760px; }
 /* Umbra urmează blocul de text (oricât de lung e titlul), nu un procent fix din fotografie:
    începe cu puțin deasupra firului de navigare și, pe ecrane late, se stinge spre dreapta după coloana de text
    (50vw = marginea stângă a textului în acest bloc), ca restul fotografiei să rămână însorit. */
 .gi-page-hero-content::before { content: ""; position: absolute; z-index: -1; top: calc(var(--gi-hero-pad) - 64px); bottom: 0; left: -50vw; right: -50vw; pointer-events: none;
-  background: linear-gradient(180deg, rgb(var(--shade) / 0) 0, rgb(var(--shade) / .6) 64px, rgb(var(--shade) / .5) 60%, rgb(var(--shade) / .24) 100%);
-  -webkit-mask-image: linear-gradient(90deg, #000 calc(50vw + 560px), transparent calc(50vw + 1080px)); mask-image: linear-gradient(90deg, #000 calc(50vw + 560px), transparent calc(50vw + 1080px)); }
-.gi-page-hero h1 { font-family: var(--display); font-weight: 500; font-size: clamp(2.75rem, 7vw, 5.4rem); line-height: .98; letter-spacing: -.03em; margin: .28em 0 .32em; color: #fff; text-shadow: 0 2px 28px rgb(var(--shade) / .35); }
+  background: linear-gradient(180deg, rgb(var(--shade) / 0) 0, rgb(var(--shade) / calc(.6 * var(--veil))) 64px, rgb(var(--shade) / calc(.54 * var(--veil))) 72%, rgb(var(--shade) / calc(.3 * var(--veil))) 100%);
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(50vw + 780px), transparent calc(50vw + 1260px)); mask-image: linear-gradient(90deg, #000 calc(50vw + 780px), transparent calc(50vw + 1260px)); }
+.gi-page-hero h1 { font-family: var(--display); font-weight: 500; font-size: clamp(46px, 7.2vw, 92px); line-height: .98; letter-spacing: -.03em; margin: .28em 0 .32em; color: #fff; text-shadow: 0 2px 4px rgb(var(--shade) / .25), 0 2px 28px rgb(var(--shade) / .4); }
 .gi-page-hero h1 em { font-style: italic; color: var(--sun-light); }
-.gi-dedicated .gi-page-hero p { max-width: 44ch; font-size: clamp(1.05rem, 1.5vw, 1.22rem); line-height: 1.55; color: rgba(255, 255, 255, .96); margin: 0; text-shadow: 0 1px 14px rgb(var(--shade) / .4); }
+.gi-dedicated .gi-page-hero p { max-width: 46ch; font-size: clamp(var(--fs-text), 1.7vw, 23px); line-height: 1.5; color: #fff; margin: 0; text-shadow: 0 1px 2px rgb(var(--shade) / .35), 0 1px 16px rgb(var(--shade) / .5); }
 .gi-dedicated .gi-page-hero .eyebrow { color: #fff; }
 .gi-page-hero-actions,
 .gi-closing-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; margin-top: 28px; }
-.gi-breadcrumb { display: flex; gap: 10px; align-items: center; font-size: .86rem; color: #fff; margin-bottom: 14px; }
+.gi-breadcrumb { display: flex; gap: 10px; align-items: center; font-size: var(--fs-note); color: #fff; margin-bottom: 14px; }
 /* Zonă de atingere mai mare fără să mute textul. */
 .gi-breadcrumb a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .45); text-underline-offset: .25em; padding: 13px 8px; margin: -13px -8px; }
 
 /* ---------- Pe scurt: o singură bandă, celule despărțite prin linii fine ---------- */
-.gi-facts { list-style: none; margin: -52px auto 0; padding: 6px; position: relative; z-index: 2; display: grid; grid-template-columns: repeat(4, 1fr); background: #fff; border-radius: var(--gi-radius); box-shadow: var(--gi-shadow); max-width: 1040px; }
+.gi-facts { list-style: none; margin: -52px auto 0; padding: 6px; position: relative; z-index: 2; display: grid; grid-template-columns: repeat(4, 1fr); background: #fff; border-radius: var(--gi-radius); box-shadow: var(--gi-shadow); max-width: 1120px; }
 .gi-facts li { display: flex; flex-direction: column; gap: 4px; padding: 18px 24px; }
 .gi-facts li + li { border-left: 1px solid var(--line); }
-.gi-facts strong { font-family: var(--display); font-size: clamp(1.4rem, 2.2vw, 1.8rem); font-weight: 500; color: var(--forest-deep); line-height: 1.1; }
-.gi-facts span { font-size: .92rem; color: var(--muted); line-height: 1.35; }
+.gi-facts strong { font-family: var(--display); font-size: clamp(27px, 2.4vw, 36px); font-weight: 500; color: var(--forest-deep); line-height: 1.1; }
+.gi-facts span { font-size: var(--fs-ui); color: var(--muted); line-height: 1.35; }
 
 /* ---------- Poveste ---------- */
 .gi-story { padding-top: var(--gi-section); }
@@ -160,15 +153,15 @@
 .gi-included-grid-many .gi-included-group h3 .gi-icon { background: #fff; }
 .gi-included-grid-many .gi-included-garden .gi-check-list { grid-template-columns: minmax(0, 1fr); }
 .gi-included-grid-many .gi-included-group .gi-check-list .gi-icon { background: #fff; }
-.gi-included h3 { display: flex; align-items: center; gap: 12px; font-family: var(--display); font-weight: 500; font-size: 1.5rem; margin: 0 0 18px; color: var(--forest-deep); }
-.gi-included h3 .gi-icon { width: 42px; height: 42px; padding: 10px; border-radius: 50%; background: var(--cream); color: var(--moss); }
+.gi-included h3 { display: flex; align-items: center; gap: 12px; font-family: var(--display); font-weight: 500; font-size: 29px; line-height: 1.15; margin: 0 0 20px; color: var(--forest-deep); }
+.gi-included h3 .gi-icon { width: 48px; height: 48px; padding: 11px; border-radius: 50%; background: var(--cream); color: var(--moss); }
 .gi-included-tent h3 .gi-icon { background: #fff; }
-.gi-check-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.gi-check-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
 .gi-included-garden .gi-check-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 28px; }
-.gi-check-list li { display: flex; gap: 10px; align-items: flex-start; font-size: 1.02rem; line-height: 1.45; color: var(--ink); }
-.gi-check-list .gi-icon { flex: 0 0 auto; width: 20px; height: 20px; padding: 3px; margin-top: 1px; border-radius: 50%; background: var(--sand); color: var(--forest); }
+.gi-check-list li { display: flex; gap: 12px; align-items: flex-start; font-size: var(--fs-text); line-height: 1.4; color: var(--ink); }
+.gi-check-list .gi-icon { flex: 0 0 auto; width: 24px; height: 24px; padding: 4px; margin-top: 2px; border-radius: 50%; background: var(--sand); color: var(--forest); }
 .gi-included-tent .gi-check-list .gi-icon { background: #fff; }
-.gi-dedicated .gi-included-note { margin: 24px 0 0; padding: 14px 18px; border-radius: var(--gi-radius-sm); background: var(--sun-50); color: var(--ink); font-size: 1rem; max-width: none; }
+.gi-dedicated .gi-included-note { margin: 24px 0 0; padding: 14px 18px; border-radius: var(--gi-radius-sm); background: var(--sun-50); color: var(--ink); font-size: var(--fs-ui); max-width: none; }
 .gi-dedicated .gi-included-note a { text-decoration-color: var(--accent-dark); }
 .gi-dedicated .gi-included-action { margin: 18px 0 0; }
 .gi-dedicated .gi-included-action a { text-decoration: none; }
@@ -178,64 +171,64 @@
 .gi-dedicated .gi-page-reviews .home-review-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(24px, 4vw, 64px); }
 .gi-dedicated .gi-page-reviews blockquote { border: 0; border-top: 1px solid var(--line); border-radius: 0; padding: 26px 0 0; background: none; color: var(--ink); }
 .gi-dedicated .gi-page-reviews blockquote > .gi-icon { width: 28px; height: 28px; margin-bottom: 14px; }
-.gi-dedicated .gi-page-reviews blockquote > p { font-size: clamp(1.15rem, 1.6vw, 1.32rem); line-height: 1.55; color: var(--ink); max-width: none; margin-bottom: 18px; }
-.gi-dedicated .gi-page-reviews footer strong { font-size: 14px; color: var(--forest-deep); }
-.gi-dedicated .gi-page-reviews footer span { font-size: 13px; color: var(--muted); }
+.gi-dedicated .gi-page-reviews blockquote > p { font-size: clamp(21px, 1.8vw, 25px); line-height: 1.5; color: var(--ink); max-width: none; margin-bottom: 18px; }
+.gi-dedicated .gi-page-reviews footer strong { font-size: var(--fs-ui); color: var(--forest-deep); }
+.gi-dedicated .gi-page-reviews footer span { font-size: var(--fs-note); color: var(--muted); }
 
 /* ---------- Prețuri + rezervare: un colț de cer senin, cu soarele în colț ---------- */
 .gi-prices { padding-top: var(--gi-section); }
 .gi-prices-band { --gi-focus: var(--lake-deep); display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); grid-template-areas: "intro list" "actions list"; gap: 8px clamp(28px, 6vw, 96px); align-items: start; padding: clamp(28px, 5vw, 64px); border-radius: var(--gi-radius); color: var(--ink); background: radial-gradient(60% 90% at 100% 0%, rgba(255, 216, 168, .62) 0%, rgba(255, 216, 168, 0) 70%), linear-gradient(160deg, var(--sky-200) 0%, var(--sky-100) 45%, var(--sky-50) 100%); }
 .gi-prices-intro { grid-area: intro; }
 .gi-site .gi-prices-intro .gi-prices-season { margin-top: 14px; }
-.gi-site .gi-prices-intro .gi-prices-note { margin-top: 10px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 14px; line-height: 1.6; }
+.gi-site .gi-prices-intro .gi-prices-note { margin-top: 10px; padding-top: 12px; border-top: 1px solid var(--line); font-size: var(--fs-note); line-height: 1.55; }
 .gi-dedicated .gi-prices h2 { color: var(--forest-deep); margin-top: .25em; }
 .gi-dedicated .gi-prices p { color: var(--text-2); margin: 0; }
 .gi-dedicated .gi-prices p strong { color: var(--ink); }
 .gi-price-list { grid-area: list; align-self: center; margin: 0; }
 .gi-price-list div { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 18px 0; border-bottom: 1px solid rgba(27, 58, 75, .16); }
 .gi-price-list div:first-child { border-top: 1px solid rgba(27, 58, 75, .16); }
-.gi-price-list dt { color: var(--ink); font-size: 1.02rem; font-weight: 500; }
-.gi-price-list dd { margin: 0; font-family: var(--display); font-size: clamp(1.45rem, 2vw, 1.7rem); color: var(--forest-deep); white-space: nowrap; }
-.gi-price-list small { font-family: var(--sans); font-size: .84rem; color: var(--text-2); }
+.gi-price-list dt { color: var(--ink); font-size: var(--fs-text); font-weight: 500; }
+.gi-price-list dd { margin: 0; font-family: var(--display); font-size: clamp(27px, 2.3vw, 34px); color: var(--forest-deep); white-space: nowrap; }
+.gi-price-list small { font-family: var(--sans); font-size: var(--fs-note); color: var(--text-2); }
 .gi-prices-actions { grid-area: actions; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin-top: 22px; }
-.gi-prices-actions .gi-hero-link { font-size: 15px; font-weight: 500; color: var(--forest); text-decoration-color: var(--accent); }
+.gi-prices-actions .gi-hero-link { font-size: var(--fs-ui); font-weight: 600; color: var(--forest); text-decoration-color: var(--accent); }
 .gi-prices-actions .gi-hero-link:hover { text-decoration-color: var(--forest); }
 
 /* ---------- Bine de știut ---------- */
 .gi-notes { padding-top: var(--gi-section); }
 .gi-notes-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 20px); }
 .gi-note { background: var(--sun-50); border-radius: var(--gi-radius); padding: 24px; }
-.gi-note > .gi-icon { width: 44px; height: 44px; padding: 11px; border-radius: 50%; background: #fff; color: var(--sun-deep); }
-.gi-note h3 { font-size: 1.05rem; line-height: 1.3; margin: 16px 0 8px; color: var(--forest-deep); }
-.gi-dedicated .gi-note p { font-size: .97rem; margin: 0; color: var(--gi-text); }
+.gi-note > .gi-icon { width: 48px; height: 48px; padding: 12px; border-radius: 50%; background: #fff; color: var(--sun-deep); }
+.gi-note h3 { font-size: 22px; line-height: 1.25; margin: 16px 0 10px; color: var(--forest-deep); }
+.gi-dedicated .gi-note p { font-size: var(--fs-ui); line-height: 1.55; margin: 0; color: var(--gi-text); }
 
 /* ---------- Locație: distanțele ca mici repere, nu ca listă de cutii ---------- */
 .gi-location { padding-top: var(--gi-section); }
 .gi-location-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 5vw, 72px); align-items: center; }
 .gi-location-actions { display: flex; flex-wrap: wrap; gap: 8px 22px; align-items: center; margin-top: 22px; }
-.gi-location-actions .gi-text-link { display: inline-flex; gap: 8px; align-items: center; min-height: 44px; font-weight: 600; }
-.gi-location-actions .gi-icon { width: 18px; height: 18px; }
+.gi-location-actions .gi-text-link { display: inline-flex; gap: 8px; align-items: center; min-height: 48px; font-size: var(--fs-ui); font-weight: 600; }
+.gi-location-actions .gi-icon { width: 20px; height: 20px; }
 .gi-distances { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-radius: var(--gi-radius); background: var(--cream); }
 .gi-distances li { display: flex; flex-direction: column; gap: 4px; padding: 22px 26px; }
 .gi-distances li:nth-child(2n) { border-left: 1px solid var(--line); }
 .gi-distances li:nth-child(n + 3) { border-top: 1px solid var(--line); }
-.gi-distances span { color: var(--gi-text); font-size: .95rem; }
-.gi-distances strong { font-family: var(--display); font-weight: 500; font-size: clamp(1.35rem, 2vw, 1.6rem); color: var(--forest-deep); }
+.gi-distances span { color: var(--gi-text); font-size: var(--fs-ui); }
+.gi-distances strong { font-family: var(--display); font-weight: 500; font-size: clamp(25px, 2.2vw, 32px); color: var(--forest-deep); }
 
 /* ---------- Întrebări: linii fine în loc de cutii ---------- */
 .gi-faq { padding-top: var(--gi-section); }
 .gi-faq-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(24px, 5vw, 72px); align-items: start; }
 .gi-faq-list { border-top: 1px solid var(--line); }
 .gi-faq-list details { border-bottom: 1px solid var(--line); }
-.gi-faq-list summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: 16px; align-items: center; min-height: 64px; padding: 16px 2px; font-weight: 600; font-size: 1.05rem; line-height: 1.35; color: var(--forest-deep); border-radius: 8px; }
+.gi-faq-list summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: 16px; align-items: center; min-height: 72px; padding: 18px 2px; font-weight: 600; font-size: 21px; line-height: 1.3; color: var(--forest-deep); border-radius: 8px; }
 .gi-faq-list summary::-webkit-details-marker { display: none; }
-.gi-faq-list summary span { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%; background: var(--sand); position: relative; transition: background-color .25s ease; }
+.gi-faq-list summary span { flex: 0 0 auto; width: 36px; height: 36px; border-radius: 50%; background: var(--sand); position: relative; transition: background-color .25s ease; }
 .gi-faq-list summary span::before,
-.gi-faq-list summary span::after { content: ""; position: absolute; left: 50%; top: 50%; width: 12px; height: 2px; margin: -1px 0 0 -6px; background: var(--forest); border-radius: 2px; }
+.gi-faq-list summary span::after { content: ""; position: absolute; left: 50%; top: 50%; width: 14px; height: 2px; margin: -1px 0 0 -7px; background: var(--forest); border-radius: 2px; }
 .gi-faq-list summary span::after { transform: rotate(90deg); transition: transform .25s ease; }
 .gi-faq-list details[open] summary span { background: var(--accent); }
 .gi-faq-list details[open] summary span::after { transform: rotate(0deg); }
-.gi-dedicated .gi-faq-list details p { margin: 0; padding: 0 46px 22px 2px; }
+.gi-dedicated .gi-faq-list details p { margin: 0; padding: 0 52px 24px 2px; }
 /* Deschidere lină a răspunsurilor, unde browserul știe (Chrome 131+); altfel se deschid instant. */
 @supports (interpolate-size: allow-keywords) {
   @media (prefers-reduced-motion: no-preference) {
@@ -252,27 +245,27 @@
 @media (max-width: 1100px) { .gi-related-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .gi-related-card { position: relative; display: flex; flex-direction: column; gap: 14px; padding-bottom: 6px; color: var(--ink); border-radius: var(--gi-radius); }
 .gi-related-media { display: block; overflow: hidden; border-radius: var(--gi-radius); background: var(--sand); }
-.gi-related-media img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; transition: transform .5s var(--gi-ease); }
+.gi-related-media img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; filter: var(--photo-filter); transition: transform .5s var(--gi-ease); }
 .gi-related-card:hover img { transform: scale(1.04); }
 .gi-related-body { display: grid; gap: 4px; padding: 0 4px; }
-.gi-related-body strong { font-family: var(--display); font-weight: 500; font-size: 1.4rem; color: var(--forest-deep); }
-.gi-related-body span { color: var(--muted); font-size: 1rem; line-height: 1.5; }
-.gi-related-arrow { position: absolute; top: 14px; right: 14px; width: 40px; height: 40px; padding: 11px; border-radius: 50%; background: rgba(255, 253, 248, .92); color: var(--forest); transition: transform .3s var(--gi-ease), background-color .3s ease; }
+.gi-related-body strong { font-family: var(--display); font-weight: 500; font-size: 27px; line-height: 1.15; color: var(--forest-deep); }
+.gi-related-body span { color: var(--muted); font-size: var(--fs-ui); line-height: 1.5; }
+.gi-related-arrow { position: absolute; top: 14px; right: 14px; width: 44px; height: 44px; padding: 12px; border-radius: 50%; background: rgba(255, 253, 248, .92); color: var(--forest); transition: transform .3s var(--gi-ease), background-color .3s ease; }
 .gi-related-card:hover .gi-related-arrow { transform: translate(2px, -2px); background: var(--accent); }
 
 /* ---------- Închidere: o ultimă fotografie și o singură invitație ---------- */
 .gi-closing { --gi-focus: var(--accent); position: relative; isolation: isolate; overflow: hidden; margin: var(--gi-section) clamp(8px, 1.5vw, 20px) clamp(8px, 1.5vw, 20px); padding: clamp(88px, 10vw, 140px) 0; border-radius: var(--gi-radius); background: var(--forest-deep); color: #fff; text-align: center; }
-.gi-closing-media { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; }
+.gi-closing-media { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; filter: var(--photo-filter); }
 /* Umbra albastră stă mai ales în spatele textului (centru); marginile fotografiei rămân luminoase. */
-.gi-closing::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(62% 62% at 50% 52%, rgb(var(--shade) / .58) 0%, rgb(var(--shade) / .24) 70%, rgb(var(--shade) / 0) 100%), linear-gradient(180deg, rgb(var(--shade) / .28) 0%, rgb(var(--shade) / .46) 100%); }
+.gi-closing::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(70% 72% at 50% 55%, rgb(var(--shade) / calc(.62 * var(--veil))) 0%, rgb(var(--shade) / calc(.32 * var(--veil))) 70%, rgb(var(--shade) / 0) 100%), linear-gradient(180deg, rgb(var(--shade) / calc(.18 * var(--veil))) 0%, rgb(var(--shade) / calc(.42 * var(--veil))) 100%); }
 .gi-closing-inner { display: grid; justify-items: center; }
-.gi-dedicated .gi-closing h2 { color: #fff; margin: 0; text-shadow: 0 2px 24px rgb(var(--shade) / .4); }
+.gi-dedicated .gi-closing h2 { color: #fff; margin: 0; text-shadow: 0 2px 4px rgb(var(--shade) / .25), 0 2px 24px rgb(var(--shade) / .45); }
 .gi-dedicated .gi-closing h2 em { color: var(--sun-light); }
 .gi-closing-actions { justify-content: center; }
 
 /* ---------- Butonul fix de pe mobil: apare doar când niciun alt buton de rezervare nu e pe ecran (pages.js) ---------- */
 @media (max-width: 700px) {
-  .gi-dedicated .mobile-booking-cta { left: 16px; right: 16px; bottom: 12px; min-height: 54px; border-radius: 999px; font-size: 15px; box-shadow: 0 10px 30px -8px rgb(var(--shade) / .45), 0 0 0 1px rgb(var(--shade) / .06); transition: transform .4s var(--gi-ease), opacity .3s ease, visibility 0s linear 0s; }
+  .gi-dedicated .mobile-booking-cta { left: 16px; right: 16px; bottom: 12px; min-height: 58px; border-radius: 999px; font-size: var(--fs-text); box-shadow: 0 10px 30px -8px rgb(var(--shade) / .45), 0 0 0 1px rgb(var(--shade) / .06); transition: transform .4s var(--gi-ease), opacity .3s ease, visibility 0s linear 0s; }
   .gi-dedicated .mobile-booking-cta:focus-visible { outline-offset: 3px; }
   .gi-dedicated .mobile-booking-cta.is-managed:not(.is-visible) { transform: translateY(calc(100% + 24px)); opacity: 0; visibility: hidden; transition: transform .3s ease, opacity .2s ease, visibility 0s linear .3s; }
   /* Butonul se ascunde în dreptul footer-ului, deci spațiul rezervat pentru el nu mai trebuie. */
@@ -312,7 +305,7 @@
 /* ---------- Mobil ---------- */
 @media (max-width: 700px) {
   .gi-dedicated { --gi-radius: 24px; }
-  .gi-dedicated main p { font-size: 1.03rem; line-height: 1.6; }
+  .gi-dedicated main p { line-height: 1.6; }
   .gi-story-media { aspect-ratio: 4 / 3; }
 
   /* Rânduri care se derulează cu degetul: următorul card se vede pe margine, ca invitație. */
@@ -323,10 +316,10 @@
   .gi-page-hero { min-height: 90svh; }
   .gi-page-hero-content { --gi-hero-pad: 120px; padding-bottom: 84px; }
   .gi-page-hero-overlay { background:
-    linear-gradient(180deg, rgb(var(--shade) / .42) 0%, rgb(var(--shade) / 0) 20%),
-    linear-gradient(0deg, rgb(var(--shade) / .78) 0%, rgb(var(--shade) / .56) 36%, rgb(var(--shade) / .2) 62%, rgb(var(--shade) / 0) 82%); }
+    linear-gradient(180deg, rgb(var(--shade) / calc(.3 * var(--veil))) 0%, rgb(var(--shade) / 0) 20%),
+    linear-gradient(0deg, rgb(var(--shade) / calc(.42 * var(--veil))) 0%, rgb(var(--shade) / calc(.3 * var(--veil))) 36%, rgb(var(--shade) / calc(.1 * var(--veil))) 62%, rgb(var(--shade) / 0) 82%); }
   /* Pe telefon textul ocupă toată lățimea: umbra nu se mai stinge spre dreapta. */
-  .gi-page-hero-content::before { -webkit-mask-image: none; mask-image: none; background: linear-gradient(180deg, rgb(var(--shade) / 0) 0, rgb(var(--shade) / .58) 64px, rgb(var(--shade) / .36) 55%, rgb(var(--shade) / 0) 100%); }
+  .gi-page-hero-content::before { -webkit-mask-image: none; mask-image: none; background: linear-gradient(180deg, rgb(var(--shade) / 0) 0, rgb(var(--shade) / calc(.62 * var(--veil))) 64px, rgb(var(--shade) / calc(.52 * var(--veil))) 60%, rgb(var(--shade) / calc(.4 * var(--veil))) 100%); }
   .gi-page-hero-actions { flex-direction: column; align-items: stretch; gap: 6px; margin-top: 24px; }
   .gi-page-hero-actions .gi-hero-link { align-self: center; }
 
@@ -334,15 +327,15 @@
   .gi-facts li { padding: 16px; }
 
   .gi-included-garden .gi-check-list { grid-template-columns: 1fr; gap: 10px; }
-  .gi-included h3 { font-size: 1.35rem; }
+  .gi-included h3 { font-size: 26px; }
 
   .gi-dedicated .gi-page-reviews blockquote { border: 0; border-radius: var(--gi-radius); padding: 22px; background: var(--cream); }
-  .gi-dedicated .gi-page-reviews blockquote > p { font-size: 1.08rem; }
+  .gi-dedicated .gi-page-reviews blockquote > p { font-size: 21px; }
   .gi-dedicated .gi-page-reviews .home-review-cards > * { flex-basis: 84%; }
 
   .gi-prices-band { padding: 28px 22px 24px; }
   .gi-price-list div { flex-direction: column; align-items: flex-start; gap: 2px; padding: 14px 0; }
-  .gi-price-list dt { font-size: .95rem; }
+  .gi-price-list dt { font-size: var(--fs-ui); }
   .gi-prices-actions { flex-direction: column; align-items: stretch; gap: 4px; }
   .gi-prices-actions .gi-hero-link { align-self: center; }
 
@@ -351,17 +344,17 @@
   .gi-location-actions .button { width: 100%; }
   .gi-distances li { padding: 18px; }
 
-  .gi-related-body strong { font-size: 1.3rem; }
+  .gi-related-body strong { font-size: 26px; }
   .gi-related-arrow { top: 10px; right: 10px; }
 
   .gi-closing { padding: 88px 0; margin-inline: 8px; }
-  .gi-closing::before { background: radial-gradient(95% 60% at 50% 50%, rgb(var(--shade) / .6) 0%, rgb(var(--shade) / .26) 75%, rgb(var(--shade) / 0) 100%), linear-gradient(180deg, rgb(var(--shade) / .28) 0%, rgb(var(--shade) / .46) 100%); }
+  .gi-closing::before { background: radial-gradient(95% 60% at 50% 50%, rgb(var(--shade) / calc(.64 * var(--veil))) 0%, rgb(var(--shade) / calc(.36 * var(--veil))) 75%, rgb(var(--shade) / 0) 100%), linear-gradient(180deg, rgb(var(--shade) / calc(.2 * var(--veil))) 0%, rgb(var(--shade) / calc(.44 * var(--veil))) 100%); }
   .gi-closing-actions { flex-direction: column; align-items: stretch; gap: 6px; width: 100%; }
   .gi-closing-actions .gi-hero-link { align-self: center; }
 }
 
 /* ---------- Înapoi la rezervare (finalul fiecărei pagini dedicate) ---------- */
-.gi-back-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 22px; color: rgba(255, 255, 255, .92); font-size: 15px; font-weight: 600; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .4); text-underline-offset: .3em; }
+.gi-back-link { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; margin-top: 22px; color: #fff; font-size: var(--fs-ui); font-weight: 600; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .4); text-underline-offset: .3em; }
 .gi-back-link:hover { text-decoration-color: var(--accent); }
 .gi-back-link .gi-icon { width: 18px; height: 18px; }
 
@@ -370,7 +363,7 @@
 .gi-calendar-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 @media (max-width: 900px) { .gi-calendar-list { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 560px) { .gi-calendar-list { grid-template-columns: 1fr; } }
-.gi-calendar-list li { display: grid; gap: 6px; align-content: start; padding: 20px 22px; border-radius: var(--gi-radius-sm); background: var(--cream); }
-.gi-calendar-list strong { font-family: var(--display); font-size: 1.25rem; font-weight: 500; color: var(--forest-deep); }
-.gi-calendar-list small { font-size: 14px; color: var(--text-2); }
-.gi-calendar-tag { justify-self: start; padding: 3px 10px; border-radius: 999px; background: var(--paper); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--sun-deep); /* chihlimbar: 5,3:1 pe hârtie */ }
+.gi-calendar-list li { display: grid; gap: 6px; align-content: start; padding: 22px 24px; border-radius: var(--gi-radius-sm); background: var(--cream); }
+.gi-calendar-list strong { font-family: var(--display); font-size: 25px; line-height: 1.2; font-weight: 500; color: var(--forest-deep); }
+.gi-calendar-list small { font-size: var(--fs-note); color: var(--text-2); }
+.gi-calendar-tag { justify-self: start; padding: 4px 12px; border-radius: 999px; background: var(--paper); font-size: var(--fs-label); font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--sun-deep); /* chihlimbar: 5,3:1 pe hârtie */ }
