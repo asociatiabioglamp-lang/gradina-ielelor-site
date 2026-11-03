@@ -118,12 +118,16 @@ const NOUA = ['bungalow', 'festivaluri-si-tabere', 'evenimente-private', 'despre
   notice = await apasa('1. Creează');
   ok(/Creată ciornă: „Bungalow”/.test(notice), 'după ce adresa se eliberează, Bungalow se creează');
 
-  // 9b. Pagină în coșul de gunoi: recunoscută, fără duplicat
+  // 9b. Pagină veche în coșul de gunoi: rămâne acolo, se creează una nouă alături
   await ajutor('gi_cos=despre-noi');
-  notice = await apasa('1. Creează');
-  ok(/Despre noi[^.]*coșul de gunoi/.test(notice), 'pagina din coș e recunoscută (mesaj), fără pagină nouă');
   r = await stare();
   ok(r.some(x => x[0] === '/despre-noi/' && /coș/.test(x[1])), 'tabelul arată pagina din coș');
+  notice = await apasa('1. Creează');
+  ok(/Despre noi[^.]*coșul de gunoi rămâne acolo[^.]*creez una nouă/.test(notice) && /Creată ciornă: „Despre noi”/.test(notice), 'pagina veche din coș rămâne, se creează una nouă');
+  r = await stare();
+  ok(r.some(x => x[0] === '/despre-noi/' && /ciornă \(creată de plugin\)/.test(x[1])), 'tabelul arată acum pagina nouă (ciornă)');
+  notice = await apasa('1. Creează');
+  ok(/\/despre-noi\/\) există deja/.test(notice) && !/Creată ciornă: „Despre noi”/.test(notice), 'a doua apăsare nu mai creează încă una');
 
   // 9c. Blocare la dublă apăsare
   await ajutor('gi_lock=1');

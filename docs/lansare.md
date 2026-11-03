@@ -1,6 +1,6 @@
 # Lansarea site-ului nou, pas cu pas
 
-Data: 31.10.2026. Versiunea care se lansează: **pluginul Grădina Ielelor 1.3.1** (sau 1.3.x, dacă apar corecturi; Claude îți spune exact numărul).
+Data: 31.10.2026. Versiunea care se lansează: **pluginul Grădina Ielelor 1.3.2** (sau 1.3.x, dacă apar corecturi; Claude îți spune exact numărul).
 
 ## 0. Pe scurt
 
@@ -37,7 +37,7 @@ Lansarea (D0) este **sâmbătă 7.11.2026, ora 10:00**. Lansarea nu atinge plă�
 | D+1 … D+7 | 8–14.11 | Urmărire zilnică (secțiunea 9) | 10 min/zi |
 
 ### D-7 — sâmbătă 31.10: pregătire
-- **[CLAUDE]** Arhiva automată (`tools/build-zip.sh`), verificările din GitHub (`.github/workflows/build.yml`), documentele `docs/lansare.md` și `docs/independenta.md`. Arhiva de test 1.3.1, cu amprenta ei SHA-256.
+- **[CLAUDE]** Arhiva automată (`tools/build-zip.sh`), verificările din GitHub (`.github/workflows/build.yml`), documentele `docs/lansare.md` și `docs/independenta.md`. Arhiva de test 1.3.2, cu amprenta ei SHA-256.
 - **[TU]** Citește secțiunile 0–3 din acest document (15 min).
 - **[TU]** Verifică dacă intri, cu contul tău, în: zona de client Romarg, cPanel, WordPress admin pe staging și pe live, NETOPIA, GitHub (tabelul din `docs/independenta.md`, coloana „Cum verifici”) (20 min).
 - **[TU]** NETOPIA: descarcă **ambele** fișiere de test (`.cer` și `.key`) de la **același punct de vânzare** (Procedura B, pasul B1). Le păstrezi pe calculator; nu le trimiți nimănui, nici lui Claude (10 min).
@@ -124,17 +124,17 @@ Arhiva se construiește automat în GitHub, verificată (sintaxa PHP pe PHP 7.4 
 
 **Varianta 1, pentru versiunea aprobată (Release):**
 1. **[TU]** Deschide depozitul în GitHub: `asociatiabioglamp-lang/gradina-ielelor-site`.
-2. În dreapta, **Releases** → versiunea anunțată de Claude (ex. `v1.3.1`).
-3. La **Assets**, descarcă `gradina-ielelor-integration-1.3.1.zip`.
+2. În dreapta, **Releases** → versiunea anunțată de Claude (ex. `v1.3.2`).
+3. La **Assets**, descarcă `gradina-ielelor-integration-1.3.2.zip`.
 
 **Varianta 2, pentru o versiune de test (înainte de aprobare):**
 1. **[TU]** În depozit, fila **Actions** → **Build** → rularea cu bifă verde de pe ramura indicată de Claude.
-2. Jos, la **Artifacts**, descarcă `gradina-ielelor-integration-1.3.1.zip`.
+2. Jos, la **Artifacts**, descarcă `gradina-ielelor-integration-1.3.2.zip`.
 
 **Atenție:**
 - Arhiva se încarcă în WordPress **așa cum e**. Nu o dezarhiva. Dacă folosești Safari pe Mac, el dezarhivează singur fișierele; descarcă cu Chrome sau Firefox.
 - O arhivă cu **„INCOMPLET”** în nume este doar pentru test. **Nu o instala** (îi lipsesc poze).
-- **Amprenta (opțional, 1 minut):** pe Windows, în folderul Descărcări: clic dreapta → **Deschide în Terminal**, apoi scrie `Get-FileHash .\gradina-ielelor-integration-1.3.1.zip`. Primele și ultimele 6 caractere trebuie să fie aceleași cu ale amprentei SHA-256 din GitHub (Release sau rezumatul rulării). Dacă diferă, nu instala și spune-i lui Claude.
+- **Amprenta (opțional, 1 minut):** pe Windows, în folderul Descărcări: clic dreapta → **Deschide în Terminal**, apoi scrie `Get-FileHash .\gradina-ielelor-integration-1.3.2.zip`. Primele și ultimele 6 caractere trebuie să fie aceleași cu ale amprentei SHA-256 din GitHub (Release sau rezumatul rulării). Dacă diferă, nu instala și spune-i lui Claude.
 
 ---
 
@@ -189,10 +189,10 @@ Secțiunea 2, pentru staging. Nu treci mai departe fără el.
 
 ### A2. Încarcă arhiva
 1. **Module (Plugins)** → **Adaugă modul (Add New Plugin)** → sus, **Încarcă modul (Upload Plugin)**.
-2. **Alege fișierul** → `gradina-ielelor-integration-1.3.1.zip` → **Instalează acum (Install Now)**.
+2. **Alege fișierul** → `gradina-ielelor-integration-1.3.2.zip` → **Instalează acum (Install Now)**.
 3. Dacă pluginul există deja, WordPress îți arată versiunea veche și pe cea nouă. Apasă **Înlocuiește versiunea curentă cu cea încărcată (Replace current with uploaded)**.
 4. Apasă **Activează modulul (Activate Plugin)** (dacă nu era deja activ).
-5. Verifică în **Module**: „Grădina Ielelor — Site + BRW”, versiunea 1.3.1, activ.
+5. Verifică în **Module**: „Grădina Ielelor — Site + BRW”, versiunea 1.3.2, activ.
 
 Din acest moment, magazinul și paginile de produs primesc stilul nou. E normal. Paginile obișnuite nu se schimbă până nu le alegi șablonul.
 
@@ -219,7 +219,7 @@ FGO e platforma prin care clientul primește factura. Staging-ul e o copie a liv
 Pe site-ul live, verificat la 31.10.2026, toate paginile de mai jos folosesc **„Șablon implicit” (Default template)**, cu conținut Elementor. Pe staging (o copie a live-ului) ar trebui să fie la fel. Verifică la două pagini (Acasă și Glamping): **Pagini (Pages)** → treci cu mouse-ul peste titlu → **Editare rapidă (Quick Edit)** → câmpul **Șablon (Template)**. Dacă scrie altceva decât „Șablon implicit”, notează și spune-i lui Claude.
 
 ### A5. Paginile
-**Cu unealta „Pregătește paginile” (pluginul 1.3.1), pe scurt:** **Setări → Grădina Ielelor**, secțiunea **Pregătește paginile**. Apeși butoanele **în ordine**: **1** creează paginile care lipsesc, ca ciorne, cu șablonul și textul potrivit; **2** pune șabloanele pe paginile existente (și pe pagina principală); **3** pune textul nou la Contact (cel vechi, Elementor, se păstrează); **4** publică paginile create. Tabelul de deasupra butoanelor arată ce există și în ce stare. **„Revino”** desface tot (șabloane, text Contact, publicări), fără să șteargă nimic. Butoanele nu înlocuiesc și nu șterg conținut existent, în afară de textul de la Contact, care se păstrează în pagină. Procedura manuală de mai jos rămâne ca rezervă.
+**Cu unealta „Pregătește paginile” (pluginul 1.3.2), pe scurt:** **Setări → Grădina Ielelor**, secțiunea **Pregătește paginile**. Apeși butoanele **în ordine**: **1** creează paginile care lipsesc, ca ciorne, cu șablonul și textul potrivit; **2** pune șabloanele pe paginile existente (și pe pagina principală); **3** pune textul nou la Contact (cel vechi, Elementor, se păstrează); **4** publică paginile create. Tabelul de deasupra butoanelor arată ce există și în ce stare. **„Revino”** desface tot (șabloane, text Contact, publicări), fără să șteargă nimic. Butoanele nu înlocuiesc și nu șterg conținut existent, în afară de textul de la Contact, care se păstrează în pagină. Procedura manuală de mai jos rămâne ca rezervă.
 
 **Procedura manuală (rezervă):**
 
@@ -447,7 +447,7 @@ Ca să revii la designul nou: **Activează** pluginul. Paginile își păstreaz�
 **Pagini** → **Editare rapidă** pe pagina respectivă → **Șablon: Șablon implicit (Default template)** → **Actualizează**. Golește cache-ul. La o pagină nouă: **Stare: Ciornă**.
 
 ### R3. Versiunea anterioară a pluginului (5 minute)
-Dacă o versiune nouă (ex. 1.3.2) strică ceva ce mergea în 1.3.1: descarcă 1.3.1 din **Releases** și instaleaz-o ca la pasul A2, cu **Înlocuiește versiunea curentă cu cea încărcată**.
+Dacă o versiune nouă (ex. 1.3.3) strică ceva ce mergea în 1.3.2: descarcă 1.3.2 din **Releases** și instaleaz-o ca la pasul A2, cu **Înlocuiește versiunea curentă cu cea încărcată**.
 
 ### R4. Restaurarea backup-ului (ultima soluție)
 Softaculous → **Instalări** → rândul site-ului → **Backups** → **Restore**. **Atenție:** pe live, restaurarea șterge comenzile și rezervările primite după backup. Folosește-o numai dacă R1 nu ajută, și numai după ce ai notat comenzile noi.

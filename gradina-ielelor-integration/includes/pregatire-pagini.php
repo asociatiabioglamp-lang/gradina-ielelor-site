@@ -135,11 +135,13 @@ function gi_pagini_creeaza() {
     kses_remove_filters(); // textul se salvează neschimbat (blocuri Detalii, tabele, clase)
     foreach (gi_pagini_spec() as $slug => $s) {
         $page = gi_pagini_find($slug);
-        if ($page) {
-            $mesaje[] = ('trash' === $page->post_status)
-                ? '„' . $s['title'] . '” (/' . $slug . '/) e în coșul de gunoi: restaureaz-o din Pagini → Coș. Nu o creez a doua oară.'
-                : '„' . $s['title'] . '” (/' . $slug . '/) există deja: nu o ating.';
+        if ($page && 'trash' !== $page->post_status) {
+            $mesaje[] = '„' . $s['title'] . '” (/' . $slug . '/) există deja: nu o ating.';
             continue;
+        }
+        if ($page) {
+            // Pagina veche din coș rămâne acolo, neatinsă; adresa ei e „adresa__trashed”, deci cea nouă o poate lua.
+            $mesaje[] = '„' . $s['title'] . '”: pagina veche din coșul de gunoi rămâne acolo, neatinsă; creez una nouă. Nu o restaura din coș: ar apărea două pagini cu aceeași adresă.';
         }
         $content = gi_pagini_content($s['file']);
         if ($s['file'] && '' === $content) {
