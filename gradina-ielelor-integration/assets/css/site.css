@@ -17,6 +17,7 @@ body.gi-one-page{margin:0;background:#fffdf8;color:#22343f;font-family:Inter,ui-
 .gi-site .skip-link{position:fixed;z-index:1000;top:10px;left:10px;padding:12px 18px;background:#fff;color:var(--forest);transform:translateY(-160%);border-radius:8px}
 .gi-site .skip-link:focus{transform:translateY(0)}
 .gi-site h1,.gi-site h2,.gi-site h3,.gi-site p{margin-top:0}
+.gi-site h1,.gi-site h2,.gi-site h3{color:inherit}
 .gi-site h1,.gi-site h2{font-family:var(--display);font-weight:400;letter-spacing:-.035em}
 .gi-site h2{margin-bottom:24px;font-size:clamp(42px,4.2vw,64px);line-height:1.03}
 .gi-site h1 em,.gi-site h2 em{font-weight:400}
@@ -66,7 +67,7 @@ body.admin-bar .gi-site .site-header{top:32px}
 .gi-site .home-hero-overlay{z-index:1;background:linear-gradient(90deg,rgb(var(--shade) / .62) 0%,rgb(var(--shade) / .22) 52%,rgb(var(--shade) / .02) 84%),linear-gradient(0deg,rgb(var(--shade) / .28),transparent 52%)}
 .gi-site .home-hero-content{position:relative;z-index:2;padding-top:96px;padding-bottom:40px}
 .gi-site .home-hero-content>*{max-width:600px}
-.gi-site .home-hero-content h1{margin:18px 0 20px;font-size:clamp(64px,5.3vw,76px);line-height:.96;letter-spacing:-.045em;text-shadow:0 2px 24px rgba(0,0,0,.16)}
+.gi-site .home-hero-content h1{color:#fff;margin:18px 0 20px;font-size:clamp(64px,5.3vw,76px);line-height:.96;letter-spacing:-.045em;text-shadow:0 2px 24px rgba(0,0,0,.16)}
 .gi-site .home-hero-content h1 em{color:var(--sun-light)}
 .gi-site .home-hero-content>p{margin-bottom:32px;color:rgba(255,255,255,.9);font-size:16px;line-height:1.7}
 .gi-site .home-hero-actions{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
