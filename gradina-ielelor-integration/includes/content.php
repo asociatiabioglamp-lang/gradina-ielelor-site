@@ -39,8 +39,10 @@ function gi_experiences() {
             'booking_label' => 'Rezervă glamping',
             'facilities' => array('4 unități de glamping', '2 + 1 oaspeți', 'Băi și dușuri comune', 'Loc de joacă și lac', 'Două bucătării dotate', 'Hamace și vetre de foc', 'Wi-Fi și două terase', 'Parcare gratuită'),
             'images' => array(
-                array('src' => 'glamping-exterior-soare-960.webp', 'alt' => 'Cort de glamping cu foișor alb, două scaune și un covor, într-o zi însorită', 'caption' => 'Cu masă și scaune la intrare'),
-                array('src' => 'glamping-cort-margarete-960.webp', 'alt' => 'Cort de glamping într-o zi însorită, cu margarete în prim-plan', 'caption' => 'Soare și margarete'),
+                array('src' => 'glamping-platforme-apus-960.webp', 'alt' => 'Corturi de glamping pe platforme de lemn, la apus, cu cerul colorat în fundal', 'caption' => 'Corturile stau pe platforme de lemn'),
+                array('src' => 'glamping-platforme-camp-960.webp', 'alt' => 'Corturi de glamping pe platforme de lemn, într-o zi senină, cu un copac în prim-plan', 'caption' => 'Corturile, într-o zi senină'),
+                array('src' => 'glamping-platforma-intrare-960.webp', 'alt' => 'Intrarea unui cort de glamping, pe platformă de lemn, cu două scaune, o măsuță și un covor', 'caption' => 'Masă și scaune la intrare'),
+                array('src' => 'glamping-interior-pat-720.webp', 'alt' => 'Interiorul unui cort de glamping, cu pat dublu, perne galbene, noptieră și covoare', 'caption' => 'Pat adevărat, cu lenjerie'),
                 array('src' => 'glamping-interior-paturi-720.webp', 'alt' => 'Interiorul unui cort de glamping, cu două paturi, comodă, noptieră și covoare', 'caption' => 'Interior cu paturi adevărate'),
                 array('src' => 'glamping-interior-comoda-720.webp', 'alt' => 'Interiorul unui cort de glamping, cu pat, comodă, covor și un puf', 'caption' => 'Mobilier în interior'),
             ),
@@ -101,7 +103,7 @@ function gi_reviews() {
 function gi_offer_cards() {
     return array(
         'bungalow' => array('text' => 'Baie proprie, terasă și liniște, pe malul lacului mare.', 'price' => 'de la 350 lei / noapte', 'image' => 'bungalow-munte-card-960.webp', 'alt' => 'Bungalow în Grădina Ielelor'),
-        'glamping' => array('text' => 'Corturi cu pat, pe platformă de lemn, cu muntele la intrare.', 'price' => 'de la 195 lei / noapte', 'image' => 'glamping-card-960.webp', 'alt' => 'Corturi de glamping cu Munții Făgăraș în fundal'),
+        'glamping' => array('text' => 'Corturi cu pat, pe platformă de lemn, cu muntele la intrare.', 'price' => 'de la 195 lei / noapte', 'image' => 'glamping-platforme-camp-960.webp', 'alt' => 'Corturi de glamping pe platforme de lemn, într-o zi senină'),
         'camping' => array('text' => 'Cu cortul, cu rulota sau cu autorulota: loc lângă lac, dușuri calde și bucătării comune.', 'price' => '80 lei / noapte', 'image' => 'camping-card-960.webp', 'alt' => 'Corturi în campingul Grădina Ielelor, cu Munții Făgăraș în fundal'),
         'festivaluri' => array('text' => 'Festivaluri, tabere de copii, boot camp și retreaturi, pe un domeniu păzit.', 'price' => 'Ofertă la cerere', 'image' => 'evenimente-card-960.webp', 'alt' => 'Oaspeți la un eveniment în aer liber, cu Munții Făgăraș în fundal'),
         'private' => array('text' => 'Nunți, botezuri, majorate și petreceri de familie, în aer liber, cu munții în față.', 'price' => 'Ofertă la cerere', 'image' => 'intrare-munte-960.webp', 'alt' => 'Arcada din lemn cu numele Grădinii, cu Munții Făgăraș în fundal'),

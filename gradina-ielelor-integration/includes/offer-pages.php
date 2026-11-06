@@ -38,17 +38,45 @@ function gi_offer_page($key) {
     return isset($pages[$key]) ? $pages[$key] : null;
 }
 
+/**
+ * Spațiile comune sunt ale tuturor oaspeților, la orice ofertă (glamping, camping și rulote, bungalow, festivaluri, evenimente).
+ * Pozele se repetă pe fiecare pagină de ofertă, după pozele specifice locului. Sunt din Drive, folderul „GI”.
+ */
+function gi_common_facilities() {
+    $data = array(
+        'title' => 'Spațiile comune, ale tuturor',
+        'intro' => 'Oricare ai alege, ai acces la ele: băile, bucătăriile, vetrele de foc, locul de joacă, terasele și lacul.',
+        'images' => array(
+            array('src' => 'spatii-lac-ponton-960.webp', 'alt' => 'Lacul mare cu un ponton de lemn, oglindind munții și cerul', 'caption' => 'Lacul mare și pontonul'),
+            array('src' => 'spatii-terasa-lac-apus-960.webp', 'alt' => 'Terasa din lemn de pe lac, la apus, sub o ghirlandă de lumini', 'caption' => 'Terasa de pe lac, la apus'),
+            array('src' => 'terasa-lemn-interior-960.webp', 'alt' => 'Terasa acoperită din lemn, cu fotolii-puf și scaune suspendate', 'caption' => 'Terasa de pe lac, pe dinăuntru'),
+            array('src' => 'spatii-terasa-metal-960.webp', 'alt' => 'Terasa cu acoperiș metalic, cu mese și scaune, lângă locul de joacă', 'caption' => 'Terasa metalică'),
+            array('src' => 'spatii-joaca-nisip-960.webp', 'alt' => 'Loc de joacă pentru copii, cu o cutie cu nisip și leagăne, la apus', 'caption' => 'Locul de joacă, cu nisip și leagăne'),
+            array('src' => 'spatii-joaca-pajiste-960.webp', 'alt' => 'Locul de joacă de pe pajiște, cu leagăne, sub sălcii, cu munții în fundal', 'caption' => 'Locul de joacă, pe pajiște'),
+            array('src' => 'vatra-seara-960.webp', 'alt' => 'Vetre de foc cu bănci și mese, sub ghirlande de lumini, la apus', 'caption' => 'Vetrele de foc, seara'),
+            array('src' => 'vatra-ziua-960.webp', 'alt' => 'Vatră de foc din pietre, cu bănci din lemn, sub un cer luminos', 'caption' => 'Vatră de foc, ziua'),
+            array('src' => 'bucatarie-comuna-960.webp', 'alt' => 'Bucătărie în aer liber, sub o pergolă de lemn, cu tejghea și taburete din buturugi', 'caption' => 'Bucătăria din exterior'),
+            array('src' => 'spatii-bucatarie-interior-960.webp', 'alt' => 'Bucătărie interioară, cu aragaz, blat de lucru și masă cu bănci', 'caption' => 'Bucătăria din interior'),
+            array('src' => 'spatii-bai-exterior-960.webp', 'alt' => 'Clădirea băilor, cu chiuvete în aer liber pe un perete alb', 'caption' => 'Băile'),
+            array('src' => 'spatii-dusuri-960.webp', 'alt' => 'Cabine de duș cu perdele albe și pereți placați cu piatră', 'caption' => 'Dușurile'),
+        ),
+    );
+
+    return apply_filters('gi_common_facilities', $data);
+}
+
 function gi_offer_pages() {
     $experiences = gi_experiences();
     $pages = array();
 
     $pages['glamping'] = array(
+        'common_intro' => 'Dormi în glamping, iar spațiile comune sunt și ale tale: băile, bucătăriile, vetrele de foc, locul de joacă, terasele și lacul.',
         'title' => 'Glamping',
         'booking_type' => 'glamping',
         'cta' => 'Verifică disponibilitatea',
         'hero' => array(
-            'image' => 'glamping-munte-1600.webp',
-            'alt' => 'Corturile de glamping, cu Munții Făgăraș în fundal',
+            'image' => 'glamping-hero-platforme-1280.webp',
+            'alt' => 'Corturi de glamping pe platforme de lemn, într-o zi senină',
             'h1' => 'Glamping în',
             'h1_em' => 'Grădina Ielelor',
             'lead' => 'Confort și intimitate în natură, la poalele Munților Făgăraș. Nu ai nevoie de echipament ca să dormi la munte.',
@@ -67,8 +95,8 @@ function gi_offer_pages() {
                 'Te culci comod, te trezești cu muntele în față și ai timp doar pentru tine.',
                 'Ziua ai la dispoziție două lacuri, unul în care se înoată, și o terasă acoperită din lemn, construită pe apă. Seara, focul se aprinde în vetrele amenajate, iar hamacele sunt la câțiva pași.',
             ),
-            'image' => 'glamping-exterior-soare-960.webp',
-            'alt' => 'Cort de glamping cu foișor alb, două scaune și un covor, într-o zi însorită',
+            'image' => 'glamping-platforma-scaune-960.webp',
+            'alt' => 'Cort de glamping pe platformă de lemn, cu două scaune, o măsuță și un covor la intrare',
         ),
         'gallery' => array('title' => 'Vezi exact unde dormi', 'images' => $experiences['glamping']['images']),
         'included' => array(
@@ -118,15 +146,16 @@ function gi_offer_pages() {
             array('q' => 'Am curent și internet?', 'a' => 'Da. Domeniul funcționează pe energie proprie, solară și GPL, așa că ai curent, apă caldă și internet. Lasă acasă doar aparatele electrice mari.'),
             array('q' => 'Cât costă o noapte?', 'a' => 'De la 195 lei în timpul săptămânii și 235 lei vineri și sâmbătă. Patul suplimentar costă 55 lei pe noapte. Prețul final îl vezi când alegi datele.'),
         ),
-        'closing' => array('title' => 'Gata de o noapte', 'title_em' => 'sub cerul Făgărașului?', 'image' => 'closing-glamping-1600.webp'),
+        'closing' => array('title' => 'Gata de o noapte', 'title_em' => 'sub cerul Făgărașului?', 'image' => 'closing-glamping-platforme-1280.webp'),
         'seo' => array(
             'title' => 'Glamping Brașov, sub Munții Făgăraș | Grădina Ielelor',
             'description' => 'Corturi de glamping cu pat adevărat, pe platformă de lemn, în Sâmbăta de Sus, la poalele Munților Făgăraș. Două lacuri, dușuri calde non-stop. Rezervă online.',
-            'image' => 'glamping-munte-1600.webp',
+            'image' => 'glamping-hero-platforme-1280.webp',
         ),
     );
 
     $pages['bungalow'] = array(
+        'common_intro' => 'Bungalow-ul are baie și toaletă proprii. Spațiile comune sunt și ale tale, la fel ca ale tuturor oaspeților.',
         'title' => 'Bungalow',
         'booking_type' => 'bungalow',
         'cta' => 'Verifică disponibilitatea',
@@ -156,11 +185,11 @@ function gi_offer_pages() {
         ),
         // Fotografiile alese de proprietară (3.11.2026, din Drive, folderul „GI”): bungalow-ul sub cer senin, malul lacului, interiorul.
         'gallery' => array('title' => 'Vezi unde te cazezi', 'images' => array(
-            array('src' => 'lac-ponton-1280.webp', 'alt' => 'Lacul cu pontonul din lemn, cu Munții Făgăraș în fundal', 'caption' => 'Lacul și pontonul'),
             array('src' => 'bungalow-malul-lacului-960.webp', 'alt' => 'Malul lacului, cu bungalow-uri și un baldachin alb, sub cer și munți', 'caption' => 'Bungalow-urile, pe malul lacului'),
             array('src' => 'bungalow-dormitor-alb-960.webp', 'alt' => 'Dormitor cu două paturi albe într-un bungalow, cu jaluzele de lemn', 'caption' => 'Dormitorul'),
             array('src' => 'bungalow-relaxare-720.webp', 'alt' => 'Zona de relaxare dintr-un bungalow, cu canapea, covor și paravan de lemn', 'caption' => 'Zona de relaxare'),
             array('src' => 'bungalow-baie-720.webp', 'alt' => 'Baia unui bungalow, cu chiuvetă pe suport de lemn și oglindă', 'caption' => 'Baie proprie'),
+            array('src' => 'bungalow-lac-baldachin-1280.webp', 'alt' => 'Lacul cu reflexii, pontonul și Munții Făgăraș, văzute de lângă baldachinul de pe mal', 'caption' => 'Baldachinul de pe mal'),
         )),
         'included' => array(
             'title' => 'Tot ce-ți trebuie, nimic în plus',
@@ -218,6 +247,7 @@ function gi_offer_pages() {
     );
 
     $pages['camping'] = array(
+        'common_intro' => 'Cortul sau rulota sunt locul tău. Spațiile comune sunt ale tuturor, deci și ale tale.',
         'title' => 'Camping & rulote',
         'booking_type' => 'camping-cort',
         'cta' => 'Verifică disponibilitatea',
@@ -250,13 +280,10 @@ function gi_offer_pages() {
         ),
         'gallery' => array('title' => 'Vezi unde îți pui cortul sau rulota', 'images' => array(
             array('src' => 'camping-zona1-loc-cort-960.webp', 'alt' => 'Corturi sub sălcii, în zona 1 a campingului, cu ghivece cu flori și munții în fundal', 'caption' => 'Zona 1: loc de cort sub sălcii'),
+            array('src' => 'rulote-lac-munte-960.webp', 'alt' => 'Două rulote parcate lângă lac, cu munții în fundal, într-o zi cu soare', 'caption' => 'Rulote, lângă lac'),
             array('src' => 'camping-zona3-lac-960.webp', 'alt' => 'Lacul cu corturi răsfirate pe mal și Munții Făgăraș în fundal', 'caption' => 'Zona lacului: corturi pe mal'),
-            array('src' => 'vatra-ziua-960.webp', 'alt' => 'Vatră de foc din pietre, cu bănci din lemn, sub un cer luminos', 'caption' => 'Vatră de foc, cu bănci'),
-            array('src' => 'vatra-seara-960.webp', 'alt' => 'Vetre de foc cu bănci și mese, sub ghirlande de lumini, la apus', 'caption' => 'Vetrele, la apus'),
-            array('src' => 'bucatarie-comuna-960.webp', 'alt' => 'Bucătărie comună în aer liber, sub o pergolă de lemn, cu tejghea și taburete din buturugi', 'caption' => 'Bucătărie comună'),
-            array('src' => 'bai-chiuvete-960.webp', 'alt' => 'Chiuvete în aer liber, pe un perete alb, cu munții în fundal', 'caption' => 'Chiuvete și băi'),
-            array('src' => 'camping-day-960.webp', 'alt' => 'Corturi și sălcii în campingul Grădina Ielelor, cu Munții Făgăraș în fundal', 'caption' => 'Camping în zi însorită'),
-            array('src' => 'festival-lake-640.webp', 'alt' => 'Lacul cu pontonul din lemn, cu Munții Făgăraș în fundal', 'caption' => 'Acces la lac și ponton'),
+            array('src' => 'camping-lac-1280.webp', 'alt' => 'Lacul cu corturi pe malul din fund și munții reflectați în apă', 'caption' => 'Corturi pe malul lacului'),
+            array('src' => 'camping-lac-munte-1280.webp', 'alt' => 'Corturi pe malul lacului, cu Munții Făgăraș în fundal', 'caption' => 'Lacul, cu munții în față'),
         )),
         'included' => array(
             'title' => 'Tot ce-ți trebuie, nimic în plus',
@@ -318,6 +345,7 @@ function gi_offer_pages() {
     // Festivaluri & tabere (decizia din 31.10.2026). Surse: prezentările Festivaluri, Festival familie, Tabere
     // și fișa tehnică (docs/prezentari.md), pagina /festival/ de pe site-ul actual și docs/decizii.md.
     $pages['festivaluri'] = array(
+        'common_intro' => 'Și la festivaluri și tabere, spațiile comune sunt la îndemâna tuturor: băile, bucătăriile, vetrele de foc, locul de joacă, terasele și lacul.',
         'title' => 'Festivaluri & tabere',
         'booking_type' => '',
         'cta' => 'Cere ofertă',
@@ -364,7 +392,7 @@ function gi_offer_pages() {
             array('src' => 'camping-lac-munte-1280.webp', 'alt' => 'Corturi pe malul lacului, cu Munții Făgăraș în fundal', 'caption' => 'Corturi pe malul lacului'),
             array('src' => 'glamping-pajiste-960.webp', 'alt' => 'Corturi de glamping pe pajiște, cu Munții Făgăraș sub nori în fundal', 'caption' => 'Corturi de glamping'),
             array('src' => 'domeniu-aerian-1280.webp', 'alt' => 'Domeniul Grădina Ielelor văzut de sus, cu rulote și Munții Făgăraș în fundal', 'caption' => 'Domeniul, văzut de sus'),
-            array('src' => 'camping-sanitare-960.webp', 'alt' => 'Grupul sanitar, cu chiuvete și oglinzi', 'caption' => 'Grupuri sanitare fixe'),
+            array('src' => 'home-cer-corturi-1280.webp', 'alt' => 'Corturi de glamping pe iarbă, în număr mare, cu Munții Făgăraș în fundal', 'caption' => 'Corturi de glamping, la festivaluri'),
         )),
         'included' => array(
             'title' => 'Totul pe același teren',
@@ -443,6 +471,7 @@ function gi_offer_pages() {
     // Evenimente private (decizia din 31.10.2026). Surse: prezentarea „Boot camp” (formulele I și II, docs/prezentari.md),
     // pagina veche /gradina-ielelor-totul-despre-ea/evenimente/ (nunți, botezuri, majorate, seminarii, teambuilding) și docs/decizii.md.
     $pages['private'] = array(
+        'common_intro' => 'Și la evenimente, spațiile comune fac parte din loc: băile, bucătăriile, vetrele de foc, locul de joacă, terasele și lacul.',
         'title' => 'Evenimente private',
         'booking_type' => '',
         'cta' => 'Cere ofertă',
@@ -476,15 +505,11 @@ function gi_offer_pages() {
             'alt' => 'Arcada din lemn cu numele Grădinii, loc de fotografie, cu Munții Făgăraș în fundal',
         ),
         'gallery' => array('title' => 'Vezi locul', 'images' => array(
-            array('src' => 'vatra-seara-960.webp', 'alt' => 'Vetre de foc cu bănci și mese, sub ghirlande de lumini, la apus', 'caption' => 'Vetrele de foc, seara'),
-            array('src' => 'vatra-ziua-960.webp', 'alt' => 'Vatră de foc din pietre, cu bănci din lemn, sub un cer luminos', 'caption' => 'Vatră de foc, ziua'),
-            array('src' => 'bucatarie-comuna-960.webp', 'alt' => 'Bucătărie comună în aer liber, sub o pergolă de lemn, cu tejghea și taburete din buturugi', 'caption' => 'Bucătărie comună'),
-            array('src' => 'bai-chiuvete-960.webp', 'alt' => 'Chiuvete în aer liber, pe un perete alb, cu munții în fundal', 'caption' => 'Chiuvete pentru invitați'),
-            array('src' => 'bai-interior-720.webp', 'alt' => 'Interiorul băii, cu lavoare și duș, curat', 'caption' => 'Băi și dușuri'),
-            array('src' => 'toalete-720.webp', 'alt' => 'Toaletă curată în grupul sanitar al Grădinii', 'caption' => 'Toalete'),
-            array('src' => 'private-events-card-960.webp', 'alt' => 'Terasă acoperită din lemn, cu mese și scaune', 'caption' => 'Mese sub acoperiș'),
-            array('src' => 'glamping-interior-paturi-720.webp', 'alt' => 'Interiorul unui cort de glamping, cu două paturi, comodă și noptieră', 'caption' => 'Cazare pentru invitați'),
             array('src' => 'evenimente-apus-1280.webp', 'alt' => 'Apus de soare reflectat în lacul din Grădina Ielelor', 'caption' => 'Lacul, la apus'),
+            array('src' => 'bungalow-malul-lacului-960.webp', 'alt' => 'Malul lacului, cu bungalow-uri și un baldachin alb, sub cer și munți', 'caption' => 'Cazare: bungalow-uri pe malul lacului'),
+            array('src' => 'bungalow-dormitor-alb-960.webp', 'alt' => 'Dormitor cu două paturi albe într-un bungalow, cu jaluzele de lemn', 'caption' => 'Cazare: dormitor de bungalow'),
+            array('src' => 'glamping-interior-pat-720.webp', 'alt' => 'Interiorul unui cort de glamping, cu pat dublu, perne galbene, noptieră și covoare', 'caption' => 'Cazare: cort de glamping cu pat'),
+            array('src' => 'bungalow-lac-baldachin-1280.webp', 'alt' => 'Lacul cu reflexii, pontonul și Munții Făgăraș, văzute de lângă baldachinul de pe mal', 'caption' => 'Baldachinul de pe mal'),
         )),
         'included' => array(
             'title' => 'Ce găsești la noi',

@@ -13,6 +13,8 @@
 .gi-page-camping .gi-page-hero-media img { view-transition-name: gi-photo-camping; }
 .gi-page-festivaluri .gi-page-hero-media img { view-transition-name: gi-photo-festivaluri; }
 .gi-page-private .gi-page-hero-media img { view-transition-name: gi-photo-private; }
+/* Glamping: copacul din stânga e întunecat, corturile pe platforme sunt spre dreapta-jos; pe telefon arătăm partea cu corturile. */
+.gi-page-glamping .gi-page-hero-media img { object-position: 74% 78%; }
 ::view-transition-group(*) { animation-timing-function: cubic-bezier(.2, .8, .2, 1); }
 
 @media (prefers-reduced-motion: reduce) {
@@ -84,6 +86,7 @@
 .gi-dedicated main .eyebrow { font-size: var(--fs-label); color: var(--gi-eyebrow); }
 .gi-dedicated .gi-section-head { margin-bottom: clamp(22px, 3vw, 40px); }
 .gi-dedicated .gi-section-head h2 { margin-bottom: 0; }
+.gi-dedicated .gi-section-lead { max-width: 62ch; margin: 12px 0 0; font-size: var(--fs-lead); line-height: var(--lh-text); }
 
 /* Mai prietenos decât stilul compact al paginii principale: texte mai mari, butoane rotunjite. */
 .gi-dedicated .button { border-radius: 999px; min-height: 58px; padding: 15px 32px; font-size: var(--fs-ui); }
@@ -284,6 +287,12 @@
 @media (min-width: 701px) {
   .gi-dedicated .home-photo-gallery { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: clamp(150px, 17vw, 236px); }
   .gi-dedicated .home-photo-gallery > button:nth-child(6):last-child { grid-column: auto; }
+  /* 5, 8 sau 11 poze: prima ocupă 2×2, deci ultima se lățește pe două coloane și nu rămâne gol. */
+  .gi-dedicated .home-photo-gallery > button:nth-child(3n+2):last-child:not(:first-child) { grid-column: span 2; }
+  /* Încadrări: arătăm partea cu corturile, nu cerul. */
+  .gi-page-glamping .home-photo-gallery > button:nth-child(2) img { object-position: 50% 92%; }
+  .gi-page-camping .home-photo-gallery > button:nth-child(3) img { object-position: 50% 100%; }
+  .gi-page-camping .home-photo-gallery > button:nth-child(5) img { object-position: 50% 88%; }
 }
 
 /* ---------- Tabletă ---------- */

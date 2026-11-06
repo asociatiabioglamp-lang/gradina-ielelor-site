@@ -144,6 +144,20 @@ gi_part('header');
             </div>
         </section>
 
+        <?php $gi_common = gi_common_facilities(); ?>
+        <?php if (!empty($gi_common['images'])) : ?>
+        <section id="spatii-comune" class="gi-gallery-section gi-common gi-reveal" aria-labelledby="common-title">
+            <div class="container">
+                <div class="gi-section-head">
+                    <span class="eyebrow">Pentru toți oaspeții</span>
+                    <h2 id="common-title"><?php echo esc_html($gi_common['title']); ?></h2>
+                    <p class="gi-section-lead"><?php echo esc_html(!empty($gi_page['common_intro']) ? $gi_page['common_intro'] : $gi_common['intro']); ?></p>
+                </div>
+                <?php gi_render_gallery($gi_common['images'], 'Spațiile comune ale Grădinii'); ?>
+            </div>
+        </section>
+        <?php endif; ?>
+
         <section class="gi-included gi-reveal" aria-labelledby="included-title">
             <div class="container">
                 <div class="gi-section-head">
