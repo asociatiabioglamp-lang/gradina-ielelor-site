@@ -45,6 +45,7 @@ Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai 
 * Glamping: numai cele 4 glamping-uri permanente, pe platforme de lemn. Pozele cu corturi pe pământ și cele cu foișorul/umbrela albă au fost scoase de pe pagina Glamping, de pe cardul din prima pagină și de la închidere; ele rămân doar la festivaluri și evenimente.
 * Poză nouă de început la Glamping (corturi pe platforme, cer senin), poză nouă cu cortul pe platformă, cu masă și scaune la intrare.
 * Secțiune nouă „Spațiile comune” pe toate paginile de ofertă: băi, bucătării, vetre de foc, loc de joacă, terase, ponton și lac. Sunt ale tuturor oaspeților, inclusiv ai celor de la bungalow.
+* Galeriile specifice (Bungalow, Camping & rulote, Festivaluri, Evenimente private) păstrează numai pozele locului; grilă fără goluri la 5, 8 sau 11 poze.
 * Subsol: ambele adrese de email (rezervari@ și office@).
 
 = 1.3.4 =

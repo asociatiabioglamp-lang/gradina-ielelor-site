@@ -50,7 +50,7 @@ function gi_common_facilities() {
             array('src' => 'spatii-lac-ponton-960.webp', 'alt' => 'Lacul mare cu un ponton de lemn, oglindind munții și cerul', 'caption' => 'Lacul mare și pontonul'),
             array('src' => 'spatii-terasa-lac-apus-960.webp', 'alt' => 'Terasa din lemn de pe lac, la apus, sub o ghirlandă de lumini', 'caption' => 'Terasa de pe lac, la apus'),
             array('src' => 'terasa-lemn-interior-960.webp', 'alt' => 'Terasa acoperită din lemn, cu fotolii-puf și scaune suspendate', 'caption' => 'Terasa de pe lac, pe dinăuntru'),
-            array('src' => 'spatii-terasa-metal-960.webp', 'alt' => 'Terasa cu acoperiș metalic, cu mese și scaune, lângă locul de joacă', 'caption' => 'Terasa metalică'),
+            array('src' => 'spatii-terasa-metal-960.webp', 'alt' => 'Terasă acoperită cu structură metalică, cu mese și scaune, pe o punte de lemn', 'caption' => 'Terasa metalică'),
             array('src' => 'spatii-joaca-nisip-960.webp', 'alt' => 'Loc de joacă pentru copii, cu o cutie cu nisip și leagăne, la apus', 'caption' => 'Locul de joacă, cu nisip și leagăne'),
             array('src' => 'spatii-joaca-pajiste-960.webp', 'alt' => 'Locul de joacă de pe pajiște, cu leagăne, sub sălcii, cu munții în fundal', 'caption' => 'Locul de joacă, pe pajiște'),
             array('src' => 'vatra-seara-960.webp', 'alt' => 'Vetre de foc cu bănci și mese, sub ghirlande de lumini, la apus', 'caption' => 'Vetrele de foc, seara'),
@@ -189,7 +189,7 @@ function gi_offer_pages() {
             array('src' => 'bungalow-dormitor-alb-960.webp', 'alt' => 'Dormitor cu două paturi albe într-un bungalow, cu jaluzele de lemn', 'caption' => 'Dormitorul'),
             array('src' => 'bungalow-relaxare-720.webp', 'alt' => 'Zona de relaxare dintr-un bungalow, cu canapea, covor și paravan de lemn', 'caption' => 'Zona de relaxare'),
             array('src' => 'bungalow-baie-720.webp', 'alt' => 'Baia unui bungalow, cu chiuvetă pe suport de lemn și oglindă', 'caption' => 'Baie proprie'),
-            array('src' => 'bungalow-lac-baldachin-1280.webp', 'alt' => 'Lacul cu reflexii, pontonul și Munții Făgăraș, văzute de lângă baldachinul de pe mal', 'caption' => 'Baldachinul de pe mal'),
+            array('src' => 'bungalow-munte-card-960.webp', 'alt' => 'Bungalow cu terasă acoperită și mese cu scaune, cu munții în fundal', 'caption' => 'Bungalow, cu terasă acoperită'),
         )),
         'included' => array(
             'title' => 'Tot ce-ți trebuie, nimic în plus',
@@ -280,7 +280,7 @@ function gi_offer_pages() {
         ),
         'gallery' => array('title' => 'Vezi unde îți pui cortul sau rulota', 'images' => array(
             array('src' => 'camping-zona1-loc-cort-960.webp', 'alt' => 'Corturi sub sălcii, în zona 1 a campingului, cu ghivece cu flori și munții în fundal', 'caption' => 'Zona 1: loc de cort sub sălcii'),
-            array('src' => 'rulote-lac-munte-960.webp', 'alt' => 'Două rulote parcate lângă lac, cu munții în fundal, într-o zi cu soare', 'caption' => 'Rulote, lângă lac'),
+            array('src' => 'rulote-lac-munte-960.webp', 'alt' => 'Două rulote parcate lângă lac, cu munții în fundal', 'caption' => 'Rulote, lângă lac'),
             array('src' => 'camping-zona3-lac-960.webp', 'alt' => 'Lacul cu corturi răsfirate pe mal și Munții Făgăraș în fundal', 'caption' => 'Zona lacului: corturi pe mal'),
             array('src' => 'camping-lac-1280.webp', 'alt' => 'Lacul cu corturi pe malul din fund și munții reflectați în apă', 'caption' => 'Corturi pe malul lacului'),
             array('src' => 'camping-lac-munte-1280.webp', 'alt' => 'Corturi pe malul lacului, cu Munții Făgăraș în fundal', 'caption' => 'Lacul, cu munții în față'),

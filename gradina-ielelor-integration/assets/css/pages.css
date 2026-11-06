@@ -290,9 +290,10 @@
   /* 5, 8 sau 11 poze: prima ocupă 2×2, deci ultima se lățește pe două coloane și nu rămâne gol. */
   .gi-dedicated .home-photo-gallery > button:nth-child(3n+2):last-child:not(:first-child) { grid-column: span 2; }
   /* Încadrări: arătăm partea cu corturile, nu cerul. */
-  .gi-page-glamping .home-photo-gallery > button:nth-child(2) img { object-position: 50% 92%; }
-  .gi-page-camping .home-photo-gallery > button:nth-child(3) img { object-position: 50% 100%; }
-  .gi-page-camping .home-photo-gallery > button:nth-child(5) img { object-position: 50% 88%; }
+  .gi-page-glamping #galerie .home-photo-gallery > button:nth-child(2) img { object-position: 50% 92%; }
+  .gi-page-camping #galerie .home-photo-gallery > button:nth-child(3) img { object-position: 50% 100%; }
+  .gi-page-camping #galerie .home-photo-gallery > button:nth-child(5) img { object-position: 50% 88%; }
+  .gi-page-festivaluri #galerie .home-photo-gallery > button:nth-child(8) img { object-position: 50% 100%; }
 }
 
 /* ---------- Tabletă ---------- */
