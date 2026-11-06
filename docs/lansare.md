@@ -22,18 +22,16 @@ Data: 31.10.2026. Versiunea care se lansează: **pluginul Grădina Ielelor 1.3.4
 
 ## 1. Calendarul D-7 → D0
 
-Lansarea (D0) este **sâmbătă 14.11.2026, ora 10:00** (amânată de la 7.11 în D-1, 6.11, pentru că condițiile 1–4 ale deciziei „Da / Nu” nu erau îndeplinite). Lansarea nu atinge plățile, iar revenirea o faci singur în câteva minute, așa că o zi de weekend din extrasezon e în regulă. Dacă preferi o zi lucrătoare și D-2 a ieșit fără probleme, lansarea se poate face și vineri 6.11 dimineața.
+Lansarea (D0) este **marți 10.11.2026, ora 10:00** (amânată de la 7.11 în D-1, 6.11, pentru că condițiile 1–4 ale deciziei „Da / Nu” nu erau îndeplinite, apoi devansată de la 14.11 la cererea proprietarei, tot pe 6.11; rezerva rămâne sâmbătă 14.11). Lansarea nu atinge plățile, iar revenirea o faci singur în câteva minute, așa că o zi de weekend din extrasezon e în regulă. Dacă preferi o zi lucrătoare și D-2 a ieșit fără probleme, lansarea se poate face și vineri 6.11 dimineața.
 
 | Ziua | Data | Ce se întâmplă | Timpul tău |
 |---|---|---|---|
-| D-14…D-8 | 31.10–6.11 | Pregătire, texte, copia de test, design și poze; în D-1 (6.11) decizia „Nu”: lansarea se amână | făcut |
-| D-5 | lun 9.11 | 1.3.4 pe copia de test (Procedura A, pasul A2) și părerea ta; descarci fișierele NETOPIA de test | ~1 oră |
-| D-4 | mar 10.11 | Plata de test NETOPIA pe copia de test (Procedura B) | ~45 min |
-| D-3 | mie 11.11 | Corecturile tale; recenziile reale (dacă le ai) | ~45 min |
-| D-2 | joi 12.11 | Versiunea finală, repetiția revenirii R1, aprobarea ta | ~45 min |
-| D-1 | vin 13.11 | Pregătirea live-ului: ciorne, verificări, decizia „Da / Nu” | ~45 min |
-| D0 | sâm 14.11 | Lansarea pe live (Procedura C) și Search Console | ~1,5 ore |
-| D+1 … D+7 | 15–21.11 | Urmărire zilnică (secțiunea 9) | 10 min/zi |
+| D-10…D-4 | 31.10–6.11 | Pregătire, texte, copia de test, design și poze; în D-1 (6.11) decizia „Nu”: lansarea se amână, apoi se devansează la 10.11 | făcut |
+| D-3 | sâm 7.11 | 1.3.4 pe copia de test (Procedura A, pasul A2) și părerea ta; descarci fișierele NETOPIA de test | ~1 oră |
+| D-2 | dum 8.11 | Plata de test NETOPIA pe copia de test (Procedura B) | ~1 oră |
+| D-1 | lun 9.11 | Corecturile tale, versiunea finală, repetiția revenirii R1, aprobarea ta scrisă, decizia „Da / Nu”; ciornele pe live | ~1,5 ore |
+| D0 | mar 10.11 | Lansarea pe live (Procedura C) și Search Console | ~1,5 ore |
+| D+1 … D+7 | 11–17.11 | Urmărire zilnică (secțiunea 9) | 10 min/zi |
 
 ### D-7 — sâmbătă 31.10: pregătire
 - **[CLAUDE]** Arhiva automată (`tools/build-zip.sh`), verificările din GitHub (`.github/workflows/build.yml`), documentele `docs/lansare.md` și `docs/independenta.md`. Arhiva de test 1.3.4, cu amprenta ei SHA-256.
@@ -84,7 +82,7 @@ Lansarea (D0) este **sâmbătă 14.11.2026, ora 10:00** (amânată de la 7.11 î
 
   Dacă un răspuns e „nu”, lansarea se amână. Nu lansăm „pe jumătate”.
 
-### D0 — sâmbătă 14.11, ora 10:00: lansarea
+### D0 — marți 10.11, ora 10:00: lansarea
 - **[TU]** Procedura C (secțiunea 7) (1 oră).
 - **[CLAUDE]** În primele 15 minute după lansare verifică site-ul live din exterior (pagini, poze, linkuri, redirecționări, versiunea) și îți spune rezultatul.
 - **[TU]** Search Console (pasul C10) (15 min).
@@ -457,11 +455,11 @@ Softaculous → **Instalări** → rândul site-ului → **Backups** → **Resto
 
 **Facturile FGO (în primele zile):** la **prima comandă reală** după lansare verifici că factura a ajuns la client (sau în FGO) cu datele corecte (persoană fizică sau juridică, suma, seria). Dacă nu, revino la R1 și spune-mi.
 
-**Contul vechi de administrator `a.min` (ID 1) — rămâne neatins până după lansare; se închide pe D+7 (21.11), la cererea proprietarei (31.10.2026: „mergem pe varianta cu 14.11”):**
+**Contul vechi de administrator `a.min` (ID 1) — rămâne neatins până după lansare; se închide pe D+7 (17.11), la cererea proprietarei (31.10.2026: „mergem pe varianta cu 14.11”):**
 1. **Până atunci: nimic la `a.min`** (nu i se schimbă parola, emailul sau rolul). Dacă s-ar strica ceva în săptămâna lansării, nu am ști dacă vine de la noi sau de la o schimbare la contul lui.
-2. **D+7 (sâmbătă 21.11), cu o copie de siguranță proaspătă** (Softaculous → Backup): Utilizatori → `a.min` → Editează: parolă nouă generată de WordPress, pe care **nu o păstrează nimeni**; emailul contului schimbat cu `asociatia.bioglamp+admin@gmail.com` (aceeași căsuță, dar adresă diferită de a contului tău); „Deconectează-te de pe toate sesiunile”; Actualizează. Dacă ceva se strică, parola se reface prin „Ai uitat parola?” pe emailul asociației.
+2. **D+7 (marți 17.11), cu o copie de siguranță proaspătă** (Softaculous → Backup): Utilizatori → `a.min` → Editează: parolă nouă generată de WordPress, pe care **nu o păstrează nimeni**; emailul contului schimbat cu `asociatia.bioglamp+admin@gmail.com` (aceeași căsuță, dar adresă diferită de a contului tău); „Deconectează-te de pe toate sesiunile”; Actualizează. Dacă ceva se strică, parola se reface prin „Ai uitat parola?” pe emailul asociației.
 3. **Ce se urmărește după:** facturile FGO la prima comandă, calendarele iCal (Airbnb, Booking), emailurile site-ului. Dacă ceva nu merge, se spune imediat.
-4. **D+14 (28.11):** dacă nimic nu s-a stricat, contul se șterge, cu articolele și paginile lui atribuite contului proprietarei.
+4. **D+14 (24.11):** dacă nimic nu s-a stricat, contul se șterge, cu articolele și paginile lui atribuite contului proprietarei.
 
 **Plasă de siguranță (decizia din 31.10: „în extremis trecem pagina în construcție”):** nu avem rezervări în perioada asta, deci, dacă ceva nu poate fi reparat repede, site-ul se trece pe „în construcție” până se repară. Se face numai cu „da” de la proprietară, după o copie de siguranță, și se oprește oricând. Mai întâi se încearcă R1 (oprește pluginul), care e mai simplu.
 
