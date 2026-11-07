@@ -105,10 +105,15 @@
 .gi-page-hero { --gi-focus: var(--accent); position: relative; min-height: min(88svh, 820px); display: flex; align-items: flex-end; color: #fff; isolation: isolate; border-radius: 0 0 clamp(28px, 4vw, 56px) clamp(28px, 4vw, 56px); overflow: hidden; background: var(--forest-deep); }
 .gi-page-hero-media { position: absolute; inset: 0; margin: 0; z-index: -2; }
 .gi-page-hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: center 60%; background: var(--forest); filter: var(--photo-filter); }
+/* Două poze în poza mare de început (opțional, ca în prima pagină): a doua stă într-o felie înclinată, în dreapta; pe telefon se vede numai prima. */
+.gi-page-hero-media--duo img { position: absolute; inset: 0; }
+.gi-page-hero-media--duo img:first-child { clip-path: polygon(0 0, 66% 0, 48% 100%, 0 100%); }
+.gi-page-hero-media--duo .gi-hero-second { clip-path: polygon(66% 0, 100% 0, 100% 100%, 48% 100%); object-position: 40% 60%; view-transition-name: none; }
+@media (max-width: 700px) { .gi-page-hero-media--duo img:first-child { clip-path: none; } .gi-page-hero-media--duo .gi-hero-second { display: none; } }
 .gi-page-hero-overlay { position: absolute; inset: 0; z-index: -1; background:
-  linear-gradient(180deg, rgb(var(--shade) / calc(.34 * var(--veil))) 0%, rgb(var(--shade) / 0) 22%),
-  linear-gradient(0deg, rgb(var(--shade) / calc(.26 * var(--veil))) 0%, rgb(var(--shade) / calc(.08 * var(--veil))) 40%, rgb(var(--shade) / 0) 64%),
-  linear-gradient(90deg, rgb(var(--shade) / calc(.22 * var(--veil))) 0%, rgb(var(--shade) / 0) 46%); }
+  linear-gradient(180deg, rgb(var(--shade) / calc(.24 * var(--veil))) 0%, rgb(var(--shade) / 0) 18%),
+  linear-gradient(0deg, rgb(var(--shade) / calc(.2 * var(--veil))) 0%, rgb(var(--shade) / calc(.06 * var(--veil))) 38%, rgb(var(--shade) / 0) 60%),
+  linear-gradient(90deg, rgb(var(--shade) / calc(.2 * var(--veil))) 0%, rgb(var(--shade) / 0) 44%); }
 .gi-page-hero .gi-breadcrumb,
 .gi-dedicated .gi-page-hero .eyebrow { text-shadow: 0 1px 10px rgb(var(--shade) / .55); }
 .gi-page-hero-content { --gi-hero-pad: 140px; position: relative; padding-top: var(--gi-hero-pad); padding-bottom: clamp(92px, 10vw, 128px); }
@@ -117,8 +122,8 @@
    începe cu puțin deasupra firului de navigare și, pe ecrane late, se stinge spre dreapta după coloana de text
    (50vw = marginea stângă a textului în acest bloc), ca restul fotografiei să rămână însorit. */
 .gi-page-hero-content::before { content: ""; position: absolute; z-index: -1; top: calc(var(--gi-hero-pad) - 64px); bottom: 0; left: -50vw; right: -50vw; pointer-events: none;
-  background: linear-gradient(180deg, rgb(var(--shade) / 0) 0, rgb(var(--shade) / calc(.6 * var(--veil))) 64px, rgb(var(--shade) / calc(.54 * var(--veil))) 72%, rgb(var(--shade) / calc(.3 * var(--veil))) 100%);
-  -webkit-mask-image: linear-gradient(90deg, #000 calc(50vw + 780px), transparent calc(50vw + 1260px)); mask-image: linear-gradient(90deg, #000 calc(50vw + 780px), transparent calc(50vw + 1260px)); }
+  background: linear-gradient(180deg, rgb(var(--shade) / 0) 0, rgb(var(--shade) / calc(.4 * var(--veil))) 64px, rgb(var(--shade) / calc(.36 * var(--veil))) 72%, rgb(var(--shade) / calc(.2 * var(--veil))) 100%);
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(50vw + 560px), transparent calc(50vw + 1000px)); mask-image: linear-gradient(90deg, #000 calc(50vw + 560px), transparent calc(50vw + 1000px)); }
 .gi-page-hero h1 { font-family: var(--display); font-weight: 500; font-size: clamp(46px, 7.2vw, 92px); line-height: .98; letter-spacing: -.03em; margin: .28em 0 .32em; color: #fff; text-shadow: 0 2px 4px rgb(var(--shade) / .25), 0 2px 28px rgb(var(--shade) / .4); }
 .gi-page-hero h1 em { font-style: italic; color: var(--sun-light); }
 .gi-dedicated .gi-page-hero p { max-width: 46ch; font-size: clamp(var(--fs-text), 1.7vw, 23px); line-height: 1.5; color: #fff; margin: 0; text-shadow: 0 1px 2px rgb(var(--shade) / .35), 0 1px 16px rgb(var(--shade) / .5); }
@@ -260,7 +265,7 @@
 .gi-closing { --gi-focus: var(--accent); position: relative; isolation: isolate; overflow: hidden; margin: var(--gi-section) clamp(8px, 1.5vw, 20px) clamp(8px, 1.5vw, 20px); padding: clamp(88px, 10vw, 140px) 0; border-radius: var(--gi-radius); background: var(--forest-deep); color: #fff; text-align: center; }
 .gi-closing-media { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; filter: var(--photo-filter); }
 /* Umbra albastră stă mai ales în spatele textului (centru); marginile fotografiei rămân luminoase. */
-.gi-closing::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(70% 72% at 50% 55%, rgb(var(--shade) / calc(.62 * var(--veil))) 0%, rgb(var(--shade) / calc(.32 * var(--veil))) 70%, rgb(var(--shade) / 0) 100%), linear-gradient(180deg, rgb(var(--shade) / calc(.18 * var(--veil))) 0%, rgb(var(--shade) / calc(.42 * var(--veil))) 100%); }
+.gi-closing::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(70% 72% at 50% 55%, rgb(var(--shade) / calc(.46 * var(--veil))) 0%, rgb(var(--shade) / calc(.22 * var(--veil))) 70%, rgb(var(--shade) / 0) 100%), linear-gradient(180deg, rgb(var(--shade) / calc(.1 * var(--veil))) 0%, rgb(var(--shade) / calc(.3 * var(--veil))) 100%); }
 .gi-closing-inner { display: grid; justify-items: center; }
 .gi-dedicated .gi-closing h2 { color: #fff; margin: 0; text-shadow: 0 2px 4px rgb(var(--shade) / .25), 0 2px 24px rgb(var(--shade) / .45); }
 .gi-dedicated .gi-closing h2 em { color: var(--sun-light); }
@@ -291,7 +296,6 @@
   .gi-dedicated .home-photo-gallery > button:nth-child(3n+2):last-child:not(:first-child) { grid-column: span 2; }
   /* Încadrări: arătăm partea cu corturile, nu cerul. */
   .gi-page-glamping #galerie .home-photo-gallery > button:nth-child(2) img { object-position: 50% 92%; }
-  .gi-page-camping #galerie .home-photo-gallery > button:nth-child(3) img { object-position: 50% 100%; }
   .gi-page-camping #galerie .home-photo-gallery > button:nth-child(5) img { object-position: 50% 88%; }
   .gi-page-festivaluri #galerie .home-photo-gallery > button:nth-child(8) img { object-position: 50% 100%; }
 }
@@ -358,7 +362,7 @@
   .gi-related-arrow { top: 10px; right: 10px; }
 
   .gi-closing { padding: 88px 0; margin-inline: 8px; }
-  .gi-closing::before { background: radial-gradient(95% 60% at 50% 50%, rgb(var(--shade) / calc(.64 * var(--veil))) 0%, rgb(var(--shade) / calc(.36 * var(--veil))) 75%, rgb(var(--shade) / 0) 100%), linear-gradient(180deg, rgb(var(--shade) / calc(.2 * var(--veil))) 0%, rgb(var(--shade) / calc(.44 * var(--veil))) 100%); }
+  .gi-closing::before { background: radial-gradient(95% 60% at 50% 50%, rgb(var(--shade) / calc(.5 * var(--veil))) 0%, rgb(var(--shade) / calc(.26 * var(--veil))) 75%, rgb(var(--shade) / 0) 100%), linear-gradient(180deg, rgb(var(--shade) / calc(.12 * var(--veil))) 0%, rgb(var(--shade) / calc(.32 * var(--veil))) 100%); }
   .gi-closing-actions { flex-direction: column; align-items: stretch; gap: 6px; width: 100%; }
   .gi-closing-actions .gi-hero-link { align-self: center; }
 }
