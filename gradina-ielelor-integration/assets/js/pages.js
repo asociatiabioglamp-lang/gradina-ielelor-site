@@ -41,7 +41,6 @@
    */
   window.addEventListener('pageswap', function (event) {
     if (!event.viewTransition || (event.activation && event.activation.navigationType === 'traverse')) return;
-    var hero = document.querySelector('.gi-page-hero-media img');
-    if (hero) hero.style.viewTransitionName = 'none';
+    document.querySelectorAll('.gi-page-hero-media img').forEach(function (hero) { hero.style.viewTransitionName = 'none'; });
   });
 }());

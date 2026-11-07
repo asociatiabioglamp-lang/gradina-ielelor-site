@@ -44,7 +44,9 @@ Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai 
 = 1.3.6 =
 * Poze luminoase, cu soare și cer albastru, în loc de cele cu nori dominanți sau de amurg întunecat: Camping (poza de început, poza din text, închiderea, galeria), Evenimente private (poza de început, galeria, poza din text), Festivaluri (poze aeriene și corturi de glamping), Bungalow (galeria) și spațiile comune.
 * Camping: poza de început are două poze mixate (corturi sub sălcii și lacul cu SUP-uri), ca în prima pagină; pe telefon se vede prima.
-* Pozele cu nori rămân doar ca poze mici, nu ca poză mare.
+* Pozele cu nori rămân doar ca poze mici, nu ca poză mare. Prima poză din galerie și poza de la închidere sunt cu soare pe toate paginile.
+* Umbrele de pe poza de început și de la închidere sunt mai ușoare, ca pozele să rămână luminoase.
+* Fără pozele nefolosite în arhivă (arhiva e cu aproape 5 MB mai mică).
 
 = 1.3.5 =
 * Glamping: numai cele 4 glamping-uri permanente, pe platforme de lemn. Pozele cu corturi pe pământ și cele cu foișorul/umbrela albă au fost scoase de pe pagina Glamping, de pe cardul din prima pagină și de la închidere; ele rămân doar la festivaluri și evenimente.

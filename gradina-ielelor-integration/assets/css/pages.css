@@ -15,6 +15,7 @@
 .gi-page-private .gi-page-hero-media img { view-transition-name: gi-photo-private; }
 /* Glamping: copacul din stânga e întunecat, corturile pe platforme sunt spre dreapta-jos; pe telefon arătăm partea cu corturile. */
 .gi-page-glamping .gi-page-hero-media img { object-position: 74% 78%; }
+.gi-page-camping .gi-closing-media { object-position: 50% 88%; }
 ::view-transition-group(*) { animation-timing-function: cubic-bezier(.2, .8, .2, 1); }
 
 @media (prefers-reduced-motion: reduce) {
@@ -108,7 +109,7 @@
 /* Două poze în poza mare de început (opțional, ca în prima pagină): a doua stă într-o felie înclinată, în dreapta; pe telefon se vede numai prima. */
 .gi-page-hero-media--duo img { position: absolute; inset: 0; }
 .gi-page-hero-media--duo img:first-child { clip-path: polygon(0 0, 66% 0, 48% 100%, 0 100%); }
-.gi-page-hero-media--duo .gi-hero-second { clip-path: polygon(66% 0, 100% 0, 100% 100%, 48% 100%); object-position: 40% 60%; view-transition-name: none; }
+.gi-page-hero-media--duo img.gi-hero-second { clip-path: polygon(66% 0, 100% 0, 100% 100%, 48% 100%); object-position: 40% 60%; view-transition-name: none !important; }
 @media (max-width: 700px) { .gi-page-hero-media--duo img:first-child { clip-path: none; } .gi-page-hero-media--duo .gi-hero-second { display: none; } }
 .gi-page-hero-overlay { position: absolute; inset: 0; z-index: -1; background:
   linear-gradient(180deg, rgb(var(--shade) / calc(.24 * var(--veil))) 0%, rgb(var(--shade) / 0) 18%),
@@ -122,7 +123,7 @@
    începe cu puțin deasupra firului de navigare și, pe ecrane late, se stinge spre dreapta după coloana de text
    (50vw = marginea stângă a textului în acest bloc), ca restul fotografiei să rămână însorit. */
 .gi-page-hero-content::before { content: ""; position: absolute; z-index: -1; top: calc(var(--gi-hero-pad) - 64px); bottom: 0; left: -50vw; right: -50vw; pointer-events: none;
-  background: linear-gradient(180deg, rgb(var(--shade) / 0) 0, rgb(var(--shade) / calc(.4 * var(--veil))) 64px, rgb(var(--shade) / calc(.36 * var(--veil))) 72%, rgb(var(--shade) / calc(.2 * var(--veil))) 100%);
+  background: linear-gradient(180deg, rgb(var(--shade) / 0) 0, rgb(var(--shade) / calc(.46 * var(--veil))) 64px, rgb(var(--shade) / calc(.42 * var(--veil))) 72%, rgb(var(--shade) / calc(.26 * var(--veil))) 100%);
   -webkit-mask-image: linear-gradient(90deg, #000 calc(50vw + 560px), transparent calc(50vw + 1000px)); mask-image: linear-gradient(90deg, #000 calc(50vw + 560px), transparent calc(50vw + 1000px)); }
 .gi-page-hero h1 { font-family: var(--display); font-weight: 500; font-size: clamp(46px, 7.2vw, 92px); line-height: .98; letter-spacing: -.03em; margin: .28em 0 .32em; color: #fff; text-shadow: 0 2px 4px rgb(var(--shade) / .25), 0 2px 28px rgb(var(--shade) / .4); }
 .gi-page-hero h1 em { font-style: italic; color: var(--sun-light); }

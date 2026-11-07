@@ -238,7 +238,7 @@ function gi_offer_pages() {
             array('q' => 'Am curent și internet?', 'a' => 'Da. Domeniul funcționează pe energie proprie, solară și GPL, așa că ai curent, apă caldă și internet. Lasă acasă doar aparatele electrice mari.'),
             array('q' => 'Cât costă o noapte?', 'a' => 'De la 350 lei în timpul săptămânii și 450 lei vineri și sâmbătă. Prețul final îl vezi când alegi datele.'),
         ),
-        'closing' => array('title' => 'Gata de o noapte', 'title_em' => 'pe malul lacului?', 'image' => 'closing-bungalow-lac-1600.webp'),
+        'closing' => array('title' => 'Gata de o noapte', 'title_em' => 'pe malul lacului?', 'image' => 'closing-bungalow-sori-1280.webp'),
         'seo' => array(
             'title' => 'Bungalow pe malul lacului, Brașov | Grădina Ielelor',
             'description' => 'Patru bungalow-uri cu baie proprie și încălzire, pe malul lacului din Grădina Ielelor, la poalele Munților Făgăraș. Vezi pozele și verifică disponibilitatea.',
@@ -283,8 +283,8 @@ function gi_offer_pages() {
         'gallery' => array('title' => 'Vezi unde îți pui cortul sau rulota', 'images' => array(
             array('src' => 'camping-cort-rand-960.webp', 'alt' => 'Corturi pe un rând, pe iarbă, într-o zi senină', 'caption' => 'Corturi pe iarbă, la soare'),
             array('src' => 'rulote-lac-munte-960.webp', 'alt' => 'Două rulote parcate lângă lac, cu munții în fundal', 'caption' => 'Rulote, lângă lac'),
-            array('src' => 'camping-pajiste-960.webp', 'alt' => 'Pajiște cu sălcii, un loc de joacă și corturi, într-o zi senină, cu munții în fundal', 'caption' => 'Pajiștea cu sălcii'),
-            array('src' => 'camping-cort-albastru-960.webp', 'alt' => 'Un cort mare albastru, pe iarbă, lângă un rând de corturi, sub cer albastru', 'caption' => 'Locuri de cort, pe iarbă'),
+            array('src' => 'camping-pajiste-960.webp', 'alt' => 'Pajiște cu sălcii și corturi, într-o zi senină, cu munții în fundal', 'caption' => 'Pajiștea cu sălcii'),
+            array('src' => 'camping-ponton-960.webp', 'alt' => 'Lacul cu un ponton de lemn, oameni pe SUP-uri și Munții Făgăraș sub cer albastru', 'caption' => 'Lacul și pontonul'),
             array('src' => 'camping-lac-munte-1280.webp', 'alt' => 'Corturi pe malul lacului, cu Munții Făgăraș în fundal', 'caption' => 'Lacul, cu munții în față'),
         )),
         'included' => array(
@@ -387,9 +387,9 @@ function gi_offer_pages() {
             'text' => 'Festivaluri, petreceri și întâlniri pentru familii. Datele exacte le anunțăm pe măsură ce se confirmă. Pregătești o tabără sau un festival? Rezervă-ți perioada din timp.',
         ),
         'gallery' => array('title' => 'Vezi domeniul', 'images' => array(
-            array('src' => 'vatra-oameni-foc-1600.webp', 'alt' => 'Oameni cântând la tobe în jurul unei vetre de foc, noaptea, în Grădina Ielelor', 'caption' => 'Seara, în jurul focului'),
             array('src' => 'festival-scena-960.webp', 'alt' => 'Spectacol de dansuri populare pe scenă, cu copii în public, la un eveniment în Grădina Ielelor', 'caption' => 'Spectacol pe scenă'),
             array('src' => 'festival-aerian-albastru-1280.webp', 'alt' => 'Domeniul văzut de sus, cu tabăra de rulote, lacurile și câmpurile, sub cer albastru', 'caption' => 'Domeniul, văzut de sus'),
+            array('src' => 'vatra-oameni-foc-1600.webp', 'alt' => 'Oameni cântând la tobe în jurul unei vetre de foc, noaptea, în Grădina Ielelor', 'caption' => 'Seara, în jurul focului'),
             array('src' => 'festival-aerian-rulote-1280.webp', 'alt' => 'Tabără de rulote pe domeniu, văzută de sus, într-un festival', 'caption' => 'Tabără de rulote, la un festival'),
             array('src' => 'camping-lac-munte-1280.webp', 'alt' => 'Corturi pe malul lacului, cu Munții Făgăraș în fundal', 'caption' => 'Corturi pe malul lacului'),
             array('src' => 'festival-glamping-sol-1280.webp', 'alt' => 'Corturi de glamping pe iarbă, sub cer albastru, cu munții în depărtare', 'caption' => 'Corturi de glamping'),
@@ -504,14 +504,14 @@ function gi_offer_pages() {
                 'Invitații pot dormi pe domeniu: avem 58 de unități de cazare, între bungalow-uri, corturi de glamping și corturi cu saltele. Seara, lacul și focul fac restul. Spune-ne ce ai în minte și vedem împreună cum ți se potrivește locul.',
             ),
             'image' => 'evenimente-story-lac-960.webp',
-            'alt' => 'Lacul, cu un baldachin alb pe mal și Munții Făgăraș în depărtare',
+            'alt' => 'Lacul, cu o salcie pe mal, sub cer albastru, cu Munții Făgăraș în depărtare',
         ),
         'gallery' => array('title' => 'Vezi locul', 'images' => array(
             array('src' => 'evenimente-lac-sup-960.webp', 'alt' => 'Lacul, cu plăci SUP în prim-plan și Munții Făgăraș în fundal, sub cer albastru', 'caption' => 'Lacul, cu plăci SUP'),
             array('src' => 'bungalow-malul-lacului-960.webp', 'alt' => 'Malul lacului, cu bungalow-uri și un baldachin alb, sub cer și munți', 'caption' => 'Cazare: bungalow-uri pe malul lacului'),
             array('src' => 'bungalow-dormitor-alb-960.webp', 'alt' => 'Dormitor cu două paturi albe într-un bungalow, cu jaluzele de lemn', 'caption' => 'Cazare: dormitor de bungalow'),
             array('src' => 'glamping-interior-pat-720.webp', 'alt' => 'Interiorul unui cort de glamping, cu pat dublu, perne galbene, noptieră și covoare', 'caption' => 'Cazare: cort de glamping cu pat'),
-            array('src' => 'evenimente-vedere-lac-1280.webp', 'alt' => 'Lacul cu un baldachin alb pe mal, corturi pe malul din față și Munții Făgăraș, sub cer albastru', 'caption' => 'Lacul, cu baldachinul de pe mal'),
+            array('src' => 'evenimente-vedere-lac-1280.webp', 'alt' => 'Lacul cu un baldachin alb pe mal, corturi pe malul opus și Munții Făgăraș, sub cer albastru', 'caption' => 'Lacul, cu baldachinul de pe mal'),
         )),
         'included' => array(
             'title' => 'Ce găsești la noi',
@@ -552,7 +552,7 @@ function gi_offer_pages() {
             array('q' => 'Pot veni copii și câini?', 'a' => 'Da, copiii sunt bineveniți și chiar îi încurajăm: nu există limită de vârstă. Câinii mici, până la 15 kg, sunt primiți, cu regulile din Regulament & politici.'),
             array('q' => 'Pot veni cu echipa de la firmă sau cu un grup de retreat?', 'a' => 'Da. Ieșirile cu echipa, retreaturile și cursurile sunt pe pagina Festivaluri & tabere.'),
         ),
-        'closing' => array('title' => 'Ai un eveniment în minte?', 'title_em' => 'Spune-ne câți, când și de ce.', 'image' => 'closing-bungalow-lac-1600.webp'),
+        'closing' => array('title' => 'Ai un eveniment în minte?', 'title_em' => 'Spune-ne câți, când și de ce.', 'image' => 'closing-evenimente-lac-1280.webp'),
         'seo' => array(
             'title' => 'Nunți, botezuri și majorate în aer liber | Grădina Ielelor',
             'description' => 'Nunți, botezuri și majorate în aer liber la Sâmbăta de Sus, Brașov: un lac, Munții Făgăraș în față, o zonă sau toată Grădina doar pentru tine, cazare pe domeniu.',

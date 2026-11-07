@@ -39,12 +39,12 @@ function gi_experiences() {
             'booking_label' => 'Rezervă glamping',
             'facilities' => array('4 unități de glamping', '2 + 1 oaspeți', 'Băi și dușuri comune', 'Loc de joacă și lac', 'Două bucătării dotate', 'Hamace și vetre de foc', 'Wi-Fi și două terase', 'Parcare gratuită'),
             'images' => array(
-                array('src' => 'glamping-platforme-apus-960.webp', 'alt' => 'Corturi de glamping pe platforme de lemn, la apus, cu cerul colorat în fundal', 'caption' => 'Corturile stau pe platforme de lemn'),
                 array('src' => 'glamping-platforme-camp-960.webp', 'alt' => 'Corturi de glamping pe platforme de lemn, într-o zi senină, cu un copac în prim-plan', 'caption' => 'Corturile, într-o zi senină'),
                 array('src' => 'glamping-platforma-intrare-960.webp', 'alt' => 'Intrarea unui cort de glamping, pe platformă de lemn, cu două scaune, o măsuță și un covor', 'caption' => 'Masă și scaune la intrare'),
                 array('src' => 'glamping-interior-pat-720.webp', 'alt' => 'Interiorul unui cort de glamping, cu pat dublu, perne galbene, noptieră și covoare', 'caption' => 'Pat adevărat, cu lenjerie'),
                 array('src' => 'glamping-interior-paturi-720.webp', 'alt' => 'Interiorul unui cort de glamping, cu două paturi, comodă, noptieră și covoare', 'caption' => 'Interior cu paturi adevărate'),
                 array('src' => 'glamping-interior-comoda-720.webp', 'alt' => 'Interiorul unui cort de glamping, cu pat, comodă, covor și un puf', 'caption' => 'Mobilier în interior'),
+                array('src' => 'glamping-platforme-apus-960.webp', 'alt' => 'Corturi de glamping pe platforme de lemn, la apus, cu cerul colorat în fundal', 'caption' => 'Corturile stau pe platforme de lemn'),
             ),
         ),
         'bungalow' => array(

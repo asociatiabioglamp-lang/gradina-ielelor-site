@@ -71,8 +71,8 @@ gi_part('header');
         <section class="gi-page-hero" aria-labelledby="page-title">
             <figure class="gi-page-hero-media<?php echo !empty($gi_page['hero']['image2']) ? ' gi-page-hero-media--duo' : ''; ?>">
                 <img src="<?php echo esc_url(gi_image_url($gi_page['hero']['image'])); ?>" alt="<?php echo esc_attr($gi_page['hero']['alt']); ?>"<?php echo $gi_srcset($gi_page['hero']['image'], '100vw'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- atribute escapate în $gi_srcset. ?> width="1600" height="900" fetchpriority="high">
-                            <?php if (!empty($gi_page['hero']['image2'])) : ?>
-                    <img class="gi-hero-second" src="<?php echo esc_url(gi_image_url($gi_page['hero']['image2'])); ?>" alt="<?php echo esc_attr(!empty($gi_page['hero']['alt2']) ? $gi_page['hero']['alt2'] : ''); ?>" width="1280" height="720" loading="eager" decoding="async">
+                <?php if (!empty($gi_page['hero']['image2'])) : ?>
+                    <img class="gi-hero-second" src="<?php echo esc_url(gi_image_url($gi_page['hero']['image2'])); ?>" alt="<?php echo esc_attr(!empty($gi_page['hero']['alt2']) ? $gi_page['hero']['alt2'] : ''); ?>" width="1280" height="720" loading="lazy" decoding="async">
                 <?php endif; ?>
             </figure>
             <div class="gi-page-hero-overlay"></div>
