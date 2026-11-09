@@ -3,7 +3,7 @@ Contributors: gradina-ielelor
 Tags: one-page, woocommerce, booking, ovabrw, seo
 Requires at least: 6.0
 Requires PHP: 7.4
-Stable tag: 1.3.6
+Stable tag: 1.3.7
 License: GPLv2 or later
 
 Template-uri server-side pentru pagina principală (hub de rezervare) și paginile dedicate ofertelor Grădina Ielelor, cu WooCommerce + OVABRW drept singur motor de rezervări.
@@ -40,6 +40,9 @@ Nu. Constanta GI_REACT_DEMO_ENABLED este false, bundle-ul React nu este inclus, 
 Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai opțiunile acestui plugin.
 
 == Changelog ==
+
+= 1.3.7 =
+* Prima pagină: calendarul pentru alegerea datelor nu mai este tăiat la marginea cardului de rezervare (se vedea doar primul rând de zile, deci nu se puteau alege date).
 
 = 1.3.6 =
 * Poze luminoase, cu soare și cer albastru, în loc de cele cu nori dominanți sau de amurg întunecat: Camping (poza de început, poza din text, închiderea, galeria), Evenimente private (poza de început, galeria, poza din text), Festivaluri (poze aeriene și corturi de glamping), Bungalow (galeria) și spațiile comune.

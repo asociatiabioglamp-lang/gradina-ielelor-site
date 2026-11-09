@@ -55,7 +55,8 @@
 /* Aceeași formă prietenoasă ca paginile dedicate: butoane și modulul de rezervare rotunjite */
 .gi-site.home-page .button { border-radius: 999px; }
 .gi-site.home-page .home-booking-shell { border-radius: 28px; }
-.gi-site.home-page .booking-panel { border-radius: 18px; overflow: hidden; }
+/* Fără overflow:hidden: calendarul de date (BRW) se deschide peste marginea cardului și ar fi tăiat. */
+.gi-site.home-page .booking-panel { border-radius: 18px; overflow: visible; }
 .gi-site.home-page .home-review-cards blockquote { border-radius: 22px; }
 
 /* Informații utile: festival, despre noi, regulament */
