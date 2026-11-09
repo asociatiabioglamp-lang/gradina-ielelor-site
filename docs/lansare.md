@@ -311,7 +311,8 @@ Pe staging, emailurile către clienți sunt oprite, ca oaspeții reali (care exi
 
 ### B4. Fă rezervarea de test
 1. **[TU]** Într-o fereastră privată, deschide pagina principală a staging-ului.
-2. În modulul de rezervare: Glamping, o perioadă liberă (ex. o noapte peste 2–3 săptămâni). Notează câte unități sunt libere (ex. „4”).
+2. Sezonul e 1 mai – 1 octombrie, iar calendarul BRW nu lasă să alegi zile din anul viitor până la 1 ianuarie (verificat 9.11: lista de ani are doar anul curent, iar zilele din 2027 apar „indisponibile”, la fel pe live). Pentru test folosești **linkul direct** al cortului, care merge: `https://asociatia-ropam.ro/gi-test/produs/glamping/?pickup_date=10-05-2027&dropoff_date=11-05-2027` (apare „Total 195 lei, Unități disponibile: 4”). Notează câte unități sunt libere (ex. „4”). Bifezi „Am citit și sunt de acord…”, apoi „Adaugă în coș”.
+   **La plată, alege NETOPIA („Plata cu Card Vacanta”).** Pe copia clonată din live, iPay BT e pornit și preselectat; după ce îl oprești (vezi C0) NETOPIA rămâne singura metodă. Contul se creează la plată (parolă obligatorie): alegi tu o parolă de test, nu mi-o spui. Pagina NETOPIA din modul de test are adresa `sandboxsecure.mobilpay.ro`; dacă adresa nu conține „sandbox”, nu plăti.
 3. Continuă până la plată. Completează datele cu **numele și emailul tău**. Alege **NETOPIA**.
 4. Pe pagina NETOPIA (sandbox), plătește cu **cardul de test** din documentația NETOPIA pentru sandbox. Exemplul des folosit este 9900 0048 1022 5098, CVV 111, orice dată de expirare din viitor. Dacă nu merge, cere cardul de test la NETOPIA.
 5. Așteaptă să revii pe site, pe pagina de mulțumire.
@@ -386,6 +387,9 @@ Fă-o pe **telefon** și pe **calculator**, într-o fereastră privată.
 ## 7. Procedura C — lansarea pe live (D0)
 
 Pașii sunt aceiași ca pe staging, cu trei diferențe: **plăți reale**, **emailuri către clienți pornite** și **site vizibil în Google**. Verifică adresa din bara browserului: **gradina-ielelor.ro**.
+
+### C0. (înainte de C1, cu aprobarea ta) Cardul doar prin NETOPIA
+Decizia din 31.10: plata cu cardul se face **doar prin NETOPIA**. Pe copia de test (clonată din live pe 1.11) metoda „Online cu card bancar prin iPay BT” era **pornită și preselectată** (verificat 9.11), deci probabil e pornită și pe live. **[TU]** WooCommerce → Setări → Plăți → iPay BT: oprește comutatorul și salvează. Verifică la plată (fereastră privată, fără cumpărare) că rămâne doar „Plata cu Card Vacanta” (NETOPIA). Modulul rămâne instalat. Dacă ai nevoie de iPay BT mai târziu, îl pornești la loc.
 
 ### C1. (D0, 10:00) Backup
 Secțiunea 2, pentru **live**. Descarcă-l pe calculator. Fără el, nu continui.
