@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 
 $gi_back_url = gi_home_booking_url('');
 // Deschis din pagina de plată (link „Deschide regulamentul într-o pagină nouă”): înapoi la finalizarea aceleiași rezervări, nu la o rezervare nouă.
-$gi_from_checkout = isset($_GET['din']) && 'plata' === sanitize_key(wp_unslash($_GET['din'])) && function_exists('wc_get_checkout_url'); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- doar alege un link.
+$gi_from_checkout = gi_from_checkout();
 if ($gi_from_checkout) {
     $gi_back_url = wc_get_checkout_url();
 }

@@ -67,8 +67,41 @@ function gi_brand($white = false, $extra_class = '') {
 
 function gi_clean_page_url($path) {
     $page = get_page_by_path(trim($path, '/'));
+    if ($page && 'publish' !== $page->post_status) {
+        // Ciornă (ex. între pașii 2 și 4 din „Pregătește paginile”): fără link spre o pagină care dă 404 vizitatorilor.
+        return home_url('/');
+    }
     return $page ? get_permalink($page) : home_url('/' . trim($path, '/') . '/');
 }
+
+/**
+ * Pagina curentă a fost deschisă din pagina de plată (?din=plata), cu o rezervare în curs.
+ * Atunci toate butoanele de „rezervare” duc înapoi la plată, nu la o rezervare nouă.
+ */
+function gi_from_checkout() {
+    return isset($_GET['din']) && 'plata' === sanitize_key(wp_unslash($_GET['din'])) && function_exists('wc_get_checkout_url'); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- doar alege un link.
+}
+
+/**
+ * Adresa coșului, pentru linkul „Continuă rezervarea” (arătat numai vizitatorilor cu coșul plin, vezi site.js).
+ */
+function gi_cart_url() {
+    return function_exists('wc_get_cart_url') ? (string) wc_get_cart_url() : '';
+}
+
+/**
+ * Linkurile din textele paginilor simple scrise cu rădăcina site-ului (href="/glamping/") merg și când WordPress
+ * e într-un subdosar (copia de test, /gi-test/). Pe un site la rădăcină nu schimbă nimic.
+ */
+function gi_content_root_links($content) {
+    $path = (string) wp_parse_url(home_url('/'), PHP_URL_PATH);
+    $prefix = untrailingslashit($path);
+    if ('' === $prefix || !is_string($content)) {
+        return $content;
+    }
+    return preg_replace('/\bhref=(["\'])\/(?!\/|' . preg_quote(ltrim($prefix, '/'), '/') . '(?:\/|["\'#?]))/i', 'href=$1' . $prefix . '/', $content);
+}
+add_filter('the_content', 'gi_content_root_links', 20);
 
 /**
  * Linkurile legale din subsol: paginile site-ului care există (aceleași adrese ca pe site-ul actual)

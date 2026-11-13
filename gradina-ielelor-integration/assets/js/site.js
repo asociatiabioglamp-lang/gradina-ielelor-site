@@ -18,6 +18,7 @@
     initGalleries();
     initBrwLabels();
     initBrwPreselection();
+    initCartLinks();
     initHomeBookingCta();
   });
 
@@ -210,11 +211,36 @@
     });
   }
 
+  /*
+   * Vizitator cu rezervarea în coș (WooCommerce pune cookie-ul woocommerce_items_in_cart): arătăm „Coșul tău” /
+   * „Continuă rezervarea”, ca din paginile de conținut sau de ofertă să poată reveni la aceeași rezervare,
+   * nu la o rezervare nouă. Citim cookie-ul în browser, deci merge și cu pagini din cache.
+   */
+  function initCartLinks() {
+    var items = 0;
+    try {
+      var match = /(?:^|;\s*)woocommerce_items_in_cart=(\d+)/.exec(document.cookie);
+      items = match ? parseInt(match[1], 10) : 0;
+    } catch (error) {
+      items = 0;
+    }
+    if (!items) return;
+    document.querySelectorAll('[data-gi-cart-link]').forEach(function (link) { link.hidden = false; });
+    document.querySelectorAll('[data-gi-cart-swap]').forEach(function (cta) {
+      var url = cta.getAttribute('data-gi-cart-url');
+      if (!url) return;
+      cta.setAttribute('href', url);
+      var text = cta.querySelector('[data-gi-cta-text]');
+      if (text) text.textContent = cta.getAttribute('data-gi-cart-text') || text.textContent;
+    });
+  }
+
   // Îmbunătățire progresivă: folosește numai o categorie existentă în selectorul real BRW.
   // Nu interceptează submit și nu modifică disponibilitatea, prețul sau fluxul WooCommerce.
   function initBrwPreselection() {
     document.querySelectorAll('[data-gi-preselect-category]').forEach(function (region) {
-      preselectCategory(region, region.getAttribute('data-gi-preselect-category'));
+      // Alegerea din adresă (?tip=) nu o suprascrie pe cea deja făcută de vizitator (ex. după „Înapoi”).
+      preselectCategory(region, region.getAttribute('data-gi-preselect-category'), true);
     });
 
     // Paginile dedicate trimit înapoi la modulul de rezervări cu #rezervare-<tip>.
@@ -271,9 +297,10 @@
     });
   }
 
-  function preselectCategory(region, category) {
+  function preselectCategory(region, category, onlyIfEmpty) {
     var select = region.querySelector('select[name="cat"]');
     if (!category || !select) return;
+    if (onlyIfEmpty && select.value) return;
 
     var exists = Array.from(select.options).some(function (option) {
       return option.value === category;

@@ -8,6 +8,10 @@ if (!defined('ABSPATH')) {
 }
 $gi_mobile_cta = isset($args['mobile_cta']) ? $args['mobile_cta'] : 'Rezervă cazare';
 $gi_mobile_cta_url = isset($args['mobile_cta_url']) ? $args['mobile_cta_url'] : gi_current_cta_url();
+$gi_footer_cart_url = gi_cart_url();
+if (gi_from_checkout()) {
+    $gi_mobile_cta = 'Înapoi la plată';
+}
 ?>
     <footer class="site-footer shared-footer">
         <div class="container footer-grid">
@@ -28,8 +32,11 @@ $gi_mobile_cta_url = isset($args['mobile_cta_url']) ? $args['mobile_cta_url'] : 
         <div class="container footer-bottom"><span>Rezervările și plățile se fac online, direct pe site.</span><span>© <?php echo esc_html(wp_date('Y')); ?> Grădina Ielelor</span></div>
     </footer>
 
+    <?php if ($gi_footer_cart_url && !gi_from_checkout()) : ?>
+        <a class="gi-cart-float" href="<?php echo esc_url($gi_footer_cart_url); ?>" data-gi-cart-link hidden><?php echo gi_icon('calendar'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Continuă rezervarea</a>
+    <?php endif; ?>
     <nav class="gi-mobile-booking" aria-label="Rezervare rapidă">
-        <a class="mobile-booking-cta" href="<?php echo esc_url($gi_mobile_cta_url); ?>"><?php echo gi_icon('calendar'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> <?php echo esc_html($gi_mobile_cta); ?></a>
+        <a class="mobile-booking-cta" href="<?php echo esc_url($gi_mobile_cta_url); ?>"<?php echo ($gi_footer_cart_url && !gi_from_checkout()) ? ' data-gi-cart-swap data-gi-cart-url="' . esc_url($gi_footer_cart_url) . '" data-gi-cart-text="Continuă rezervarea"' : ''; ?>><?php echo gi_icon('calendar'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> <span data-gi-cta-text><?php echo esc_html($gi_mobile_cta); ?></span></a>
     </nav>
 </div>
 

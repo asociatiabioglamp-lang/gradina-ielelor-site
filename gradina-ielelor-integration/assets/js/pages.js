@@ -45,7 +45,15 @@
    */
   document.querySelectorAll('[data-gi-return-checkout]').forEach(function (button) {
     button.addEventListener('click', function (event) {
-      if (window.history.length > 1 && !window.opener) return;
+      if (window.history.length > 1 && !window.opener) {
+        // Pagina s-a deschis în aceeași filă: „Înapoi” readuce plata exact cum era (formular, regulament citit).
+        var came = document.referrer ? new URL(document.referrer, window.location.href) : null;
+        if (came && came.origin === window.location.origin && came.pathname === new URL(button.href, window.location.href).pathname) {
+          event.preventDefault();
+          window.history.back();
+        }
+        return;
+      }
       event.preventDefault();
       window.close();
       window.setTimeout(function () { window.location.href = button.getAttribute('href'); }, 300);

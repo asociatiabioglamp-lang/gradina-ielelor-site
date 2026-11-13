@@ -50,6 +50,9 @@ body.admin-bar .gi-site .site-header{top:32px}
 .gi-site .desktop-nav a::after{content:"";position:absolute;left:0;right:100%;bottom:-8px;height:2px;background:#fff;transition:right .2s}
 .gi-site .desktop-nav a:hover::after{right:0}
 .gi-site .header-cta{margin-left:8px;background:var(--accent);color:var(--on-sun)}
+/* „Continuă rezervarea”: butonul plutitor apare doar pe desktop și doar cu rezervarea în coș; pe telefon: bara de jos și meniul. */
+.gi-site .gi-cart-float{display:none}
+@media (min-width:1301px){.gi-site .gi-cart-float:not([hidden]){display:inline-flex;align-items:center;gap:8px;position:fixed;right:24px;bottom:24px;z-index:60;min-height:52px;padding:0 22px;border-radius:999px;background:var(--accent);color:var(--on-sun);font-size:var(--fs-ui);font-weight:700;box-shadow:0 10px 30px -8px rgb(var(--shade) / .45),0 0 0 1px rgb(255 255 255 / .35)}.gi-site .gi-cart-float .gi-icon{width:20px;height:20px}}
 .gi-site .menu-toggle{display:none;margin-left:auto;border:0;border-radius:50%;background:rgb(var(--shade) / calc(.5 * var(--veil)));padding:9px;color:#fff;cursor:pointer}
 .gi-site .menu-toggle .gi-icon{width:30px;height:30px}
 .gi-site .mobile-nav{display:flex;flex-direction:column;padding:10px 24px 22px;border-top:1px solid var(--line);background:var(--paper);color:var(--ink)}
@@ -216,6 +219,7 @@ body.admin-bar .gi-site .site-header{top:32px}
 .gi-site .footer-legal+.footer-bottom{border-top:0;padding-top:8px}
 .gi-site .footer-bottom{display:flex;justify-content:space-between;gap:30px;padding-top:24px;border-top:1px solid rgba(27,58,75,.14);color:var(--text-2);font-size:var(--fs-note);line-height:1.55}
 .gi-site .mobile-booking-cta{display:none}
+.gi-site .mobile-nav a.gi-cart-link:not([hidden]){display:block;margin:0;background:transparent;border:0;border-bottom:1px solid var(--line);font-weight:700;color:var(--forest)}
 
 /* Galerie accesibilă, vanilla JS */
 #gi-lightbox{position:fixed;z-index:100000;inset:0;display:flex;align-items:center;justify-content:center;padding:60px 90px;background:rgba(12,30,42,.96);color:#fff;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}

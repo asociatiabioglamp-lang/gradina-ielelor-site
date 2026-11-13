@@ -3,7 +3,7 @@ Contributors: gradina-ielelor
 Tags: one-page, woocommerce, booking, ovabrw, seo
 Requires at least: 6.0
 Requires PHP: 7.4
-Stable tag: 1.3.8
+Stable tag: 1.3.9
 License: GPLv2 or later
 
 Template-uri server-side pentru pagina principală (hub de rezervare) și paginile dedicate ofertelor Grădina Ielelor, cu WooCommerce + OVABRW drept singur motor de rezervări.
@@ -40,6 +40,13 @@ Nu. Constanta GI_REACT_DEMO_ENABLED este false, bundle-ul React nu este inclus, 
 Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai opțiunile acestui plugin.
 
 == Changelog ==
+
+= 1.3.9 =
+* Rezervarea nu se pierde între pagini: un vizitator cu rezervarea în coș vede „Continuă rezervarea” (buton plutitor pe desktop, bara de jos și meniul pe telefon) spre coș, în loc să fie dus mereu la un formular nou.
+* Regulamentul deschis din pagina de plată: și butonul „Rezervă” din antet, meniul și bara de jos duc înapoi la plată, nu la o rezervare nouă.
+* Linkurile spre pagini încă nepublicate (ciorne) nu mai dau 404 vizitatorilor.
+* Linkurile din textele paginilor simple (Despre noi, Contact) cu rădăcina site-ului merg și într-un subdosar (copia de test).
+* Pagina Camping: butonul din antet și bara de jos deschid formularul fără tip (cort sau rulotă). Alegerea tipului din adresă (?tip=) nu mai suprascrie alegerea vizitatorului.
 
 = 1.3.8 =
 * La plată, linkul „Deschide regulamentul într-o pagină nouă” duce acum la o pagină cu butonul „Înapoi la finalizarea rezervării” (aceeași rezervare), nu la „Înapoi la rezervare” (o rezervare nouă). Lângă link scrie că rezervarea rămâne în fila de plată.

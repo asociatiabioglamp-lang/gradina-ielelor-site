@@ -166,7 +166,13 @@ function gi_current_booking_url() {
     if (gi_is_one_page()) {
         return '#rezervare';
     }
+    if (gi_from_checkout()) {
+        return wc_get_checkout_url();
+    }
     $page = gi_offer_page(gi_current_page_key());
+    if ($page && array_key_exists('header_type', $page)) {
+        return gi_home_booking_url($page['header_type']);
+    }
     return gi_home_booking_url($page ? $page['booking_type'] : '');
 }
 

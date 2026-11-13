@@ -250,6 +250,7 @@ function gi_offer_pages() {
         'common_intro' => 'Cortul sau rulota sunt locul tău. Spațiile comune sunt ale tuturor, deci și ale tale.',
         'title' => 'Camping & rulote',
         'booking_type' => 'camping-cort',
+        'header_type' => '', // butonul din header și bara mobilă: formularul fără tip (cort SAU rulotă)
         'cta' => 'Verifică disponibilitatea',
         // Al doilea buton: același modul de rezervare, cu „Rulote” preselectat.
         'cta_alt' => array('label' => 'Ai rulotă? Rezervă aici', 'booking_type' => 'camping-rulota'),
