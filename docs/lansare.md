@@ -22,16 +22,14 @@ Data: 31.10.2026. Versiunea care se lansează: **pluginul Grădina Ielelor 1.3.4
 
 ## 1. Calendarul D-7 → D0
 
-Lansarea (D0) este **marți 10.11.2026, ora 10:00** (amânată de la 7.11 în D-1, 6.11, pentru că condițiile 1–4 ale deciziei „Da / Nu” nu erau îndeplinite, apoi devansată de la 14.11 la cererea proprietarei, tot pe 6.11; rezerva rămâne sâmbătă 14.11). Lansarea nu atinge plățile, iar revenirea o faci singur în câteva minute, așa că o zi de weekend din extrasezon e în regulă. Dacă preferi o zi lucrătoare și D-2 a ieșit fără probleme, lansarea se poate face și vineri 6.11 dimineața.
+Lansarea (D0) este **sâmbătă 14.11.2026, ora 10:00** (a fost 7.11, apoi 10.11; pe 10.11 nu s-a făcut: lipseau plata de test, repetiția revenirii și aprobarea scrisă). Rezerva: marți 17.11, ora 10:00.
 
 | Ziua | Data | Ce se întâmplă | Timpul tău |
 |---|---|---|---|
-| D-10…D-4 | 31.10–6.11 | Pregătire, texte, copia de test, design și poze; în D-1 (6.11) decizia „Nu”: lansarea se amână, apoi se devansează la 10.11 | făcut |
-| D-3 | sâm 7.11 | 1.3.4 pe copia de test (Procedura A, pasul A2) și părerea ta; descarci fișierele NETOPIA de test | ~1 oră |
-| D-2 | dum 8.11 | Plata de test NETOPIA pe copia de test (Procedura B) | ~1 oră |
-| D-1 | lun 9.11 | Corecturile tale, versiunea finală, repetiția revenirii R1, aprobarea ta scrisă, decizia „Da / Nu”; ciornele pe live | ~1,5 ore |
-| D0 | mar 10.11 | Lansarea pe live (Procedura C) și Search Console | ~1,5 ore |
-| D+1 … D+7 | 11–17.11 | Urmărire zilnică (secțiunea 9) | 10 min/zi |
+| D-10…D+3 | 31.10–13.11 | Pregătire, texte, copia de test, design și poze; plata de test NETOPIA reușită pe copia de test (13.11, comanda 17748); testele de linkuri și de drum al clientului | făcut |
+| D-1 | vin 13.11 (seara) / sâm 14.11 (09:00) | Versiunea finală pe copia de test, repetiția revenirii R1 (5 min), aprobarea ta scrisă „Aprob lansarea versiunii 1.3.x”, decizia „Da / Nu” | ~30 min |
+| D0 | sâm 14.11 | Lansarea pe live (Procedura C, cu C0: iPay BT oprit și produsul de test ascuns) și Search Console | ~1,5 ore |
+| D+1 … D+7 | 15–21.11 | Urmărire zilnică (secțiunea 9); a.min se închide pe 21.11 | 10 min/zi |
 
 ### D-7 — sâmbătă 31.10: pregătire
 - **[CLAUDE]** Arhiva automată (`tools/build-zip.sh`), verificările din GitHub (`.github/workflows/build.yml`), documentele `docs/lansare.md` și `docs/independenta.md`. Arhiva de test 1.3.4, cu amprenta ei SHA-256.
@@ -388,8 +386,10 @@ Fă-o pe **telefon** și pe **calculator**, într-o fereastră privată.
 
 Pașii sunt aceiași ca pe staging, cu trei diferențe: **plăți reale**, **emailuri către clienți pornite** și **site vizibil în Google**. Verifică adresa din bara browserului: **gradina-ielelor.ro**.
 
-### C0. (înainte de C1, cu aprobarea ta) Cardul doar prin NETOPIA
+### C0. (înainte de C1, cu aprobarea ta) Cardul doar prin NETOPIA și fără produs de test
 Decizia din 31.10: plata cu cardul se face **doar prin NETOPIA**. Pe copia de test (clonată din live pe 1.11) metoda „Online cu card bancar prin iPay BT” era **pornită și preselectată** (verificat 9.11), deci probabil e pornită și pe live. **[TU]** WooCommerce → Setări → Plăți → iPay BT: oprește comutatorul și salvează. Verifică la plată (fereastră privată, fără cumpărare) că rămâne doar „Plata cu Card Vacanta” (NETOPIA). Modulul rămâne instalat. Dacă ai nevoie de iPay BT mai târziu, îl pornești la loc.
+
+**Produsul de test „Cort Campare Test”** (descoperit 13.11): e vizibil pe live, în categoria Camping, și apare în rezultatele căutării alături de „Campare Cort”, cu formular de rezervare. **[TU]** WooCommerce → Produse → „Cort Campare Test” → **Stare: Ciornă** (nu îl șterge) → Actualizează. Verifică apoi că la căutarea Camping apare numai „Campare Cort”.
 
 ### C1. (D0, 10:00) Backup
 Secțiunea 2, pentru **live**. Descarcă-l pe calculator. Fără el, nu continui.
@@ -459,11 +459,11 @@ Softaculous → **Instalări** → rândul site-ului → **Backups** → **Resto
 
 **Facturile FGO (în primele zile):** la **prima comandă reală** după lansare verifici că factura a ajuns la client (sau în FGO) cu datele corecte (persoană fizică sau juridică, suma, seria). Dacă nu, revino la R1 și spune-mi.
 
-**Contul vechi de administrator `a.min` (ID 1) — rămâne neatins până după lansare; se închide pe D+7 (17.11), la cererea proprietarei (31.10.2026: „mergem pe varianta cu 14.11”):**
+**Contul vechi de administrator `a.min` (ID 1) — rămâne neatins până după lansare; se închide pe D+7 (21.11), la cererea proprietarei (31.10.2026: „mergem pe varianta cu 14.11”):**
 1. **Până atunci: nimic la `a.min`** (nu i se schimbă parola, emailul sau rolul). Dacă s-ar strica ceva în săptămâna lansării, nu am ști dacă vine de la noi sau de la o schimbare la contul lui.
-2. **D+7 (marți 17.11), cu o copie de siguranță proaspătă** (Softaculous → Backup): Utilizatori → `a.min` → Editează: parolă nouă generată de WordPress, pe care **nu o păstrează nimeni**; emailul contului schimbat cu `asociatia.bioglamp+admin@gmail.com` (aceeași căsuță, dar adresă diferită de a contului tău); „Deconectează-te de pe toate sesiunile”; Actualizează. Dacă ceva se strică, parola se reface prin „Ai uitat parola?” pe emailul asociației.
+2. **D+7 (sâmbătă 21.11), cu o copie de siguranță proaspătă** (Softaculous → Backup): Utilizatori → `a.min` → Editează: parolă nouă generată de WordPress, pe care **nu o păstrează nimeni**; emailul contului schimbat cu `asociatia.bioglamp+admin@gmail.com` (aceeași căsuță, dar adresă diferită de a contului tău); „Deconectează-te de pe toate sesiunile”; Actualizează. Dacă ceva se strică, parola se reface prin „Ai uitat parola?” pe emailul asociației.
 3. **Ce se urmărește după:** facturile FGO la prima comandă, calendarele iCal (Airbnb, Booking), emailurile site-ului. Dacă ceva nu merge, se spune imediat.
-4. **D+14 (24.11):** dacă nimic nu s-a stricat, contul se șterge, cu articolele și paginile lui atribuite contului proprietarei.
+4. **D+14 (28.11):** dacă nimic nu s-a stricat, contul se șterge, cu articolele și paginile lui atribuite contului proprietarei.
 
 **Plasă de siguranță (decizia din 31.10: „în extremis trecem pagina în construcție”):** nu avem rezervări în perioada asta, deci, dacă ceva nu poate fi reparat repede, site-ul se trece pe „în construcție” până se repară. Se face numai cu „da” de la proprietară, după o copie de siguranță, și se oprește oricând. Mai întâi se încearcă R1 (oprește pluginul), care e mai simplu.
 
