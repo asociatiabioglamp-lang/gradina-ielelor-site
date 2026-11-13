@@ -39,6 +39,19 @@
    * cu cardul ofertei în afara ecranului, așa că fotografia mare nu mai „zboară” spre el; rămâne trecerea lină.
    * La „Înapoi” (traverse) păstrăm zborul: pagina principală revine unde era cardul, iar site.js verifică la sosire.
    */
+  /*
+   * Regulamentul deschis din pagina de plată se află într-o filă nouă. „Înapoi la finalizarea rezervării” închide fila
+   * (revii în fila de plată, cu formularul completat). Dacă fila nu se poate închide, linkul duce la pagina de plată.
+   */
+  document.querySelectorAll('[data-gi-return-checkout]').forEach(function (button) {
+    button.addEventListener('click', function (event) {
+      if (window.history.length > 1 && !window.opener) return;
+      event.preventDefault();
+      window.close();
+      window.setTimeout(function () { window.location.href = button.getAttribute('href'); }, 300);
+    });
+  });
+
   window.addEventListener('pageswap', function (event) {
     if (!event.viewTransition || (event.activation && event.activation.navigationType === 'traverse')) return;
     document.querySelectorAll('.gi-page-hero-media img').forEach(function (hero) { hero.style.viewTransitionName = 'none'; });

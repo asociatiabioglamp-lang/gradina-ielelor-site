@@ -12,6 +12,11 @@ if (!defined('ABSPATH')) {
 }
 
 $gi_back_url = gi_home_booking_url('');
+// Deschis din pagina de plată (link „Deschide regulamentul într-o pagină nouă”): înapoi la finalizarea aceleiași rezervări, nu la o rezervare nouă.
+$gi_from_checkout = isset($_GET['din']) && 'plata' === sanitize_key(wp_unslash($_GET['din'])) && function_exists('wc_get_checkout_url'); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- doar alege un link.
+if ($gi_from_checkout) {
+    $gi_back_url = wc_get_checkout_url();
+}
 
 gi_part('document-start', array('shell_class' => 'site-shell gi-site gi-dedicated gi-content-site'));
 gi_part('header');
@@ -42,7 +47,12 @@ while (have_posts()) :
             </article>
 
             <nav class="gi-content-end" aria-label="Mai departe">
+                <?php if ($gi_from_checkout) : ?>
+                    <p class="gi-content-end-note">Rezervarea ta e păstrată. Poți închide această filă și revii la plată, sau apasă butonul.</p>
+                    <a class="button button-primary" href="<?php echo esc_url($gi_back_url); ?>" data-gi-return-checkout><?php echo gi_icon('chevron-left'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Înapoi la finalizarea rezervării</a>
+                <?php else : ?>
                 <a class="button button-primary" href="<?php echo esc_url($gi_back_url); ?>" data-gi-book><?php echo gi_icon('chevron-left'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Înapoi la rezervare</a>
+                <?php endif; ?>
                 <a class="gi-text-link" href="tel:+40721333164"><?php echo gi_icon('phone'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> sau sună-ne la 0721 333 164</a>
             </nav>
         </div>

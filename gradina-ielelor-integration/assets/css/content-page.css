@@ -150,6 +150,7 @@
 
 /* ---------- Final: înapoi la rezervare ---------- */
 .gi-content-end { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px; margin-top: clamp(48px, 7vw, 88px); padding: clamp(20px, 3vw, 28px); border-radius: var(--gi-radius); background: var(--cream); }
+.gi-content-end .gi-content-end-note { flex: 1 1 100%; margin: 0; font-weight: 600; }
 .gi-content-end .gi-text-link { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; font-size: var(--fs-ui); font-weight: 600; }
 .gi-content-end .gi-icon { width: 20px; height: 20px; }
 

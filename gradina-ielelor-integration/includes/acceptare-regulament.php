@@ -248,7 +248,7 @@ function gi_roi_render_box() {
             <input type="hidden" name="gi_roi_seen" value="<?php echo $seen ? '1' : '0'; ?>">
             <noscript><input type="hidden" name="gi_roi_seen" value="1"></noscript>
         </p>
-        <p class="gi-roi-link"><a href="<?php echo esc_url(gi_roi_url()); ?>" target="_blank" rel="noopener">Deschide regulamentul într-o pagină nouă</a></p>
+        <p class="gi-roi-link"><a href="<?php echo esc_url(add_query_arg('din', 'plata', gi_roi_url())); ?>" target="_blank" rel="noopener">Deschide regulamentul într-o pagină nouă</a> <span class="gi-roi-link-note">(se deschide într-o filă nouă; rezervarea ta rămâne aici)</span></p>
     </div>
     <?php
 }

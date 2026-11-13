@@ -50,4 +50,5 @@
 .gi-roi .gi-roi-check input[type="checkbox"][aria-disabled="true"] { cursor: not-allowed; opacity: .55; }
 .gi-roi .gi-roi-note { margin: 8px 0 0; font-size: 15px; color: #536773; }
 .gi-roi .gi-roi-link { margin: 8px 0 0; font-size: 16px; }
+.gi-roi .gi-roi-link-note { display: block; margin-top: 2px; font-size: 14px; opacity: .8; }
 .gi-roi.gi-roi-citit .gi-roi-box { border-color: #2f6b3f; }
