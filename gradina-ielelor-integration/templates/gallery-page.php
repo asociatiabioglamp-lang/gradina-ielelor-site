@@ -1,0 +1,61 @@
+<?php
+/**
+ * Pagina „Galerie foto”: 15 fotografii reprezentative, într-o grilă uniformă, cu galerie care se mărește (lightbox).
+ * Fotografiile vin din plugin (gi_gallery_page_images()), nu din editorul WordPress: miniaturi mici, încărcate treptat,
+ * ca pagina să se deschidă repede (înainte: 98 de poze, circa 13 MB). Conținutul vechi al paginii rămâne în baza de date, neatins.
+ *
+ * - „Rezumatul” paginii (excerpt) apare sub titlu și devine descrierea SEO; dacă lipsește, apare un text implicit.
+ */
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+$gi_back_url = gi_home_booking_url('');
+$gi_from_checkout = gi_from_checkout();
+if ($gi_from_checkout) {
+    $gi_back_url = wc_get_checkout_url();
+}
+$gi_lead = 'Câteva imagini din Grădina Ielelor: locul, corturile, bungalow-urile și serile de pe domeniu.';
+
+gi_part('document-start', array('shell_class' => 'site-shell gi-site gi-dedicated gi-content-site gi-galerie-site'));
+gi_part('header');
+
+while (have_posts()) :
+    the_post();
+    ?>
+
+    <main id="continut">
+        <section class="gi-content-hero" aria-labelledby="page-title">
+            <?php echo gi_icon('mountain', 'gi-content-hero-mark'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+            <div class="container gi-content-hero-inner">
+                <nav class="gi-breadcrumb" aria-label="Unde te afli">
+                    <a href="<?php echo esc_url(home_url('/')); ?>">Acasă</a>
+                    <span aria-hidden="true">/</span>
+                    <span aria-current="page"><?php echo esc_html(get_the_title()); ?></span>
+                </nav>
+                <h1 id="page-title"><?php echo esc_html(get_the_title()); ?></h1>
+                <p class="gi-content-lead"><?php echo esc_html(has_excerpt() ? get_the_excerpt() : $gi_lead); ?></p>
+            </div>
+        </section>
+
+        <div class="container">
+            <section class="gi-galerie" aria-label="Fotografii din Grădina Ielelor">
+                <?php gi_render_gallery(gi_gallery_page_images(), 'Galerie foto Grădina Ielelor', 'gi-galerie-grid'); ?>
+            </section>
+
+            <nav class="gi-content-end" aria-label="Mai departe">
+                <?php if ($gi_from_checkout) : ?>
+                    <p class="gi-content-end-note">Rezervarea ta e păstrată. Poți închide această filă și revii la plată, sau apasă butonul.</p>
+                    <a class="button button-primary" href="<?php echo esc_url($gi_back_url); ?>" data-gi-return-checkout><?php echo gi_icon('chevron-left'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Înapoi la plată</a>
+                <?php else : ?>
+                    <a class="button button-primary" href="<?php echo esc_url($gi_back_url); ?>" data-gi-book><?php echo gi_icon('chevron-left'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Înapoi la rezervare</a>
+                <?php endif; ?>
+                <a class="gi-text-link" href="tel:+40721333164"><?php echo gi_icon('phone'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> sau sună-ne la 0721 333 164</a>
+            </nav>
+        </div>
+    </main>
+
+    <?php
+endwhile;
+
+gi_part('footer');

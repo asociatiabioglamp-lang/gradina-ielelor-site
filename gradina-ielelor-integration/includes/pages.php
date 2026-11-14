@@ -18,6 +18,8 @@ function gi_page_templates() {
     }
     // Pagini scrise de proprietar în editorul WordPress (Despre noi, Regulament & politici, Contact).
     $templates['gi-content.php'] = array('key' => 'content', 'label' => 'Grădina Ielelor — Pagină simplă', 'file' => 'content-page.php');
+    // Galeria foto: 15 fotografii reprezentative, cu galerie care se mărește (decizia proprietarei, 14.11.2026).
+    $templates['gi-galerie.php'] = array('key' => 'galerie', 'label' => 'Grădina Ielelor — Galerie foto', 'file' => 'gallery-page.php');
     return $templates;
 }
 
@@ -150,6 +152,10 @@ function gi_page_seo_defaults($key) {
         'image' => 'home-hero-lake-centered-1600.webp',
     );
     // Pagina simplă: titlul paginii + numele site-ului; descrierea vine din Rezumat (GI_SEO îl citește înaintea acestor valori).
+    if ('galerie' === $key) {
+        $defaults['title'] = 'Galerie foto | ' . get_bloginfo('name');
+        $defaults['description'] = 'Fotografii din Grădina Ielelor, Sâmbăta de Sus, Brașov: lacul, glamping, camping și rulote, bungalow și evenimente, la poalele Munților Făgăraș.';
+    }
     if ('content' === $key && is_singular('page')) {
         $title = get_the_title(get_queried_object_id());
         if ('' !== $title) {

@@ -42,6 +42,13 @@ function gi_pagini_spec() {
         'file' => 'contact.html',
         'excerpt' => 'Ai o întrebare sau vrei să rezervi? Sună-ne la 0721 333 164 sau scrie-ne. Ne găsești la Sâmbăta de Sus, județul Brașov, sub Munții Făgăraș.',
     );
+    // Galeria foto: pagina veche („Galerie foto”, 98 de poze, 12,9 MB) există pe site; primește șablonul cu 15 poze. Conținutul vechi rămâne în pagină, neatins.
+    $spec['galerie-foto'] = array(
+        'title' => 'Galerie foto',
+        'template' => 'gi-galerie.php',
+        'file' => '',
+        'excerpt' => 'Câteva imagini din Grădina Ielelor: locul, corturile, bungalow-urile și serile de pe domeniu.',
+    );
     return $spec;
 }
 

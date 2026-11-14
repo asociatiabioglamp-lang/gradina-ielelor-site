@@ -389,3 +389,21 @@
 .gi-calendar-list strong { font-family: var(--display); font-size: 25px; line-height: 1.2; font-weight: 500; color: var(--forest-deep); }
 .gi-calendar-list small { font-size: var(--fs-note); color: var(--text-2); }
 .gi-calendar-tag { justify-self: start; padding: 4px 12px; border-radius: 999px; background: var(--paper); font-size: var(--fs-label); font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--sun-deep); /* chihlimbar: 5,3:1 pe hârtie */ }
+
+/* ---------- Pagina „Galerie foto”: 15 fotografii într-o grilă uniformă ---------- */
+/* Specificitate mărită intenționat: bate mozaicul paginii principale și rândul care derulează pe orizontală de pe telefon (site.css),
+   precum și majusculele butoanelor din tema veche. */
+.gi-galerie { padding: clamp(32px, 4vw, 56px) 0 clamp(8px, 2vw, 24px); }
+.gi-site .home-photo-gallery.gi-galerie-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: auto; gap: 12px; margin: 0; padding: 0; overflow: visible; scroll-snap-type: none; }
+.gi-site .home-photo-gallery.gi-galerie-grid > button.gi-gallery-trigger { flex: none; grid-column: auto; grid-row: auto; width: 100%; aspect-ratio: 4 / 3; text-transform: none; scroll-snap-align: none; }
+.gi-site .home-photo-gallery.gi-galerie-grid > button.gi-gallery-trigger > span { text-transform: none; letter-spacing: 0; font-weight: 600; }
+@media (max-width: 900px) {
+  .gi-site .home-photo-gallery.gi-galerie-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  /* 15 poze pe două coloane: ultima se întinde pe toată lățimea, ca să nu rămână un gol lângă ea. */
+  .gi-site .home-photo-gallery.gi-galerie-grid > button.gi-gallery-trigger:last-child { grid-column: 1 / -1; aspect-ratio: 16 / 9; }
+}
+@media (max-width: 480px) {
+  .gi-site .home-photo-gallery.gi-galerie-grid { gap: 8px; }
+  /* Pe telefon, legenda ocupă prea mult dintr-o poză mică: rămâne vizibilă în galeria mărită și pentru cititoarele de ecran. */
+  .gi-site .home-photo-gallery.gi-galerie-grid > button.gi-gallery-trigger > span { display: none; }
+}

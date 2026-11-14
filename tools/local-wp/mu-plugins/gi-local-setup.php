@@ -5,7 +5,7 @@
  * cu textul din docs/pagini-continut.md (marcaj de blocuri, exact ca în editorul WordPress).
  */
 add_action('init', function () {
-    if (get_option('gi_local_setup_done') === '19') {
+    if (get_option('gi_local_setup_done') === '21') {
         return;
     }
     $active = (array) get_option('active_plugins', array());
@@ -27,6 +27,7 @@ add_action('init', function () {
         'despre-noi' => array('Despre noi', 'gi-content.php'),
         'regulament-politici' => array('Regulament & politici', 'gi-content.php'),
         'contact' => array('Contact', 'gi-content.php'),
+        'galerie-foto' => array('Galerie foto', 'gi-galerie.php'),
     );
     foreach ($pages as $slug => $page) {
         $existing = get_page_by_path($slug);
@@ -80,7 +81,7 @@ add_action('init', function () {
     update_option('woocommerce_ship_to_countries', 'disabled');
 
     flush_rewrite_rules();
-    update_option('gi_local_setup_done', '19');
+    update_option('gi_local_setup_done', '21');
 }, 99);
 
 // Paginile legale ale site-ului actual (aceleași adrese ca pe live) și pagina de blog, pentru linkurile din subsol.

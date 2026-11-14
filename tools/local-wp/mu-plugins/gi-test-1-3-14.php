@@ -127,3 +127,20 @@ add_action('wp', function () {
     echo wp_json_encode($out, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     exit;
 });
+
+// /?gi_test=typo → corectura „dispobibilitate” în ce afișează widgeturile Elementor (pluginul 1.3.16), pe texte de probă.
+add_action('wp', function () {
+    $t = isset($_GET['gi_test']) ? sanitize_key(wp_unslash($_GET['gi_test'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+    if ('typo' !== $t) {
+        return;
+    }
+    $html = '<div class="ovabrw-label"> Nu avem dispobibilitate în intervalul </div>';
+    header('Content-Type: application/json; charset=utf-8');
+    echo wp_json_encode(array(
+        'widget' => apply_filters('elementor/widget/render_content', $html, new stdClass()),
+        'pagina' => apply_filters('elementor/frontend/the_content', '<p>' . $html . '</p>'),
+        'corect_neschimbat' => apply_filters('elementor/widget/render_content', '<p>Nu avem disponibilitate.</p>', new stdClass()),
+        'alt_text_neschimbat' => apply_filters('elementor/widget/render_content', '<p>Altceva.</p>', new stdClass()),
+    ), JSON_UNESCAPED_UNICODE);
+    exit;
+});

@@ -140,7 +140,8 @@
     function render() {
       var current = images[activeIndex];
       if (!current) return;
-      image.src = current.src;
+      // Miniatura se vede imediat; dacă fotografia are o variantă mare (data-full), galeria deschide pe aceea.
+      image.src = current.getAttribute('data-full') || current.src;
       image.alt = current.alt;
       caption.textContent = current.getAttribute('data-caption') || current.alt;
       count.textContent = (activeIndex + 1) + ' / ' + images.length;

@@ -120,7 +120,7 @@ final class GI_Plugin {
         if (gi_is_one_page()) {
             wp_enqueue_style('gi-home', gi_asset_url('css/home.css'), array('gi-one-page'), GI_VERSION);
         }
-        if ('content' === gi_current_page_key()) {
+        if (in_array(gi_current_page_key(), array('content', 'galerie'), true)) {
             wp_enqueue_style('gi-content-page', gi_asset_url('css/content-page.css'), array('gi-pages'), GI_VERSION);
         }
         wp_enqueue_script('gi-one-page', gi_asset_url('js/site.js'), array(), GI_VERSION, true);

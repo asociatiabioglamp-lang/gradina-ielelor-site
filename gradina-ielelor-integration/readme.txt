@@ -3,7 +3,7 @@ Contributors: gradina-ielelor
 Tags: one-page, woocommerce, booking, ovabrw, seo
 Requires at least: 6.0
 Requires PHP: 7.4
-Stable tag: 1.3.15
+Stable tag: 1.3.16
 License: GPLv2 or later
 
 Template-uri server-side pentru pagina principală (hub de rezervare) și paginile dedicate ofertelor Grădina Ielelor, cu WooCommerce + OVABRW drept singur motor de rezervări.
@@ -40,6 +40,12 @@ Nu. Constanta GI_REACT_DEMO_ENABLED este false, bundle-ul React nu este inclus, 
 Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai opțiunile acestui plugin.
 
 == Changelog ==
+
+= 1.3.16 =
+* Galerie foto: pagina nouă, cu 15 fotografii reprezentative (locul, glamping, camping și rulote, bungalow, evenimente), în locul celor 98 de poze și al celor circa 13 MB de acum. Miniaturile sunt mici (în total circa 0,5 MB) și se încarcă pe măsură ce derulezi; la apăsare, fotografia se deschide mare, cu săgeți și cu legendă.
+* Pagina „Galerie foto” primește noul design prin „Pregătește paginile” → pasul 2 (sau alegând șablonul „Grădina Ielelor — Galerie foto” în pagină). Conținutul vechi rămâne în pagină, neatins, și revine cu „Revino”.
+* Subsol: link nou „Galerie foto”.
+* Paginile produselor: „Nu avem dispobibilitate în intervalul” devine „disponibilitate” (textul vine din modulul de rezervări și nu trecea prin traducerile corectate de plugin).
 
 = 1.3.15 =
 * Telefon, prima pagină: se văd toate cele trei poze de la intrare (înainte se vedea numai prima). Poza mare rămâne sus, cu textul; lacul și focul apar dedesubt, tăiate pe diagonală ca pe calculator. Pe telefoanele obișnuite încap pe primul ecran; pe cele cu ecran scund, pozele de jos se văd parțial și apar întregi la prima derulare.

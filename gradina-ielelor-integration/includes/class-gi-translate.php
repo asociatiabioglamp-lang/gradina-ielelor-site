@@ -30,6 +30,17 @@ final class GI_Translate {
         add_action('woocommerce_email_before_order_table', array(__CLASS__, 'email_started'), 0);
         // După trimiterea emailului, restul cererii (de ex. pagina de mulțumire) se traduce din nou.
         add_action('woocommerce_email_sent', array(__CLASS__, 'email_finished'), 99);
+        // „Nu avem dispobibilitate în intervalul” (pagina produsului): textul vine din widgetul Elementor al modulului de rezervări,
+        // nu dintr-o traducere WordPress, deci îl corectăm în ce se afișează.
+        add_filter('elementor/widget/render_content', array(__CLASS__, 'fix_typo_output'), 99);
+        add_filter('elementor/frontend/the_content', array(__CLASS__, 'fix_typo_output'), 99);
+    }
+
+    public static function fix_typo_output($content) {
+        if (is_string($content) && false !== strpos($content, 'dispobibilitate') && self::enabled()) {
+            return str_replace('dispobibilitate', 'disponibilitate', $content);
+        }
+        return $content;
     }
 
     public static function email_started() {

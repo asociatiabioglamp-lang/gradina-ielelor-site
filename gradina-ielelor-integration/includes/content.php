@@ -78,6 +78,30 @@ function gi_events_2027() {
     );
 }
 
+/**
+ * Galeria foto (pagina „Galerie foto”): 15 fotografii reprezentative, câte puțin din fiecare ofertă (decizia proprietarei, 14.11.2026).
+ * `src` = miniatura (640×480, câteva zeci de KB, se încarcă treptat); `full` = fotografia mare, deschisă în galeria care se mărește.
+ */
+function gi_gallery_page_images() {
+    return array(
+        array('src' => 'galerie-01-lac-640.webp', 'full' => 'home-hero-lake-centered-1280.webp', 'w' => 640, 'h' => 480, 'alt' => 'Lacul din Grădina Ielelor, cu o placă de paddle pe mal și Munții Făgăraș în fundal', 'caption' => 'Lacul și Munții Făgăraș'),
+        array('src' => 'galerie-02-aerian-640.webp', 'full' => 'festival-aerian-lac-1280.webp', 'w' => 640, 'h' => 480, 'alt' => 'Grădina Ielelor văzută din aer: corturi și rulote lângă lac, într-o câmpie verde', 'caption' => 'Grădina Ielelor, văzută de sus'),
+        array('src' => 'galerie-03-intrare-640.webp', 'full' => 'intrare-munte-960.webp', 'w' => 640, 'h' => 480, 'alt' => 'Arcadă din lemn cu numele Grădinii, loc de fotografie, cu domeniul și Munții Făgăraș în fundal', 'caption' => 'Intrarea în Grădină'),
+        array('src' => 'galerie-04-glamping-platforme-640.webp', 'full' => 'glamping-hero-platforme-1280.webp', 'w' => 640, 'h' => 480, 'alt' => 'Corturi glamping așezate pe platforme de lemn, sub un cer albastru', 'caption' => 'Corturi glamping, pe platforme de lemn'),
+        array('src' => 'galerie-05-cort-interior-640.webp', 'full' => 'galerie-cort-interior-1200.webp', 'w' => 640, 'h' => 480, 'alt' => 'Interiorul unui cort glamping, cu pat, pătură galbenă, covor și o comodă', 'caption' => 'Un cort glamping, pe dinăuntru'),
+        array('src' => 'galerie-06-glamping-apus-640.webp', 'full' => 'glamping-platforme-apus-960.webp', 'w' => 640, 'h' => 480, 'alt' => 'Corturi glamping pe platforme de lemn, la apus, sub un cer cu nori', 'caption' => 'Platformele glamping, la apus'),
+        array('src' => 'galerie-07-camping-corturi-640.webp', 'full' => 'camping-hero-corturi-1280.webp', 'w' => 640, 'h' => 480, 'alt' => 'Corturi de camping în iarbă, între copaci, cu Munții Făgăraș în fundal', 'caption' => 'Camping, în iarbă, cu munții în față'),
+        array('src' => 'galerie-08-rulote-lac-640.webp', 'full' => 'galerie-rulote-lac-1280.webp', 'w' => 640, 'h' => 480, 'alt' => 'Două rulote parcate pe malul unui lac, cu munții în fundal', 'caption' => 'Rulote lângă lac'),
+        array('src' => 'galerie-09-zmee-640.webp', 'full' => 'galerie-zmee-1280.webp', 'w' => 640, 'h' => 480, 'alt' => 'Copii care aleargă după un zmeu pe câmpul din Grădină', 'caption' => 'Zmee și joacă pe câmp'),
+        array('src' => 'galerie-10-bungalow-seara-640.webp', 'full' => 'bungalow-munte-card-960.webp', 'w' => 640, 'h' => 480, 'alt' => 'Bungalow cu lumina aprinsă și terasă acoperită, seara, cu munții în fundal', 'caption' => 'Bungalow, seara'),
+        array('src' => 'galerie-11-bungalow-dormitor-640.webp', 'full' => 'bungalow-dormitor-alb-960.webp', 'w' => 640, 'h' => 480, 'alt' => 'Dormitor de bungalow cu două paturi single, cu așternut alb', 'caption' => 'Dormitor în bungalow'),
+        array('src' => 'galerie-12-scena-640.webp', 'full' => 'festival-scena-960.webp', 'w' => 640, 'h' => 480, 'alt' => 'Spectacol de dansuri populare pe scenă, cu copii în public, la un eveniment în Grădina Ielelor', 'caption' => 'Scenă și public, la un eveniment'),
+        array('src' => 'galerie-13-foc-640.webp', 'full' => 'evenimente-foc-960.webp', 'w' => 640, 'h' => 480, 'alt' => 'Oaspeți în jurul focului de tabără, seara, în Grădina Ielelor', 'caption' => 'Foc de tabără, seara'),
+        array('src' => 'galerie-14-baldachin-640.webp', 'full' => 'evenimente-hero-baldachin-1280.webp', 'w' => 640, 'h' => 480, 'alt' => 'Baldachin alb pe malul lacului, cu corturi în depărtare', 'caption' => 'Baldachin pe malul lacului'),
+        array('src' => 'galerie-15-terasa-640.webp', 'full' => 'galerie-terasa-1200.webp', 'w' => 640, 'h' => 480, 'alt' => 'Terasă acoperită din lemn, cu mese și scaune, cu priveliște spre câmpie', 'caption' => 'Terasă acoperită, cu mese'),
+    );
+}
+
 function gi_event_images() {
     return array(
         array('src' => 'intrare-munte-960.webp', 'alt' => 'Arcadă din lemn cu numele Grădinii, loc de fotografie, cu domeniul și Munții Făgăraș în fundal', 'caption' => 'Locul de fotografie de la intrare'),

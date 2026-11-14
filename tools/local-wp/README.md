@@ -34,6 +34,12 @@ Produc capturi pe mobil (390 px) și desktop (1440 px) și verifică să nu exis
 ## Testul uneltei „Pregătește paginile” (pluginul 1.3.0)
 `test-pregatire-pagini.js` verifică de la un capăt la altul cele patru butoane și „Revino” (creare ciorne, șabloane, text Contact, publicare, idempotență, nonce). Are nevoie de un mu-plugin de test, numai local, `gi-test-reset.php`, care readuce site-ul la starea de pe live (fără paginile noi, șabloane implicite, Contact cu text vechi) la deschiderea adresei `/?gi_reset=1` de un administrator. Rulează cu `node tools/local-wp/test-pregatire-pagini.js`.
 
+## Testul galeriei foto (pluginul 1.3.16)
+`test-1-3-16.js` verifică pagina „Galerie foto” (15 poze, miniaturi mici, variante mari, descrieri, grilă pe șase ecrane, fără loc gol la final, galeria mărită cu săgeți și Escape), greutatea pozelor, linkul din subsol, rândul din „Pregătește paginile” și, de la un capăt la altul, pasul 2 și „Revino” pe pagina „Galerie foto” (ca pe live: șablon implicit → șablonul galeriei → înapoi), plus corectura „disponibilitate”. Are nevoie de `gi-local-setup.php` (creează pagina; marcajul de configurare local e acum `21`), `gi-test-stiluri-straine.php` și `gi-test-1-3-14.php`.
+```
+NODE_PATH=$(npm root -g) node tools/local-wp/test-1-3-16.js
+```
+
 ## Testul pentru telefon și stiluri străine (pluginul 1.3.15)
 `test-1-3-15.js` deschide prima pagină, cele cinci oferte și paginile Contact, Despre noi, Regulament & politici pe șase ecrane (telefon îngust, telefon, telefon mare, telefon ținut pe lat, tabletă, calculator), **cu stilurile străine simulate** (`gi-test-stiluri-straine.php`). Verifică: cele trei poze de la intrare pe telefon (și pe un browser mai vechi), niciun titlu sub antet, steagul de limbă liber, bara temei vechi ascunsă, butonul „Rezervă” descoperit, linkurile albe peste fotografii, subsolul, fără derulare pe orizontală.
 ```
