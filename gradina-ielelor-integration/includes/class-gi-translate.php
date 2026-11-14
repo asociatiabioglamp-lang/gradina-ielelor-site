@@ -10,7 +10,7 @@
  *  - nu atinge administrarea, AJAX-ul din administrare, REST, XML-RPC și emailurile către clienți (emailurile ar rămâne altfel pe jumătate în română);
  *  - ca să nu strice traducerea automată a vizitatorilor (GTranslate pornește de la româna din pagină), traduce numai când limba site-ului e româna.
  *
- * Filtre: gi_translate_active (true/false), gi_translate_woo_map și gi_translate_page_map (tablouri „text englezesc” => „text românesc”).
+ * Filtre: gi_translate_active (true/false), gi_translate_woo_map, gi_translate_brw_map și gi_translate_page_map (tablouri „text englezesc” => „text românesc”).
  */
 if (!defined('ABSPATH')) {
     exit;
@@ -63,13 +63,27 @@ final class GI_Translate {
     }
 
     private static function translate($translation, $text, $domain) {
-        if ($translation !== $text || !is_string($text) || '' === $text || !self::enabled()) {
+        if ($translation !== $text) {
+            // O traducere existentă cu greșeală de tipar („Nu avem dispobibilitate în intervalul”, pe pagina produsului).
+            if (is_string($translation) && false !== strpos($translation, 'dispobibilitate') && self::enabled()) {
+                return str_replace('dispobibilitate', 'disponibilitate', $translation);
+            }
+            return $translation;
+        }
+        if (!is_string($text) || '' === $text || !self::enabled()) {
             return $translation;
         }
         if ('woocommerce' === $domain) {
             $map = self::woo_map();
             if (isset($map[$text])) {
                 return $map[$text];
+            }
+        }
+        // Mesajele formularului de rezervare (BRW), în orice pagină publică: propoziții întregi, fără risc de confuzie.
+        if ('woocommerce' !== $domain) {
+            $brw_map = self::brw_map();
+            if (isset($brw_map[$text])) {
+                return $brw_map[$text];
             }
         }
         // Textele din antetul temei (pașii Coș → Finalizare → Comandă), numai pe paginile coșului, plății și contului.
@@ -123,6 +137,7 @@ final class GI_Translate {
                 'Street address' => 'Adresa',
                 'House number and street name' => 'Strada și numărul',
                 'Apartment, suite, unit, etc.' => 'Bloc, scară, apartament etc.',
+                'Apartment, suite, unit, etc. (optional)' => 'Bloc, scară, apartament etc. (opțional)',
                 'Postcode / ZIP' => 'Cod poștal',
                 'Town / City' => 'Localitatea',
                 'County' => 'Județ',
@@ -176,6 +191,36 @@ final class GI_Translate {
                 'Lost password' => 'Parolă uitată',
                 'Reset password' => 'Resetează parola',
                 'Lost your password? Please enter your username or email address. You will receive a link to create a new password via email.' => 'Ai uitat parola? Scrie utilizatorul sau emailul. Îți trimitem pe email un link ca să alegi o parolă nouă.',
+            ));
+            $map = is_array($map) ? $map : array();
+        }
+        return $map;
+    }
+
+    /**
+     * Mesajele de eroare ale formularului de rezervare (BRW), afișate ca etichete mici lângă câmp. Filtru: gi_translate_brw_map.
+     *
+     * @return array<string,string>
+     */
+    private static function brw_map() {
+        static $map = null;
+        if (null === $map) {
+            $map = apply_filters('gi_translate_brw_map', array(
+                'This field is required.' => 'Completează acest câmp.',
+                'Please read and accept the terms and conditions to continue.' => 'Bifează că ești de acord cu termenii, ca să poți continua.',
+                'Please enter a valid email address.' => 'Scrie o adresă de email validă.',
+                'Please enter a valid phone number.' => 'Scrie un număr de telefon valid.',
+                'Please enter a valid date.' => 'Alege o dată validă.',
+                'Please enter a valid number.' => 'Scrie un număr valid.',
+                'Please enter only digits.' => 'Scrie numai cifre.',
+                'Please enter a value greater than or equal to [number].' => 'Scrie o valoare de cel puțin [number].',
+                'Please enter a value less than or equal to [number].' => 'Scrie o valoare de cel mult [number].',
+                'Minimum quantity: [number].' => 'Cantitatea minimă: [number].',
+                'Maximum quantity: [number].' => 'Cantitatea maximă: [number].',
+                'Minimum number of guests: [number].' => 'Numărul minim de persoane: [number].',
+                'Maximum number of guests: [number].' => 'Numărul maxim de persoane: [number].',
+                "You can't book on this day!" => 'În această zi nu se pot face rezervări.',
+                'Please verify that you are not a robot.' => 'Confirmă că nu ești robot.',
             ));
             $map = is_array($map) ? $map : array();
         }

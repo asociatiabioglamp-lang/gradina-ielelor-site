@@ -68,7 +68,7 @@ const has = (t, s) => t.includes(s);
   const err = ((await page.locator('.woocommerce-NoticeGroup-checkout').first().textContent().catch(() => '')) || '').replace(/\s+/g, ' ');
   ok(/Am găsit următoarele probleme/.test(err) && /\(facturare\) este un câmp obligatoriu/.test(err) && !/The following problems|is a required field/.test(err), 'plată: formular gol → „Am găsit următoarele probleme” și „… (facturare) este un câmp obligatoriu” („' + err.slice(0, 90) + '”)');
   const ph = await page.$$eval('input[placeholder], textarea[placeholder]', (els) => els.map((e) => e.placeholder));
-  ok(ph.includes('Strada și numărul') && ph.some((x) => /Observații despre rezervare/.test(x)) && !ph.some((x) => /House number|Notes about your order/.test(x)), 'plată: și textele din interiorul câmpurilor (placeholder) sunt în română');
+  ok(ph.includes('Strada și numărul') && ph.some((x) => /Observații despre rezervare/.test(x)) && !ph.some((x) => /House number|Notes about your order|Apartment, suite/.test(x)), 'plată: și textele din interiorul câmpurilor (placeholder) sunt în română');
 
   // 3. Comandă cu plata la locație → pagina de mulțumire
   await page.fill('#billing_first_name', 'Test'); await page.fill('#billing_last_name', 'Test'); await page.fill('#billing_address_1', 'Strada 1');
@@ -102,6 +102,10 @@ const has = (t, s) => t.includes(s);
   const em2 = await (await follow.get('/?gi_test=email2')).json();
   ok(em2.in_email === 'Order details' && em2.dupa_trimitere === 'Detaliile rezervării' && em2.text_simplu === 'Order details', 'emailuri: în email NU se traduce, după trimiterea emailului se traduce din nou, în emailul „text simplu” NU se traduce');
 
+  const brw = await (await follow.get('/?gi_test=brw')).json();
+  ok(brw.obligatoriu === 'Completează acest câmp.' && /Bifează/.test(brw.termeni) && /nu se pot face rezervări/.test(brw.zi) && brw.neatins === 'Some other string', 'formularul de rezervare: mesajele BRW sunt în română („' + brw.obligatoriu + '”), restul textelor rămân neatinse');
+  ok(brw.tipar === 'Nu avem disponibilitate în intervalul', 'greșeala de tipar „dispobibilitate” dintr-o traducere existentă e corectată');
+
   // 7. SEO
   const seo = await (await follow.get('/?gi_test=seo')).json();
   const home = new URL(seo.home); const realOrigin = home.origin;
@@ -118,6 +122,11 @@ const has = (t, s) => t.includes(s);
   ok(seo.titlu_scurtat === 'Despre noi | Grădina Ielelor', 'SEO: numele site-ului din titlu devine „Grădina Ielelor” („' + seo.titlu_scurtat + '”)');
   ok(seo.titlu_fara_nume === 'Locatie Glamping Romania - Camping, Brasov, Gradina Ielelor', 'SEO: titlul paginii principale din Yoast (fără numele site-ului) rămâne neschimbat');
 
+  // 1.3.15: meniurile vechi duc direct la paginile noi; subsolul fără linkul SOL
+  const bung = (await (await follow.get('/bungalow/')).url()) || '';
+  ok(seo.meniu[2] === realOrigin + '/glamping/' && seo.meniu[3] === 'https://exemplu.ro/tarife/' && /\/tarife\/\?x=1$/.test(seo.meniu[4]), 'meniu: linkurile obișnuite, cele externe și cele cu parametri rămân neschimbate');
+  ok(!seo.legale.some((l) => /SOL|Litigii online/i.test(l)) && seo.legale.some((l) => /ANPC/.test(l)), 'subsol: fără „Litigii online (SOL)”, cu ANPC (' + seo.legale.join(', ') + ')');
+
   // harta site-ului: paginile vechi care redirecționează + coș/plată/cont
   const mkpage = async (slug, title) => {
     const ex = await (await adm.request.get(BASE + '/wp-json/wp/v2/pages?slug=' + slug + '&status=publish', { headers: H })).json();
@@ -131,6 +140,9 @@ const has = (t, s) => t.includes(s);
   ok(seo2.exclude.includes(7), 'harta site-ului: ce era deja exclus rămâne exclus');
   ok(seo2.pagina_cos.every((id) => seo2.exclude.includes(id)), 'harta site-ului: coș, finalizare și cont sunt excluse (' + seo2.pagina_cos.join(', ') + ')');
   ok(seo2.exclude.includes(idBungalow), 'harta site-ului: „cazare-bungalow” (redirecționează spre Bungalow) e exclusă');
+  ok(/\/bungalow\/$/.test(seo2.meniu[0]) && !/cazare-bungalow/.test(seo2.meniu[0]), 'meniu: „Cazare Bungalow” (adresa veche) duce direct la pagina Bungalow (' + seo2.meniu[0].replace(realOrigin, '') + ')');
+  ok(seo2.meniu[1] === realOrigin + '/', 'meniu: „Tarife” (adresa veche) duce direct la prima pagină');
+  ok(/\/bungalow\/#galerie$/.test(seo2.meniu[5]), 'meniu: ancora din link se păstrează (' + seo2.meniu[5].replace(realOrigin, '') + ')');
   ok(seo2.entry_scos === false && seo2.entry_pastrat && seo2.entry_pastrat.loc === 'x', 'harta site-ului: intrarea unei pagini excluse e sărită, a unei pagini obișnuite rămâne');
 
   // titluri vechi din Yoast la Glamping

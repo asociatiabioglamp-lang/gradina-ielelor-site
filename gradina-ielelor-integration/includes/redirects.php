@@ -249,3 +249,41 @@ function gi_redirect_old_urls() {
 }
 
 add_action('template_redirect', 'gi_redirect_old_urls', 1);
+
+/**
+ * Meniurile vechi (tema, Elementor) trimit încă la adresele vechi, care doar redirecționează.
+ * Linkurile din meniu merg direct la pagina nouă: un pas mai puțin pentru vizitator și pentru Google.
+ * Numai pentru adresele din gi_redirect_map() a căror pagină nouă e publicată; restul rămân neatinse.
+ */
+function gi_redirect_menu_items($items) {
+    if (!is_array($items) || is_admin()) {
+        return $items;
+    }
+    $map = gi_redirect_normalized_map();
+    $home_host = strtolower((string) wp_parse_url(home_url('/'), PHP_URL_HOST));
+    foreach ($items as $item) {
+        if (!is_object($item) || empty($item->url) || !is_string($item->url)) {
+            continue;
+        }
+        $parts = wp_parse_url($item->url);
+        if (!is_array($parts) || !empty($parts['query'])) {
+            continue;
+        }
+        $host = isset($parts['host']) ? strtolower($parts['host']) : $home_host;
+        if ($host !== $home_host && $host !== 'www.' . $home_host) {
+            continue;
+        }
+        $path = gi_redirect_relative_path(isset($parts['path']) ? $parts['path'] : '/');
+        if (!isset($map[$path])) {
+            continue;
+        }
+        $target = gi_redirect_target_url($map[$path]);
+        if ('' === $target || gi_redirect_relative_path((string) wp_parse_url($target, PHP_URL_PATH)) === $path) {
+            continue;
+        }
+        $item->url = $target . (!empty($parts['fragment']) ? '#' . $parts['fragment'] : '');
+    }
+    return $items;
+}
+
+add_filter('wp_nav_menu_objects', 'gi_redirect_menu_items', 20);

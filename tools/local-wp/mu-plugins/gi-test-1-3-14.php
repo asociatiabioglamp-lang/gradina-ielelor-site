@@ -39,6 +39,12 @@ add_action('init', function () {
             'og_site' => apply_filters('wpseo_opengraph_site_name', get_bloginfo('name')),
             'host_lung' => apply_filters('wpseo_canonical', 'https://dev24.gradina-ielelor.ro.exemplu.com/x/'),
             'og_image' => apply_filters('wpseo_opengraph_image', 'https://dev24.gradina-ielelor.ro/wp-content/uploads/a.jpg'),
+            'meniu' => (function () {
+                $mk = function ($url) { $o = new stdClass(); $o->url = $url; $o->title = 'x'; return $o; };
+                $items = array($mk(home_url('/cazare-bungalow/')), $mk(home_url('/tarife/')), $mk(home_url('/glamping/')), $mk('https://exemplu.ro/tarife/'), $mk(home_url('/tarife/?x=1')), $mk(home_url('/cazare-bungalow/#galerie')));
+                return array_map(function ($i) { return $i->url; }, apply_filters('wp_nav_menu_objects', $items, new stdClass()));
+            })(),
+            'legale' => array_keys(function_exists('gi_legal_links') ? gi_legal_links() : array()),
             'pagina_cos' => function_exists('wc_get_page_id') ? array(wc_get_page_id('cart'), wc_get_page_id('checkout'), wc_get_page_id('myaccount')) : array(),
         ));
         exit;
@@ -52,6 +58,18 @@ add_action('init', function () {
         $text_simplu = __('Order details', 'woocommerce');
         header('Content-Type: application/json');
         echo wp_json_encode(array('in_email' => $in_email, 'dupa_trimitere' => $dupa_trimitere, 'text_simplu' => $text_simplu));
+        exit;
+    }
+    if ('brw' === $t) {
+        add_filter('gettext', function ($tr, $text) { return 'No availability in the range' === $text ? 'Nu avem dispobibilitate în intervalul' : $tr; }, 5, 2);
+        header('Content-Type: application/json');
+        echo wp_json_encode(array(
+            'obligatoriu' => __('This field is required.', 'ova-brw'),
+            'termeni' => __('Please read and accept the terms and conditions to continue.', 'ova-brw'),
+            'zi' => __("You can't book on this day!", 'ova-brw'),
+            'tipar' => __('No availability in the range', 'ova-brw'),
+            'neatins' => __('Some other string', 'ova-brw'),
+        ));
         exit;
     }
     if ('email' === $t) {

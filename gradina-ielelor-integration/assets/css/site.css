@@ -253,14 +253,26 @@ body.gi-one-page .gt_float_wrapper{top:auto!important;right:auto!important;botto
   .gi-site .home-reviews>.container{grid-template-columns:1fr}.gi-site .reviews-summary{max-width:400px}
   .gi-site .footer-grid{grid-template-columns:1.3fr 1fr}
 }
-@media (max-width:700px){.gi-site .home-hero-slice-shore,.gi-site .home-hero-slice-foc{display:none}.gi-site .home-hero-slice-lake{clip-path:none}.gi-site .home-hero-slice-lake img{transform:scale(1.3);transform-origin:50% 100%}
-  body.gi-one-page .gt_float_wrapper{bottom:calc(84px + env(safe-area-inset-bottom,0px))!important}
+@media (max-width:700px){
+  /* Pe telefon se văd toate cele trei poze: cea mare sus (cu textul peste ea) și, dedesubt, lacul și focul, tăiate pe diagonală ca pe calculator. */
+  .gi-site .home-hero{--hero-strip:clamp(140px,22svh,190px)}
+  .gi-site .home-hero-slice-lake{clip-path:none;inset:0 0 var(--hero-strip) 0;height:auto}
+  .gi-site .home-hero-slice-lake img{transform:scale(1.3);transform-origin:50% 100%}
+  .gi-site .home-hero-slice-shore,.gi-site .home-hero-slice-foc{top:auto;bottom:0;width:53%;height:var(--hero-strip)}
+  .gi-site .home-hero-slice-shore{right:auto;left:0;clip-path:polygon(0 0,100% 0,88% 100%,0 100%)}
+  .gi-site .home-hero-slice-foc{right:0;left:auto;clip-path:polygon(12% 0,100% 0,100% 100%,0 100%)}
+  /* Bara de jos a temei vechi („Contul meu / Coș / Meniu”) acoperea butonul „Rezervă”: pe paginile noastre nu apare. */
+  body.gi-one-page .wd-toolbar{display:none!important}
+  /* Steagul de limbă (GTranslate) stătea fix peste siglă și peste text: acum stă în antet, între siglă și meniu, și nu mai însoțește derularea. */
+  body.gi-one-page #gt_float_wrapper,body.gi-one-page .gt_float_wrapper{position:absolute!important;top:33px!important;right:76px!important;bottom:auto!important;left:auto!important}
   .gi-site{--fs-text:18px;--fs-lead:19.5px;--fs-ui:17px;--fs-note:17px}
   body.gi-one-page{padding-bottom:70px}.gi-site .container{width:calc(100% - 32px)}
-  .gi-site .home-hero{min-height:max(600px,72svh);align-items:flex-end}.gi-site .home-hero-slice-lake img{object-position:50% 0%}
-  .gi-site .home-hero-slice-shore img{object-position:72% 50%}.gi-site .home-hero-slice-foc img{object-position:22% 50%}
-  .gi-site .home-hero-overlay{background:linear-gradient(0deg,rgb(var(--shade) / .76) 0%,rgb(var(--shade) / .18) 68%,rgb(var(--shade) / .12) 100%)}
-  .gi-site .home-hero-content{padding:88px 0 32px}.gi-site .home-hero-content h1{margin:16px 0 18px;font-size:clamp(46px,13.4vw,56px);line-height:.98}
+  .gi-site .home-hero{min-height:max(640px,96svh);padding-bottom:var(--hero-strip);align-items:flex-end}.gi-site .home-hero-slice-lake img{object-position:50% 0%}
+  .gi-site .home-hero-slice-shore img{object-position:72% 50%}
+  /* Poza cu focul are fotografia clară în partea de jos a unui fundal încețoșat: pe telefon arătăm numai partea clară. */
+  .gi-site .home-hero-slice-foc img{top:auto;right:auto;bottom:0;left:50%;width:auto;max-width:none;height:169%;transform:translateX(-39.5%)}
+  .gi-site .home-hero-overlay{inset:0 0 var(--hero-strip) 0;height:auto;background:linear-gradient(0deg,rgb(var(--shade) / .76) 0%,rgb(var(--shade) / .18) 68%,rgb(var(--shade) / .12) 100%)}
+  .gi-site .home-hero-content{padding:88px 0 24px}.gi-site .home-hero-content h1{margin:16px 0 18px;font-size:clamp(46px,13.4vw,56px);line-height:.98}
   .gi-site .home-hero-content>p{margin-bottom:26px;font-size:var(--fs-lead);line-height:1.5}.gi-site .home-hero-actions{gap:20px}.gi-site .home-hero-actions .button{width:100%}
   .gi-site .home-booking{padding:28px 0 42px}.gi-site .home-booking-shell{width:calc(100% - 24px);padding:22px 16px 17px}.gi-site .booking-heading h2{font-size:36px}
   .gi-real-booking{padding:18px 14px}.gi-real-booking .wrap_content{grid-template-columns:1fr;gap:14px}

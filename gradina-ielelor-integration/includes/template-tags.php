@@ -128,7 +128,7 @@ function gi_legal_links() {
     }
     $links['ANPC'] = 'https://anpc.ro/';
     $links['ANPC — SAL'] = 'https://anpc.ro/categorie/1271/sal';
-    $links['Litigii online (SOL)'] = 'https://ec.europa.eu/consumers/odr/main/index.cfm?event=main.home2.show&lng=RO';
+    // Platforma europeană SOL (ODR) s-a închis la 20.07.2025 (Regulamentul (UE) 2024/3228): linkul nu se mai afișează.
     return apply_filters('gi_legal_links', $links);
 }
 
