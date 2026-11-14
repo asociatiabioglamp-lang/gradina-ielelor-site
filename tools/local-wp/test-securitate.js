@@ -24,13 +24,16 @@ const LEAK = /not registered|nu este înregistrat|nu e înregistrat|incorrect|es
   for (const path of ['/', '/glamping/', '/pagina-care-nu-exista-xyz/']) {
     const r = await follow.get(path);
     const h = r.headers();
-    ok(h['x-frame-options'] === 'SAMEORIGIN' && h['x-content-type-options'] === 'nosniff' && h['referrer-policy'] === 'strict-origin-when-cross-origin' && /camera=\(\)/.test(h['permissions-policy'] || ''),
+    ok(h['x-frame-options'] === 'SAMEORIGIN' && h['x-content-type-options'] === 'nosniff' && h['referrer-policy'] === 'strict-origin-when-cross-origin' && /camera=\(\)/.test(h['permissions-policy'] || '') && /geolocation=\(self\)/.test(h['permissions-policy'] || ''),
       `antete de protecție pe ${path} (HTTP ${r.status()})`);
     ok(!h['strict-transport-security'], `fără HSTS pe HTTP (${path}): HSTS se trimite numai prin HTTPS`);
   }
   const hs = await (await follow.get('/?gi_test=hsts')).json();
-  ok(hs.ssl === true && hs.https['Strict-Transport-Security'] === 'max-age=2592000', 'prin HTTPS: Strict-Transport-Security max-age=2592000 (30 de zile), fără includeSubDomains');
-  ok(!/includeSubDomains|preload/.test(hs.https['Strict-Transport-Security'] || ''), 'HSTS fără subdomenii și fără preload');
+  ok(hs.ssl === true && !hs.https_domeniu_oarecare['Strict-Transport-Security'], 'prin HTTPS, pe un domeniu care nu e al site-ului live (copia de test): FĂRĂ HSTS');
+  ok(hs.https_domeniu_live['Strict-Transport-Security'] === 'max-age=2592000', 'prin HTTPS, pe domeniul live: Strict-Transport-Security max-age=2592000 (30 de zile)');
+  ok(!/includeSubDomains|preload/.test(hs.https_domeniu_live['Strict-Transport-Security'] || ''), 'HSTS fără subdomenii și fără preload');
+  const emb = await follow.get('/hello-world/?embed=true');
+  ok(emb.status() !== 200 || !emb.headers()['x-frame-options'], 'pagina „embed” nu primește X-Frame-Options (poate fi încadrată de alte site-uri WordPress, ca în nucleu)');
 
   // 2. Versiunea WordPress nu mai apare în cod
   const home = await (await follow.get('/')).text();
@@ -55,7 +58,7 @@ const LEAK = /not registered|nu este înregistrat|nu e înregistrat|incorrect|es
   for (const [url, label] of [['/?author=1', '/?author=1'], ['/?author_name=admin', '/?author_name=admin'], ['/author/admin/', '/author/admin/']]) {
     const r = await anon.get(url);
     const loc = r.headers()['location'] || '';
-    ok(r.status() === 301 && (loc === BASE + '/' || loc === '/'), `vizitator: ${label} → 301 spre prima pagină (${r.status()} ${loc})`);
+    ok(r.status() === 302 && (loc === BASE + '/' || loc === '/'), `vizitator: ${label} → 302 spre prima pagină (${r.status()} ${loc})`);
   }
 
   // 5. oEmbed fără autor
@@ -76,6 +79,21 @@ const LEAK = /not registered|nu este înregistrat|nu e înregistrat|incorrect|es
     ok(/<int>405<\/int>/.test(xb) && /disabled/i.test(xb), `XML-RPC: autentificarea (${u2}) e refuzată cu „servicii oprite” (405), nu cu „parolă greșită”`);
   }
 
+  // 5b. Flux RSS și harta „users” din sitemap
+  const feed = await (await follow.get('/feed/')).text();
+  const creators = [...feed.matchAll(/<dc:creator>(?:<!\[CDATA\[)?([^<\]]*)/g)].map((m) => m[1].trim());
+  ok(creators.length > 0 && creators.every((c) => c === 'Grădina Ielelor (test local)'), 'flux RSS: autorul arătat e numele site-ului, nu al contului (' + creators.slice(0, 2).join(', ') + ')');
+  ok(!/<generator>/.test(feed), 'flux RSS: fără <generator> cu versiunea WordPress');
+  const sm = await follow.get('/wp-sitemap.xml');
+  const smb = sm.status() === 200 ? await sm.text() : '';
+  ok(!/wp-sitemap-users/.test(smb), 'sitemap WordPress: fără harta „users” (HTTP ' + sm.status() + ')');
+  const smu = await anon.get('/wp-sitemap-users-1.xml');
+  ok(!(smu.status() === 200 && /author\//.test(await smu.text())), 'sitemap „users” nu mai listează adrese de autor (HTTP ' + smu.status() + ')');
+
+  // 6b. Pingback oprit
+  const pb = await anon.post('/xmlrpc.php', { headers: { 'Content-Type': 'text/xml' }, data: '<?xml version="1.0"?><methodCall><methodName>pingback.ping</methodName><params><param><value><string>http://exemplu.invalid/</string></value></param><param><value><string>' + BASE + '/hello-world/</string></value></param></params></methodCall>' });
+  ok(/-32601|requested method|not exist|nu există/i.test(await pb.text()), 'XML-RPC: pingback.ping nu mai există');
+
   // 7. Autentificare greșită: același mesaj, în WordPress și în WooCommerce
   const browser = await chromium.launch();
   const ctx = await browser.newContext({ viewport: { width: 1200, height: 900 } });
@@ -92,6 +110,24 @@ const LEAK = /not registered|nu este înregistrat|nu e înregistrat|incorrect|es
   const e2 = await wpLoginError('admin', 'parola-gresita-2');
   ok(e1.includes(MSG) && e2.includes(MSG), 'wp-login: același mesaj pentru nume inexistent și pentru parolă greșită');
   ok(!LEAK.test(e1) && !LEAK.test(e2), 'wp-login: mesajul nu spune dacă numele există („' + e2.slice(0, 80) + '”)');
+
+  // 7b. „Am uitat parola”: un cont inexistent primește același răspuns ca unul real („verifică emailul”)
+  await page.context().clearCookies();
+  await page.goto(BASE + '/wp-login.php?action=lostpassword', { waitUntil: 'domcontentloaded' });
+  await page.fill('#user_login', 'nu_exista_xyz'); await page.click('#wp-submit');
+  await page.waitForURL(/checkemail=confirm/, { timeout: 20000 }).catch(() => {});
+  const lostText = (await page.textContent('body')).replace(/\s+/g, ' ');
+  ok(/checkemail=confirm/.test(page.url()) && !(await page.$('#login_error')) && !/no account|nu există niciun cont/i.test(lostText), 'wp-login „am uitat parola”: cont inexistent → același răspuns „verifică emailul”, fără eroare (' + page.url().replace(BASE, '') + ')');
+  await page.goto(BASE + '/my-account/lost-password/', { waitUntil: 'domcontentloaded' });
+  if (await page.$('#user_login')) {
+    await page.fill('#user_login', 'nu_exista_xyz');
+    await Promise.all([page.waitForNavigation({ waitUntil: 'domcontentloaded' }).catch(() => {}), page.click('button.woocommerce-Button, .woocommerce-ResetPassword button[type=submit]')]);
+    await page.waitForTimeout(1000);
+    const wText = (await page.textContent('body')).replace(/\s+/g, ' ');
+    ok(/reset-link-sent=true/.test(page.url()) && !/Invalid username|nume de utilizator sau email invalid/i.test(wText), 'WooCommerce „am uitat parola”: cont inexistent → pagina „link trimis”, fără eroare (' + page.url().replace(BASE, '') + ')');
+  } else {
+    console.log('[omis]   WooCommerce „am uitat parola”: formularul nu e pe pagină');
+  }
 
   async function wooLoginError(user, pass) {
     await page.context().clearCookies();
@@ -124,6 +160,28 @@ const LEAK = /not registered|nu este înregistrat|nu e înregistrat|incorrect|es
   ok(themeEditor.status() === 403 || !(await page.$('#newcontent')), 'administrator: editorul de teme nu mai e disponibil (HTTP ' + themeEditor.status() + ')');
   await page.goto(BASE + '/wp-admin/options-general.php?page=gi-integration', { waitUntil: 'domcontentloaded' });
   ok(!!(await page.$('#wpbody-content')) && !/nu ai voie|not allowed to access/i.test(await page.textContent('body')), 'administrator: pagina Setări → Grădina Ielelor se deschide');
+
+  // 8b. Roluri: editorul (are nevoie de lista de autori în editor) o vede; clientul WooCommerce nu
+  const adminNonce = nonce;
+  const mk = async (username, role) => {
+    const r = await page.request.post(BASE + '/wp-json/wp/v2/users', { headers: { 'X-WP-Nonce': adminNonce }, data: { username, password: 'Test-Parola-123!', email: username + '@exemplu.invalid', roles: [role] } });
+    return r.status();
+  };
+  await mk('gi_editor_test', 'editor'); await mk('gi_client_test', 'customer');
+  async function usersAs(username) {
+    const c = await browser.newContext(); const pg = await c.newPage(); pg.setDefaultTimeout(60000);
+    await pg.goto(BASE + '/wp-login.php', { waitUntil: 'domcontentloaded' });
+    await pg.fill('#user_login', username); await pg.fill('#user_pass', 'Test-Parola-123!'); await pg.click('#wp-submit');
+    await pg.waitForLoadState('domcontentloaded'); await pg.waitForTimeout(1500);
+    const n = (await (await pg.request.get(BASE + '/wp-admin/admin-ajax.php?action=rest-nonce')).text()).trim();
+    const res = await pg.request.get(BASE + '/wp-json/wp/v2/users', { headers: { 'X-WP-Nonce': n } });
+    await c.close();
+    return res.status();
+  }
+  const edSt = await usersAs('gi_editor_test');
+  ok(edSt === 200, 'rol editor: lista de autori merge în editor (HTTP ' + edSt + ')');
+  const clSt = await usersAs('gi_client_test');
+  ok(clSt === 404 || clSt === 401 || clSt === 403, 'client WooCommerce: nu vede lista de conturi (HTTP ' + clSt + ')');
 
   // 9. Fără erori PHP provocate de plugin
   const logPath = process.env.GI_PHP_LOG;
