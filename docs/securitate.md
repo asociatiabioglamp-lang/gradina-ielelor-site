@@ -14,7 +14,7 @@
 | Antete de protecție | **Lipsesc** (HSTS, anti-încadrare, Referrer, Permissions) | **Se repară în 1.3.10.** |
 | Conturi vizibile public | **2** (`a.min`, contul proprietarei), prin `/wp-json/wp/v2/users` | Numele de utilizator ușurează ghicirea parolelor. **Se repară în 1.3.10.** |
 | Versiunile din cod | Se văd: WordPress 7.1.2, WooCommerce 8.7.3, Elementor 3.20.2 | WordPress se ascunde în 1.3.10. Adevărata reparație: actualizarea. |
-| **Aplicații vechi** | Elementor 3.20.2 și Elementor Pro 3.20.1 au vulnerabilități cunoscute; WooCommerce 8.7.3 e din 2024; **PHP 8.1** nu mai primește corecturi de securitate; 16 module inactive încă în fișiere | **Cel mai mare risc.** Inventar complet și plan de actualizare: Strat 2. |
+| **Aplicații vechi** | **WordPress 7.1.2 (două versiuni de securitate în urmă)**; Elementor 3.20.2 și Elementor Pro 3.20.1 au vulnerabilități cunoscute; WooCommerce 8.7.3 e din 2024; **PHP 8.1** nu mai primește corecturi de securitate; 16 module inactive încă în fișiere | **Cel mai mare risc.** Inventar complet și plan de actualizare: Strat 2. |
 | Firewall / protecție la atac în fața site-ului | **Neconfirmat**: serverul e LiteSpeed, nu am văzut CDN sau firewall | Strat 3. |
 | Limitarea încercărilor de parolă | **Neconfirmată** (nu fac teste de forță brută pe site-ul tău) | Strat 3. |
 | Copii de siguranță | Făcute la mână (Softaculous), numai de bază de date | Strat 4. |
@@ -60,6 +60,7 @@ Testat local (42 de verificări, inclusiv roluri editor și client WooCommerce),
 
 | Aplicație | Versiune pe live | Ce am găsit | Prioritate |
 |---|---|---|---|
+| **WordPress (nucleu)** | **7.1.2** | **Două versiuni de securitate în urmă:** 7.1.3 (6.10.2026, 7 corecturi de securitate) și 7.1.4 (28.10.2026, aproximativ 22 de vulnerabilități corectate, printre ele una în procesul de actualizare). Actualizările automate de securitate nu au pornit. Notă: în versiunea anterioară a acestui document scria, greșit, că WordPress e la zi. | **URGENT** (mic, cu backup) |
 | Elementor Pro | 3.20.1 | Două vulnerabilități cunoscute (XSS stocat, CVE-2024-2121 și CVE-2024-1364), corectate în 3.20.2. Cere un cont cu drept de editare, deci risc mic cât timp conturile sunt doar ale proprietarei. | **Mare** |
 | Elementor (gratuit) | 3.20.2 | Vulnerabilitate cunoscută (XSS stocat, CVE-2024-2117), corectată în 3.20.3. Același tip și aceeași condiție. | **Mare** |
 | WooCommerce | 8.7.3 | Nu am găsit o vulnerabilitate care să vizeze exact această versiune. Dar e din 2024 și nu mai primește corecturi; versiunile noi le acoperă. Contează pentru plăți. | **Mare** (cu test, vezi mai jos) |
@@ -70,7 +71,7 @@ Testat local (42 de verificări, inclusiv roluri editor și client WooCommerce),
 | NETOPIA, GTranslate 5.0.1, Yoast 28.6, WP Mail SMTP 4.10.0, GTM4WP 2.0.5, Meta Pixel 5.2.2, WP Statistics 14.16.15 | vezi `docs/stare-live-2026-10-31.md` | Neverificate acum pentru vulnerabilități; se verifică la fiecare ciclu de actualizare. | Mediu |
 | 16 module inactive (WP Rocket, Really Simple SSL, Contact Form 7 etc.) | inactive | **Un modul inactiv rămâne în fișiere și codul lui poate fi încă apelat direct.** Se șterg cele nefolosite. | Mediu |
 
-Surse consultate: [Wordfence: Elementor Pro ≤ 3.20.1](https://www.wordfence.com/threat-intel/vulnerabilities/wordpress-plugins/elementor-pro/elementor-website-builder-pro-3201-authenticated-contributor-stored-cross-site-scripting), [Patchstack: Elementor ≤ 3.20.2](https://patchstack.com/database/wordpress/plugin/elementor/vulnerability/wordpress-elementor-plugin-3-20-2-auth-stored-cross-site-scripting-vulnerability), [Patchstack: Advanced Coupons ≤ 4.7.1](https://patchstack.com/database/Wordpress/Plugin/advanced-coupons-for-woocommerce-free/vulnerability/wordpress-advanced-coupons-for-woocommerce-coupons-plugin-4-7-1-broken-access-control-vulnerability). Pentru OVABRW și NETOPIA nu am găsit surse publice; nu înseamnă că nu există.
+Surse consultate: [WordPress.org: versiunea 7.1.3](https://wordpress.org/news/?p=21753), [WordPress.org: versiunea 7.1.4](https://wordpress.org/support/wordpress-version/version-7-1-4/), [Patchstack: 7.1.4](https://patchstack.com/articles/wordpress-7-1-4-security-release/), [Wordfence: Elementor Pro ≤ 3.20.1](https://www.wordfence.com/threat-intel/vulnerabilities/wordpress-plugins/elementor-pro/elementor-website-builder-pro-3201-authenticated-contributor-stored-cross-site-scripting), [Patchstack: Elementor ≤ 3.20.2](https://patchstack.com/database/wordpress/plugin/elementor/vulnerability/wordpress-elementor-plugin-3-20-2-auth-stored-cross-site-scripting-vulnerability), [Patchstack: Advanced Coupons ≤ 4.7.1](https://patchstack.com/database/Wordpress/Plugin/advanced-coupons-for-woocommerce-free/vulnerability/wordpress-advanced-coupons-for-woocommerce-coupons-plugin-4-7-1-broken-access-control-vulnerability). Pentru OVABRW și NETOPIA nu am găsit surse publice; nu înseamnă că nu există.
 
 **Cum actualizăm, în siguranță** (OVABRW și NETOPIA depind de WooCommerce, deci **nu actualizăm direct pe live**):
 1. Backup complet (fișiere și baza de date) înainte de orice.
@@ -78,7 +79,7 @@ Surse consultate: [Wordfence: Elementor Pro ≤ 3.20.1](https://www.wordfence.co
 3. Test complet pe copie: rezervare, calendar, plată sandbox, email, regulament la plată.
 4. Verificăm compatibilitatea OVABRW 2.0.0 și NETOPIA 1.4.4 cu noul WooCommerce în notele lor de versiune, sau întrebăm furnizorii. Dacă nu sunt compatibile, actualizăm întâi pe acelea.
 5. Pe live, într-o zi cu puține rezervări, cu backup făcut, cu revenirea pregătită.
-6. Ordinea: PHP 8.3 (cPanel, testat) → Elementor Pro și Elementor → WooCommerce → tema → pluginurile mici.
+6. Ordinea: **WordPress 7.1.4 (urgent, întâi pe copia de test, apoi pe live)** → PHP 8.3 (cPanel, testat) → Elementor Pro și Elementor → WooCommerce → tema → pluginurile mici. Și copia de test se actualizează: e publică și conține date reale.
 7. **Ritm după aceea:** o zi fixă pe lună (prima marți) pentru actualizări; actualizările de securitate mici, în aceeași săptămână. Claude verifică lista și cere aprobarea.
 8. **Actualizările automate** pornite numai pentru pluginurile mici și sigure (WordPress, Yoast, GTM4WP). **Nu** pornim actualizări automate pentru WooCommerce, OVABRW, NETOPIA și Elementor: o actualizare automată proastă poate opri rezervările.
 
