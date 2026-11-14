@@ -267,7 +267,7 @@ function gi_offer_pages() {
             array('value' => '2', 'label' => 'lacuri, unul în care se înoată'),
             array('value' => '8', 'label' => 'dușuri publice, cu apă caldă non-stop'),
             array('value' => '20 min', 'label' => 'până la Transfăgărășan'),
-            array('value' => '80 lei', 'label' => 'pe noapte, cort sau rulotă'),
+            array('value' => '80 lei', 'label' => 'pe noapte, locul de cort sau rulotă, plus 30 lei pe adult'),
         ),
         'story' => array(
             'eyebrow' => 'Cum e să stai aici',
@@ -321,6 +321,7 @@ function gi_offer_pages() {
             'rows' => array(
                 array('label' => 'Loc de cort', 'value' => '80 lei'),
                 array('label' => 'Loc de rulotă sau autorulotă', 'value' => '80 lei'),
+                array('label' => 'Pentru fiecare adult, în plus', 'value' => '30 lei'),
             ),
         ),
         'notes' => array(
@@ -335,7 +336,7 @@ function gi_offer_pages() {
             array('q' => 'Am curent și internet?', 'a' => 'La locul rulotei nu e curent. În spațiile comune îți poți încărca telefonul și laptopul. Wi-Fi ai în zona teraselor și în zonele marcate. La dușuri e apă caldă non-stop. Domeniul funcționează pe energie proprie, solară și GPL, așa că lasă acasă electrocasnicele mari.'),
             array('q' => 'Ce pot face prin zonă?', 'a' => 'Transfăgărășanul e la circa 20 de minute, iar Mănăstirea Brâncoveanu e chiar în Sâmbăta de Sus. Prin satele de sub munte găsești drumuri de țară bune de bicicletă și producători locali.'),
             array('q' => 'Trebuie să rezerv din timp?', 'a' => 'Îți recomandăm, mai ales pentru weekendurile de vară și cât timp e deschis Transfăgărășanul.'),
-            array('q' => 'Cât costă o noapte?', 'a' => 'Tariful de referință este 80 lei pe noapte, pentru cort sau pentru rulotă. Prețul final îl vezi când alegi datele.'),
+            array('q' => 'Cât costă o noapte?', 'a' => 'Locul de cort sau de rulotă costă 80 lei pe noapte, la care se adaugă 30 lei pe noapte pentru fiecare adult. De exemplu, o noapte pentru doi adulți costă 140 lei. Prețul final îl vezi când alegi datele și numărul de persoane.'),
         ),
         'closing' => array('title' => 'Gata de o noapte', 'title_em' => 'la cort sau în rulotă, sub Făgăraș?', 'image' => 'closing-camping-munti-1600.webp'),
         'seo' => array(

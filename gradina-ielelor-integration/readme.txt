@@ -3,7 +3,7 @@ Contributors: gradina-ielelor
 Tags: one-page, woocommerce, booking, ovabrw, seo
 Requires at least: 6.0
 Requires PHP: 7.4
-Stable tag: 1.3.10
+Stable tag: 1.3.11
 License: GPLv2 or later
 
 Template-uri server-side pentru pagina principală (hub de rezervare) și paginile dedicate ofertelor Grădina Ielelor, cu WooCommerce + OVABRW drept singur motor de rezervări.
@@ -40,6 +40,10 @@ Nu. Constanta GI_REACT_DEMO_ENABLED este false, bundle-ul React nu este inclus, 
 Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai opțiunile acestui plugin.
 
 == Changelog ==
+
+= 1.3.11 =
+* Tariful la camping corectat în pagini, în card și în întrebările frecvente: 80 lei pe noapte pentru locul de cort sau de rulotă, plus 30 lei pe noapte pentru fiecare adult (ca în calendarul de rezervări; exemplu: doi adulți, o noapte, 140 lei). Până acum paginile spuneau doar „80 lei”.
+* Sezonul implicit din cod: „1 mai – 30 septembrie” (valorile salvate în Setări → Grădina Ielelor nu se schimbă).
 
 = 1.3.10 =
 * Securitate: antete de protecție pe paginile publice (fără încadrare în alte site-uri, fără scurgeri de adresă, HTTPS obligatoriu pentru cine revine, fără acces la cameră, microfon și locație).
