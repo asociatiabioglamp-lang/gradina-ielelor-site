@@ -15,7 +15,7 @@ final class GI_Plugin {
         add_filter('body_class', array(__CLASS__, 'body_class'));
         add_action('wp_head', array(__CLASS__, 'favicon'), 1);
         add_action('wp_head', array(__CLASS__, 'booking_arrival_script'), 3);
-        add_action('wp_head', array(__CLASS__, 'old_theme_phone_fixes'), 99);
+        add_action('wp_head', array(__CLASS__, 'old_theme_flag_position'), 99);
 
         // Navigare fluidă între paginile Grădinii: preîncărcare la hover (WordPress 6.8+).
         add_filter('wp_speculation_rules_configuration', array(__CLASS__, 'speculation_configuration'));
@@ -27,12 +27,14 @@ final class GI_Plugin {
      * butonul de meniu pe telefon și primul link din meniu pe calculator. Nu mai însoțește derularea și stă într-un loc liber din antetul temei:
      * pe calculator sub coș, în dreapta; pe telefon și tabletă (antetul mobil al temei, până la 1024 px) sub butonul „Meniu”, în stânga,
      * pentru că în dreapta ar atinge sigla. Pozițiile sunt măsurate pe site-ul real. Paginile noastre au regula lor în site.css.
+     * z-index 395: deasupra antetului temei (390), dar sub meniul lateral, coșul și fereastra de autentificare ale temei (400–99999),
+     * ca steagul să nu stea peste ele când se deschid. Cu bara de administrare WordPress, totul coboară cu 32 px (46 px pe telefon).
      */
-    public static function old_theme_phone_fixes() {
-        if (is_admin() || gi_is_site_page()) {
+    public static function old_theme_flag_position() {
+        if (gi_is_site_page()) {
             return;
         }
-        echo '<style id="gi-telefon-tema-veche">#gt_float_wrapper{position:absolute!important;top:66px!important;right:10px!important;bottom:auto!important;left:auto!important}@media (max-width:1024px){#gt_float_wrapper{top:54px!important;right:auto!important;left:8px!important}}</style>' . "\n";
+        echo '<style id="gi-steag-tema-veche">#gt_float_wrapper{position:absolute!important;top:66px!important;right:10px!important;bottom:auto!important;left:auto!important;z-index:395!important}body.admin-bar #gt_float_wrapper{top:98px!important}@media (max-width:1024px){#gt_float_wrapper{top:54px!important;right:auto!important;left:8px!important}body.admin-bar #gt_float_wrapper{top:86px!important}}@media (max-width:782px){body.admin-bar #gt_float_wrapper{top:100px!important}}</style>' . "\n";
     }
 
     public static function register_template($templates, $theme, $post, $post_type) {

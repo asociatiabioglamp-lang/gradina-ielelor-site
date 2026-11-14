@@ -42,12 +42,15 @@ Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai 
 == Changelog ==
 
 = 1.3.15 =
-* Telefon, prima pagină: se văd toate cele trei poze de la intrare (înainte se vedea numai prima). Poza mare rămâne sus, cu textul; lacul și focul apar dedesubt, tăiate pe diagonală ca pe calculator, pe primul ecran.
+* Telefon, prima pagină: se văd toate cele trei poze de la intrare (înainte se vedea numai prima). Poza mare rămâne sus, cu textul; lacul și focul apar dedesubt, tăiate pe diagonală ca pe calculator. Pe telefoanele obișnuite încap pe primul ecran; pe cele cu ecran scund, pozele de jos se văd parțial și apar întregi la prima derulare.
 * Telefon și tabletă: bara de jos a temei vechi („Contul meu / Coș / Meniu”) nu mai acoperă butonul „Rezervă” pe paginile noi.
 * Paginile Contact, Despre noi și Regulament & politici: titlul paginii nu mai stă sub siglă (se întâmpla și pe telefon, și pe calculator).
 * Paginile ofertelor (mai ales Festivaluri & tabere pe telefon și toate, pe telefonul ținut pe lat): titlul nu mai intră sub antet.
 * Linkurile de peste fotografii („Acasă”, „Vezi pozele”, „Înapoi la rezervare”) sunt din nou albe; culoarea verde a temei vechi le făcea greu de citit.
 * Steagul de limbă nu mai stă peste siglă, peste meniu și peste text: pe telefon stă în antet, între siglă și meniu; pe calculator stă sub antet, în dreapta; pe paginile cu designul vechi (produse, blog, coș), pe telefon și tabletă, stă sub butonul „Meniu”. Nu mai însoțește derularea.
+* La trecerea cu mouse-ul (sau la atingere), textul butoanelor și al linkurilor nu se mai face roșu, iar butonul de meniu nu se mai face gri (veneau de la tema veche). Butonul „Rezervă” din antet se deschide la culoare, ca celelalte butoane portocalii.
+* Paginile cu designul vechi: steagul de limbă nu mai stă peste meniul lateral, coș sau fereastra de autentificare când acestea se deschid.
+* Articole și pagini „Info QR”: au fost scoase patru linkuri comerciale fără legătură cu Grădina (salubritatetargoviste.ro, cloud9estate.ro, elianadesign.ro, jorjette.ro). Dispare numai linkul; cuvintele rămân în text.
 * Subsol: linkuri noi „Contul meu” și „Coș” (bara de jos a temei vechi, care le conținea, nu mai apare pe paginile noi, nici pe telefon, nici pe tabletă).
 * Subsol: linkul „Litigii online (SOL)” e scos, pentru că platforma europeană s-a închis la 20.07.2025. Rămân ANPC și ANPC — SAL.
 * Meniurile vechi (de pe blog, produse, coș) duc direct la paginile noi, nu prin redirecționare.

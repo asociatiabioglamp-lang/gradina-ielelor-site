@@ -31,6 +31,10 @@ final class GI_SEO {
         add_filter('wpseo_opengraph_title', array(__CLASS__, 'short_site_name'), 99);
         add_filter('pre_get_document_title', array(__CLASS__, 'short_site_name'), 99);
 
+        // Linkuri comerciale fără legătură cu Grădina, rămase în articole și pagini vechi: se scoate linkul, textul rămâne.
+        add_filter('the_content', array(__CLASS__, 'strip_unrelated_links'), 99);
+        add_filter('elementor/frontend/the_content', array(__CLASS__, 'strip_unrelated_links'), 99);
+
         add_action('add_meta_boxes_page', array(__CLASS__, 'meta_box'));
         add_action('save_post_page', array(__CLASS__, 'save_meta'));
     }
@@ -385,5 +389,38 @@ final class GI_SEO {
             $title = str_replace($name, 'Grădina Ielelor', $title);
         }
         return $title;
+    }
+
+    /**
+     * Site-uri fără legătură cu Grădina spre care duc linkuri din articole și din paginile „Info QR” (auditul din 14.11.2026):
+     * par plasate pentru alții, iar Google le poate socoti linkuri vândute. Proprietara a cerut scoaterea lor (14.11.2026).
+     * Lista se poate schimba cu filtrul „gi_unrelated_link_hosts”.
+     */
+    public static function unrelated_link_hosts() {
+        $hosts = apply_filters('gi_unrelated_link_hosts', array('salubritatetargoviste.ro', 'cloud9estate.ro', 'elianadesign.ro', 'jorjette.ro'));
+        return is_array($hosts) ? array_values(array_filter(array_map('strval', $hosts))) : array();
+    }
+
+    /**
+     * Scoate numai linkul (eticheta <a>), nu și cuvintele: sunt puse pe cuvinte obișnuite din propoziții („gunoaie”, „casele”),
+     * deci propoziția rămâne întreagă. Conținutul din baza de date nu se modifică; se schimbă doar ce se afișează.
+     * Se potrivește numai dacă adresa linkului începe cu unul dintre aceste site-uri (cu sau fără „www.”).
+     */
+    public static function strip_unrelated_links($content) {
+        if (!is_string($content) || '' === $content || false === stripos($content, '<a')) {
+            return $content;
+        }
+        $hosts = array();
+        foreach (self::unrelated_link_hosts() as $host) {
+            if (false !== stripos($content, $host)) {
+                $hosts[] = preg_quote($host, '~');
+            }
+        }
+        if (!$hosts) {
+            return $content;
+        }
+        $pattern = '~<a\b[^>]*\bhref\s*=\s*(["\'])\s*(?:https?:)?//(?:www\.)?(?:' . implode('|', $hosts) . ')(?:[/?#:][^"\']*)?\1[^>]*>(.*?)</a>~is';
+        $clean = preg_replace($pattern, '$2', $content);
+        return null === $clean ? $content : $clean;
     }
 }

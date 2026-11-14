@@ -61,7 +61,7 @@ body.admin-bar .gi-site .site-header{top:32px}
 
 /* Hero */
 .gi-site .home-hero{position:relative;min-height:64svh;display:flex;align-items:center;overflow:hidden;background:var(--forest-deep);color:#fff;isolation:isolate}
-.gi-site .home-hero-slices,.gi-site .home-hero-slice,.gi-site .home-hero-slice picture,.gi-site .home-hero-slice img,.gi-site .home-hero-overlay{position:absolute;inset:0;width:100%;height:100%;margin:0}
+.gi-site .home-hero-slices,.gi-site .home-hero-slice,.gi-site .home-hero-slice picture,.gi-site .home-hero-slice img,.gi-site .home-hero-overlay{position:absolute;top:0;right:0;bottom:0;left:0;inset:0;width:100%;height:100%;margin:0}
 .gi-site .home-hero-slice{overflow:hidden}
 .gi-site .home-hero-slice img{display:block;object-fit:cover;filter:var(--photo-filter)}
 .gi-site .home-hero-slice-lake{clip-path:polygon(0 0,70% 0,52% 100%,0 100%)}
@@ -238,7 +238,10 @@ body.gi-lightbox-open{overflow:hidden}
 
 /* Comutatorul de limbi (GTranslate, steagul plutitor) stătea fix în colțul din stânga sus, peste siglă.
    Pe paginile noi stă sub antet, în dreapta, și nu mai însoțește derularea. Lista de limbi se deschide în jos, ca în setările actuale. */
-body.gi-one-page #gt_float_wrapper,body.gi-one-page .gt_float_wrapper{position:absolute!important;top:104px!important;right:20px!important;bottom:auto!important;left:auto!important;z-index:60!important}
+body.gi-one-page{--gi-bara-admin:0px}
+body.gi-one-page.admin-bar{--gi-bara-admin:32px}
+@media (max-width:782px){body.gi-one-page.admin-bar{--gi-bara-admin:46px}}
+body.gi-one-page #gt_float_wrapper,body.gi-one-page .gt_float_wrapper{position:absolute!important;top:calc(104px + var(--gi-bara-admin,0px))!important;right:20px!important;bottom:auto!important;left:auto!important;z-index:49!important}
 /* Bara de jos a temei vechi („Contul meu / Coș / Meniu”, pe telefon și tabletă) acoperea butonul „Rezervă” și deschidea meniul vechi:
    pe paginile noastre nu apare. „Contul meu” și „Coș” sunt în subsol. */
 body.gi-one-page .wd-toolbar{display:none!important}
@@ -266,7 +269,7 @@ body.gi-one-page .wd-toolbar{display:none!important}
   .gi-site .home-hero-slice-shore{right:auto;left:0;clip-path:polygon(0 0,100% 0,88% 100%,0 100%)}
   .gi-site .home-hero-slice-foc{right:0;left:auto;clip-path:polygon(12% 0,100% 0,100% 100%,0 100%)}
   /* Steagul de limbă (GTranslate) stătea fix peste siglă și peste text: acum stă în antet, între siglă și meniu, și nu mai însoțește derularea. */
-  body.gi-one-page #gt_float_wrapper,body.gi-one-page .gt_float_wrapper{top:30px!important;right:92px!important}
+  body.gi-one-page #gt_float_wrapper,body.gi-one-page .gt_float_wrapper{top:calc(30px + var(--gi-bara-admin,0px))!important;right:92px!important;z-index:60!important}
   .gi-site{--fs-text:18px;--fs-lead:19.5px;--fs-ui:17px;--fs-note:17px}
   body.gi-one-page{padding-bottom:70px}.gi-site .container{width:calc(100% - 32px)}
   .gi-site .home-hero{min-height:640px;min-height:max(640px,96svh);padding-bottom:var(--hero-strip);align-items:flex-end}.gi-site .home-hero-slice-lake img{object-position:50% 0%}
@@ -294,6 +297,14 @@ body.gi-one-page .wd-toolbar{display:none!important}
   #gi-lightbox{padding:70px 12px 90px}#gi-lightbox .lightbox-arrow{top:auto;bottom:20px;width:46px;height:46px;transform:none}#gi-lightbox .lightbox-arrow.previous{left:calc(50% - 58px)}#gi-lightbox .lightbox-arrow.next{right:calc(50% - 58px)}#gi-lightbox .lightbox-close{top:14px;right:14px}#gi-lightbox figcaption{font-size:15px}
 }
 /* Telefoane foarte înguste: între siglă și meniu e loc numai pentru un steag ceva mai mic. */
-@media (max-width:350px){body.gi-one-page #gt_float_wrapper,body.gi-one-page .gt_float_wrapper{top:33px!important;right:85px!important;transform:scale(.8);transform-origin:100% 0}}
+@media (max-width:350px){body.gi-one-page #gt_float_wrapper,body.gi-one-page .gt_float_wrapper{top:calc(33px + var(--gi-bara-admin,0px))!important;right:85px!important;transform:scale(.8);transform-origin:100% 0}}
 @media (max-width:782px){body.admin-bar .gi-site .site-header{top:46px}}
+/* La trecerea cu mouse-ul (sau la atingere), textul își păstrează culoarea. Stilurile temei vechi se încarcă după ale noastre:
+   kitul Elementor făcea roșu textul oricărui link, iar tema făcea gri butonul de meniu. Se schimbă numai ce am ales noi (fundal, subliniere). */
+body .gi-site a:hover{color:inherit}
+.gi-site .button-primary:hover,.gi-site .button-small:hover{color:#fff}
+.gi-site .button-accent:hover,.gi-site .header-cta:hover,.gi-site .mobile-booking-cta:hover,.gi-site .gi-cart-float:hover{color:var(--on-sun)}
+.gi-site .header-cta:hover{background:var(--sun-hover);box-shadow:0 8px 24px rgb(var(--shade) / .2)}
+.gi-site .desktop-nav a:hover,.gi-site .home-hero-events-link:hover{color:#fff}
+.gi-site .menu-toggle:hover{background:rgb(var(--shade) / calc(.5 * var(--veil)));color:#fff}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.gi-site *,.gi-site *::before,.gi-site *::after{transition:none!important}}

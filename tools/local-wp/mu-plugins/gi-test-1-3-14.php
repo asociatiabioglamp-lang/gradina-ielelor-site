@@ -99,3 +99,29 @@ add_action('wp', function () {
     add_filter('pre_get_document_title', function () use ($title) { return $title; }, 15);
     add_filter('wpseo_metadesc', function () use ($desc) { return $desc; }, 5);
 });
+
+// /?gi_test=linkuri → rezultatul filtrului care scoate linkurile fără legătură (pluginul 1.3.15), pe texte de probă.
+add_action('wp', function () {
+    $t = isset($_GET['gi_test']) ? sanitize_key(wp_unslash($_GET['gi_test'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+    if ('linkuri' !== $t) {
+        return;
+    }
+    $cases = array(
+        'propozitie' => 'Nu lăsa <a href="https://salubritatetargoviste.ro/" target="_blank" rel="noopener">gunoaie</a> în urmă.',
+        'cu_cale' => 'recomandat pentru <a href="https://jorjette.ro/tratament-ciclu-menstrual-neregulat/">ciclu menstrual neregulat</a>.',
+        'www_apostrof_etichete' => "pe langa <a HREF='http://www.Cloud9Estate.ro' rel='follow'> facilitatile <strong>deosebite</strong> </a> de campare",
+        'doua' => '<a href="https://elianadesign.ro/" target="_blank">casele</a> și <a href="//elianadesign.ro">Spatiul</a>',
+        'pastrat_intern' => 'Vezi <a href="https://gradina-ielelor.ro/glamping/">Glamping</a>.',
+        'pastrat_alt_site' => '<a href="https://jorjette.ro.exemplu.com/x">alt site</a> și <a href="https://exemplu.com/?u=https://jorjette.ro/">altul</a>',
+        'pastrat_text' => 'Numele jorjette.ro scris în text, fără link.',
+    );
+    $out = array();
+    foreach ($cases as $k => $v) {
+        $out[$k] = GI_SEO::strip_unrelated_links($v);
+    }
+    $out['prin_the_content'] = trim(wp_strip_all_tags(apply_filters('the_content', $cases['propozitie']), true));
+    $out['prin_the_content_html'] = apply_filters('the_content', $cases['propozitie']);
+    header('Content-Type: application/json; charset=utf-8');
+    echo wp_json_encode($out, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
+});

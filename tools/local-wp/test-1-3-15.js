@@ -152,7 +152,7 @@ const MEASURE = () => {
     const page = await ctx.newPage();
     await page.goto(BASE + '/?p=30&gi_test=stiluri', { waitUntil: 'load', timeout: 90000 });
     const r = await page.evaluate(() => {
-      const s = document.getElementById('gi-telefon-tema-veche'); const flag = document.getElementById('gt_float_wrapper');
+      const s = document.getElementById('gi-steag-tema-veche'); const flag = document.getElementById('gt_float_wrapper');
       const b = flag ? flag.getBoundingClientRect() : null;
       return { css: s ? s.textContent : '', inHead: !!(s && s.closest('head')), position: flag ? getComputedStyle(flag).position : '', left: b ? Math.round(b.left) : -1, top: b ? Math.round(b.top) : -1 };
     });
@@ -163,7 +163,128 @@ const MEASURE = () => {
     ok(d.right === 10 && d.top === 66, `pagină cu tema veche, calculator: steagul stă în dreapta, sub coș (${d.right} px de margine, ${d.top} px de sus)`);
     // pe paginile noastre regula pentru tema veche nu se tipărește
     await page.goto(BASE + '/glamping/' + Q, { waitUntil: 'load', timeout: 90000 });
-    ok(!(await page.$('#gi-telefon-tema-veche')), 'pagină nouă: regula pentru tema veche nu se tipărește');
+    ok(!(await page.$('#gi-steag-tema-veche')), 'pagină nouă: regula pentru tema veche nu se tipărește');
+    await ctx.close();
+  }
+
+  // 5. Trecerea cu mouse-ul: textul nu se face roșu (kitul Elementor) și butoanele nu se fac gri (tema veche);
+  //    în designul nostru (fără stiluri străine), culoarea textului rămâne aceeași, cu excepțiile alese de noi.
+  const HOVER_EXCEPTIONS = '.button-outline, .footer-grid a, .footer-legal a, .calendar-filters button, .footer-bottom a';
+  async function hoverPass(w, h, path, foreign) {
+    const ctx = await browser.newContext({ viewport: { width: w, height: h } });
+    const page = await ctx.newPage();
+    page.setDefaultTimeout(90000);
+    await page.goto(BASE + path + (foreign ? Q : ''), { waitUntil: 'load' });
+    await page.addStyleTag({ content: '*,*::before,*::after{transition:none!important;animation:none!important}' });
+    const kinds = await page.evaluate((exceptions) => {
+      const seen = {}; const out = []; let i = 0;
+      document.querySelectorAll('.gi-site a, .gi-site button').forEach((e) => {
+        if (e.closest('form, .home-booking-shell, #gi-lightbox, #gt_float_wrapper, .wd-toolbar')) { return; }
+        const c = getComputedStyle(e); const b = e.getBoundingClientRect();
+        if (!(b.width > 2 && b.height > 2) || c.visibility === 'hidden' || c.display === 'none' || e.offsetParent === null && c.position !== 'fixed') { return; }
+        const p = e.parentElement;
+        const sig = (p ? String(p.className).split(/\s+/)[0] : '') + '>' + e.tagName.toLowerCase() + '.' + String(e.className).split(/\s+/).filter(Boolean).sort().join('.');
+        if (seen[sig]) { return; }
+        seen[sig] = 1; e.setAttribute('data-gi-h', String(++i));
+        out.push({ k: i, sig, exception: e.matches(exceptions) });
+      });
+      return out;
+    }, HOVER_EXCEPTIONS);
+    const bad = [];
+    for (const kind of kinds) {
+      const loc = page.locator('[data-gi-h="' + kind.k + '"]');
+      const read = () => loc.evaluate((e) => { const c = getComputedStyle(e); return { color: c.color, bg: c.backgroundColor }; });
+      try {
+        await loc.scrollIntoViewIfNeeded({ timeout: 4000 });
+        await page.mouse.move(0, 0);
+        const before = await read();
+        await loc.hover({ timeout: 4000, force: true });
+        const after = await read();
+        if (after.color === 'rgb(255, 0, 0)') { bad.push(kind.sig + ' → roșu'); }
+        else if (after.bg === 'rgb(224, 224, 224)' && before.bg !== after.bg) { bad.push(kind.sig + ' → fundal gri'); }
+        else if (!foreign && !kind.exception && after.color !== before.color) { bad.push(kind.sig + ' ' + before.color + ' → ' + after.color); }
+      } catch (e) { /* element acoperit sau ieșit din pagină: nu se poate trece cu mouse-ul peste el */ }
+    }
+    await ctx.close();
+    return { n: kinds.length, bad };
+  }
+  for (const path of ['/'].concat(OFFERS, CONTENT)) {
+    const f = await hoverPass(1440, 900, path, true);
+    ok(f.n > 8 && f.bad.length === 0, `${path} — calculator, cu stilurile străine: la trecerea cu mouse-ul niciun text nu se face roșu, niciun buton gri (${f.n} feluri de linkuri; ${f.bad.join(' | ') || 'în regulă'})`);
+    const d = await hoverPass(1440, 900, path, false);
+    ok(d.n > 8 && d.bad.length === 0, `${path} — calculator, designul nostru: la trecerea cu mouse-ul textul își păstrează culoarea (${d.n} feluri de linkuri; ${d.bad.join(' | ') || 'în regulă'})`);
+  }
+  {
+    const f = await hoverPass(390, 844, '/glamping/', true);
+    ok(f.bad.length === 0, `/glamping/ — telefon, cu stilurile străine: la atingere nimic roșu sau gri (${f.bad.join(' | ') || 'în regulă'})`);
+  }
+
+  // 6. Telefon: după derulare, butonul „Rezervă” de jos e vizibil și liber (bara temei vechi nu îl acoperă)
+  for (const path of ['/', '/glamping/', '/contact/']) {
+    const ctx = await browser.newContext({ viewport: { width: 360, height: 740 }, isMobile: true, hasTouch: true });
+    const page = await ctx.newPage();
+    await page.goto(BASE + path + Q, { waitUntil: 'load', timeout: 90000 });
+    // Pe unele pagini butonul se ascunde singur cât timp formularul de rezervare e pe ecran: îl căutăm în mai multe locuri din pagină.
+    let r = { has: false };
+    for (const y of [1500, 3000, 4500, 6000, 8000]) {
+      await page.evaluate((top) => window.scrollTo(0, top), y);
+      await page.waitForTimeout(900);
+      r = await page.evaluate(() => {
+        const cta = document.querySelector('.gi-site .mobile-booking-cta'); if (!cta) { return { has: false }; }
+        const b = cta.getBoundingClientRect(); const c = getComputedStyle(cta);
+        const shown = b.height > 20 && c.visibility !== 'hidden' && parseFloat(c.opacity) > 0.5 && b.top < innerHeight && b.bottom > 0;
+        const top = shown ? document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2) : null;
+        return { has: true, shown, free: !!top && (top === cta || cta.contains(top)) };
+      });
+      if (r.shown) { break; }
+    }
+    ok(r.has && r.shown && r.free, `${path} — telefon, după derulare: butonul „Rezervă” de jos se vede și nu e acoperit`);
+    await ctx.close();
+  }
+
+  // 7. Telefon cu ecran scund (iPhone SE / 8 în Safari, circa 375×553): pozele de jos se văd măcar parțial pe primul ecran
+  {
+    const ctx = await browser.newContext({ viewport: { width: 375, height: 553 }, isMobile: true, hasTouch: true });
+    const page = await ctx.newPage();
+    await page.goto(BASE + '/' + Q, { waitUntil: 'load', timeout: 90000 });
+    const v = await page.evaluate(() => Array.from(document.querySelectorAll('.home-hero-slice-shore, .home-hero-slice-foc')).map((e) => { const b = e.getBoundingClientRect(); return Math.round(Math.max(0, Math.min(innerHeight, b.bottom) - Math.max(0, b.top))); }));
+    ok(v.length === 2 && v.every((x) => x >= 40), `prima pagină, telefon cu ecran scund: pozele de jos se văd parțial pe primul ecran (${v.join(' și ')} px din 140)`);
+    await ctx.close();
+  }
+
+  // 8. Cu bara de administrare WordPress (proprietara autentificată): steagul nu intră sub bară și nu stă peste antet
+  {
+    for (const [w, h] of [[360, 740], [768, 1024], [1440, 900]]) {
+      const ctx = await browser.newContext({ viewport: { width: w, height: h } });
+      const page = await ctx.newPage();
+      page.setDefaultTimeout(90000);
+      await page.goto(BASE + '/wp-login.php', { waitUntil: 'domcontentloaded' });
+      await page.fill('#user_login', 'admin'); await page.fill('#user_pass', 'password'); await page.click('#wp-submit');
+      await page.waitForURL('**/wp-admin/**');
+      await page.goto(BASE + '/glamping/' + Q, { waitUntil: 'load' });
+      await page.waitForTimeout(400);
+      const m = await page.evaluate(MEASURE);
+      const bar = await page.evaluate(() => { const b = document.getElementById('wpadminbar'); return b ? Math.round(b.getBoundingClientRect().bottom) : 0; });
+      ok(bar > 0 && m.flag && m.flag.top >= bar && m.over.length === 0, `cu bara de administrare, ${w} px: steagul stă sub bară (${m.flag ? m.flag.top : '?'} ≥ ${bar}) și nu acoperă nimic (${m.over.join(' | ') || 'liber'})`);
+      await ctx.close();
+    }
+  }
+
+  // 9. Linkurile fără legătură cu Grădina (cerute de proprietară): dispare linkul, rămâne textul; celelalte linkuri rămân
+  {
+    const ctx = await browser.newContext();
+    const page = await ctx.newPage();
+    const resp = await page.goto(BASE + '/?gi_test=linkuri', { waitUntil: 'domcontentloaded', timeout: 90000 });
+    let r = {};
+    try { r = JSON.parse(await resp.text()); } catch (e) { r = {}; }
+    ok(r.propozitie === 'Nu lăsa gunoaie în urmă.', `linkuri fără legătură: linkul dispare, propoziția rămâne („${r.propozitie}”)`);
+    ok(r.cu_cale === 'recomandat pentru ciclu menstrual neregulat.', 'linkuri fără legătură: și un link spre o pagină anume a acelui site dispare');
+    ok(r.www_apostrof_etichete === 'pe langa  facilitatile <strong>deosebite</strong>  de campare', 'linkuri fără legătură: merge și cu „www.”, cu apostrof și cu litere mari; textul îngroșat din interior rămâne');
+    ok(r.doua === 'casele și Spatiul', 'linkuri fără legătură: două linkuri în același text dispar amândouă');
+    ok(/href="https:\/\/gradina-ielelor\.ro\/glamping\/"/.test(r.pastrat_intern || ''), 'linkuri fără legătură: linkurile noastre rămân');
+    ok(/jorjette\.ro\.exemplu\.com/.test(r.pastrat_alt_site || '') && /exemplu\.com\/\?u=/.test(r.pastrat_alt_site || ''), 'linkuri fără legătură: un alt site cu nume asemănător și un link care doar pomenește site-ul rămân');
+    ok(r.pastrat_text === 'Numele jorjette.ro scris în text, fără link.', 'linkuri fără legătură: textul fără link rămâne neschimbat');
+    ok(r.prin_the_content === 'Nu lăsa gunoaie în urmă.' && !/salubritate/.test(r.prin_the_content_html || 'salubritate'), 'linkuri fără legătură: filtrul rulează pe conținutul afișat al articolelor și paginilor');
     await ctx.close();
   }
 

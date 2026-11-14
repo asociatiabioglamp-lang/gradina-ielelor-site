@@ -12,6 +12,7 @@
 .gi-content-site .desktop-nav a[aria-current="page"],
 .gi-content-site .menu-toggle { color: var(--mountain); text-shadow: none; background: transparent; }
 .gi-content-site .desktop-nav a::after { background: var(--mountain); }
+.gi-content-site .desktop-nav a:hover, .gi-content-site .menu-toggle:hover { color: var(--mountain); background: transparent; }
 .gi-content-site .gi-content-hero .gi-breadcrumb { color: var(--text-2); }
 .gi-content-site .gi-content-hero .gi-breadcrumb a { color: var(--forest); text-decoration-color: rgba(29, 99, 128, .4); }
 /* Două clase intenționat: stilurile altor module de pe site („.container { padding: 0 … }”) anulau spațiul de sus, iar titlul paginii ajungea sub siglă. */

@@ -37,6 +37,7 @@ add_action('wp_footer', function () {
 /* Ordinea e cea de pe live: stilurile noastre se încarcă primele, apoi kitul Elementor, „hoteller-elementor” și la urmă tema veche. */
 /* 1. kitul Elementor: elementor/css/post-2374.css */
 .elementor-kit-2374 a{color:#009014}
+.elementor-kit-2374 a:hover{color:#FF0000}
 .elementor-kit-2374 h1{font-family:"Lora",sans-serif;font-weight:700}
 .elementor-kit-2374 h2{font-family:"Lora",sans-serif;font-weight:500}
 /* 2. hoteller-elementor/assets/css/hoteller-elementor.css */
@@ -52,6 +53,8 @@ add_action('wp_footer', function () {
 a{color:#009014}
 li{margin-bottom:10px}
 :is(.btn,.button,button,[type="submit"],[type="button"]){text-transform:uppercase}
+/* efectul măsurat pe live la trecerea cu mouse-ul peste un buton fără regulă proprie (butonul de meniu) */
+:is(.btn,.button,button,[type="submit"],[type="button"]):hover{color:#3E3E3E;background-color:#e0e0e0}
 .wd-toolbar{position:fixed;right:0;bottom:0;left:0;z-index:350;display:flex;align-items:center;justify-content:space-around;height:55px;background:#fff;box-shadow:0 0 9px rgba(0,0,0,.12)}
 @media (min-width:1025px){.wd-toolbar{display:none}}
 @media (max-width:1024px){.sticky-toolbar-on{padding-bottom:55px}}

@@ -84,6 +84,7 @@
 .gi-dedicated main p { font-size: var(--fs-text); line-height: var(--lh-text); color: var(--muted); max-width: 62ch; }
 .gi-dedicated main p a,
 .gi-dedicated .gi-text-link { color: var(--forest); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: .2em; text-decoration-thickness: 2px; }
+.gi-dedicated main p a:hover, .gi-dedicated .gi-text-link:hover { color: var(--forest); }
 .gi-dedicated main .eyebrow { font-size: var(--fs-label); color: var(--gi-eyebrow); }
 .gi-dedicated .gi-section-head { margin-bottom: clamp(22px, 3vw, 40px); }
 .gi-dedicated .gi-section-head h2 { margin-bottom: 0; }
@@ -101,7 +102,9 @@
 .gi-hero-link { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 4px; color: #fff; font-size: var(--fs-ui); font-weight: 600; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .45); text-underline-offset: .3em; transition: text-decoration-color .2s ease; }
 .gi-hero-link:hover { text-decoration-color: var(--accent); }
 /* Peste fotografie și pe fundal închis linkurile rămân albe: culoarea de link a temei vechi (verde) le făcea greu de citit. */
-.gi-page-hero .gi-hero-link, .gi-closing .gi-hero-link, .gi-page-hero .gi-breadcrumb a { color: #fff; }
+.gi-page-hero .gi-hero-link, .gi-closing .gi-hero-link, .gi-page-hero .gi-breadcrumb a, .gi-site .gi-back-link,
+.gi-page-hero .gi-hero-link:hover, .gi-closing .gi-hero-link:hover, .gi-page-hero .gi-breadcrumb a:hover, .gi-site .gi-back-link:hover { color: #fff; }
+.gi-prices-actions .gi-hero-link:hover { color: var(--forest); }
 .gi-hero-link .gi-icon { width: 18px; height: 18px; }
 
 /* ---------- Hero: fotografia rămâne luminoasă; doar coloana de text stă pe o umbră albastră de munte ---------- */
@@ -373,7 +376,7 @@
 }
 
 /* ---------- Înapoi la rezervare (finalul fiecărei pagini dedicate) ---------- */
-.gi-site .gi-back-link { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; margin-top: 22px; color: #fff; font-size: var(--fs-ui); font-weight: 600; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .4); text-underline-offset: .3em; }
+.gi-back-link { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; margin-top: 22px; color: #fff; font-size: var(--fs-ui); font-weight: 600; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .4); text-underline-offset: .3em; }
 .gi-back-link:hover { text-decoration-color: var(--accent); }
 .gi-back-link .gi-icon { width: 18px; height: 18px; }
 
