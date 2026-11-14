@@ -23,7 +23,8 @@ final class GI_Vouchere {
     public static function init() {
         add_action('admin_menu', array(__CLASS__, 'menu'), 11);
         add_action('admin_post_gi_voucher_gen', array(__CLASS__, 'generate'));
-        add_action('wp_loaded', array(__CLASS__, 'catch_code'), 20);
+        // template_redirect (nu wp_loaded): cererile REST, AJAX, de autentificare și cron nu ajung aici, deci nu pot seta cookie-ul.
+        add_action('template_redirect', array(__CLASS__, 'catch_code'), 1);
         // template_redirect: antetele nu au plecat încă, deci cookie-ul se poate șterge după încercare.
         add_action('template_redirect', array(__CLASS__, 'apply_saved_code'), 20);
     }

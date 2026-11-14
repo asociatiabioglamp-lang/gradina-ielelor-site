@@ -139,6 +139,7 @@ function gi_pagini_set_template($post_id, $template) {
  */
 function gi_pagini_creeaza() {
     $mesaje = array();
+    delete_transient('gi_galerie_lipsa'); // dacă pagina „Galerie foto” se creează acum, aplicarea automată a șablonului o poate găsi
     kses_remove_filters(); // textul se salvează neschimbat (blocuri Detalii, tabele, clase)
     foreach (gi_pagini_spec() as $slug => $s) {
         $page = gi_pagini_find($slug);

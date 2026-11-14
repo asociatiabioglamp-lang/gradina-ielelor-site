@@ -172,6 +172,9 @@ async function decode(page, selector, index) {
     await rest('POST', '/wp/v2/puncte/' + b2.body.id, { slug: 'teiul-nou-' + STAMP });
     const rd = await (await browser.newContext()).request.get(BASE + oldSlug + UTM, { maxRedirects: 0 });
     ok(rd.status() === 301 && /teiul-nou-/.test(rd.headers().location || '') && /utm_source=qr/.test(rd.headers().location || ''), `adresa veche a unui loc redirecționează la cea nouă și păstrează sursa (${rd.status()} → ${(rd.headers().location || '').replace(BASE, '')})`);
+    const evil = await (await browser.newContext()).request.get(BASE + oldSlug + '?utm_source=a%26p%3D1%23frag&utm_medium=b%0d%0aSet-Cookie:%20z=1&utm_campaign=%2F%2Fevil.example%2F', { maxRedirects: 0 });
+    const loc = evil.headers().location || '';
+    ok(evil.status() === 301 && loc.startsWith(BASE) && /^\/in-gradina\/[^?#]+\?utm_source=[\w.-]*&utm_medium=[\w.-]*&utm_campaign=[\w.-]*$/.test(loc.replace(BASE, '')), `redirecționarea adresei vechi: doar cei trei parametri utm, cu valori simple; fără parametri în plus, fragment sau antete (${loc.replace(BASE, '')})`);
     await rest('POST', '/wp/v2/puncte/' + b2.body.id, { slug: oldSlug.split('/').filter(Boolean).pop() });
   }
 
@@ -317,10 +320,10 @@ async function decode(page, selector, index) {
     await page.goto(BASE + '/cart/', { waitUntil: 'load' });
     const cart = (await page.textContent('body')).replace(/\s+/g, ' ');
     ok(new RegExp(codes[2].replace(/-/g, '[- ]'), 'i').test(cart) && /50[,.]00/.test(cart), 'voucher scanat: în coș, reducerea de 50 lei e aplicată singură');
-    ok((await page.locator('.cart-discount').count()) === 1 && (await page.locator('.woocommerce-error').count()) === 0, 'voucher scanat: o singură reducere aplicată, fără mesaje de eroare');
+    ok((await page.locator('.cart-discount').count()) === 1 && (await page.locator('[class*="is-error"], .woocommerce-error').count()) === 0, 'voucher scanat: o singură reducere aplicată, fără mesaje de eroare');
     ok(!(await ctx.cookies()).some((c) => c.name === 'gi_cod'), 'voucher scanat: după încercare, cookie-ul se șterge (nu mai reapare nimic la pagina următoare)');
     await page.reload({ waitUntil: 'load' });
-    ok((await page.locator('.cart-discount').count()) === 1 && (await page.locator('.woocommerce-error').count()) === 0, 'voucher scanat: la reîncărcare nu apar erori sau aplicări în plus');
+    ok((await page.locator('.cart-discount').count()) === 1 && (await page.locator('[class*="is-error"], .woocommerce-error').count()) === 0, 'voucher scanat: la reîncărcare nu apar erori sau aplicări în plus');
     // cod inventat: fără erori grave
     const ctx2 = await browser.newContext();
     const p2 = await ctx2.newPage();
@@ -329,6 +332,8 @@ async function decode(page, selector, index) {
     await p2.goto(BASE + '/?add-to-cart=30', { waitUntil: 'load' });
     await p2.goto(BASE + '/cart/', { waitUntil: 'load' });
     const bad = await p2.textContent('body');
+    const viaRest = await (await browser.newContext()).request.get(BASE + '/wp-json/wp/v2/puncte?gi_cod=ABCD-EFGH', { maxRedirects: 0 });
+    ok(viaRest.status() === 200 && !/gi_cod/.test(viaRest.headers()['set-cookie'] || ''), `?gi_cod= nu face nimic pe cererile REST (${viaRest.status()}, fără cookie)`);
     ok(!/Fatal error|Warning:|Notice:/.test(bad) && (await p2.locator('.cart-discount').count()) === 0, 'voucher inventat: coșul se deschide normal, fără erori PHP și fără reducere');
     ok(!(await ctx2.cookies()).some((c) => c.name === 'gi_cod'), 'voucher inventat: cookie-ul se șterge după încercare');
     // un cupon obișnuit WooCommerce (nu generat din zona Grădina) nu se aplică prin codul QR
@@ -379,7 +384,8 @@ async function decode(page, selector, index) {
     ok(pr.status() === 403 && !/gi-tile/.test(await pr.text()), `acces: editorul, cu cod de siguranță valid, nu poate printa vouchere (${pr.status()})`);
     const idor = await pe.request.get(printUrl('&tip=puncte&ids[]=' + couponId + '&ids[]=' + c3.body.id + '&ids[]=1&ids[]=30'), { maxRedirects: 0 });
     ok(idor.status() === 200 && (await idor.text()).split('class="gi-tile"').length - 1 === 0, 'acces: cu id-uri de cupon, ciornă, pagină sau produs, pagina de printat nu arată nimic');
-    const gen = await pe.request.post(BASE + '/wp-admin/admin-post.php', { form: { action: 'gi_voucher_gen', _wpnonce: edNonce, tip: 'suma', valoare: '10', numar: '1', prefix: 'EDIT' }, maxRedirects: 0 });
+    const genNonce = (await (await pe.request.get(BASE + '/?gi_test=nonce&n=gi_voucher_gen')).json()).nonce; // cod de siguranță VALID pentru generare: refuzul trebuie să vină din drepturi
+    const gen = await pe.request.post(BASE + '/wp-admin/admin-post.php', { form: { action: 'gi_voucher_gen', _wpnonce: genNonce, tip: 'suma', valoare: '10', numar: '1', prefix: 'EDIT' }, maxRedirects: 0 });
     const afterGen = await rest('GET', '/wc/v3/coupons?per_page=20&search=EDIT');
     ok(gen.status() === 403 && afterGen.body.filter((c) => /^edit-/.test(c.code)).length === 0, `acces: editorul nu poate genera vouchere (${gen.status()})`);
     await ce.close();

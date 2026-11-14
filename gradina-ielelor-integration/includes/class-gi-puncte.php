@@ -145,8 +145,12 @@ final class GI_Puncte {
     public static function keep_utm($link) {
         $keep = array();
         foreach (array('utm_source', 'utm_medium', 'utm_campaign') as $k) {
-            if (isset($_GET[$k])) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-                $keep[$k] = sanitize_text_field(wp_unslash($_GET[$k])); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            // Doar valori simple (litere, cifre, _ . -), scurte: nimic din ele nu poate schimba adresa spre care se redirecționează.
+            if (isset($_GET[$k]) && is_string($_GET[$k])) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+                $value = preg_replace('/[^A-Za-z0-9_.-]/', '', wp_unslash($_GET[$k])); // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+                if ('' !== $value) {
+                    $keep[$k] = substr($value, 0, 60);
+                }
             }
         }
         return $keep && is_string($link) ? add_query_arg($keep, $link) : $link;
@@ -155,10 +159,14 @@ final class GI_Puncte {
     /**
      * Pe site-ul de test sau local, codurile ar duce la adresa de test: avertizare vizibilă.
      */
+    public static function is_production() {
+        $host = (string) wp_parse_url(home_url('/'), PHP_URL_HOST);
+        return in_array($host, (array) apply_filters('gi_production_hosts', array('gradina-ielelor.ro', 'www.gradina-ielelor.ro')), true);
+    }
+
     public static function address_notice() {
         $host = (string) wp_parse_url(home_url('/'), PHP_URL_HOST);
-        $prod = (array) apply_filters('gi_production_hosts', array('gradina-ielelor.ro', 'www.gradina-ielelor.ro'));
-        if (in_array($host, $prod, true)) {
+        if (self::is_production()) {
             return;
         }
         echo '<div class="notice notice-warning inline"><p><strong>Atenție:</strong> acesta nu e site-ul real. Codurile de aici duc la <code>' . esc_html($host) . '</code>, iar adresa aceea poate dispărea. <strong>Generează și printează codurile numai de pe gradina-ielelor.ro.</strong></p></div>';
@@ -429,7 +437,7 @@ body { margin: 0; padding: 16px; font: 16px/1.4 system-ui, -apple-system, "Segoe
     <button type="button" onclick="window.print()">Printează</button>
     <a href="javascript:window.close()">Închide</a>
     <span><?php echo esc_html((string) count($tiles)); ?> cod(uri), mărimea <?php echo (int) $size; ?> cm. Taie pe linia punctată.</span>
-    <?php if (!in_array((string) wp_parse_url(home_url('/'), PHP_URL_HOST), (array) apply_filters('gi_production_hosts', array('gradina-ielelor.ro', 'www.gradina-ielelor.ro')), true)) : ?>
+    <?php if (!self::is_production()) : ?>
         <strong style="color:#a33;">Atenție: acesta nu e site-ul real; codurile duc la <?php echo esc_html((string) wp_parse_url(home_url('/'), PHP_URL_HOST)); ?>. Nu le printa pentru teren.</strong>
     <?php endif; ?>
 </div>

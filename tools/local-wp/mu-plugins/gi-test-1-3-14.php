@@ -145,6 +145,18 @@ add_action('wp', function () {
     exit;
 });
 
+// /?gi_test=nonce&n=<acțiune> → codul de siguranță al utilizatorului curent pentru o acțiune (pluginul 1.4.0; numai local, pentru testul de acces).
+add_action('wp', function () {
+    $t = isset($_GET['gi_test']) ? sanitize_key(wp_unslash($_GET['gi_test'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+    if ('nonce' !== $t || !is_user_logged_in()) {
+        return;
+    }
+    $action = isset($_GET['n']) ? sanitize_key(wp_unslash($_GET['n'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+    header('Content-Type: application/json');
+    echo wp_json_encode(array('nonce' => wp_create_nonce($action)));
+    exit;
+});
+
 // /?gi_test=galerie_reset → readuce pagina „Galerie foto” la starea de pe live (șablon implicit) și șterge marcajul „aplicată” (pluginul 1.4.0).
 // /?gi_test=galerie_sablon=<șablon> → pune un șablon ales și șterge marcajul (pentru a verifica că o alegere făcută de mână nu se atinge).
 add_action('wp', function () {
