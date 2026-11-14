@@ -51,6 +51,19 @@ const has = (t, s) => t.includes(s);
   ok(['Totalul rezervării', 'Continuă spre plată', 'Actualizează coșul', 'Aplică codul', 'Preț'].every((s) => has(t, s)), 'coș: „Totalul rezervării”, „Continuă spre plată”, „Actualizează coșul”, „Aplică codul”, „Preț”');
   ok(!/Cart totals|Proceed to checkout|Update cart|Apply coupon/.test(t), 'coș: nu mai apar „Cart totals”, „Proceed to checkout”, „Update cart”, „Apply coupon”');
 
+  await page.goto(BASE + '/?add-to-cart=30', { waitUntil: 'networkidle' });
+  await page.goto(BASE + '/cart/', { waitUntil: 'networkidle' });
+  const added = await text();
+  ok(/a fost adăugat în coș/.test(added) && !/has been added to your cart/.test(added), 'adăugare în coș: mesajul „… a fost adăugat în coș” e în română');
+  // 1b. Cod de reducere greșit: mesaj în română
+  if (await page.$('#coupon_code')) {
+    await page.fill('#coupon_code', 'COD-INEXISTENT-TEST');
+    await Promise.all([page.waitForLoadState('networkidle').catch(() => {}), page.click('button[name="apply_coupon"]')]);
+    await page.waitForTimeout(1500);
+    const ce = ((await page.locator('.woocommerce-error, .coupon-error-notice, [role="alert"]').filter({ hasText: /COD-INEXISTENT-TEST/i }).first().textContent().catch(() => '')) || '').replace(/\s+/g, ' ').trim();
+    ok(/nu există/.test(ce) && !/does not exist/.test(ce), 'coș: cod de reducere greșit → mesaj în română („' + ce.slice(0, 70) + '”)');
+  }
+
   // 2. Finalizare
   await page.goto(BASE + '/checkout/', { waitUntil: 'networkidle' });
   await page.waitForSelector('#billing_first_name');

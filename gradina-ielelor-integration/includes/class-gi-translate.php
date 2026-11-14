@@ -23,6 +23,7 @@ final class GI_Translate {
     public static function init() {
         add_filter('gettext', array(__CLASS__, 'gettext'), 20, 3);
         add_filter('gettext_with_context', array(__CLASS__, 'gettext_with_context'), 20, 4);
+        add_filter('ngettext', array(__CLASS__, 'ngettext'), 20, 5);
         // Cât timp se generează un email, nu traducem nimic: emailurile au propriul text.
         add_action('woocommerce_email_header', array(__CLASS__, 'email_started'), 0);
         // Emailurile „text simplu” nu au antet HTML: începutul tabelului comenzii are același rol.
@@ -60,6 +61,17 @@ final class GI_Translate {
 
     public static function gettext_with_context($translation, $text, $context, $domain) {
         return self::translate($translation, $text, $domain);
+    }
+
+    /**
+     * Texte cu formă de singular și de plural (de exemplu „… a fost adăugat în coș”).
+     */
+    public static function ngettext($translation, $single, $plural, $number, $domain) {
+        if ('woocommerce' !== $domain || ($translation !== $single && $translation !== $plural) || !self::enabled()) {
+            return $translation;
+        }
+        $map = self::woo_map();
+        return isset($map[$translation]) ? $map[$translation] : $translation;
     }
 
     private static function translate($translation, $text, $domain) {
@@ -123,6 +135,20 @@ final class GI_Translate {
                 'Coupon code' => 'Cod de reducere',
                 'Apply coupon' => 'Aplică codul',
                 'Coupon:' => 'Cod de reducere:',
+                'Coupon "%s" does not exist!' => 'Codul de reducere „%s” nu există.',
+                'Coupon does not exist!' => 'Codul de reducere nu există.',
+                'Coupon code already applied!' => 'Codul de reducere e deja aplicat.',
+                'Please enter a coupon code.' => 'Scrie un cod de reducere.',
+                'Coupon has been removed.' => 'Codul de reducere a fost scos.',
+                'Coupon code applied successfully.' => 'Codul de reducere a fost aplicat.',
+                'This coupon has expired.' => 'Codul de reducere a expirat.',
+                'Coupon is not valid.' => 'Codul de reducere nu e valabil.',
+                'Coupon usage limit has been reached.' => 'Codul de reducere a fost folosit de numărul maxim de ori.',
+                'Sorry, this coupon is not applicable to selected products.' => 'Codul de reducere nu se aplică acestei rezervări.',
+                'Cart updated.' => 'Coșul a fost actualizat.',
+                'Undo?' => 'Anulezi?',
+                '(includes %s)' => '(include %s)',
+                'VAT' => 'TVA',
                 // Finalizare
                 'Returning customer?' => 'Ai deja cont?',
                 'Click here to login' => 'Apasă aici ca să te autentifici',
@@ -156,6 +182,7 @@ final class GI_Translate {
                 'Select a country / region&hellip;' => 'Alege țara&hellip;',
                 'Select an option&hellip;' => 'Alege o opțiune&hellip;',
                 '%s has been added to your cart.' => '%s a fost adăugat în coș.',
+                '%s have been added to your cart.' => '%s au fost adăugate în coș.',
                 'The following problems were found:' => 'Am găsit următoarele probleme:',
                 'Invalid billing email address' => 'Adresa de email nu este validă.',
                 '%s is not a valid email address.' => '%s nu este o adresă de email validă.',
