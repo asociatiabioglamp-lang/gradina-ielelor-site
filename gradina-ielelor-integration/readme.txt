@@ -3,7 +3,7 @@ Contributors: gradina-ielelor
 Tags: one-page, woocommerce, booking, ovabrw, seo
 Requires at least: 6.0
 Requires PHP: 7.4
-Stable tag: 1.3.9
+Stable tag: 1.3.10
 License: GPLv2 or later
 
 Template-uri server-side pentru pagina principală (hub de rezervare) și paginile dedicate ofertelor Grădina Ielelor, cu WooCommerce + OVABRW drept singur motor de rezervări.
@@ -40,6 +40,13 @@ Nu. Constanta GI_REACT_DEMO_ENABLED este false, bundle-ul React nu este inclus, 
 Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai opțiunile acestui plugin.
 
 == Changelog ==
+
+= 1.3.10 =
+* Securitate: antete de protecție pe paginile publice (fără încadrare în alte site-uri, fără scurgeri de adresă, HTTPS obligatoriu pentru cine revine, fără acces la cameră, microfon și locație).
+* Securitate: vizitatorii nu mai pot afla numele conturilor din administrare (lista de utilizatori din REST, paginile de autor, oEmbed). Administratorii văd în continuare tot.
+* Securitate: autentificarea greșită dă același mesaj, indiferent dacă numele există sau parola e greșită (WordPress și WooCommerce).
+* Securitate: versiunea WordPress nu mai apare în cod; editorul de fișiere din administrare și XML-RPC sunt oprite.
+* Nu schimbă paginile, rezervările, plățile și confirmările NETOPIA.
 
 = 1.3.9 =
 * Rezervarea nu se pierde între pagini: un vizitator cu rezervarea în coș vede „Continuă rezervarea” (buton plutitor pe desktop, bara de jos și meniul pe telefon) spre coș, în loc să fie dus mereu la un formular nou.

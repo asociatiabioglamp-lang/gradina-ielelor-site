@@ -3,7 +3,7 @@
  * Plugin Name: Grădina Ielelor — Site + BRW
  * Plugin URI: https://gradina-ielelor.ro/
  * Description: Template-uri server-side pentru pagina principală și paginile dedicate celor cinci categorii (Bungalow, Glamping, Camping & rulote, Festivaluri & tabere, Evenimente private), cu WooCommerce + OVABRW drept singur motor de rezervări. Nu include și nu pornește formularul React demonstrativ.
- * Version: 1.3.9
+ * Version: 1.3.10
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Author: Echipa Grădina Ielelor
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('GI_VERSION', '1.3.9');
+define('GI_VERSION', '1.3.10');
 define('GI_FILE', __FILE__);
 define('GI_PATH', plugin_dir_path(__FILE__));
 define('GI_URL', plugin_dir_url(__FILE__));
@@ -29,6 +29,7 @@ require_once GI_PATH . 'includes/offer-pages.php';
 require_once GI_PATH . 'includes/template-tags.php';
 require_once GI_PATH . 'includes/class-gi-plugin.php';
 require_once GI_PATH . 'includes/class-gi-seo.php';
+require_once GI_PATH . 'includes/class-gi-security.php';
 require_once GI_PATH . 'includes/class-gi-settings.php';
 require_once GI_PATH . 'includes/redirects.php';
 require_once GI_PATH . 'includes/plata-la-locatie.php';
@@ -44,4 +45,5 @@ add_action('before_woocommerce_init', function () {
 
 GI_Plugin::init();
 GI_SEO::init();
+GI_Security::init();
 GI_Settings::init();
