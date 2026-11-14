@@ -15,10 +15,22 @@ final class GI_Plugin {
         add_filter('body_class', array(__CLASS__, 'body_class'));
         add_action('wp_head', array(__CLASS__, 'favicon'), 1);
         add_action('wp_head', array(__CLASS__, 'booking_arrival_script'), 3);
+        add_action('wp_head', array(__CLASS__, 'old_theme_phone_fixes'), 99);
 
         // Navigare fluidă între paginile Grădinii: preîncărcare la hover (WordPress 6.8+).
         add_filter('wp_speculation_rules_configuration', array(__CLASS__, 'speculation_configuration'));
         add_filter('wp_speculation_rules_href_exclude_paths', array(__CLASS__, 'speculation_exclude_paths'), 10, 2);
+    }
+
+    /**
+     * Paginile cu tema veche (produse, blog, coș, cont), pe telefon: steagul de limbă (GTranslate) acoperea butonul de meniu din stânga sus.
+     * Îl mutăm sub antet, în dreapta, și nu mai însoțește derularea. Paginile noastre au regula lor în site.css.
+     */
+    public static function old_theme_phone_fixes() {
+        if (is_admin() || gi_is_site_page()) {
+            return;
+        }
+        echo '<style id="gi-telefon-tema-veche">@media (max-width:700px){#gt_float_wrapper{position:absolute!important;top:64px!important;right:8px!important;bottom:auto!important;left:auto!important}}</style>' . "\n";
     }
 
     public static function register_template($templates, $theme, $post, $post_type) {

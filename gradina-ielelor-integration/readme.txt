@@ -44,7 +44,7 @@ Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai 
 = 1.3.15 =
 * Telefon, prima pagină: se văd toate cele trei poze de la intrare (înainte se vedea numai prima). Poza mare rămâne sus, cu textul; lacul și focul apar dedesubt, tăiate pe diagonală ca pe calculator, pe primul ecran.
 * Telefon: bara de jos a temei vechi („Contul meu / Coș / Meniu”) nu mai acoperă butonul „Rezervă” pe paginile noi.
-* Telefon: steagul de limbă nu mai stă peste siglă și peste text; stă în antet, între siglă și meniu.
+* Telefon: steagul de limbă nu mai stă peste siglă și peste text; stă în antet, între siglă și meniu. Pe paginile cu designul vechi (produse, blog, coș), unde acoperea butonul de meniu, stă sub antet, în dreapta.
 * Subsol: linkul „Litigii online (SOL)” e scos, pentru că platforma europeană s-a închis la 20.07.2025. Rămân ANPC și ANPC — SAL.
 * Meniurile vechi (de pe blog, produse, coș) duc direct la paginile noi, nu prin redirecționare.
 * Plată: și textul din câmpul „Bloc, scară, apartament” e în română.
