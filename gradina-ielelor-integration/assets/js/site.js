@@ -140,9 +140,18 @@
     function render() {
       var current = images[activeIndex];
       if (!current) return;
-      // Miniatura se vede imediat; dacă fotografia are o variantă mare (data-full), galeria deschide pe aceea.
-      image.src = current.getAttribute('data-full') || current.src;
+      // Miniatura (deja în memorie) se vede imediat. Dacă fotografia are o variantă mare (data-full), aceasta o înlocuiește
+      // când s-a încărcat; dacă nu se poate încărca, rămâne miniatura. Fără data-full, comportamentul e cel de dinainte.
+      var full = current.getAttribute('data-full');
+      image.src = current.currentSrc || current.src;
       image.alt = current.alt;
+      if (full && full !== image.src) {
+        var preload = new Image();
+        preload.onload = function () {
+          if (!lightbox.hidden && images[activeIndex] === current) image.src = full;
+        };
+        preload.src = full;
+      }
       caption.textContent = current.getAttribute('data-caption') || current.alt;
       count.textContent = (activeIndex + 1) + ' / ' + images.length;
     }

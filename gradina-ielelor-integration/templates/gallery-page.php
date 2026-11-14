@@ -15,6 +15,8 @@ $gi_from_checkout = gi_from_checkout();
 if ($gi_from_checkout) {
     $gi_back_url = wc_get_checkout_url();
 }
+// Titlul din pagină se scrie la fel ca restul site-ului („Galerie foto”), chiar dacă pe site pagina veche are „Galerie Foto”.
+$gi_title = 0 === strcasecmp(trim(get_the_title(get_queried_object_id())), 'Galerie foto') ? 'Galerie foto' : get_the_title(get_queried_object_id());
 $gi_lead = 'Câteva imagini din Grădina Ielelor: locul, corturile, bungalow-urile și serile de pe domeniu.';
 
 gi_part('document-start', array('shell_class' => 'site-shell gi-site gi-dedicated gi-content-site gi-galerie-site'));
@@ -31,9 +33,9 @@ while (have_posts()) :
                 <nav class="gi-breadcrumb" aria-label="Unde te afli">
                     <a href="<?php echo esc_url(home_url('/')); ?>">Acasă</a>
                     <span aria-hidden="true">/</span>
-                    <span aria-current="page"><?php echo esc_html(get_the_title()); ?></span>
+                    <span aria-current="page"><?php echo esc_html($gi_title); ?></span>
                 </nav>
-                <h1 id="page-title"><?php echo esc_html(get_the_title()); ?></h1>
+                <h1 id="page-title"><?php echo esc_html($gi_title); ?></h1>
                 <p class="gi-content-lead"><?php echo esc_html(has_excerpt() ? get_the_excerpt() : $gi_lead); ?></p>
             </div>
         </section>

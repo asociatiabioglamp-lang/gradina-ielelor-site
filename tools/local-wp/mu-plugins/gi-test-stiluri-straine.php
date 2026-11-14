@@ -46,6 +46,8 @@ add_action('wp_footer', function () {
 @media only screen and (min-width:1200px){.container{max-width:1425px;width:100%;padding:0 90px}}
 @media only screen and (min-width:768px) and (max-width:960px){.container{width:100%;padding:0 30px}}
 @media only screen and (max-width:767px){.container{width:100%;padding:0 30px}}
+/* 2b. modulul de rezervări: ovabrw_frontend.css, încărcat pe toate paginile (ascunde conturul de tastatură) */
+a:focus,button:focus,input:focus,select:focus,textarea:focus,summary:focus{outline:none!important}
 /* 3. tema veche (giw / WoodMart): bootstrap-light.min.css, parts/base.min.css, parts/opt-bottom-toolbar.min.css */
 :root{--wd-container-w:1280px}
 .container{width:100%;padding-right:15px;padding-left:15px;margin-right:auto;margin-left:auto}

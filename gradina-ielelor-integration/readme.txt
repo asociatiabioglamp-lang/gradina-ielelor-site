@@ -42,9 +42,11 @@ Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai 
 == Changelog ==
 
 = 1.3.16 =
-* Galerie foto: pagina nouă, cu 15 fotografii reprezentative (locul, glamping, camping și rulote, bungalow, evenimente), în locul celor 98 de poze și al celor circa 13 MB de acum. Miniaturile sunt mici (în total circa 0,5 MB) și se încarcă pe măsură ce derulezi; la apăsare, fotografia se deschide mare, cu săgeți și cu legendă.
+* Galerie foto: pagina nouă, cu 15 fotografii reprezentative (locul, glamping, camping și rulote, bungalow, evenimente), în locul celor 98 de poze și al celor circa 13 MB de acum. Miniaturile sunt mici (în total circa 0,5 MB); la apăsare, fotografia se deschide mare, cu săgeți și cu legendă (miniatura apare imediat, iar fotografia mare o înlocuiește când s-a încărcat).
 * Pagina „Galerie foto” primește noul design prin „Pregătește paginile” → pasul 2 (sau alegând șablonul „Grădina Ielelor — Galerie foto” în pagină). Conținutul vechi rămâne în pagină, neatins, și revine cu „Revino”.
 * Subsol: link nou „Galerie foto”.
+* Tastatură: conturul de focalizare se vede acum pe tot site-ul (o regulă a modulului de rezervări îl oprea pe toate paginile). Cine navighează cu Tab vede unde se află.
+* Legendele pozelor spun numai ce se vede în ele.
 * Paginile produselor: „Nu avem dispobibilitate în intervalul” devine „disponibilitate” (textul vine din modulul de rezervări și nu trecea prin traducerile corectate de plugin).
 
 = 1.3.15 =

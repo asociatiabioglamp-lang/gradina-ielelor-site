@@ -216,6 +216,8 @@ Pe site-ul live, verificat la 31.10.2026, toate paginile de mai jos folosesc **�
 ### A5. Paginile
 **Cu unealta „Pregătește paginile” (pluginul 1.3.4), pe scurt:** **Setări → Grădina Ielelor**, secțiunea **Pregătește paginile**. Apeși butoanele **în ordine**: **1** creează paginile care lipsesc, ca ciorne, cu șablonul și textul potrivit; **2** pune șabloanele pe paginile existente (și pe pagina principală); **3** pune textul nou la Contact (cel vechi, Elementor, se păstrează); **4** publică paginile create. Tabelul de deasupra butoanelor arată ce există și în ce stare. **„Revino”** desface tot (șabloane, text Contact, publicări), fără să șteargă nimic. Butoanele nu înlocuiesc și nu șterg conținut existent, în afară de textul de la Contact, care se păstrează în pagină. Procedura manuală de mai jos rămâne ca rezervă.
 
+**Pagina „Galerie foto” (de la pluginul 1.3.16):** pagina veche (98 de poze) primește noul design, cu 15 poze, la **pasul 2** din „Pregătește paginile”. Până atunci, linkul „Galerie foto” din subsolul paginilor noi duce la pagina veche. Pasul 2 se apasă **o singură dată, după ce instalezi 1.3.16**; paginile care au deja șablonul potrivit rămân neschimbate. Poți alege șablonul și de mână: Pagini → Galerie foto → Atribute pagină → Șablon → „Grădina Ielelor — Galerie foto”. „Revino” readuce pagina veche (conținutul ei nu se atinge niciodată).
+
 **Procedura manuală (rezervă):**
 
 

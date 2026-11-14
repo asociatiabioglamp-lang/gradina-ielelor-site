@@ -33,14 +33,14 @@
 .gi-site :is(.skip-link, .site-header, .home-hero, .gi-page-hero, .gi-closing) { --gi-focus: var(--accent); }
 .gi-site .mobile-nav,
 .gi-site .mobile-booking-cta { --gi-focus: var(--forest-deep); }
-.gi-site :is(a, button, summary, select, input, textarea, [tabindex]):focus-visible { outline: 3px solid var(--gi-focus); outline-offset: 3px; }
+.gi-site :is(a, button, summary, select, input, textarea, [tabindex]):focus-visible { outline: 3px solid var(--gi-focus) !important; outline-offset: 3px; }
 /* Câmpurile BRW: contur plin, nu doar o umbră de 12%. */
-.gi-site .gi-real-booking :is(input, select, textarea, button):focus-visible { outline: 3px solid var(--forest); outline-offset: 2px; border-color: var(--forest); }
+.gi-site .gi-real-booking :is(input, select, textarea, button):focus-visible { outline: 3px solid var(--forest) !important; outline-offset: 2px; border-color: var(--forest); }
 
 /* ---------- Contrast (WCAG 1.4.3) pe elementele comune din site.css ---------- */
 .gi-site .footer-bottom { color: var(--text-2); font-size: var(--fs-note); }
 #gi-lightbox figcaption span:last-child { color: rgba(255, 255, 255, .72); }
-#gi-lightbox button:focus-visible { outline: 3px solid var(--accent, #f7b267); outline-offset: 3px; }
+#gi-lightbox button:focus-visible { outline: 3px solid var(--accent, #f7b267) !important; outline-offset: 3px; }
 
 /* Header peste fotografie: o umbră albastră de munte (nu negru-verde), cât să rămână lizibil meniul pe cer luminos (umbra se reglează cu --veil din site.css). */
 .gi-site .site-header { background: linear-gradient(180deg, rgb(var(--shade) / calc(.74 * var(--veil))) 0%, rgb(var(--shade) / calc(.66 * var(--veil))) 50%, rgb(var(--shade) / 0) 100%); }
@@ -400,9 +400,9 @@
 @media (max-width: 900px) {
   .gi-site .home-photo-gallery.gi-galerie-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   /* 15 poze pe două coloane: ultima se întinde pe toată lățimea, ca să nu rămână un gol lângă ea. */
-  .gi-site .home-photo-gallery.gi-galerie-grid > button.gi-gallery-trigger:last-child { grid-column: 1 / -1; aspect-ratio: 16 / 9; }
+  .gi-site .home-photo-gallery.gi-galerie-grid > button.gi-gallery-trigger:last-child:nth-child(odd) { grid-column: 1 / -1; aspect-ratio: 16 / 9; }
 }
-@media (max-width: 480px) {
+@media (max-width: 560px) {
   .gi-site .home-photo-gallery.gi-galerie-grid { gap: 8px; }
   /* Pe telefon, legenda ocupă prea mult dintr-o poză mică: rămâne vizibilă în galeria mărită și pentru cititoarele de ecran. */
   .gi-site .home-photo-gallery.gi-galerie-grid > button.gi-gallery-trigger > span { display: none; }

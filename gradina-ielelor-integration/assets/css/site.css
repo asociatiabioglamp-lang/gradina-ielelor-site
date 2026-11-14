@@ -29,7 +29,8 @@ body.gi-one-page{margin:0;background:#fffdf8;color:#22343f;font-family:Inter,ui-
 .gi-site .eyebrow-light{color:rgba(255,255,255,.86)}
 .gi-site .button{min-height:54px;display:inline-flex;align-items:center;justify-content:center;gap:12px;padding:14px 26px;border:1px solid transparent;border-radius:2px;font-size:var(--fs-ui);font-weight:650;line-height:1.2;cursor:pointer;transition:transform .2s,background .2s,color .2s,box-shadow .2s}
 .gi-site .button:hover{transform:translateY(-2px)}
-.gi-site .button:focus-visible,.gi-site a:focus-visible,.gi-site button:focus-visible,.gi-site summary:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+/* !important: foaia de stil a modulului de rezervări are „a:focus, button:focus… {outline:none!important}” pe toate paginile; fără el, conturul de tastatură nu se vede. */
+.gi-site .button:focus-visible,.gi-site a:focus-visible,.gi-site button:focus-visible,.gi-site summary:focus-visible{outline:3px solid var(--accent)!important;outline-offset:4px}
 .gi-site .button-small{min-height:46px;padding:10px 20px;background:var(--forest);color:#fff;font-size:var(--fs-nav)}
 .gi-site .button-accent{background:var(--accent);color:var(--on-sun)}
 .gi-site .button-accent:hover{background:var(--sun-hover);box-shadow:0 8px 24px rgb(var(--shade) / .2)}

@@ -17,13 +17,18 @@ const path = require('path');
 const BASE = process.env.GI_BASE || 'http://127.0.0.1:9400';
 const Q = '?gi_test=stiluri';
 const IMAGES = path.join(__dirname, '..', '..', 'gradina-ielelor-integration', 'assets', 'images');
+// Testul se autentifică cu admin/password, schimbă șabloane și apasă „Revino”: rulează numai pe WordPress-ul local.
+if (!/^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/.test(BASE)) {
+  console.error('Refuz să rulez pe ' + BASE + ': testul e numai pentru WordPress-ul local (GI_BASE=http://127.0.0.1:9400).');
+  process.exit(2);
+}
 let failures = 0;
 function ok(condition, text) {
   console.log((condition ? '[OK]     ' : '[EROARE] ') + text);
   if (!condition) { failures++; }
 }
 
-const SIZES = { 'telefon îngust': [320, 656], 'telefon': [360, 740], 'telefon mare': [414, 896], 'telefon pe lat': [740, 360], 'tabletă': [768, 1024], 'calculator': [1440, 900] };
+const SIZES = { 'telefon îngust': [320, 656], 'telefon lat 540': [540, 900], 'telefon': [360, 740], 'telefon mare': [414, 896], 'telefon pe lat': [740, 360], 'tabletă': [768, 1024], 'calculator': [1440, 900] };
 
 const MEASURE = () => {
   const grid = document.querySelector('.gi-galerie-grid');
@@ -50,7 +55,8 @@ const MEASURE = () => {
     fulls: imgs.map((i) => (i.getAttribute('data-full') || '').split('/').pop()),
     alts: imgs.map((i) => i.getAttribute('alt') || ''),
     dims: imgs.map((i) => i.getAttribute('width') + 'x' + i.getAttribute('height')),
-    lazy: imgs.every((i) => i.getAttribute('loading') === 'lazy'),
+    eagerFirst: imgs.slice(0, 3).every((i) => i.getAttribute('loading') === 'eager') && imgs[0].getAttribute('fetchpriority') === 'high',
+    lazyRest: imgs.slice(3).every((i) => i.getAttribute('loading') === 'lazy'),
     sx: document.documentElement.scrollWidth - document.documentElement.clientWidth,
     h1Below: !h1rect || h1rect.top >= hb - 1,
     flagOver: overlaps,
@@ -107,6 +113,7 @@ const MEASURE = () => {
       if (m.flagOver) { problems.push('steagul acoperă ' + m.flagOver + ' poze'); }
       if (m.flagPos !== 'absolute') { problems.push('steagul însoțește derularea'); }
       if (m.capUpper !== 'none') { problems.push('legendele sunt cu majuscule'); }
+      if ((m.w <= 560) !== (m.capDisplay === 'none')) { problems.push('legendele ' + (m.w <= 560 ? 'ar trebui ascunse pe ecran mic' : 'lipsesc pe ecran mare')); }
       if (m.bytes > 700 * 1024) { problems.push('pozele cântăresc ' + Math.round(m.bytes / 1024) + ' KB'); }
     }
     ok(problems.length === 0, `Galerie foto — ${size} (${m.w} px): 15 poze, grilă, titlu, steag, legende, derulare, greutate ${Math.round(m.bytes / 1024)} KB în ${m.imgCount} fișiere de imagine (${problems.join('; ') || 'în regulă'})`);
@@ -119,7 +126,7 @@ const MEASURE = () => {
     ok(m.srcs.every((s) => /^galerie-\d\d-.*-640\.webp$/.test(s)), 'poze: fiecare folosește o miniatură de 640 px');
     ok(m.fulls.every((s) => /\.webp$/.test(s)) && m.fulls.every((s, i) => s !== m.srcs[i]), 'poze: fiecare are și varianta mare, diferită de miniatură');
     ok(m.alts.every((a) => a.length > 15), 'poze: fiecare are descriere (alt) completă');
-    ok(m.dims.every((d) => d === '640x480') && m.lazy, 'poze: dimensiuni declarate (fără „salturi” la încărcare) și încărcare treptată');
+    ok(m.dims.every((d) => d === '640x480') && m.eagerFirst && m.lazyRest, 'poze: dimensiuni declarate (fără „salturi” la încărcare); primele trei se încarcă imediat (prima cu prioritate), restul treptat');
     ok(/gi-page-galerie/.test(m.bodyClass) && /^Galerie foto \|/.test(m.title), `pagina: clasa de pagină și titlul („${m.title}”)`);
     ok(m.footer.includes('Galerie foto'), 'subsol: link „Galerie foto”');
     await ctx.close();
@@ -163,6 +170,49 @@ const MEASURE = () => {
     await page.keyboard.press('Escape'); await page.waitForTimeout(300);
     const closed = await page.evaluate(() => ({ hidden: document.getElementById('gi-lightbox').hidden, inert: !!document.querySelector('.site-shell').inert, focus: document.activeElement && document.activeElement.classList.contains('gi-gallery-trigger'), idx: document.activeElement && document.activeElement.getAttribute('data-gallery-index') }));
     ok(closed.hidden && !closed.inert && closed.focus && closed.idx === '14', `galerie mărită, ${size}: Escape închide, pagina redevine activă, focusul se întoarce pe poza deschisă`);
+    await ctx.close();
+  }
+
+  // 3b. Galeria mărită pe internet lent și cu fotografia mare lipsă: miniatura se vede imediat, apoi fotografia mare; dacă nu vine, rămâne miniatura
+  {
+    const { page, ctx } = await open('telefon', '/galerie-foto/', true);
+    await page.route('**/galerie-cort-interior-1200.webp', async (route) => { await new Promise((r) => setTimeout(r, 1800)); await route.continue(); });
+    const triggers = page.locator('.gi-gallery-trigger');
+    await triggers.nth(4).scrollIntoViewIfNeeded();
+    await triggers.nth(4).click();
+    await page.waitForTimeout(300);
+    const read = () => page.evaluate(() => { const i = document.querySelector('[data-lightbox-image]'); return { src: i.getAttribute('src').split('/').pop(), w: i.naturalWidth, shown: i.naturalWidth > 0 && i.getBoundingClientRect().height > 20 }; });
+    let r = await read();
+    ok(/galerie-05-cort-interior-640\.webp$/.test(r.src) && r.shown, `galerie mărită, internet lent: imediat se vede miniatura (${r.src}, ${r.w} px), nu un cadru gol`);
+    await page.waitForTimeout(2600);
+    r = await read();
+    ok(/galerie-cort-interior-1200\.webp$/.test(r.src) && r.w >= 1200, `galerie mărită, internet lent: după încărcare apare fotografia mare (${r.src}, ${r.w} px)`);
+    await page.keyboard.press('Escape');
+    await page.unroute('**/galerie-cort-interior-1200.webp');
+    await page.route('**/glamping-platforme-apus-960.webp', (route) => route.abort());
+    await triggers.nth(5).scrollIntoViewIfNeeded();
+    await triggers.nth(5).click();
+    await page.waitForTimeout(1200);
+    r = await read();
+    ok(/galerie-06-glamping-apus-640\.webp$/.test(r.src) && r.shown, `galerie mărită, fotografia mare lipsește: rămâne miniatura (${r.src}), nu apare imagine ruptă`);
+    await ctx.close();
+  }
+
+  // 3c. Tastatura: conturul de focalizare se vede chiar dacă modulul de rezervări îl ascunde pe tot site-ul (regula simulată în mu-plugin)
+  {
+    const { page, ctx } = await open('calculator', '/galerie-foto/', true);
+    await page.keyboard.press('Tab');
+    let seen = 0; let sample = '';
+    for (let k = 0; k < 40; k++) {
+      const o = await page.evaluate(() => { const e = document.activeElement; const c = getComputedStyle(e); return { tag: e.tagName, cls: String(e.className).slice(0, 30), style: c.outlineStyle, width: c.outlineWidth }; });
+      if (/gi-gallery-trigger/.test(o.cls)) { seen++; sample = o.style + ' ' + o.width; if (seen === 1 && (o.style === 'none' || parseFloat(o.width) < 2)) { break; } if (seen >= 2) { break; } }
+      await page.keyboard.press('Tab');
+    }
+    ok(seen >= 1 && /solid 3px/.test(sample), `tastatură: poza focalizată cu Tab are contur vizibil (${sample || 'nicio poză atinsă cu Tab'})`);
+    await page.keyboard.press('Enter'); await page.waitForTimeout(400);
+    await page.keyboard.press('Tab');
+    const lb = await page.evaluate(() => { const e = document.activeElement; const c = getComputedStyle(e); return { inLightbox: !!e.closest('#gi-lightbox'), style: c.outlineStyle, width: c.outlineWidth }; });
+    ok(lb.inLightbox && lb.style === 'solid' && parseFloat(lb.width) >= 3, `tastatură: butoanele galeriei mărite au contur vizibil (${lb.style} ${lb.width})`);
     await ctx.close();
   }
 
