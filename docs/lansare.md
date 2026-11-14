@@ -197,9 +197,9 @@ Din acest moment, magazinul și paginile de produs primesc stilul nou. E normal.
 Tot aici, două lucruri noi:
 - **Plata la locație:** bifează „Tarif majorat când clientul alege plata la locație”, lasă **10** la procent și bifează metoda ta de plată la locație (niciodată NETOPIA). Apasă **Salvează integrarea**. Apoi, în **WooCommerce → Setări → Plăți** → metoda de plată la locație → **Descriere**, scrie: „Tariful e cu 10% mai mare decât plata online, iar rezervarea nu e garantată.” Pe staging, fă o comandă de test cu această metodă: la total trebuie să apară rândul „Tarif pentru plata la locație (+10%)”.
 - **Limbile (GTranslate, traducerea automată):** **Setări → GTranslate** (numele câmpurilor pot diferi puțin între versiuni):
-  1. La limbi, bifează: **English, Français, Deutsch, Nederlands, Čeština, Polski, Magyar, Español, Norsk, Dansk**. Păstrează **Română** ca limbă implicită (și Italiano, dacă vrei).
+  1. La limbi, bifează: **English, Français, Deutsch, Nederlands, Čeština, Polski, Magyar, Español, Norsk, Dansk**. Păstrează **Română** ca limbă implicită. Italiana se scoate (decizia din 14.11.2026).
   2. Comutarea automată după limba browserului rămâne **pornită**: vizitatorul străin vede site-ul direct în limba lui.
-  3. Direcția de deschidere a steagului plutitor: **Top / sus** (pe paginile noi steagul stă jos în stânga). *Pe site-ul vechi steagul e sus; schimbă direcția abia la lansare (pasul C2).*
+  3. Direcția de deschidere a steagului plutitor: **Bottom / jos**, adică așa cum e acum; nu o schimba. De la versiunea 1.3.15 steagul stă sus pe toate paginile (în antet pe telefon, sub antet pe calculator), iar lista de limbi se deschide în jos.
   4. Salvează. Limbile noi le poți adăuga pe live chiar de acum: merg și pe site-ul vechi.
 - **Sezonul:** verifică cele patru câmpuri „Sezon” (acum „1 mai – 1 octombrie” la toate). Ce scrie aici apare pe pagini; zilele din afara sezonului le închizi în fiecare produs BRW.
 
