@@ -144,3 +144,24 @@ add_action('wp', function () {
     ), JSON_UNESCAPED_UNICODE);
     exit;
 });
+
+// /?gi_test=galerie_reset → readuce pagina „Galerie foto” la starea de pe live (șablon implicit) și șterge marcajul „aplicată” (pluginul 1.4.0).
+// /?gi_test=galerie_sablon=<șablon> → pune un șablon ales și șterge marcajul (pentru a verifica că o alegere făcută de mână nu se atinge).
+add_action('wp', function () {
+    $t = isset($_GET['gi_test']) ? sanitize_key(wp_unslash($_GET['gi_test'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+    if ('galerie_reset' !== $t) {
+        return;
+    }
+    $page = get_page_by_path('galerie-foto');
+    $template = isset($_GET['sablon']) ? sanitize_text_field(wp_unslash($_GET['sablon'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+    if ($page) {
+        update_post_meta($page->ID, '_wp_page_template', $template ? $template : 'default');
+        delete_post_meta($page->ID, '_gi_sablon_anterior');
+        clean_post_cache($page->ID);
+    }
+    delete_option('gi_galerie_aplicata');
+    header('Content-Type: application/json');
+    echo wp_json_encode(array('ok' => (bool) $page, 'sablon' => $template ? $template : 'default'));
+    exit;
+});
+

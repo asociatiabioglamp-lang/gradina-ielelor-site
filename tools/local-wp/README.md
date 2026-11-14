@@ -34,6 +34,12 @@ Produc capturi pe mobil (390 px) și desktop (1440 px) și verifică să nu exis
 ## Testul uneltei „Pregătește paginile” (pluginul 1.3.0)
 `test-pregatire-pagini.js` verifică de la un capăt la altul cele patru butoane și „Revino” (creare ciorne, șabloane, text Contact, publicare, idempotență, nonce). Are nevoie de un mu-plugin de test, numai local, `gi-test-reset.php`, care readuce site-ul la starea de pe live (fără paginile noi, șabloane implicite, Contact cu text vechi) la deschiderea adresei `/?gi_reset=1` de un administrator. Rulează cu `node tools/local-wp/test-pregatire-pagini.js`.
 
+## Testul zonei private (pluginul 1.4.0)
+`test-1-4-0.js` verifică: aplicarea automată a șablonului galeriei; locurile (pagina publică pe cinci ecrane, cu stilurile străine; poza, tipul, rezumatul, „Mai multe de văzut”, SEO); codul QR din administrare, din listă, din ecranul de printat și din pagina de printat, **citit efectiv cu o bibliotecă de decodare** (jsQR) și deschis dus-întors; accesul (cod de siguranță, cont, editor, abonat); voucherele (valoare, o folosire, 18 luni, cod unic, erori la date greșite, cod QR, aplicare în coș). Are nevoie de biblioteca de test `jsqr` (numai pentru test, nu face parte din plugin): `npm install jsqr`, apoi `NODE_PATH` să includă și folderul ei `node_modules`. Rulează numai pe WordPress-ul local și își șterge datele de probă.
+```
+NODE_PATH="$(npm root -g):<folder>/node_modules" node tools/local-wp/test-1-4-0.js
+```
+
 ## Testul galeriei foto (pluginul 1.3.16)
 `test-1-3-16.js` verifică pagina „Galerie foto” (15 poze, miniaturi mici, variante mari, descrieri, grilă pe șase ecrane, fără loc gol la final, galeria mărită cu săgeți și Escape), greutatea pozelor, linkul din subsol, rândul din „Pregătește paginile” și, de la un capăt la altul, pasul 2 și „Revino” pe pagina „Galerie foto” (ca pe live: șablon implicit → șablonul galeriei → înapoi), plus corectura „disponibilitate”. Are nevoie de `gi-local-setup.php` (creează pagina; marcajul de configurare local e acum `21`), `gi-test-stiluri-straine.php` și `gi-test-1-3-14.php`.
 ```

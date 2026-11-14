@@ -157,7 +157,7 @@ const MEASURE = () => {
       return { css: s ? s.textContent : '', inHead: !!(s && s.closest('head')), position: flag ? getComputedStyle(flag).position : '', left: b ? Math.round(b.left) : -1, top: b ? Math.round(b.top) : -1 };
     });
     ok(r.inHead && /#gt_float_wrapper/.test(r.css), 'pagină cu tema veche: regula pentru steag e în pagină');
-    ok(r.position === 'absolute' && r.left === 8 && r.top === 54, `pagină cu tema veche, telefon: steagul stă sub butonul „Meniu” (${r.left},${r.top}) și nu însoțește derularea`);
+    ok(r.position === 'absolute' && r.left === 8 && r.top === 49, `pagină cu tema veche, telefon: steagul stă sub butonul „Meniu”, puțin micșorat, ca să nu atingă titlul (${r.left},${r.top}) și nu însoțește derularea`);
     await page.setViewportSize({ width: 1440, height: 900 });
     const d = await page.evaluate(() => { const b = document.getElementById('gt_float_wrapper').getBoundingClientRect(); return { right: Math.round(innerWidth - b.right), top: Math.round(b.top) }; });
     ok(d.right === 10 && d.top === 66, `pagină cu tema veche, calculator: steagul stă în dreapta, sub coș (${d.right} px de margine, ${d.top} px de sus)`);

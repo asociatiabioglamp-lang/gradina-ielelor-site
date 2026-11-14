@@ -34,7 +34,7 @@ final class GI_Plugin {
         if (gi_is_site_page()) {
             return;
         }
-        echo '<style id="gi-steag-tema-veche">#gt_float_wrapper{position:absolute!important;top:66px!important;right:10px!important;bottom:auto!important;left:auto!important;z-index:395!important}body.admin-bar #gt_float_wrapper{top:98px!important}@media (max-width:1024px){#gt_float_wrapper{top:54px!important;right:auto!important;left:8px!important}body.admin-bar #gt_float_wrapper{top:86px!important}}@media (max-width:782px){body.admin-bar #gt_float_wrapper{top:100px!important}}</style>' . "\n";
+        echo '<style id="gi-steag-tema-veche">#gt_float_wrapper{position:absolute!important;top:66px!important;right:10px!important;bottom:auto!important;left:auto!important;z-index:395!important}body.admin-bar #gt_float_wrapper{top:98px!important}@media (max-width:1024px){#gt_float_wrapper{top:49px!important;right:auto!important;left:8px!important;transform:scale(.84);transform-origin:0 0}body.admin-bar #gt_float_wrapper{top:81px!important}}@media (max-width:782px){body.admin-bar #gt_float_wrapper{top:95px!important}}</style>' . "\n";
     }
 
     public static function register_template($templates, $theme, $post, $post_type) {
@@ -120,7 +120,7 @@ final class GI_Plugin {
         if (gi_is_one_page()) {
             wp_enqueue_style('gi-home', gi_asset_url('css/home.css'), array('gi-one-page'), GI_VERSION);
         }
-        if (in_array(gi_current_page_key(), array('content', 'galerie'), true)) {
+        if (in_array(gi_current_page_key(), array('content', 'galerie', 'punct'), true)) {
             wp_enqueue_style('gi-content-page', gi_asset_url('css/content-page.css'), array('gi-pages'), GI_VERSION);
         }
         wp_enqueue_script('gi-one-page', gi_asset_url('js/site.js'), array(), GI_VERSION, true);

@@ -440,3 +440,29 @@ function gi_pagini_render() {
     </p>
     <?php
 }
+
+/**
+ * Pagina „Galerie foto” primește singură șablonul galeriei, o singură dată, la prima rulare a versiunii care îl aduce (1.3.16+):
+ * proprietara nu mai trebuie să apese „Pregătește paginile” → pasul 2. Se aplică numai dacă pagina e publicată și are șablonul
+ * implicit (nu stricăm o alegere făcută de mână). Șablonul vechi se reține, deci „Revino” îl readuce; opțiunea de mai jos
+ * împiedică să se aplice din nou după „Revino”. Conținutul paginii nu se atinge.
+ */
+function gi_galerie_aplica_o_data() {
+    if (get_option('gi_galerie_aplicata') || !function_exists('gi_pagini_find')) {
+        return;
+    }
+    $page = gi_pagini_find('galerie-foto');
+    if (!$page) {
+        return; // pagina nu există (încă): încercăm din nou la următoarea cerere
+    }
+    if ('publish' === $page->post_status && 'default' === gi_pagini_tpl($page)) {
+        if (!metadata_exists('post', $page->ID, '_gi_sablon_anterior')) {
+            update_post_meta($page->ID, '_gi_sablon_anterior', 'default');
+        }
+        gi_pagini_set_template($page->ID, 'gi-galerie.php');
+        clean_post_cache($page->ID);
+    }
+    update_option('gi_galerie_aplicata', GI_VERSION, true);
+}
+add_action('init', 'gi_galerie_aplica_o_data', 30);
+

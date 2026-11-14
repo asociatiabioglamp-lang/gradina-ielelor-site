@@ -60,6 +60,10 @@ function gi_offer_key_for_slug($slug) {
 }
 
 function gi_current_page_key() {
+    // Pagina unui loc din Grădină (copac etc.), deschisă din codul QR: același design ca paginile simple.
+    if (is_singular('gi_punct')) {
+        return 'punct';
+    }
     if (!is_singular('page')) {
         return '';
     }
@@ -152,6 +156,12 @@ function gi_page_seo_defaults($key) {
         'image' => 'home-hero-lake-centered-1600.webp',
     );
     // Pagina simplă: titlul paginii + numele site-ului; descrierea vine din Rezumat (GI_SEO îl citește înaintea acestor valori).
+    if ('punct' === $key && is_singular('gi_punct')) {
+        $id = get_queried_object_id();
+        $defaults['title'] = get_the_title($id) . ' | ' . get_bloginfo('name');
+        $text = trim(wp_strip_all_tags(strip_shortcodes((string) get_post_field('post_content', $id))));
+        $defaults['description'] = '' !== $text ? wp_trim_words($text, 28, '…') : 'Un loc din Grădina Ielelor, la poalele Munților Făgăraș: descoperă povestea lui.';
+    }
     if ('galerie' === $key) {
         $defaults['title'] = 'Galerie foto | ' . get_bloginfo('name');
         $defaults['description'] = 'Fotografii din Grădina Ielelor, Sâmbăta de Sus, Brașov: lacul, glamping, camping și rulote, bungalow și evenimente, la poalele Munților Făgăraș.';

@@ -3,7 +3,7 @@ Contributors: gradina-ielelor
 Tags: one-page, woocommerce, booking, ovabrw, seo
 Requires at least: 6.0
 Requires PHP: 7.4
-Stable tag: 1.3.16
+Stable tag: 1.4.0
 License: GPLv2 or later
 
 Template-uri server-side pentru pagina principală (hub de rezervare) și paginile dedicate ofertelor Grădina Ielelor, cu WooCommerce + OVABRW drept singur motor de rezervări.
@@ -40,6 +40,15 @@ Nu. Constanta GI_REACT_DEMO_ENABLED este false, bundle-ul React nu este inclus, 
 Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai opțiunile acestui plugin.
 
 == Changelog ==
+
+= 1.4.0 =
+* Zona privată „Grădina” în administrare (meniul din stânga, cu utilizator și parolă): vezi docs/zona-privata.md.
+* „Copaci și locuri”: pentru fiecare copac (sau plantă, sau loc) creezi o pagină publică (titlu, poză, text, rezumat, tip, nume științific) cu adresă stabilă /in-gradina/<nume>/ și cu cod QR. Codul se desenează în browser, fără serviciu extern, se poate printa (pagină curată, mărimi de 4–10 cm, mai multe deodată) sau descărca (SVG). Vizitatorul care scanează codul ajunge pe pagina locului, cu „Mai multe de văzut în Grădină”.
+* „Vouchere”: generezi coduri de reducere (sumă fixă sau procent, 1–100 deodată), valabile 18 luni, o singură folosire, fiecare cu cod QR de printat. Sunt cupoane WooCommerce obișnuite. Cine scanează codul îl are reținut 30 de zile și se aplică singur în coș.
+* Accesul: editorii văd „Copaci și locuri” și „Coduri QR de printat”; doar cine administrează magazinul vede „Vouchere”.
+* Pagina „Galerie foto” primește singură șablonul galeriei cu 15 poze, o singură dată, la prima rulare (nu mai trebuie apăsat pasul 2 din „Pregătește paginile”). Dacă pagina are deja un șablon ales de mână, nu se atinge. „Revino” o readuce și nu se mai reaplică.
+* Pagini cu designul vechi, pe telefon și tabletă: steagul de limbă e puțin mai mic și nu mai atinge titlul paginii de coș.
+* Include biblioteca „qrcode-generator” (Kazuhiko Arase, licență MIT), în assets/js/vendor/.
 
 = 1.3.16 =
 * Galerie foto: pagina nouă, cu 15 fotografii reprezentative (locul, glamping, camping și rulote, bungalow, evenimente), în locul celor 98 de poze și al celor circa 13 MB de acum. Miniaturile sunt mici (în total circa 0,5 MB); la apăsare, fotografia se deschide mare, cu săgeți și cu legendă (miniatura apare imediat, iar fotografia mare o înlocuiește când s-a încărcat).
