@@ -158,8 +158,8 @@ function gi_page_seo_defaults($key) {
     // Pagina simplă: titlul paginii + numele site-ului; descrierea vine din Rezumat (GI_SEO îl citește înaintea acestor valori).
     if ('punct' === $key && is_singular('gi_punct')) {
         $id = get_queried_object_id();
-        $defaults['title'] = get_the_title($id) . ' | ' . get_bloginfo('name');
-        $text = trim(wp_strip_all_tags(strip_shortcodes((string) get_post_field('post_content', $id))));
+        $defaults['title'] = wp_strip_all_tags(get_the_title($id)) . ' | ' . get_bloginfo('name'); // titlul din <title> nu e curățat de WordPress
+        $text = post_password_required($id) ? '' : trim(wp_strip_all_tags(strip_shortcodes((string) get_post_field('post_content', $id))));
         $defaults['description'] = '' !== $text ? wp_trim_words($text, 28, '…') : 'Un loc din Grădina Ielelor, la poalele Munților Făgăraș: descoperă povestea lui.';
     }
     if ('galerie' === $key) {

@@ -47,7 +47,7 @@ while (have_posts()) :
             <article class="gi-content-body gi-prose gi-punct-body">
                 <?php if (has_post_thumbnail()) : ?>
                     <figure class="gi-punct-foto">
-                        <?php the_post_thumbnail('large', array('loading' => 'eager', 'decoding' => 'async', 'alt' => get_the_title())); ?>
+                        <?php the_post_thumbnail('large', array('loading' => 'eager', 'decoding' => 'async', 'alt' => (string) get_post_meta(get_post_thumbnail_id(), '_wp_attachment_image_alt', true))); // textul alternativ îl scrie proprietara la poză; fără el, poza e decorativă ?>
                     </figure>
                 <?php endif; ?>
                 <?php the_content(); ?>

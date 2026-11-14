@@ -24,8 +24,8 @@ final class GI_Vouchere {
         add_action('admin_menu', array(__CLASS__, 'menu'), 11);
         add_action('admin_post_gi_voucher_gen', array(__CLASS__, 'generate'));
         add_action('wp_loaded', array(__CLASS__, 'catch_code'), 20);
-        add_action('woocommerce_before_cart', array(__CLASS__, 'apply_saved_code'), 5);
-        add_action('woocommerce_before_checkout_form', array(__CLASS__, 'apply_saved_code'), 5);
+        // template_redirect: antetele nu au plecat încă, deci cookie-ul se poate șterge după încercare.
+        add_action('template_redirect', array(__CLASS__, 'apply_saved_code'), 20);
     }
 
     /**
@@ -105,7 +105,13 @@ final class GI_Vouchere {
         for ($i = 0; $i < $count; $i++) {
             $code = '';
             for ($try = 0; $try < 12; $try++) {
-                $candidate = self::make_code($prefix);
+                try {
+                    $candidate = self::make_code($prefix);
+                } catch (Exception $e) {
+                    $candidate = '';
+                    $errors[] = 'Serverul nu poate face acum coduri sigure. Încearcă din nou peste câteva minute.';
+                    break 2;
+                }
                 if (!wc_get_coupon_id_by_code($candidate)) {
                     $code = $candidate;
                     break;
@@ -181,6 +187,10 @@ final class GI_Vouchere {
         ?>
         <div class="wrap">
             <h1>Vouchere</h1>
+            <?php GI_Puncte::address_notice(); ?>
+            <?php if (function_exists('wc_coupons_enabled') && !wc_coupons_enabled()) : ?>
+                <div class="notice notice-warning inline"><p><strong>Atenție:</strong> cupoanele sunt oprite în WooCommerce, deci voucherele nu se aplică la plată. Pornește-le în <em>WooCommerce → Setări → General → „Activează cupoanele”</em>.</p></div>
+            <?php endif; ?>
             <p>Generezi coduri de reducere, <strong>valabile <?php echo (int) self::MONTHS; ?> luni</strong> de azi, o singură folosire pe cod. Fiecare cod are un cod QR de printat. Voucherele sunt și cupoane WooCommerce: le găsești, le modifici sau le oprești și în <em>WooCommerce → Marketing → Cupoane</em>.</p>
 
             <?php if (!empty($result['errors'])) : ?>
@@ -224,7 +234,7 @@ final class GI_Vouchere {
                     </tr>
                     <tr>
                         <th scope="row"><label for="gi_v_nota">Pentru ce / pentru cine</label></th>
-                        <td><input type="text" id="gi_v_nota" name="nota" class="large-text" placeholder="opțional, ex. cadou de Crăciun"> <span class="description">se vede numai în administrare</span></td>
+                        <td><input type="text" id="gi_v_nota" name="nota" class="large-text" placeholder="opțional, ex. cadou de Crăciun"> <span class="description">se vede numai în administrare; nu scrie nume de persoane</span></td>
                     </tr>
                 </table>
                 <p><button type="submit" class="button button-primary">Generează codurile</button></p>
@@ -256,7 +266,7 @@ final class GI_Vouchere {
                     </table>
                     <p>
                         <label for="gi_v_size"><strong>Mărimea codului:</strong></label>
-                        <select name="size" id="gi_v_size"><option value="4">mic (4 cm)</option><option value="6" selected>mediu (6 cm)</option><option value="8">mare (8 cm)</option></select>
+                        <select name="size" id="gi_v_size"><option value="4">mic (4 cm)</option><option value="6" selected>mediu (6 cm)</option><option value="8">mare (8 cm)</option><option value="10">foarte mare (10 cm)</option></select>
                         <button type="submit" class="button button-primary">Printează voucherele alese</button>
                     </p>
                 </form>
@@ -297,7 +307,11 @@ final class GI_Vouchere {
      * Nu se verifică și nu se dezvăluie nimic aici; codul se verifică de WooCommerce când se aplică.
      */
     public static function catch_code() {
-        if (is_admin() || !isset($_GET[self::COOKIE])) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        if (is_admin() || !isset($_GET[self::COOKIE]) || wp_doing_ajax() || (defined('REST_REQUEST') && REST_REQUEST)) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            return;
+        }
+        $method = isset($_SERVER['REQUEST_METHOD']) ? strtoupper(sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD']))) : 'GET';
+        if (!in_array($method, array('GET', 'HEAD'), true) || (isset($GLOBALS['pagenow']) && 'wp-login.php' === $GLOBALS['pagenow'])) {
             return;
         }
         $code = strtoupper(preg_replace('/[^A-Za-z0-9-]/', '', sanitize_text_field(wp_unslash($_GET[self::COOKIE])))); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -313,32 +327,36 @@ final class GI_Vouchere {
             'samesite' => 'Lax',
         ));
         $_COOKIE[self::COOKIE] = $code;
+        nocache_headers(); // redirecționarea nu se păstrează în nicio memorie intermediară
         wp_safe_redirect(home_url('/') . '#rezervare');
         exit;
     }
 
     /**
-     * Pe pagina coșului și la plată: dacă vizitatorul a scanat un cod și are ceva în coș, încercăm să-l aplicăm o singură dată.
-     * Dacă WooCommerce îl refuză (expirat, folosit, nu se aplică acestei rezervări), apare mesajul lui obișnuit.
+     * Pe pagina coșului și la plată, când vizitatorul are o rezervare în coș: aplicăm o singură dată codul scanat.
+     * Se aplică numai vouchere generate de plugin (nu orice cupon). După încercare, cookie-ul se șterge (și după comandă),
+     * ca un cod refuzat (expirat, folosit) să nu reapară. Dacă WooCommerce îl refuză, apare mesajul lui obișnuit.
      */
     public static function apply_saved_code() {
-        if (empty($_COOKIE[self::COOKIE]) || !function_exists('WC') || !WC()->cart || WC()->cart->is_empty()) {
+        if (empty($_COOKIE[self::COOKIE]) || !function_exists('WC') || !function_exists('is_cart') || !(is_cart() || is_checkout())) {
             return;
+        }
+        $clear = function () {
+            setcookie(self::COOKIE, '', time() - HOUR_IN_SECONDS, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN, is_ssl(), true);
+            unset($_COOKIE[self::COOKIE]);
+        };
+        if (function_exists('is_wc_endpoint_url') && is_wc_endpoint_url('order-received')) {
+            $clear(); // comanda e făcută: codul nu mai trebuie reținut
+            return;
+        }
+        if (!WC()->cart || WC()->cart->is_empty()) {
+            return; // încă nu e nimic în coș: păstrăm codul
         }
         $code = strtoupper(preg_replace('/[^A-Za-z0-9-]/', '', sanitize_text_field(wp_unslash($_COOKIE[self::COOKIE]))));
-        if ('' === $code) {
-            return;
-        }
-        // O singură încercare pentru fiecare cod, notată în sesiunea WooCommerce: un cod refuzat nu reapare la fiecare pagină.
-        $session = WC()->session;
-        if ($session && $session->get('gi_cod_incercat') === $code) {
-            return;
-        }
-        if (!WC()->cart->has_discount($code)) {
+        $id = '' !== $code ? (int) wc_get_coupon_id_by_code($code) : 0;
+        if ($id && metadata_exists('post', $id, '_gi_voucher_lot') && !WC()->cart->has_discount($code)) {
             WC()->cart->apply_coupon($code);
         }
-        if ($session) {
-            $session->set('gi_cod_incercat', $code);
-        }
+        $clear();
     }
 }

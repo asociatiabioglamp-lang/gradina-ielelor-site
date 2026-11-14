@@ -8,9 +8,9 @@
  * se schimbe codul.
  *
  * - Codul QR se desenează în browser (assets/js/vendor/qrcode.js, licență MIT); nu se trimite nimic către un serviciu extern.
- * - Adresa din cod conține „?sursa=qr”, ca să vezi în statistici câți vizitatori vin din teren.
+ * - Adresa din cod are parametri utm (utm_source=qr&utm_medium=print): în statistici (Google Analytics) apare sursa „qr / print”.
  * - Dacă se schimbă adresa unei pagini deja publicate, WordPress redirecționează singur adresa veche: codurile printate merg în continuare.
- * - Accesul: oricine are cont WordPress cu drept de editare (utilizator + parolă); vouchere: numai cine administrează magazinul.
+ * - Accesul: administratori, editori și manageri de magazin (utilizator + parolă); autorii și colaboratorii nu au acces. Vouchere: numai cine administrează magazinul.
  */
 if (!defined('ABSPATH')) {
     exit;
@@ -20,10 +20,12 @@ final class GI_Puncte {
     const TYPE = 'gi_punct';
     const SLUG = 'in-gradina';
     const MENU = 'gi-gradina';
+    /** Cine are acces: administratori, editori și manageri de magazin (nu autorii și colaboratorii). */
+    const CAP = 'edit_others_posts';
 
     public static function init() {
         add_action('init', array(__CLASS__, 'register'), 5);
-        add_action('init', array(__CLASS__, 'maybe_flush'), 99);
+        add_action('wp_loaded', array(__CLASS__, 'maybe_flush'));
         add_action('admin_menu', array(__CLASS__, 'menu'), 9);
         add_action('add_meta_boxes_' . self::TYPE, array(__CLASS__, 'meta_boxes'));
         add_action('save_post_' . self::TYPE, array(__CLASS__, 'save'), 10, 2);
@@ -34,6 +36,7 @@ final class GI_Puncte {
         add_filter('template_include', array(__CLASS__, 'template'), 98);
         // Editor clasic (titlu, text, poză): mai simplu pentru proprietară decât editorul de blocuri; datele rămân disponibile și prin REST.
         add_filter('use_block_editor_for_post_type', array(__CLASS__, 'classic_editor'), 10, 2);
+        add_filter('old_slug_redirect_url', array(__CLASS__, 'keep_utm'));
     }
 
     public static function classic_editor($use, $post_type) {
@@ -87,6 +90,9 @@ final class GI_Puncte {
             'rewrite' => array('slug' => self::SLUG, 'with_front' => false),
             'has_archive' => false,
             'capability_type' => 'post',
+            // Numai cine are acces la zona Grădina poate crea, modifica și publica locuri (altfel autorii ar putea publica pagini).
+            'capabilities' => array('edit_posts' => self::CAP, 'create_posts' => self::CAP, 'publish_posts' => self::CAP),
+            'map_meta_cap' => true, // fără el, „edit_post” (pe un loc anume) nu se mai potrivește cu drepturile de mai sus și nimeni nu poate edita
         ));
         register_post_meta(self::TYPE, '_gi_tip', array(
             'type' => 'string', 'single' => true, 'show_in_rest' => true,
@@ -106,7 +112,7 @@ final class GI_Puncte {
     }
 
     public static function can_edit_meta() {
-        return current_user_can('edit_posts');
+        return current_user_can(self::CAP);
     }
 
     /**
@@ -122,26 +128,52 @@ final class GI_Puncte {
     /* ---------- Adresa din cod ---------- */
 
     /**
-     * Adresa din codul QR: pagina locului, cu „?sursa=qr” (ca să vezi în statistici vizitele venite din teren).
+     * Adresa din codul QR: pagina locului, cu parametri utm (în statistici apare sursa „qr / print”, vizitele venite din teren).
      */
     public static function qr_url($post) {
         $post = get_post($post);
         if (!$post) {
             return '';
         }
-        return add_query_arg('sursa', 'qr', get_permalink($post));
+        return add_query_arg(array('utm_source' => 'qr', 'utm_medium' => 'print', 'utm_campaign' => 'gradina'), get_permalink($post));
+    }
+
+    /**
+     * Dacă adresa unei pagini a fost schimbată, WordPress redirecționează adresa veche, dar pierde parametrii: păstrăm utm_*,
+     * ca vizitele venite din codurile printate să rămână vizibile în statistici.
+     */
+    public static function keep_utm($link) {
+        $keep = array();
+        foreach (array('utm_source', 'utm_medium', 'utm_campaign') as $k) {
+            if (isset($_GET[$k])) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+                $keep[$k] = sanitize_text_field(wp_unslash($_GET[$k])); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            }
+        }
+        return $keep && is_string($link) ? add_query_arg($keep, $link) : $link;
+    }
+
+    /**
+     * Pe site-ul de test sau local, codurile ar duce la adresa de test: avertizare vizibilă.
+     */
+    public static function address_notice() {
+        $host = (string) wp_parse_url(home_url('/'), PHP_URL_HOST);
+        $prod = (array) apply_filters('gi_production_hosts', array('gradina-ielelor.ro', 'www.gradina-ielelor.ro'));
+        if (in_array($host, $prod, true)) {
+            return;
+        }
+        echo '<div class="notice notice-warning inline"><p><strong>Atenție:</strong> acesta nu e site-ul real. Codurile de aici duc la <code>' . esc_html($host) . '</code>, iar adresa aceea poate dispărea. <strong>Generează și printează codurile numai de pe gradina-ielelor.ro.</strong></p></div>';
     }
 
     /* ---------- Meniul „Grădina” ---------- */
 
     public static function menu() {
-        add_menu_page('Grădina', 'Grădina', 'edit_posts', self::MENU, array(__CLASS__, 'overview'), 'dashicons-palmtree', 26);
-        add_submenu_page(self::MENU, 'Grădina — prezentare', 'Prezentare', 'edit_posts', self::MENU, array(__CLASS__, 'overview'));
-        add_submenu_page(self::MENU, 'Coduri QR de printat', 'Coduri QR de printat', 'edit_posts', 'gi-qr', array(__CLASS__, 'qr_screen'));
+        add_menu_page('Grădina', 'Grădina', self::CAP, self::MENU, array(__CLASS__, 'overview'), 'dashicons-palmtree', 26);
+        add_submenu_page(self::MENU, 'Grădina — prezentare', 'Prezentare', self::CAP, self::MENU, array(__CLASS__, 'overview'));
+        add_submenu_page(self::MENU, 'Coduri QR de printat', 'Coduri QR de printat', self::CAP, 'gi-qr', array(__CLASS__, 'qr_screen'));
     }
 
     public static function overview() {
-        if (!current_user_can('edit_posts')) {
+        if (!current_user_can(self::CAP)) {
             wp_die('Nu ai voie să faci asta.', '', array('response' => 403));
         }
         $new = admin_url('post-new.php?post_type=' . self::TYPE);
@@ -150,6 +182,7 @@ final class GI_Puncte {
         ?>
         <div class="wrap">
             <h1>Grădina — zona ta privată</h1>
+            <?php self::address_notice(); ?>
             <p>Aici faci lucrurile care nu se văd pe site: pagini pentru copaci și locuri, coduri QR de printat, vouchere. Intri cu utilizatorul și parola contului tău.</p>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;max-width:1000px;margin-top:16px;">
                 <div class="card" style="margin:0;max-width:none;">
@@ -189,7 +222,7 @@ final class GI_Puncte {
         $tip = (string) get_post_meta($post->ID, '_gi_tip', true);
         $stiintific = (string) get_post_meta($post->ID, '_gi_stiintific', true);
         ?>
-        <p class="description">Textul de mai sus (în editor) e ce citesc vizitatorii după ce scanează codul: povestea locului, ce îl face special, ce pot observa. „Rezumatul” de mai jos apare sub titlu.</p>
+        <p class="description">La poză (în dreapta), completează „Text alternativ”: o frază care descrie ce se vede (ajută cititoarele de ecran și Google). Textul de mai sus (în editor) e ce citesc vizitatorii după ce scanează codul: povestea locului, ce îl face special, ce pot observa. „Rezumatul” de mai jos apare sub titlu.</p>
         <p>
             <label for="gi_tip"><strong>Ce este?</strong></label><br>
             <select name="gi_tip" id="gi_tip">
@@ -211,6 +244,7 @@ final class GI_Puncte {
             echo '<p>Codul apare după ce <strong>publici</strong> pagina. Adresa din cod devine definitivă la publicare: nu schimba adresa paginii după ce ai printat codul.</p>';
             return;
         }
+        self::address_notice();
         $url = self::qr_url($post);
         $print = wp_nonce_url(admin_url('admin-post.php?action=gi_qr_print&ids[]=' . (int) $post->ID . '&size=8'), 'gi_qr_print');
         ?>
@@ -281,13 +315,14 @@ final class GI_Puncte {
     /* ---------- Ecranul „Coduri QR de printat” ---------- */
 
     public static function qr_screen() {
-        if (!current_user_can('edit_posts')) {
+        if (!current_user_can(self::CAP)) {
             wp_die('Nu ai voie să faci asta.', '', array('response' => 403));
         }
         $posts = get_posts(array('post_type' => self::TYPE, 'post_status' => 'publish', 'numberposts' => 200, 'orderby' => 'title', 'order' => 'ASC'));
         ?>
         <div class="wrap">
             <h1>Coduri QR de printat</h1>
+            <?php self::address_notice(); ?>
             <?php if (!$posts) : ?>
                 <p>Nu ai încă niciun loc publicat. <a href="<?php echo esc_url(admin_url('post-new.php?post_type=' . self::TYPE)); ?>">Adaugă primul loc</a>, apoi revino aici.</p>
             <?php else : ?>
@@ -336,7 +371,7 @@ final class GI_Puncte {
             if (!class_exists('GI_Vouchere') || !GI_Vouchere::allowed()) {
                 wp_die('Nu ai voie să faci asta.', '', array('response' => 403));
             }
-        } elseif (!current_user_can('edit_posts')) {
+        } elseif (!current_user_can(self::CAP)) {
             wp_die('Nu ai voie să faci asta.', '', array('response' => 403));
         }
         check_admin_referer('gi_qr_print');
@@ -394,6 +429,9 @@ body { margin: 0; padding: 16px; font: 16px/1.4 system-ui, -apple-system, "Segoe
     <button type="button" onclick="window.print()">Printează</button>
     <a href="javascript:window.close()">Închide</a>
     <span><?php echo esc_html((string) count($tiles)); ?> cod(uri), mărimea <?php echo (int) $size; ?> cm. Taie pe linia punctată.</span>
+    <?php if (!in_array((string) wp_parse_url(home_url('/'), PHP_URL_HOST), (array) apply_filters('gi_production_hosts', array('gradina-ielelor.ro', 'www.gradina-ielelor.ro')), true)) : ?>
+        <strong style="color:#a33;">Atenție: acesta nu e site-ul real; codurile duc la <?php echo esc_html((string) wp_parse_url(home_url('/'), PHP_URL_HOST)); ?>. Nu le printa pentru teren.</strong>
+    <?php endif; ?>
 </div>
 <?php if (!$tiles) : ?>
     <p>Nu ai ales niciun cod de printat. Închide această filă și alege cel puțin unul.</p>

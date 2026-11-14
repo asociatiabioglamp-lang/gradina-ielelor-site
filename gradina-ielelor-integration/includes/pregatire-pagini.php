@@ -451,9 +451,13 @@ function gi_galerie_aplica_o_data() {
     if (get_option('gi_galerie_aplicata') || !function_exists('gi_pagini_find')) {
         return;
     }
+    if (get_transient('gi_galerie_lipsa')) {
+        return;
+    }
     $page = gi_pagini_find('galerie-foto');
     if (!$page) {
-        return; // pagina nu există (încă): încercăm din nou la următoarea cerere
+        set_transient('gi_galerie_lipsa', 1, 6 * HOUR_IN_SECONDS); // pagina nu există (încă): nu o căutăm la fiecare cerere
+        return;
     }
     if ('publish' === $page->post_status && 'default' === gi_pagini_tpl($page)) {
         if (!metadata_exists('post', $page->ID, '_gi_sablon_anterior')) {

@@ -23,9 +23,10 @@
     for (var i = 0; i < nodes.length; i++) {
       var el = nodes[i];
       if (el.getAttribute('data-qr-done')) continue;
+      // Marcat ca „încercat” înainte: un cod care nu se poate genera nu se reîncearcă la nesfârșit.
+      el.setAttribute('data-qr-done', '1');
       try {
         el.innerHTML = makeSvg(el.getAttribute('data-qr-url'));
-        el.setAttribute('data-qr-done', '1');
       } catch (e) {
         el.textContent = 'Codul nu se poate genera.';
       }
@@ -51,6 +52,10 @@
 
   function init() {
     if (typeof window.qrcode !== 'function') return;
+    // Adresele sunt ASCII; totuși, codificarea UTF-8 evită orice caracter tăiat dacă apare vreodată unul în afara ASCII.
+    if (window.qrcode.stringToBytesFuncs && window.qrcode.stringToBytesFuncs['UTF-8']) {
+      window.qrcode.stringToBytes = window.qrcode.stringToBytesFuncs['UTF-8'];
+    }
     draw(document);
 
     // Căsuțele pot apărea după încărcare (ecrane care își mută conținutul): desenăm și ce se adaugă ulterior.

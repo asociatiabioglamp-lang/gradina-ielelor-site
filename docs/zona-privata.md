@@ -5,36 +5,39 @@ Intri în administrarea site-ului cu **utilizatorul și parola** contului tău. 
 
 Cine ce vede (conturile WordPress existente):
 - **Administrator** (tu): totul.
+- **Manager de magazin**: copaci, coduri QR **și** vouchere (rolul WooCommerce de gestionare a magazinului).
 - **Editor**: „Copaci și locuri” și „Coduri QR de printat”. **Nu** vede „Vouchere”.
-- Orice alt cont (abonat, client): nimic din zona Grădina.
+- **Autor, colaborator, abonat, client**: nimic din zona Grădina. (Dacă ai conturi de acest fel, rămân fără acces.)
+
+**Generează și printează codurile numai de pe site-ul real, gradina-ielelor.ro.** Pe o copie de test, codurile ar duce la adresa de test, care poate dispărea (pluginul te avertizează pe ecran când nu ești pe site-ul real).
 
 ## 1. Un copac (sau un loc, sau o plantă) cu cod QR
 
 Pași, o dată pentru fiecare copac:
 1. **Grădina → Copaci și locuri → Adaugă un loc.**
 2. **Titlul**: numele locului, de ex. „Stejarul bătrân”.
-3. **Textul mare** (editorul): ce vrei să afle vizitatorul. Povestea locului, ce îl face special, ce poate observa. Acesta e „celula care explică codul QR”.
+3. **Textul mare** (editorul): ce vrei să afle vizitatorul. Povestea locului, ce îl face special, ce poate observa. Acesta e textul care explică codul QR.
 4. **Rezumat** (mai jos): o frază care apare sub titlu. **Poza locului**: în dreapta, „Alege poza locului”.
 5. **Despre acest loc**: alegi „Ce este?” (Copac, Plantă, Loc din Grădină, Altceva) și, dacă vrei, numele științific.
 6. Apeși **Publică**. În dreapta apare **codul QR**.
 7. **Printează acest cod** (în dreapta) sau, pentru mai multe deodată: **Grădina → Coduri QR de printat** → bifezi locurile → alegi mărimea → „Printează codurile alese”. Se deschide o pagină curată; apeși „Printează”, tai pe linia punctată.
-8. Pui codul în teren, pe copac. Pentru un cod pus pe copac, la câțiva pași de cărare, **8 cm** e potrivit.
+8. Pui codul în teren, pe copac. Un cod de **8 cm** se citește bine de la circa un metru; pentru citire de la mai departe, printează-l de **10 cm**.
 
 Ce vede vizitatorul: scanează codul cu telefonul și ajunge pe o pagină a site-ului, în designul Grădinii: titlul, poza, textul tău, apoi „Mai multe de văzut în Grădină” (celelalte locuri) și un buton de rezervare.
 
 Bine de știut:
 - **Textul îl poți schimba oricând**, fără să schimbi codul. Codul printat rămâne bun.
 - **Nu schimba adresa paginii** după ce ai printat codul (adresa e sub titlu, „Permalink”). Dacă o schimbi totuși, WordPress duce singur adresa veche la cea nouă, dar verifică.
-- **Nu șterge un loc** al cărui cod e în teren: codul ar duce la „pagina nu există”. Dacă nu mai vrei locul, treci-l pe ciornă și pune în loc un text scurt.
-- Codul se desenează chiar în browserul tău; nu se trimite nimic către alte site-uri. Adresa din cod are la sfârșit „?sursa=qr”, ca să vezi în statistici câți vizitatori vin din teren.
+- **Nu opri pluginul și nu șterge un loc** al cărui cod e în teren: codul ar duce la „pagina nu există” (și la oprirea pluginului, „Revino” din ghidul de lansare, toate codurile din teren duc la „nu există”). Dacă nu mai vrei un loc, lasă-l publicat cu un text scurt.
+- Codul se desenează chiar în browserul tău; nu se trimite nimic către alte site-uri. Adresa din cod are la sfârșit parametri (`utm_source=qr&utm_medium=print`): în Google Analytics apare sursa „qr / print”, ca să vezi câți vizitatori vin din teren.
 - Poți **descărca codul ca imagine** (butonul „Descarcă (SVG)”), de exemplu pentru un grafician sau pentru o plăcuță.
 - Textul se traduce în alte limbi la fel ca restul site-ului (steagul din colț).
 
 ## 2. Vouchere (reduceri valabile 18 luni)
 
 **Grădina → Vouchere.** Completezi:
-- **Tipul reducerii**: sumă fixă (lei) sau procent.
-- **Valoarea**, **câte coduri** (1–100, toate cu aceeași valoare), **începutul codului** (de ex. GRADINA) și, dacă vrei, **pentru ce / pentru cine** (se vede numai în administrare).
+- **Tipul reducerii**: sumă fixă (lei) sau procent. (Cupoanele trebuie să fie pornite în WooCommerce → Setări → General; ecranul te avertizează dacă nu sunt.)
+- **Valoarea**, **câte coduri** (1–100, toate cu aceeași valoare), **începutul codului** (de ex. GRADINA) și, dacă vrei, **pentru ce / pentru cine** (se vede numai în administrare; **nu scrie nume de persoane**).
 - „Generează codurile”. Rezultă coduri ca `GRADINA-K7M2-Q9XP`, fiecare **valabil 18 luni de azi** și **o singură folosire**.
 
 Lista de mai jos arată fiecare cod cu valoarea, câte ori a fost folosit, data de expirare și un **cod QR**. Le poți bifa și printa (cu codul QR). Voucherele sunt și cupoane WooCommerce: le vezi și le oprești și din **WooCommerce → Marketing → Cupoane**.

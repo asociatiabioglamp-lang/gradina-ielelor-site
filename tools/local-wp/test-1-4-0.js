@@ -28,6 +28,7 @@ function ok(condition, text) {
   if (!condition) { failures++; }
 }
 const STAMP = String(Date.now()).slice(-6);
+const UTM = '?utm_source=qr&utm_medium=print&utm_campaign=gradina';
 
 // Citește primul cod QR din elementul dat: SVG → imagine → pixeli → jsQR. Întoarce textul din cod sau null.
 async function decode(page, selector, index) {
@@ -163,14 +164,19 @@ async function decode(page, selector, index) {
     const r = await admin.request.get(B.link);
     const t = await r.text();
     ok(r.status() === 200 && /Text de probă pentru Teiul/.test(t) && !/gi-punct-foto/.test(t) && !/gi-punct-stiintific/.test(t), 'pagina locului fără poză și fără nume științific: nu apar casete goale');
-    const d = await admin.request.get(c3.body.link, { maxRedirects: 0 });
     const dp = new URL(c3.body.link);
-    const dr = await (await browser.newContext()).request.get(BASE + dp.pathname + dp.search, { maxRedirects: 0 });
-    ok(dr.status() === 404 || dr.status() === 301 || dr.status() === 302, `ciorna nu se vede vizitatorilor (${dr.status()})`);
+    const dr = await (await browser.newContext()).request.get(BASE + '/?p=' + c3.body.id + '&post_type=gi_punct', { maxRedirects: 0 });
+    ok(dr.status() === 404 && !/Text de ciornă|>ciornă</.test(await dr.text()), `ciorna nu se vede vizitatorilor (${dr.status()})`);
+    // adresa veche a unui loc redirecționează și păstrează parametrii de sursă
+    const oldSlug = new URL(B.link).pathname;
+    await rest('POST', '/wp/v2/puncte/' + b2.body.id, { slug: 'teiul-nou-' + STAMP });
+    const rd = await (await browser.newContext()).request.get(BASE + oldSlug + UTM, { maxRedirects: 0 });
+    ok(rd.status() === 301 && /teiul-nou-/.test(rd.headers().location || '') && /utm_source=qr/.test(rd.headers().location || ''), `adresa veche a unui loc redirecționează la cea nouă și păstrează sursa (${rd.status()} → ${(rd.headers().location || '').replace(BASE, '')})`);
+    await rest('POST', '/wp/v2/puncte/' + b2.body.id, { slug: oldSlug.split('/').filter(Boolean).pop() });
   }
 
   // ------------------------------------------------------------------ 3. Codul QR în administrare
-  const qrOf = (p) => p.link + '?sursa=qr';
+  const qrOf = (p) => p.link + UTM;
   {
     await admin.goto(BASE + '/wp-admin/post.php?post=' + A.id + '&action=edit', { waitUntil: 'load' });
     await admin.waitForSelector('.gi-qr-box svg');
@@ -195,7 +201,7 @@ async function decode(page, selector, index) {
     await admin.goto(BASE + '/wp-admin/edit.php?post_type=gi_punct', { waitUntil: 'load' });
     await admin.waitForSelector('.gi-qr-mini svg');
     const mini = await decode(admin, '.gi-qr-mini', 0);
-    ok(/\?sursa=qr$/.test(mini || '') && (await admin.locator('.gi-qr-mini svg').count()) >= 2, `lista locurilor: coloana „Cod QR” arată coduri care se citesc (${mini})`);
+    ok(/\?utm_source=qr&utm_medium=print&utm_campaign=gradina$/.test(mini || '') && (await admin.locator('.gi-qr-mini svg').count()) >= 2, `lista locurilor: coloana „Cod QR” arată coduri care se citesc (${mini})`);
   }
 
   // ------------------------------------------------------------------ 4. Ecranul și pagina de printat
@@ -204,6 +210,7 @@ async function decode(page, selector, index) {
     await admin.waitForSelector('.gi-qr-mini svg');
     const rows = await admin.locator('table tbody tr').count();
     ok(rows >= 2, `ecranul „Coduri QR de printat”: lista cu locurile publicate (${rows} rânduri, ciorna lipsește)`);
+    ok(/acesta nu e site-ul real/.test(await admin.textContent('.wrap')) && /127\.0\.0\.1/.test(await admin.textContent('.wrap .notice-warning')), 'ecranul „Coduri QR de printat”: pe un site care nu e cel real apare avertizarea cu adresa la care duc codurile');
     await admin.check('[data-qr-select-all]');
     const checked = await admin.locator('input[name="ids[]"]:checked').count();
     ok(checked === rows, 'ecranul „Coduri QR de printat”: „alege toate” bifează toate rândurile');
@@ -220,7 +227,7 @@ async function decode(page, selector, index) {
     const t0 = await decode(popup, '.gi-tile .qr', 0);
     const all = [];
     for (let i = 0; i < info.tiles; i++) { all.push(await decode(popup, '.gi-tile .qr', i)); }
-    ok(all.every((x) => /\/in-gradina\/.*\?sursa=qr$/.test(x || '')) && all.includes(qrOf(A)) && all.includes(qrOf(B)), 'pagina de printat: fiecare cod se citește și duce la pagina locului lui');
+    ok(all.every((x) => /\/in-gradina\/.*\?utm_source=qr&utm_medium=print&utm_campaign=gradina$/.test(x || '')) && all.includes(qrOf(A)) && all.includes(qrOf(B)), 'pagina de printat: fiecare cod se citește și duce la pagina locului lui');
     // „dus-întors”: codul citit deschide pagina
     const trip = await popup.request.get(all.find((x) => x === qrOf(A)));
     ok(trip.status() === 200 && /Stejarul bătrân/.test(await trip.text()), 'dus-întors: adresa citită din cod deschide pagina locului');
@@ -310,9 +317,10 @@ async function decode(page, selector, index) {
     await page.goto(BASE + '/cart/', { waitUntil: 'load' });
     const cart = (await page.textContent('body')).replace(/\s+/g, ' ');
     ok(new RegExp(codes[2].replace(/-/g, '[- ]'), 'i').test(cart) && /50[,.]00/.test(cart), 'voucher scanat: în coș, reducerea de 50 lei e aplicată singură');
+    ok((await page.locator('.cart-discount').count()) === 1 && (await page.locator('.woocommerce-error').count()) === 0, 'voucher scanat: o singură reducere aplicată, fără mesaje de eroare');
+    ok(!(await ctx.cookies()).some((c) => c.name === 'gi_cod'), 'voucher scanat: după încercare, cookie-ul se șterge (nu mai reapare nimic la pagina următoare)');
     await page.reload({ waitUntil: 'load' });
-    const again = (await page.textContent('body')).replace(/\s+/g, ' ');
-    ok(!/nu există|expirat|invalid|already applied|a fost aplicat deja/i.test(again) || new RegExp(codes[2], 'i').test(again), 'voucher scanat: la reîncărcare nu apar erori sau aplicări în plus');
+    ok((await page.locator('.cart-discount').count()) === 1 && (await page.locator('.woocommerce-error').count()) === 0, 'voucher scanat: la reîncărcare nu apar erori sau aplicări în plus');
     // cod inventat: fără erori grave
     const ctx2 = await browser.newContext();
     const p2 = await ctx2.newPage();
@@ -321,7 +329,19 @@ async function decode(page, selector, index) {
     await p2.goto(BASE + '/?add-to-cart=30', { waitUntil: 'load' });
     await p2.goto(BASE + '/cart/', { waitUntil: 'load' });
     const bad = await p2.textContent('body');
-    ok(!/Fatal error|Warning:|Notice:/.test(bad), 'voucher inventat: coșul se deschide normal, fără erori PHP');
+    ok(!/Fatal error|Warning:|Notice:/.test(bad) && (await p2.locator('.cart-discount').count()) === 0, 'voucher inventat: coșul se deschide normal, fără erori PHP și fără reducere');
+    ok(!(await ctx2.cookies()).some((c) => c.name === 'gi_cod'), 'voucher inventat: cookie-ul se șterge după încercare');
+    // un cupon obișnuit WooCommerce (nu generat din zona Grădina) nu se aplică prin codul QR
+    const plain = await rest('POST', '/wc/v3/coupons', { code: 'plain' + STAMP, discount_type: 'percent', amount: '50', description: 'cupon de probă obișnuit' });
+    if (plain.body && plain.body.id) { created.coupons.push(plain.body.id); }
+    const ctx3 = await browser.newContext();
+    const p3 = await ctx3.newPage();
+    p3.setDefaultTimeout(90000);
+    await p3.goto(BASE + '/?gi_cod=PLAIN' + STAMP, { waitUntil: 'load' });
+    await p3.goto(BASE + '/?add-to-cart=30', { waitUntil: 'load' });
+    await p3.goto(BASE + '/cart/', { waitUntil: 'load' });
+    ok((await p3.locator('.cart-discount').count()) === 0, 'cupon obișnuit prin codul QR: nu se aplică (doar voucherele generate din zona Grădina)');
+    await ctx3.close();
     await ctx.close(); await ctx2.close();
   }
 
@@ -350,14 +370,33 @@ async function decode(page, selector, index) {
     ok(r.status() === 403 || /nu ai voie|not allowed|permission/i.test(await pe.textContent('body')), `acces: editorul NU vede „Vouchere” (${r.status()})`);
     const menu = await (async () => { await pe.goto(BASE + '/wp-admin/', { waitUntil: 'load' }); return pe.evaluate(() => Array.from(document.querySelectorAll('#adminmenu a')).map((a) => a.textContent.replace(/\s+/g, ' ').trim()).join(' | ')); })();
     ok(/Grădina/.test(menu) && !/Vouchere/.test(menu), 'acces: în meniul editorului apare „Grădina”, fără „Vouchere”');
-    const pr = await pe.request.get(BASE + '/wp-admin/admin-post.php?action=gi_qr_print&tip=vouchere&ids[]=1&_wpnonce=x', { maxRedirects: 0 });
-    ok(pr.status() === 403, `acces: editorul nu poate printa vouchere (${pr.status()})`);
+    // cod de siguranță VALID al editorului (din ecranul lui), ca să se vadă că refuzul vine din drepturi, nu din cod greșit
+    await pe.goto(BASE + '/wp-admin/admin.php?page=gi-qr', { waitUntil: 'load' });
+    const edNonce = await pe.inputValue('input[name="_wpnonce"]');
+    const printUrl = (extra) => BASE + '/wp-admin/admin-post.php?action=gi_qr_print&_wpnonce=' + edNonce + extra;
+    const couponId = created.coupons[0];
+    const pr = await pe.request.get(printUrl('&tip=vouchere&ids[]=' + couponId), { maxRedirects: 0 });
+    ok(pr.status() === 403 && !/gi-tile/.test(await pr.text()), `acces: editorul, cu cod de siguranță valid, nu poate printa vouchere (${pr.status()})`);
+    const idor = await pe.request.get(printUrl('&tip=puncte&ids[]=' + couponId + '&ids[]=' + c3.body.id + '&ids[]=1&ids[]=30'), { maxRedirects: 0 });
+    ok(idor.status() === 200 && (await idor.text()).split('class="gi-tile"').length - 1 === 0, 'acces: cu id-uri de cupon, ciornă, pagină sau produs, pagina de printat nu arată nimic');
+    const gen = await pe.request.post(BASE + '/wp-admin/admin-post.php', { form: { action: 'gi_voucher_gen', _wpnonce: edNonce, tip: 'suma', valoare: '10', numar: '1', prefix: 'EDIT' }, maxRedirects: 0 });
+    const afterGen = await rest('GET', '/wc/v3/coupons?per_page=20&search=EDIT');
+    ok(gen.status() === 403 && afterGen.body.filter((c) => /^edit-/.test(c.code)).length === 0, `acces: editorul nu poate genera vouchere (${gen.status()})`);
     await ce.close();
+    for (const role of ['author', 'contributor']) {
+      const u = await mkUser(role);
+      const { p: pa, ctx: ca } = await login(u);
+      const rr = await pa.goto(BASE + '/wp-admin/admin.php?page=gi-qr', { waitUntil: 'load' });
+      ok(rr.status() === 403 || /nu ai voie|not allowed|permission/i.test(await pa.textContent('body')), `acces: ${role === 'author' ? 'autorul' : 'colaboratorul'} nu vede zona Grădina (${rr.status()})`);
+      const nonceA = (await (await pa.request.get(BASE + '/wp-admin/admin-ajax.php?action=rest-nonce')).text()).trim();
+      const cr = await pa.request.post(BASE + '/wp-json/wp/v2/puncte', { headers: { 'X-WP-Nonce': nonceA }, data: { title: 'nepermis ' + role, status: 'publish' } });
+      ok([401, 403].includes(cr.status()), `acces: ${role === 'author' ? 'autorul' : 'colaboratorul'} nu poate crea un loc prin REST (${cr.status()})`);
+      await ca.close();
+    }
     const sub = await mkUser('subscriber');
     const { p: ps, ctx: cs } = await login(sub);
     r = await ps.goto(BASE + '/wp-admin/admin.php?page=gi-qr', { waitUntil: 'load' });
     ok(r.status() === 403 || /nu ai voie|not allowed|permission/i.test(await ps.textContent('body')), `acces: un cont simplu (abonat) nu vede zona Grădina (${r.status()})`);
-    const psr = await ps.request.get(BASE + '/wp-json/wp/v2/puncte', { method: 'POST', data: { title: 'x' }, maxRedirects: 0 }).catch(() => null);
     await cs.close();
     const post = await (await browser.newContext()).request.post(BASE + '/wp-json/wp/v2/puncte', { data: { title: 'nepermis', status: 'publish' } });
     ok([401, 403].includes(post.status()), `acces: fără cont nu se poate crea un loc (${post.status()})`);
