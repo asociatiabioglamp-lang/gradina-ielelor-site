@@ -389,7 +389,7 @@ function gi_offer_pages() {
             'text' => 'Festivaluri, petreceri și întâlniri pentru familii. Datele exacte le anunțăm pe măsură ce se confirmă. Pregătești o tabără sau un festival? Rezervă-ți perioada din timp.',
         ),
         'gallery' => array('title' => 'Vezi domeniul', 'images' => array(
-            array('src' => 'festival-scena-960.webp', 'alt' => 'Spectacol de dansuri populare pe scenă, cu copii în public, la un eveniment în Grădina Ielelor', 'caption' => 'Spectacol pe scenă'),
+            array('src' => 'festival-scena-960.webp', 'alt' => 'Ansamblu în costume populare pe scenă, cu copii în public, la un eveniment în Grădina Ielelor', 'caption' => 'Spectacol pe scenă'),
             array('src' => 'festival-aerian-albastru-1280.webp', 'alt' => 'Domeniul văzut de sus, cu tabăra de rulote, lacurile și câmpurile, sub cer albastru', 'caption' => 'Domeniul, văzut de sus'),
             array('src' => 'vatra-oameni-foc-1600.webp', 'alt' => 'Oameni cântând la tobe în jurul unei vetre de foc, noaptea, în Grădina Ielelor', 'caption' => 'Seara, în jurul focului'),
             array('src' => 'festival-aerian-rulote-1280.webp', 'alt' => 'Tabără de rulote pe domeniu, văzută de sus, într-un festival', 'caption' => 'Tabără de rulote, la un festival'),
