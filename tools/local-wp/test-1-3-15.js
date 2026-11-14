@@ -190,7 +190,7 @@ const MEASURE = () => {
       });
       return out;
     }, HOVER_EXCEPTIONS);
-    const bad = [];
+    const bad = []; let hovered = 0;
     for (const kind of kinds) {
       const loc = page.locator('[data-gi-h="' + kind.k + '"]');
       const read = () => loc.evaluate((e) => { const c = getComputedStyle(e); return { color: c.color, bg: c.backgroundColor }; });
@@ -199,14 +199,14 @@ const MEASURE = () => {
         await page.mouse.move(0, 0);
         const before = await read();
         await loc.hover({ timeout: 4000, force: true });
-        const after = await read();
+        const after = await read(); hovered++;
         if (after.color === 'rgb(255, 0, 0)') { bad.push(kind.sig + ' → roșu'); }
         else if (after.bg === 'rgb(224, 224, 224)' && before.bg !== after.bg) { bad.push(kind.sig + ' → fundal gri'); }
         else if (!foreign && !kind.exception && after.color !== before.color) { bad.push(kind.sig + ' ' + before.color + ' → ' + after.color); }
       } catch (e) { /* element acoperit sau ieșit din pagină: nu se poate trece cu mouse-ul peste el */ }
     }
     await ctx.close();
-    return { n: kinds.length, bad };
+    return { n: hovered, bad };
   }
   for (const path of ['/'].concat(OFFERS, CONTENT)) {
     const f = await hoverPass(1440, 900, path, true);
@@ -284,6 +284,8 @@ const MEASURE = () => {
     ok(/href="https:\/\/gradina-ielelor\.ro\/glamping\/"/.test(r.pastrat_intern || ''), 'linkuri fără legătură: linkurile noastre rămân');
     ok(/jorjette\.ro\.exemplu\.com/.test(r.pastrat_alt_site || '') && /exemplu\.com\/\?u=/.test(r.pastrat_alt_site || ''), 'linkuri fără legătură: un alt site cu nume asemănător și un link care doar pomenește site-ul rămân');
     ok(r.pastrat_text === 'Numele jorjette.ro scris în text, fără link.', 'linkuri fără legătură: textul fără link rămâne neschimbat');
+    ok(/href="https:\/\/gradina-ielelor\.ro\/"/.test(r.pastrat_data_href || ''), 'linkuri fără legătură: un link al nostru care doar pomenește site-ul într-un alt atribut rămâne');
+    ok(r.semn_in_atribut === 'x text y', `linkuri fără legătură: nu rămân resturi dacă eticheta are „>” într-un atribut („${r.semn_in_atribut}”)`);
     ok(r.prin_the_content === 'Nu lăsa gunoaie în urmă.' && !/salubritate/.test(r.prin_the_content_html || 'salubritate'), 'linkuri fără legătură: filtrul rulează pe conținutul afișat al articolelor și paginilor');
     await ctx.close();
   }

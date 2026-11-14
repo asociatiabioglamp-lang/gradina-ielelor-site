@@ -307,4 +307,5 @@ body .gi-site a:hover{color:inherit}
 .gi-site .header-cta:hover{background:var(--sun-hover);box-shadow:0 8px 24px rgb(var(--shade) / .2)}
 .gi-site .desktop-nav a:hover,.gi-site .home-hero-events-link:hover{color:#fff}
 .gi-site .menu-toggle:hover{background:rgb(var(--shade) / calc(.5 * var(--veil)));color:#fff}
+.gi-site .skip-link:hover{color:var(--forest)}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.gi-site *,.gi-site *::before,.gi-site *::after{transition:none!important}}

@@ -114,6 +114,8 @@ add_action('wp', function () {
         'pastrat_intern' => 'Vezi <a href="https://gradina-ielelor.ro/glamping/">Glamping</a>.',
         'pastrat_alt_site' => '<a href="https://jorjette.ro.exemplu.com/x">alt site</a> și <a href="https://exemplu.com/?u=https://jorjette.ro/">altul</a>',
         'pastrat_text' => 'Numele jorjette.ro scris în text, fără link.',
+        'pastrat_data_href' => '<a data-href="https://jorjette.ro/a" href="https://gradina-ielelor.ro/">intern</a>',
+        'semn_in_atribut' => 'x <a href="https://jorjette.ro/" title="a>b">text</a> y',
     );
     $out = array();
     foreach ($cases as $k => $v) {

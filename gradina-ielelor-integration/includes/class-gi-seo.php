@@ -419,7 +419,8 @@ final class GI_SEO {
         if (!$hosts) {
             return $content;
         }
-        $pattern = '~<a\b[^>]*\bhref\s*=\s*(["\'])\s*(?:https?:)?//(?:www\.)?(?:' . implode('|', $hosts) . ')(?:[/?#:][^"\']*)?\1[^>]*>(.*?)</a>~is';
+        // „href” trebuie să fie chiar atributul linkului (nu „data-href” sau „xlink:href”); restul etichetei poate conține „>” între ghilimele.
+        $pattern = '~<a\b[^>]*(?<![\w:-])href\s*=\s*(["\'])\s*(?:https?:)?//(?:www\.)?(?:' . implode('|', $hosts) . ')(?:[/?#:][^"\']*)?\1(?:[^>"\']|"[^"]*"|\'[^\']*\')*>(.*?)</a>~is';
         $clean = preg_replace($pattern, '$2', $content);
         return null === $clean ? $content : $clean;
     }
