@@ -40,6 +40,9 @@ const has = (t, s) => t.includes(s);
   for (const key of ['woocommerce_enable_checkout_login_reminder', 'woocommerce_enable_myaccount_registration']) {
     await adm.request.put(BASE + '/wp-json/wc/v3/settings/account/' + key, { headers: H, data: { value: 'yes' } });
   }
+  // pagina „Termeni și condiții” setată în WooCommerce, ca pe live (apare bifa cu propoziția implicită)
+  const termsPages = await (await adm.request.get(BASE + '/wp-json/wp/v2/pages?slug=despre-noi&context=edit', { headers: H })).json();
+  if (termsPages[0]) { await adm.request.put(BASE + '/wp-json/wc/v3/settings/advanced/woocommerce_terms_page_id', { headers: H, data: { value: String(termsPages[0].id) } }); }
 
   // 1. Coș
   await page.goto(BASE + '/?add-to-cart=30', { waitUntil: 'networkidle' });
@@ -54,6 +57,16 @@ const has = (t, s) => t.includes(s);
   t = await text();
   ok(['Date de facturare', 'Rezervarea ta', 'Prenume', 'Telefon', 'Adresa de email', 'Observații', 'Finalizează rezervarea', 'Ai deja cont?'].every((s) => has(t, s)), 'plată: „Date de facturare”, „Rezervarea ta”, „Prenume”, „Telefon”, „Adresa de email”, „Observații”, „Finalizează rezervarea”, „Ai deja cont?”');
   ok(!/Billing details|Your order|First name|Place order|Returning customer/.test(t), 'plată: nu mai apar „Billing details”, „Your order”, „First name”, „Place order”, „Returning customer”');
+  ok(has(t, '(opțional)') && !/\(optional\)/.test(t), 'plată: „(opțional)” (nu „(optional)”) la câmpurile facultative');
+  ok(has(t, 'Am citit și sunt de acord cu termenii și condițiile site-ului') && !/I have read and agree/.test(t), 'plată: bifa de termeni e în română, întreagă („Am citit și sunt de acord cu termenii și condițiile site-ului”)');
+  // validare: formular gol → mesaje în română (întâi trecem de caseta cu regulamentul și de bifa de termeni)
+  await page.evaluate(() => { const c = document.querySelector('#gi_roi'); if (c) { c.removeAttribute('aria-disabled'); c.checked = true; } const r = document.querySelector('[name=gi_roi_seen]'); if (r) { r.value = '1'; } });
+  if (await page.$('#terms')) { await page.locator('#terms').check().catch(() => {}); }
+  await page.locator('#payment_method_cod').check().catch(() => {});
+  await page.click('#place_order');
+  await page.waitForSelector('.woocommerce-NoticeGroup-checkout', { state: 'attached', timeout: 30000 }).catch(() => {});
+  const err = ((await page.locator('.woocommerce-NoticeGroup-checkout').first().textContent().catch(() => '')) || '').replace(/\s+/g, ' ');
+  ok(/Am găsit următoarele probleme/.test(err) && /\(facturare\) este un câmp obligatoriu/.test(err) && !/The following problems|is a required field/.test(err), 'plată: formular gol → „Am găsit următoarele probleme” și „… (facturare) este un câmp obligatoriu” („' + err.slice(0, 90) + '”)');
   const ph = await page.$$eval('input[placeholder], textarea[placeholder]', (els) => els.map((e) => e.placeholder));
   ok(ph.includes('Strada și numărul') && ph.some((x) => /Observații despre rezervare/.test(x)) && !ph.some((x) => /House number|Notes about your order/.test(x)), 'plată: și textele din interiorul câmpurilor (placeholder) sunt în română');
 
@@ -62,6 +75,7 @@ const has = (t, s) => t.includes(s);
   await page.fill('#billing_city', 'Brasov'); await page.fill('#billing_phone', '0700000000'); await page.fill('#billing_email', 'test@example.com');
   if (await page.$('#billing_postcode')) { await page.fill('#billing_postcode', '500001').catch(() => {}); }
   await page.locator('#payment_method_cod').check().catch(() => {});
+  if (await page.$('#terms')) { await page.locator('#terms').check().catch(() => {}); }
   await page.evaluate(() => { const c = document.querySelector('#gi_roi'); if (c) { c.removeAttribute('aria-disabled'); c.checked = true; } const r = document.querySelector('[name=gi_roi_seen]'); if (r) { r.value = '1'; } });
   await Promise.all([page.waitForNavigation({ waitUntil: 'networkidle', timeout: 60000 }).catch(() => {}), page.click('#place_order')]);
   await page.waitForTimeout(1500);
@@ -85,6 +99,9 @@ const has = (t, s) => t.includes(s);
   const em = await (await follow.get('/?gi_test=email')).json();
   ok(em.inainte === 'Detaliile rezervării' && em.dupa === 'Order details', 'emailuri: înainte de email se traduce („' + em.inainte + '”), după începerea unui email NU („' + em.dupa + '”)');
 
+  const em2 = await (await follow.get('/?gi_test=email2')).json();
+  ok(em2.in_email === 'Order details' && em2.dupa_trimitere === 'Detaliile rezervării' && em2.text_simplu === 'Order details', 'emailuri: în email NU se traduce, după trimiterea emailului se traduce din nou, în emailul „text simplu” NU se traduce');
+
   // 7. SEO
   const seo = await (await follow.get('/?gi_test=seo')).json();
   const home = new URL(seo.home); const realOrigin = home.origin;
@@ -94,6 +111,10 @@ const has = (t, s) => t.includes(s);
   ok(seo.graph[0]['@id'] === realOrigin + '/shop/#webpage' && seo.graph[0].nested.x === realOrigin + '/shop/#breadcrumb' && seo.graph[0].nested.ok === 'https://exemplu.ro/pagina/', 'SEO: în datele structurate, „dev24” (și în arbori) → adresa reală; alte adrese neatinse');
   ok(Array.isArray(seo.org['@type']) && seo.org['@type'].includes('Campground') && seo.org['@type'].includes('Organization') && seo.org.telephone === '+40721333164' && seo.org.address.addressLocality === 'Sâmbăta de Sus' && seo.org.email === 'rezervari@gradina-ielelor.ro', 'SEO: Organizația devine și „Campground”, cu telefon, email și localitate');
   ok(seo.org_cu_telefon.telephone === '+40000000000', 'SEO: un telefon deja completat în Yoast nu se schimbă');
+  ok(seo.entry_loc.loc === realOrigin + '/x/', 'SEO: adresa din harta site-ului cu „dev24” → adresa reală');
+  ok(seo.og_image === realOrigin + '/wp-content/uploads/a.jpg', 'SEO: imaginea og:image cu „dev24” → adresa reală');
+  ok(seo.host_lung === 'https://dev24.gradina-ielelor.ro.exemplu.com/x/', 'SEO: o adresă străină care doar începe la fel ca „dev24” NU se schimbă');
+  ok(seo.website.name === 'Grădina Ielelor' && seo.og_site === 'Grădina Ielelor', 'SEO: numele site-ului în datele structurate și în og:site_name devine „Grădina Ielelor”');
   ok(seo.titlu_scurtat === 'Despre noi | Grădina Ielelor', 'SEO: numele site-ului din titlu devine „Grădina Ielelor” („' + seo.titlu_scurtat + '”)');
   ok(seo.titlu_fara_nume === 'Locatie Glamping Romania - Camping, Brasov, Gradina Ielelor', 'SEO: titlul paginii principale din Yoast (fără numele site-ului) rămâne neschimbat');
 
@@ -122,11 +143,11 @@ const has = (t, s) => t.includes(s);
 
   // 8. Tarif camping
   const camp = await (await follow.get('/camping/')).text();
-  ok(/30 lei/.test(camp) && /80 lei/.test(camp) && /doi adulți costă 140 lei/.test(camp), 'camping: apar 80 lei (loc), 30 lei (adult) și exemplul cu 140 lei');
+  ok(/30 lei/.test(camp) && /80 lei/.test(camp) && /doi adulți costă 140 lei/.test(camp) && /Pentru fiecare adult</.test(camp), 'camping: apar 80 lei (loc), 30 lei (adult) și exemplul cu 140 lei');
   const prices = (camp.match(/<dt>[^<]*<\/dt>\s*<dd>[^<]*<small>/g) || []).length;
   ok(prices === 3, 'camping: tabelul de prețuri are 3 rânduri (cort, rulotă, adult în plus), găsite: ' + prices);
   const hub = await (await follow.get('/')).text();
-  ok(/80 lei loc \+ 30 lei \/ adult/.test(hub), 'prima pagină: cardul Camping spune „80 lei loc + 30 lei / adult”');
+  ok(/80 lei loc \+ 30 lei \/ adult, pe noapte/.test(hub), 'prima pagină: cardul Camping spune „80 lei loc + 30 lei / adult, pe noapte”');
 
   // 9. Mesajul cu adulții și termenii (formularul BRW de pe live, copiat în tools/local-wp/fixtures)
   const fixture = fs.readFileSync(path.join(__dirname, 'fixtures', 'formular-camping.html'), 'utf8');

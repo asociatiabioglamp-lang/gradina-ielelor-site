@@ -5,6 +5,7 @@
  *  - pornește traducerea în română și local (limba locală e engleza);
  *  - /?gi_test=seo   → rezultatul filtrelor SEO pe date de probă (adresa dev24, schema, harta site-ului, numele site-ului);
  *  - /?gi_test=email → traducerea ÎNAINTE și DUPĂ începerea unui email (după, nu trebuie să traducă);
+ *  - /?gi_test=email2 → în email nu se traduce, după trimiterea emailului se traduce din nou, în emailul „text simplu” nu se traduce;
  *  - /glamping/?gi_test=legacy  → simulează un titlu vechi din Yoast, cu greșeala „Sambata se Sus”;
  *  - /glamping/?gi_test=yoastok → simulează un titlu nou, corect, scris de mână în Yoast.
  */
@@ -33,8 +34,24 @@ add_action('init', function () {
             'entry_pastrat' => apply_filters('wpseo_sitemap_entry', array('loc' => 'x'), 'post', (object) array('ID' => 999999)),
             'titlu_scurtat' => apply_filters('wpseo_title', 'Despre noi | ' . get_bloginfo('name')),
             'titlu_fara_nume' => apply_filters('wpseo_title', 'Locatie Glamping Romania - Camping, Brasov, Gradina Ielelor'),
+            'entry_loc' => apply_filters('wpseo_sitemap_entry', array('loc' => 'https://dev24.gradina-ielelor.ro/x/'), 'post', (object) array('ID' => 999999)),
+            'website' => apply_filters('wpseo_schema_website', array('@type' => 'WebSite', 'name' => get_bloginfo('name'))),
+            'og_site' => apply_filters('wpseo_opengraph_site_name', get_bloginfo('name')),
+            'host_lung' => apply_filters('wpseo_canonical', 'https://dev24.gradina-ielelor.ro.exemplu.com/x/'),
+            'og_image' => apply_filters('wpseo_opengraph_image', 'https://dev24.gradina-ielelor.ro/wp-content/uploads/a.jpg'),
             'pagina_cos' => function_exists('wc_get_page_id') ? array(wc_get_page_id('cart'), wc_get_page_id('checkout'), wc_get_page_id('myaccount')) : array(),
         ));
+        exit;
+    }
+    if ('email2' === $t) {
+        do_action('woocommerce_email_header', 'x');
+        $in_email = __('Order details', 'woocommerce');
+        do_action('woocommerce_email_sent', true, 'x', null);
+        $dupa_trimitere = __('Order details', 'woocommerce');
+        do_action('woocommerce_email_before_order_table');
+        $text_simplu = __('Order details', 'woocommerce');
+        header('Content-Type: application/json');
+        echo wp_json_encode(array('in_email' => $in_email, 'dupa_trimitere' => $dupa_trimitere, 'text_simplu' => $text_simplu));
         exit;
     }
     if ('email' === $t) {

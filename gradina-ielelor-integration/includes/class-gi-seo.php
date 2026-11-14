@@ -24,6 +24,9 @@ final class GI_SEO {
         add_filter('wpseo_exclude_from_sitemap_by_post_ids', array(__CLASS__, 'sitemap_exclude_ids'));
         add_filter('wpseo_sitemap_entry', array(__CLASS__, 'sitemap_entry'), 10, 3);
         add_filter('wpseo_schema_organization', array(__CLASS__, 'organization_schema'));
+        add_filter('wpseo_opengraph_image', array(__CLASS__, 'fix_stale_host'), 99);
+        add_filter('wpseo_opengraph_site_name', array(__CLASS__, 'short_site_name'), 99);
+        add_filter('wpseo_schema_website', array(__CLASS__, 'website_schema'));
         add_filter('wpseo_title', array(__CLASS__, 'short_site_name'), 99);
         add_filter('wpseo_opengraph_title', array(__CLASS__, 'short_site_name'), 99);
         add_filter('pre_get_document_title', array(__CLASS__, 'short_site_name'), 99);
@@ -238,7 +241,17 @@ final class GI_SEO {
             }
             return $value;
         }
-        if (!is_string($value) || false === stripos($value, 'dev')) {
+        if (!is_string($value) || '' === $value) {
+            return $value;
+        }
+        $present = false;
+        foreach (self::stale_hosts() as $candidate) {
+            if (false !== stripos($value, $candidate)) {
+                $present = true;
+                break;
+            }
+        }
+        if (!$present) {
             return $value;
         }
         $real = strtolower((string) wp_parse_url(home_url('/'), PHP_URL_HOST));
@@ -249,7 +262,7 @@ final class GI_SEO {
         }
         $origin = ('' !== $scheme ? $scheme : 'https') . '://' . $real . ($port ? ':' . $port : '');
         foreach (self::stale_hosts() as $stale) {
-            $value = preg_replace('#(?:https?:)?//' . preg_quote($stale, '#') . '(?::\d+)?#i', $origin, $value);
+            $value = preg_replace('#(?:https?:)?//' . preg_quote($stale, '#') . '(?::\d+)?(?![A-Za-z0-9.-])#i', $origin, $value);
         }
         return $value;
     }
@@ -273,9 +286,15 @@ final class GI_SEO {
                     continue;
                 }
                 $page = get_page_by_path($slug);
-                if ($page) {
-                    $ids[] = (int) $page->ID;
+                if (!$page) {
+                    continue;
                 }
+                // O pagină care a primit ea însăși șablonul nou (e propria ei țintă) rămâne în hartă.
+                $target = gi_redirect_target_url($new);
+                if ('' !== $target && untrailingslashit($target) === untrailingslashit((string) get_permalink($page))) {
+                    continue;
+                }
+                $ids[] = (int) $page->ID;
             }
         }
         if (function_exists('wc_get_page_id')) {
@@ -306,6 +325,10 @@ final class GI_SEO {
         if ('post' === $type && is_object($object) && isset($object->ID) && in_array((int) $object->ID, self::excluded_post_ids(), true)) {
             return false;
         }
+        // Adresa din harta site-ului: dacă Yoast a păstrat adresa de lucru veche, o înlocuim și aici.
+        if (is_array($url) && isset($url['loc'])) {
+            $url['loc'] = self::fix_stale_host($url['loc']);
+        }
         return $url;
     }
 
@@ -335,6 +358,16 @@ final class GI_SEO {
                 'addressRegion' => 'Brașov',
                 'addressCountry' => 'RO',
             );
+        }
+        return $data;
+    }
+
+    /**
+     * „WebSite” din datele structurate: numele scurt, în loc de „Gradina Ielelor - Camping and Glamping in Romania”.
+     */
+    public static function website_schema($data) {
+        if (is_array($data) && isset($data['name'])) {
+            $data['name'] = self::short_site_name($data['name']);
         }
         return $data;
     }

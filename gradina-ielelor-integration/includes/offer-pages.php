@@ -321,7 +321,7 @@ function gi_offer_pages() {
             'rows' => array(
                 array('label' => 'Loc de cort', 'value' => '80 lei'),
                 array('label' => 'Loc de rulotă sau autorulotă', 'value' => '80 lei'),
-                array('label' => 'Pentru fiecare adult, în plus', 'value' => '30 lei'),
+                array('label' => 'Pentru fiecare adult', 'value' => '30 lei'),
             ),
         ),
         'notes' => array(

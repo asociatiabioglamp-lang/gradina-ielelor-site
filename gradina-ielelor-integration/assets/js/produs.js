@@ -5,22 +5,23 @@
  *
  * Regulă de siguranță: scriptul NU oprește trimiterea formularului și nu schimbă nimic din BRW. Doar arată mesaje, și numai
  * pentru câmpuri marcate de BRW ca obligatorii (clasa „ovabrw-input-required”), vizibile și necompletate.
+ *
+ * Ascultătorii sunt pe întreaga pagină (nu pe formular), ca să meargă și dacă BRW reconstruiește formularul sau sunt mai multe formulare.
  */
 (function () {
   'use strict';
 
-  var pickup = document.querySelector('input[name="ovabrw_pickup_date"]');
-  var form = pickup && pickup.closest ? pickup.closest('form') : null;
-  if (!form) {
-    return;
+  function bookingForm(node) {
+    var form = node && node.closest ? node.closest('form') : null;
+    return form && form.querySelector('input[name="ovabrw_pickup_date"]') ? form : null;
   }
 
   function visible(el) {
     return !el.disabled && el.offsetParent !== null;
   }
 
-  // Lista de probleme: { el: câmpul, text: mesajul, anchor: locul după care apare mesajul }
-  function problems() {
+  // Lista de probleme: { text: mesajul, anchor: locul după care apare mesajul }
+  function problems(form) {
     var found = [];
     var selects = form.querySelectorAll('select.ovabrw-input-required');
     for (var i = 0; i < selects.length; i++) {
@@ -28,7 +29,6 @@
       if (visible(s) && s.value === '') {
         var first = s.options && s.options[0] ? s.options[0].text : '';
         found.push({
-          el: s,
           text: /adul/i.test(first) ? 'Alege numărul de adulți, ca să putem calcula rezervarea.' : 'Alege o opțiune ca să poți continua.',
           anchor: s.closest ? (s.closest('.ovabrw-select') || s) : s
         });
@@ -39,7 +39,6 @@
       var c = boxes[j];
       if (visible(c) && !c.checked) {
         found.push({
-          el: c,
           text: 'Bifează că ești de acord cu termenii și regulamentul, ca să poți continua.',
           anchor: c.closest ? (c.closest('label') || c.parentNode || c) : c
         });
@@ -48,15 +47,15 @@
     return found;
   }
 
-  function clearMessages() {
+  function clearMessages(form) {
     var old = form.querySelectorAll('.gi-camp-msg');
     for (var i = 0; i < old.length; i++) {
       old[i].parentNode.removeChild(old[i]);
     }
   }
 
-  function show(list) {
-    clearMessages();
+  function show(form, list) {
+    clearMessages(form);
     var firstBox = null;
     for (var i = 0; i < list.length; i++) {
       var box = document.createElement('div');
@@ -74,24 +73,26 @@
     }
   }
 
-  form.addEventListener('click', function (event) {
+  document.addEventListener('click', function (event) {
     var target = event.target;
     var button = target && target.closest ? target.closest('button[type="submit"], input[type="submit"]') : null;
-    if (!button) {
+    var form = button ? bookingForm(button) : null;
+    if (!form) {
       return;
     }
-    var list = problems();
+    var list = problems(form);
     if (list.length) {
-      show(list);
+      show(form, list);
     } else {
-      clearMessages();
+      clearMessages(form);
     }
   }, true);
 
-  form.addEventListener('change', function (event) {
+  document.addEventListener('change', function (event) {
     var t = event.target;
-    if (t && (t.tagName === 'SELECT' || (t.tagName === 'INPUT' && t.type === 'checkbox'))) {
-      clearMessages();
+    var form = t ? bookingForm(t) : null;
+    if (form && (t.tagName === 'SELECT' || (t.tagName === 'INPUT' && t.type === 'checkbox'))) {
+      clearMessages(form);
     }
   });
 })();

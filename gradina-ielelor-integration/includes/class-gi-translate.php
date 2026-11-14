@@ -25,10 +25,18 @@ final class GI_Translate {
         add_filter('gettext_with_context', array(__CLASS__, 'gettext_with_context'), 20, 4);
         // Cât timp se generează un email, nu traducem nimic: emailurile au propriul text.
         add_action('woocommerce_email_header', array(__CLASS__, 'email_started'), 0);
+        // Emailurile „text simplu” nu au antet HTML: începutul tabelului comenzii are același rol.
+        add_action('woocommerce_email_before_order_table', array(__CLASS__, 'email_started'), 0);
+        // După trimiterea emailului, restul cererii (de ex. pagina de mulțumire) se traduce din nou.
+        add_action('woocommerce_email_sent', array(__CLASS__, 'email_finished'), 99);
     }
 
     public static function email_started() {
         self::$email = true;
+    }
+
+    public static function email_finished() {
+        self::$email = false;
     }
 
     private static function enabled() {
@@ -124,10 +132,23 @@ final class GI_Translate {
                 'Password' => 'Parolă',
                 'Order notes' => 'Observații',
                 'Notes about your order, e.g. special notes for delivery.' => 'Observații despre rezervare, de exemplu ora sosirii sau alte cerințe.',
-                '(optional)' => '(opțional)',
+                'optional' => 'opțional',
                 'terms and conditions' => 'termenii și condițiile',
+                'I have read and agree to the website %s' => 'Am citit și sunt de acord cu %s site-ului',
+                'Quantity' => 'Cantitate',
+                'Create an account?' => 'Creezi un cont?',
+                'Pay for order' => 'Plătește rezervarea',
+                'Select a country / region&hellip;' => 'Alege țara&hellip;',
+                'Select an option&hellip;' => 'Alege o opțiune&hellip;',
+                '%s has been added to your cart.' => '%s a fost adăugat în coș.',
+                'The following problems were found:' => 'Am găsit următoarele probleme:',
+                'Invalid billing email address' => 'Adresa de email nu este validă.',
+                '%s is not a valid email address.' => '%s nu este o adresă de email validă.',
+                '%s is not a valid phone number.' => '%s nu este un număr de telefon valid.',
+                '%s is not a valid postcode / ZIP.' => '%s nu este un cod poștal valid.',
+                'Please enter an address to continue.' => 'Scrie o adresă ca să continui.',
                 '%s is a required field.' => '%s este un câmp obligatoriu.',
-                'Billing %s' => 'Facturare %s',
+                'Billing %s' => '%s (facturare)',
                 'Please read and accept the terms and conditions to proceed with your order.' => 'Citește și acceptă termenii și condițiile ca să continui.',
                 // Mulțumire
                 'Thank you. Your order has been received.' => 'Mulțumim! Am primit rezervarea ta.',
