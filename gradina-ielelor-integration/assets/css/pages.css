@@ -100,6 +100,8 @@
 /* Link secundar alb (lângă butoanele de pe fundal închis): zonă de atingere de minimum 44px. */
 .gi-hero-link { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 4px; color: #fff; font-size: var(--fs-ui); font-weight: 600; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .45); text-underline-offset: .3em; transition: text-decoration-color .2s ease; }
 .gi-hero-link:hover { text-decoration-color: var(--accent); }
+/* Peste fotografie și pe fundal închis linkurile rămân albe: culoarea de link a temei vechi (verde) le făcea greu de citit. */
+.gi-page-hero .gi-hero-link, .gi-closing .gi-hero-link, .gi-page-hero .gi-breadcrumb a { color: #fff; }
 .gi-hero-link .gi-icon { width: 18px; height: 18px; }
 
 /* ---------- Hero: fotografia rămâne luminoasă; doar coloana de text stă pe o umbră albastră de munte ---------- */
@@ -117,7 +119,9 @@
   linear-gradient(90deg, rgb(var(--shade) / calc(.2 * var(--veil))) 0%, rgb(var(--shade) / 0) 44%); }
 .gi-page-hero .gi-breadcrumb,
 .gi-dedicated .gi-page-hero .eyebrow { text-shadow: 0 1px 10px rgb(var(--shade) / .55); }
-.gi-page-hero-content { --gi-hero-pad: 140px; position: relative; padding-top: var(--gi-hero-pad); padding-bottom: clamp(92px, 10vw, 128px); }
+/* Selectorul are două clase intenționat: pe site, stilurile altor module au o regulă „.container { padding: 0 … }” încărcată după ale noastre,
+   care anula spațiul de sus și de jos; titlul ajungea sub antet când textul era mai înalt decât fotografia (telefon, telefon ținut pe lat). */
+.gi-page-hero .gi-page-hero-content { --gi-hero-pad: 140px; position: relative; padding-top: var(--gi-hero-pad); padding-bottom: clamp(92px, 10vw, 128px); }
 .gi-page-hero-content > * { max-width: 760px; }
 /* Umbra urmează blocul de text (oricât de lung e titlul), nu un procent fix din fotografie:
    începe cu puțin deasupra firului de navigare și, pe ecrane late, se stinge spre dreapta după coloana de text
@@ -329,7 +333,7 @@
   .gi-dedicated .gi-swipe > * { flex: 0 0 80%; scroll-snap-align: start; }
 
   .gi-page-hero { min-height: 90svh; }
-  .gi-page-hero-content { --gi-hero-pad: 120px; padding-bottom: 84px; }
+  .gi-page-hero .gi-page-hero-content { --gi-hero-pad: 120px; padding-bottom: 84px; }
   .gi-page-hero-overlay { background:
     linear-gradient(180deg, rgb(var(--shade) / calc(.3 * var(--veil))) 0%, rgb(var(--shade) / 0) 20%),
     linear-gradient(0deg, rgb(var(--shade) / calc(.42 * var(--veil))) 0%, rgb(var(--shade) / calc(.3 * var(--veil))) 36%, rgb(var(--shade) / calc(.1 * var(--veil))) 62%, rgb(var(--shade) / 0) 82%); }
@@ -369,7 +373,7 @@
 }
 
 /* ---------- Înapoi la rezervare (finalul fiecărei pagini dedicate) ---------- */
-.gi-back-link { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; margin-top: 22px; color: #fff; font-size: var(--fs-ui); font-weight: 600; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .4); text-underline-offset: .3em; }
+.gi-site .gi-back-link { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; margin-top: 22px; color: #fff; font-size: var(--fs-ui); font-weight: 600; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .4); text-underline-offset: .3em; }
 .gi-back-link:hover { text-decoration-color: var(--accent); }
 .gi-back-link .gi-icon { width: 18px; height: 18px; }
 

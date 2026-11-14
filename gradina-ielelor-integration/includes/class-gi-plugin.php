@@ -23,14 +23,16 @@ final class GI_Plugin {
     }
 
     /**
-     * Paginile cu tema veche (produse, blog, coș, cont), pe telefon: steagul de limbă (GTranslate) acoperea butonul de meniu din stânga sus.
-     * Îl mutăm sub antet, în dreapta, și nu mai însoțește derularea. Paginile noastre au regula lor în site.css.
+     * Paginile cu tema veche (produse, blog, coș, cont): steagul de limbă (GTranslate) stătea fix în stânga sus și acoperea
+     * butonul de meniu pe telefon și primul link din meniu pe calculator. Nu mai însoțește derularea și stă într-un loc liber din antetul temei:
+     * pe calculator sub coș, în dreapta; pe telefon și tabletă (antetul mobil al temei, până la 1024 px) sub butonul „Meniu”, în stânga,
+     * pentru că în dreapta ar atinge sigla. Pozițiile sunt măsurate pe site-ul real. Paginile noastre au regula lor în site.css.
      */
     public static function old_theme_phone_fixes() {
         if (is_admin() || gi_is_site_page()) {
             return;
         }
-        echo '<style id="gi-telefon-tema-veche">@media (max-width:700px){#gt_float_wrapper{position:absolute!important;top:64px!important;right:8px!important;bottom:auto!important;left:auto!important}}</style>' . "\n";
+        echo '<style id="gi-telefon-tema-veche">#gt_float_wrapper{position:absolute!important;top:66px!important;right:10px!important;bottom:auto!important;left:auto!important}@media (max-width:1024px){#gt_float_wrapper{top:54px!important;right:auto!important;left:8px!important}}</style>' . "\n";
     }
 
     public static function register_template($templates, $theme, $post, $post_type) {

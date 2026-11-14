@@ -14,7 +14,8 @@
 .gi-content-site .desktop-nav a::after { background: var(--mountain); }
 .gi-content-site .gi-content-hero .gi-breadcrumb { color: var(--text-2); }
 .gi-content-site .gi-content-hero .gi-breadcrumb a { color: var(--forest); text-decoration-color: rgba(29, 99, 128, .4); }
-.gi-content-hero-inner { padding-top: clamp(128px, 13vw, 168px); padding-bottom: clamp(48px, 7vw, 88px); }
+/* Două clase intenționat: stilurile altor module de pe site („.container { padding: 0 … }”) anulau spațiul de sus, iar titlul paginii ajungea sub siglă. */
+.gi-content-hero .gi-content-hero-inner { padding-top: clamp(128px, 13vw, 168px); padding-bottom: clamp(48px, 7vw, 88px); }
 .gi-content-hero-inner > * { max-width: 780px; }
 .gi-content-site .gi-content-hero h1 { margin: .18em 0 0; font-family: var(--display); font-weight: 500; font-size: clamp(42px, 6.4vw, 76px); line-height: 1; letter-spacing: -.03em; color: var(--mountain); }
 .gi-content-site .gi-content-lead { max-width: 52ch; margin: 20px 0 0; font-size: var(--fs-lead); line-height: 1.5; color: var(--text-2); }
@@ -156,7 +157,7 @@
 
 /* ---------- Mobil ---------- */
 @media (max-width: 700px) {
-  .gi-content-hero-inner { padding-top: 112px; padding-bottom: 44px; }
+  .gi-content-hero .gi-content-hero-inner { padding-top: 112px; padding-bottom: 44px; }
   .gi-content-hero-mark { right: -18%; bottom: -12%; }
   .gi-prose .wp-block-buttons > .wp-block-button { flex: 1 1 100%; }
   .gi-content-site .gi-prose .wp-block-button__link { width: 100%; }
