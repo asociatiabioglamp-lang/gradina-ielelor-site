@@ -9,17 +9,19 @@ Fiecare etapă spune **cine face** (Claude sau proprietara), **când** și **de 
 |---|---|---|
 | Paginile noi (Bungalow, Festivaluri, Evenimente private) | Indexabile, cu titlu și descriere bune; **încă nepreluate de căutare** | Normal la o zi după lansare. Le urmărim în Search Console. |
 | Căutarea arată paginile **vechi** | `/tarife/`, `/cazare-bungalow/`, `/` cu texte și greșeli vechi („Sambata se Sus”, 26 sau 50 de locuri pentru rulote) | Redirecționările sunt temporare (302), deci Google ține paginile vechi. Trecem la 301 pe 20.11. |
-| Adresa „dev24” | 34 de pagini (3 articole de blog, paginile QR, rezervările, categorii) spun că adresa lor oficială e o copie de lucru veche, care nu mai există | Google le poate ignora. **Se repară în pluginul 1.3.10.** |
-| Harta site-ului | Conține 9 adrese vechi care doar redirecționează și 3 pagini de plată/cont | **Se repară în 1.3.10.** |
-| Titlurile de la Glamping și Camping | Încă cele vechi din Yoast, cu greșeli | **Se repară în 1.3.10** (titlurile noi sunt deja scrise în plugin). |
-| Date structurate (schema) | Doar „Organizație” și „Site”; nu spune că e un camping, nici telefon sau localitate | **Se adaugă în 1.3.10**, numai cu date deja publice pe site. |
+| Adresa „dev24” | 34 de pagini (3 articole de blog, paginile QR, rezervările, categorii) spun că adresa lor oficială e o copie de lucru veche, care nu mai există | Google le poate ignora. **Se repară în pluginul 1.3.11.** |
+| Harta site-ului | Conține 9 adrese vechi care doar redirecționează și 3 pagini de plată/cont | **Se repară în 1.3.11.** |
+| Titlurile de la Glamping și Camping | Încă cele vechi din Yoast, cu greșeli | **Se repară în 1.3.11** (titlurile noi sunt deja scrise în plugin). |
+| Date structurate (schema) | Doar „Organizație” și „Site”; nu spune că e un camping, nici telefon sau localitate | **Se adaugă în 1.3.11**, numai cu date deja publice pe site. |
 | Platforme terțe | camping.info (20 de limbi, notă 4,7), campertunity, hotele.pl, Airbnb: apar în căutări înaintea site-ului propriu. Pe camping.info sezonul scrie „1 mai – 30 octombrie”. | Date vechi pe site-uri pe care nu le controlăm. De actualizat (etapa 2). |
 | Concurența la „glamping Brașov” | Domină agregatoarele (Booking, Airbnb, Priceline) și proprietăți ca Dragonfly Gardens, Forest Glamping, CABANA 365, Glamping ZAZEN, Kama Retreat | Pe căutarea largă nu câștigăm repede. Câștigăm pe căutări precise și locale (etapa 3). |
 
 **Limită:** nu pot vedea pozițiile din Google.ro (motorul meu de căutare e american, iar Search Console arată datele doar proprietarului). Pozițiile reale se citesc din Search Console → Performanță.
 
-## Etapa 0 · Baza tehnică (Claude, săptămâna 14–20.11)
-Pluginul **1.3.10**, testat local, verificat de un agent separat, instalat numai cu aprobarea proprietarei:
+## Etapa 0 · Baza tehnică (Claude, după securitate)
+> **Securitatea are prioritate** (decizia proprietarei, 14.11): pluginul **1.3.10** e de securitate, vezi `docs/securitate.md`. Reparațiile SEO de mai jos vin în **1.3.11**.
+
+Pluginul **1.3.11**, testat local, verificat de un agent separat, instalat numai cu aprobarea proprietarei:
 1. Adresa „dev24” înlocuită cu adresa reală în canonical, `og:url` și datele structurate.
 2. Harta site-ului curățată (adrese redirecționate, coș, finalizare, cont).
 3. Titlurile vechi cu greșeli de la Glamping și Camping înlocuite cu cele din plugin. Titlul paginii principale **nu se schimbă** acum (decizia din `docs/seo-migrare.md`: după 4–6 săptămâni, cu date din Search Console).
@@ -58,14 +60,14 @@ Căutările largi au concurență puternică. Pe cele **precise și locale** put
 
 ## Etapa 5 · Să rezerve cei care ajung
 Vizibilitatea nu ajută dacă vizitatorul pleacă înainte să rezerve.
-- **Pagina de plată:** etichetele sunt în engleză („Billing details”, „Place order”) și contul se creează obligatoriu cu parolă. Fiecare pas în plus pierde clienți. **Propunere:** traducere în română și plată fără cont (decizia o ia proprietara). Intră în 1.3.11.
+- **Pagina de plată:** etichetele sunt în engleză („Billing details”, „Place order”) și contul se creează obligatoriu cu parolă. Fiecare pas în plus pierde clienți. **Propunere:** traducere în română și plată fără cont (decizia o ia proprietara). Intră în 1.3.12.
 - **Viteza pe telefon:** măsurăm și reparăm ce încetinește (greutatea paginilor, imagini).
 - **Încredere:** prețuri clare (orientative pe site, finale din calendar), politica de anulare vizibilă, număr de telefon la un click.
 - **Mesaje către clienți** (vezi etapa 6, „Să ajungă la clienți”).
 
 ## Etapa 6 · Totul să ajungă la clienți
 - **Emailul de confirmare trebuie să ajungă în inbox, nu în spam.** Se verifică cu o rezervare reală de test (pasul de mai jos) și cu „Afișează originalul” din Gmail, care arată SPF, DKIM și DMARC: toate trebuie să spună **PASS**. Dacă nu, rezolvăm la furnizorul de email al domeniului (Romarg).
-- **Mesaj înainte de sosire** (cu indicații, ora de sosire, regulile pe scurt): o idee pentru 1.3.11.
+- **Mesaj înainte de sosire** (cu indicații, ora de sosire, regulile pe scurt): o idee pentru 1.3.12.
 - **Mesaj după plecare**, cu linkul de recenzie Google.
 - **Telefon și email** vizibile pe fiecare pagină (sunt în footer).
 
@@ -76,10 +78,10 @@ Indicatori, în ordinea importanței: (1) rezervări venite din căutări, (2) c
 ## Calendar
 | Când | Ce |
 |---|---|
-| 14–20.11 | Test complet pe live; pluginul 1.3.10; profilul Google Business verificat |
+| 14–20.11 | Test complet pe live; pluginul 1.3.11; profilul Google Business verificat |
 | 20.11 | Redirecționări 301; închiderea contului a.min |
 | 21–30.11 | camping.info și celelalte liste actualizate; primul articol de blog; întrebări frecvente |
-| Decembrie | 1.3.11 (plată în română, mesaje către clienți); lista de email; „Calendar 2027” |
+| Decembrie | 1.3.12 (plată în română, mesaje către clienți); lista de email; „Calendar 2027” |
 | Ianuarie | Prima analiză în Search Console; decizia pentru titlul paginii principale |
 | Martie – aprilie | Campania de deschidere a sezonului; decizia pentru publicitate |
 | Înainte de octombrie 2027 | „Maximum year” în BRW la 2028 și închiderile pentru anul următor |
