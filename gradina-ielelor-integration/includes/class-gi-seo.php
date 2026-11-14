@@ -17,6 +17,17 @@ final class GI_SEO {
         add_filter('wpseo_opengraph_url', array(__CLASS__, 'canonical'));
         add_filter('wpseo_opengraph_image', array(__CLASS__, 'og_image'));
 
+        // Reparații pentru site-ul migrat: adresa „dev24” rămasă în Yoast, harta site-ului, numele site-ului din titluri, schema.
+        add_filter('wpseo_canonical', array(__CLASS__, 'fix_stale_host'), 99);
+        add_filter('wpseo_opengraph_url', array(__CLASS__, 'fix_stale_host'), 99);
+        add_filter('wpseo_schema_graph', array(__CLASS__, 'fix_stale_host'), 99);
+        add_filter('wpseo_exclude_from_sitemap_by_post_ids', array(__CLASS__, 'sitemap_exclude_ids'));
+        add_filter('wpseo_sitemap_entry', array(__CLASS__, 'sitemap_entry'), 10, 3);
+        add_filter('wpseo_schema_organization', array(__CLASS__, 'organization_schema'));
+        add_filter('wpseo_title', array(__CLASS__, 'short_site_name'), 99);
+        add_filter('wpseo_opengraph_title', array(__CLASS__, 'short_site_name'), 99);
+        add_filter('pre_get_document_title', array(__CLASS__, 'short_site_name'), 99);
+
         add_action('add_meta_boxes_page', array(__CLASS__, 'meta_box'));
         add_action('save_post_page', array(__CLASS__, 'save_meta'));
     }
@@ -161,7 +172,7 @@ final class GI_SEO {
         $id = get_queried_object_id();
         $seo_meta = get_post_meta($id, '_yoast_wpseo_title', true);
         $rank_math = get_post_meta($id, 'rank_math_title', true);
-        if (($seo_meta || $rank_math) && $generated) {
+        if (($seo_meta || $rank_math) && $generated && !self::is_legacy_text($generated)) {
             return $generated;
         }
         $defaults = gi_page_seo_defaults(gi_current_page_key());
@@ -182,7 +193,7 @@ final class GI_SEO {
         $id = get_queried_object_id();
         $seo_meta = get_post_meta($id, '_yoast_wpseo_metadesc', true);
         $rank_math = get_post_meta($id, 'rank_math_description', true);
-        if (($seo_meta || $rank_math) && $generated) {
+        if (($seo_meta || $rank_math) && $generated && !self::is_legacy_text($generated)) {
             return $generated;
         }
         if (has_excerpt($id)) {
@@ -194,5 +205,152 @@ final class GI_SEO {
 
     private static function canonical_url() {
         return get_permalink(get_queried_object_id());
+    }
+
+    /**
+     * Titlurile și descrierile vechi din Yoast de la Glamping și Camping (greșeala „Sambata se Sus”, „Facilitati All Inclusive”)
+     * nu mai au prioritate față de cele din plugin. Un text nou scris în Yoast (fără aceste greșeli) are în continuare prioritate.
+     */
+    private static function is_legacy_text($text) {
+        return is_string($text) && (bool) preg_match('/Sambata\s+se\s+Sus|Facilitati\s+All\s+Inclusive/i', $text);
+    }
+
+    /**
+     * Adrese de lucru rămase în Yoast după mutarea site-ului (ex. dev24.gradina-ielelor.ro). Filtru: gi_seo_stale_hosts.
+     *
+     * @return string[]
+     */
+    private static function stale_hosts() {
+        $host = strtolower((string) wp_parse_url(home_url('/'), PHP_URL_HOST));
+        $host = preg_replace('/^www\./', '', $host);
+        $stale = '' !== $host ? array('dev24.' . $host) : array();
+        $stale = apply_filters('gi_seo_stale_hosts', $stale);
+        return is_array($stale) ? array_values(array_filter(array_map('strtolower', array_filter($stale, 'is_string')))) : array();
+    }
+
+    /**
+     * Înlocuiește adresa de lucru veche cu adresa reală, în adrese (canonical, og:url) și în datele structurate (arbori de tablouri).
+     */
+    public static function fix_stale_host($value) {
+        if (is_array($value)) {
+            foreach ($value as $key => $item) {
+                $value[$key] = self::fix_stale_host($item);
+            }
+            return $value;
+        }
+        if (!is_string($value) || false === stripos($value, 'dev')) {
+            return $value;
+        }
+        $real = strtolower((string) wp_parse_url(home_url('/'), PHP_URL_HOST));
+        $port = wp_parse_url(home_url('/'), PHP_URL_PORT);
+        $scheme = (string) wp_parse_url(home_url('/'), PHP_URL_SCHEME);
+        if ('' === $real) {
+            return $value;
+        }
+        $origin = ('' !== $scheme ? $scheme : 'https') . '://' . $real . ($port ? ':' . $port : '');
+        foreach (self::stale_hosts() as $stale) {
+            $value = preg_replace('#(?:https?:)?//' . preg_quote($stale, '#') . '(?::\d+)?#i', $origin, $value);
+        }
+        return $value;
+    }
+
+    /**
+     * Paginile vechi care doar redirecționează (din redirects.php, cât timp redirecționarea e activă) și paginile
+     * Coș, Finalizare și Contul meu nu aparțin hărții site-ului pentru Google. Filtru: gi_seo_sitemap_exclude_ids.
+     *
+     * @return int[]
+     */
+    private static function excluded_post_ids() {
+        static $ids = null;
+        if (null !== $ids) {
+            return $ids;
+        }
+        $ids = array();
+        if (function_exists('gi_redirect_normalized_map') && function_exists('gi_redirect_target_url')) {
+            foreach (gi_redirect_normalized_map() as $old => $new) {
+                $slug = trim((string) $old, '/');
+                if ('' === $slug || '' === gi_redirect_target_url($new)) {
+                    continue;
+                }
+                $page = get_page_by_path($slug);
+                if ($page) {
+                    $ids[] = (int) $page->ID;
+                }
+            }
+        }
+        if (function_exists('wc_get_page_id')) {
+            foreach (array('cart', 'checkout', 'myaccount') as $woo_page) {
+                $page_id = (int) wc_get_page_id($woo_page);
+                if ($page_id > 0) {
+                    $ids[] = $page_id;
+                }
+            }
+        }
+        $extra = apply_filters('gi_seo_sitemap_exclude_ids', array());
+        if (is_array($extra)) {
+            $ids = array_merge($ids, array_map('intval', $extra));
+        }
+        $ids = array_values(array_unique(array_filter($ids)));
+        return $ids;
+    }
+
+    public static function sitemap_exclude_ids($ids) {
+        $ids = is_array($ids) ? $ids : array();
+        return array_values(array_unique(array_merge($ids, self::excluded_post_ids())));
+    }
+
+    /**
+     * A doua plasă pentru aceeași regulă: unele versiuni de Yoast sar peste intrare dacă filtrul întoarce fals.
+     */
+    public static function sitemap_entry($url, $type = '', $object = null) {
+        if ('post' === $type && is_object($object) && isset($object->ID) && in_array((int) $object->ID, self::excluded_post_ids(), true)) {
+            return false;
+        }
+        return $url;
+    }
+
+    /**
+     * „Organizație” din datele structurate Yoast devine și „Camping”, cu telefon, email și localitate, numai din ce e deja public pe site.
+     * Valorile completate deja în Yoast nu se schimbă.
+     */
+    public static function organization_schema($data) {
+        if (!is_array($data)) {
+            return $data;
+        }
+        $types = isset($data['@type']) ? (array) $data['@type'] : array('Organization');
+        if (!in_array('Campground', $types, true)) {
+            $types[] = 'Campground';
+        }
+        $data['@type'] = array_values($types);
+        if (empty($data['telephone'])) {
+            $data['telephone'] = '+40721333164';
+        }
+        if (empty($data['email'])) {
+            $data['email'] = 'rezervari@gradina-ielelor.ro';
+        }
+        if (empty($data['address'])) {
+            $data['address'] = array(
+                '@type' => 'PostalAddress',
+                'addressLocality' => 'Sâmbăta de Sus',
+                'addressRegion' => 'Brașov',
+                'addressCountry' => 'RO',
+            );
+        }
+        return $data;
+    }
+
+    /**
+     * Numele site-ului din titluri („Gradina Ielelor - Camping and Glamping in Romania”) e prea lung și în engleză: devine „Grădina Ielelor”.
+     * Titlul paginii principale din Yoast, care nu conține numele site-ului, rămâne cum e.
+     */
+    public static function short_site_name($title) {
+        if (!is_string($title) || '' === $title) {
+            return $title;
+        }
+        $name = (string) get_bloginfo('name');
+        if ('' !== $name && 'Grădina Ielelor' !== $name && false !== strpos($title, $name)) {
+            $title = str_replace($name, 'Grădina Ielelor', $title);
+        }
+        return $title;
     }
 }

@@ -3,7 +3,7 @@ Contributors: gradina-ielelor
 Tags: one-page, woocommerce, booking, ovabrw, seo
 Requires at least: 6.0
 Requires PHP: 7.4
-Stable tag: 1.3.11
+Stable tag: 1.3.14
 License: GPLv2 or later
 
 Template-uri server-side pentru pagina principală (hub de rezervare) și paginile dedicate ofertelor Grădina Ielelor, cu WooCommerce + OVABRW drept singur motor de rezervări.
@@ -41,9 +41,13 @@ Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai 
 
 == Changelog ==
 
-= 1.3.11 =
+= 1.3.14 =
 * Tariful la camping corectat în pagini, în card și în întrebările frecvente: 80 lei pe noapte pentru locul de cort sau de rulotă, plus 30 lei pe noapte pentru fiecare adult (ca în calendarul de rezervări; exemplu: doi adulți, o noapte, 140 lei). Până acum paginile spuneau doar „80 lei”.
 * Sezonul implicit din cod: „1 mai – 30 septembrie” (valorile salvate în Setări → Grădina Ielelor nu se schimbă).
+* Coșul, finalizarea rezervării, pagina de mulțumire și contul clientului, în limba română (înainte erau în engleză). Textele se schimbă numai pe paginile publice, numai când nu există deja o traducere, și nu în emailuri.
+* La Cort și Rulotă: dacă nu alegi numărul de adulți și apeși „Adaugă în coș”, apare acum un mesaj vizibil (înainte nu se întâmpla nimic).
+* SEO: adresa de lucru veche „dev24” din Yoast (canonical, og:url, date structurate) e înlocuită cu adresa reală; harta site-ului nu mai conține paginile vechi redirecționate, coșul, finalizarea și contul; titlurile vechi cu greșeli de la Glamping și Camping („Sambata se Sus”) sunt înlocuite cu cele din plugin; numele site-ului din titluri devine „Grădina Ielelor”; datele structurate spun că e un camping, cu telefon, email și localitate.
+* Nu schimbă rezervările, prețurile din calendar, plățile și confirmările NETOPIA.
 
 = 1.3.10 =
 * Securitate: antete de protecție pe paginile publice (fără încadrare în alte site-uri, fără scurgeri de adresă, HTTPS obligatoriu pentru cine revine, fără acces la cameră, microfon și locație).

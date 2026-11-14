@@ -86,6 +86,10 @@ final class GI_Plugin {
     public static function enqueue_assets() {
         if (self::is_booking_page()) {
             wp_enqueue_style('gi-booking-pages', gi_asset_url('css/booking-pages.css'), array(), GI_VERSION);
+            // Pagina produsului: mesaj vizibil dacă lipsește un câmp obligatoriu din formularul de rezervare (ex. numărul de adulți).
+            if (function_exists('is_product') && is_product() && file_exists(GI_PATH . 'assets/js/produs.js')) {
+                wp_enqueue_script('gi-produs', gi_asset_url('js/produs.js'), array(), GI_VERSION, true);
+            }
             return;
         }
 
