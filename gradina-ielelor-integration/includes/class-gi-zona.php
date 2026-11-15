@@ -549,14 +549,16 @@ final class GI_Zona {
     /** Documentul PDF al unui loc: încărcare (cu confirmarea că are sigla și numele Grădinii) sau ștergere. Întoarce un mesaj de eroare sau ''. */
     private static function handle_pdf($post_id) {
         $old = (int) get_post_meta($post_id, '_gi_pdf', true);
-        if (self::posted('pdf_sterge') && $old) {
-            if ('attachment' === get_post_type($old)) {
-                wp_delete_attachment($old, true);
+        // Se șterge numai un document care chiar e al acestui loc (atașat lui și PDF), nu orice număr din meta.
+        $own_old = $old && 'attachment' === get_post_type($old) && (int) wp_get_post_parent_id($old) === (int) $post_id && 'application/pdf' === get_post_mime_type($old);
+        $has_new = !empty($_FILES['pdf']) && is_array($_FILES['pdf']) && UPLOAD_ERR_NO_FILE !== (int) $_FILES['pdf']['error']; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+        if (!$has_new) {
+            if (self::posted('pdf_sterge') && $old) {
+                if ($own_old) {
+                    wp_delete_attachment($old, true);
+                }
+                delete_post_meta($post_id, '_gi_pdf');
             }
-            delete_post_meta($post_id, '_gi_pdf');
-            $old = 0;
-        }
-        if (empty($_FILES['pdf']) || !is_array($_FILES['pdf']) || UPLOAD_ERR_NO_FILE === (int) $_FILES['pdf']['error']) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
             return '';
         }
         $limit = min(15 * MB_IN_BYTES, wp_max_upload_size());
@@ -579,8 +581,8 @@ final class GI_Zona {
         if (is_wp_error($att)) {
             return 'Documentul nu a fost acceptat: alege un fișier PDF.';
         }
-        if ($old && 'attachment' === get_post_type($old)) {
-            wp_delete_attachment($old, true); // documentul vechi nu mai trebuie
+        if ($own_old) {
+            wp_delete_attachment($old, true); // documentul vechi nu mai trebuie (numai după ce cel nou a fost acceptat)
         }
         update_post_meta($post_id, '_gi_pdf', (int) $att);
         return '';
@@ -825,7 +827,7 @@ final class GI_Zona {
         if (!wp_verify_nonce($nonce, 'gi_zona_tipar')) {
             wp_die('Linkul a expirat. Închide această filă și apasă din nou „Printează”.', '', array('response' => 403));
         }
-        if (('vouchere' === $kind && !current_user_can('gi_vouchere')) || ('copaci' === $kind && !current_user_can('gi_copaci')) || !in_array($kind, array('vouchere', 'copaci'), true)) {
+        if (('vouchere' === $kind && !current_user_can('gi_vouchere')) || (in_array($kind, array('copaci', 'ghid'), true) && !current_user_can('gi_copaci')) || !in_array($kind, array('vouchere', 'copaci', 'ghid'), true)) {
             wp_die('Nu ai voie să faci asta.', '', array('response' => 403));
         }
         $ids = isset($_GET['ids']) ? array_map('absint', (array) wp_unslash($_GET['ids'])) : array(); // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
@@ -835,6 +837,9 @@ final class GI_Zona {
         $tiles = array();
         if ('vouchere' === $kind) {
             $tiles = class_exists('GI_Vouchere') ? GI_Vouchere::print_tiles($ids) : array();
+        } elseif ('ghid' === $kind) {
+            // Codul QR al ghidului întreg (pagina hărții): se printează ca plăcuță, cu sigla și numele Grădinii Ielelor.
+            $tiles[] = array('url' => GI_Harta::qr_url(), 'title' => 'Harta și ghidul Grădinii', 'note' => 'Scanează și vezi ce poți vizita și unde ești', 'foot' => preg_replace('#^https?://#', '', GI_Harta::url()), 'brand' => true);
         } else {
             foreach ($ids as $pid) {
                 $p = get_post($pid);
@@ -846,7 +851,7 @@ final class GI_Zona {
         GI_Puncte::render_print($tiles, $size);
     }
 
-    private static function print_url($kind, $ids, $size = 8) {
+    public static function print_url($kind, $ids, $size = 8) {
         return add_query_arg(array('tip' => $kind, 'ids' => array_map('intval', (array) $ids), 'size' => $size, '_gi_nonce' => wp_create_nonce('gi_zona_tipar')), self::url('tipar'));
     }
 
@@ -1346,7 +1351,7 @@ final class GI_Zona {
                 <?php endif; ?>
                 <input type="file" id="gi-p-pdf" name="pdf" accept="application/pdf,.pdf">
                 <label class="gi-zona-radio"><input type="checkbox" name="pdf_sigla" value="1"> Documentul are sigla și numele Grădinii Ielelor</label>
-                <p class="gi-zona-mic">PDF, maximum <?php echo esc_html(size_format(min(15 * MB_IN_BYTES, wp_max_upload_size()))); ?>. Regula de bază: tot ce descarcă clienții poartă sigla și numele Grădinii Ielelor, deci bifezi doar dacă e adevărat. Documentul se vede public (buton „Descarcă fișa”) cât timp locul e publicat.</p>
+                <p class="gi-zona-mic">PDF, maximum <?php echo esc_html(size_format(min(15 * MB_IN_BYTES, wp_max_upload_size()))); ?>. Regula de bază: tot ce descarcă clienții poartă sigla și numele Grădinii Ielelor, deci bifezi doar dacă e adevărat. Butonul „Descarcă fișa” apare pe pagina locului cât timp locul e publicat; documentul poate fi deschis de oricine are linkul lui.</p>
                 <label class="gi-zona-radio"><input type="checkbox" name="publica" value="1" <?php checked($pub); ?>> Publică (se vede vizitatorilor)</label>
                 <p class="gi-zona-mic">Dacă ai printat deja codul și scoți bifa, codul din teren nu mai duce nicăieri.</p>
                 <p><button type="submit" class="button button-primary">Salvează</button> <a class="gi-text-link" href="<?php echo esc_url(self::url('copaci')); ?>">Înapoi la listă</a></p>

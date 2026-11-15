@@ -25,7 +25,7 @@ final class GI_Harta {
         add_filter('body_class', array(__CLASS__, 'body_class'));
         add_action('wp_loaded', array(__CLASS__, 'maybe_flush'));
         add_action('wp_enqueue_scripts', array(__CLASS__, 'assets'));
-        add_filter('wp_unique_post_slug', array(__CLASS__, 'reserved_slug'), 10, 6);
+        add_filter('wp_unique_post_slug_is_bad_flat_slug', array(__CLASS__, 'reserved_slug'), 10, 3);
     }
 
     /* ---------- Adresa /in-gradina/harta/ ---------- */
@@ -41,6 +41,11 @@ final class GI_Harta {
 
     public static function maybe_flush() {
         if (get_option('gi_harta_rewrite') !== GI_VERSION) {
+            // Un loc deja publicat cu adresa „harta” ar fi acoperit de pagina hărții: îi dăm altă adresă (vechea duce, ca oricând, la pagina hărții).
+            $clash = get_page_by_path(self::SLUG, OBJECT, GI_Puncte::TYPE);
+            if ($clash) {
+                wp_update_post(array('ID' => $clash->ID, 'post_name' => wp_unique_post_slug('harta-loc', $clash->ID, $clash->post_status, GI_Puncte::TYPE, 0)));
+            }
             flush_rewrite_rules(false);
             update_option('gi_harta_rewrite', GI_VERSION, true);
         }
@@ -51,12 +56,15 @@ final class GI_Harta {
         return '' !== (string) get_query_var(self::VAR) && isset($wp->matched_rule) && 0 === strpos((string) $wp->matched_rule, '^' . GI_Puncte::SLUG . '/' . self::SLUG);
     }
 
-    /** Un loc nu poate lua adresa „harta” (ar intra în conflict cu pagina hărții). */
-    public static function reserved_slug($slug, $post_ID, $post_status, $post_type, $post_parent, $original_slug) {
-        if (GI_Puncte::TYPE === $post_type && self::SLUG === $slug) {
-            return self::SLUG . '-2';
-        }
-        return $slug;
+    /** Un loc nu poate lua adresa „harta” (ar intra în conflict cu pagina hărții): WordPress încearcă singur „harta-2”, „harta-3”... */
+    public static function reserved_slug($is_bad, $slug, $post_type) {
+        return $is_bad || (GI_Puncte::TYPE === $post_type && self::SLUG === $slug);
+    }
+
+    /** Șterge din memoria serverului (LiteSpeed Cache) paginile care arată harta, după orice schimbare a planului sau a pozițiilor. */
+    public static function purge() {
+        do_action('litespeed_purge_url', self::url());
+        do_action('litespeed_purge_posttype', GI_Puncte::TYPE);
     }
 
     public static function route() {
@@ -87,6 +95,11 @@ final class GI_Harta {
     public static function url($aici = '') {
         $url = home_url('/' . GI_Puncte::SLUG . '/' . self::SLUG . '/');
         return '' !== $aici ? add_query_arg('aici', rawurlencode($aici), $url) : $url;
+    }
+
+    /** Adresa din codul QR al ghidului întreg: pagina hărții, cu parametrii utm (în statistici apare sursa „qr / print”). */
+    public static function qr_url() {
+        return add_query_arg(array('utm_source' => 'qr', 'utm_medium' => 'print', 'utm_campaign' => 'gradina'), self::url());
     }
 
     public static function assets() {
@@ -121,11 +134,12 @@ final class GI_Harta {
         if (!$s['img'] || 'attachment' !== get_post_type($s['img'])) {
             return null;
         }
+        $file = get_attached_file($s['img']);
         $src = wp_get_attachment_image_src($s['img'], 'full');
-        if (!$src) {
-            return null;
+        if (!$src || !$file || !file_exists($file)) {
+            return null; // planul șters din altă parte (FTP): nicio hartă ruptă
         }
-        return array('url' => $src[0], 'w' => (int) $src[1], 'h' => (int) $src[2], 'alt' => '' !== $s['alt'] ? $s['alt'] : 'Planul Grădinii Ielelor');
+        return array('url' => $src[0], 'w' => (int) $src[1], 'h' => (int) $src[2], 'alt' => '' !== $s['alt'] ? $s['alt'] : 'Planul Grădinii Ielelor', 'id' => (int) $s['img']);
     }
 
     public static function coords($post_id) {
@@ -150,6 +164,12 @@ final class GI_Harta {
         return $out;
     }
 
+    /** Imaginea planului, la mărimea „large” și cu srcset (pe telefon, prin QR, nu se încarcă originalul de megabiți). */
+    private static function img($map, $extra = '') {
+        $html = wp_get_attachment_image($map['id'], 'large', false, array('alt' => $map['alt'], 'decoding' => 'async', 'sizes' => '(max-width: 760px) 100vw, 720px'));
+        return '' !== $html ? $html : '<img src="' . esc_url($map['url']) . '" alt="' . esc_attr($map['alt']) . '"' . $extra . '>';
+    }
+
     private static function fmt($n) {
         return rtrim(rtrim(number_format((float) $n, 1, '.', ''), '0'), '.');
     }
@@ -164,7 +184,7 @@ final class GI_Harta {
         }
         $placed = self::placed();
         $html = '<div class="gi-harta' . ($mini ? ' gi-harta-mini' : '') . '" data-gi-harta><div class="gi-harta-cadru">';
-        $html .= '<img src="' . esc_url($map['url']) . '" alt="' . esc_attr($map['alt']) . '"' . ($map['w'] && $map['h'] ? ' width="' . (int) $map['w'] . '" height="' . (int) $map['h'] . '"' : '') . ' decoding="async">';
+        $html .= self::img($map);
         $html .= '<ul class="gi-harta-pini">';
         foreach ($placed as $row) {
             $p = $row['post'];
@@ -215,7 +235,7 @@ final class GI_Harta {
         $x = $c ? self::fmt($c[0]) : '';
         $y = $c ? self::fmt($c[1]) : '';
         return '<div class="gi-harta-editor" data-gi-harta-editor><p class="gi-zona-mic gi-harta-ajutor"><strong>Unde e locul pe hartă?</strong> Apasă pe plan, în locul unde pui codul QR.</p>'
-            . '<div class="gi-harta-cadru"><img src="' . esc_url($map['url']) . '" alt="' . esc_attr($map['alt']) . '" width="' . (int) $map['w'] . '" height="' . (int) $map['h'] . '">'
+            . '<div class="gi-harta-cadru">' . self::img($map)
             . '<span class="gi-pin gi-pin-curent gi-pin-ales"' . ('' === $x ? ' hidden' : ' style="left:' . esc_attr($x) . '%;top:' . esc_attr($y) . '%"') . '><span class="gi-pin-punct" aria-hidden="true"></span></span></div>'
             . '<input type="hidden" name="poz_x" value="' . esc_attr($x) . '"><input type="hidden" name="poz_y" value="' . esc_attr($y) . '">'
             . '<p class="gi-zona-mic" data-gi-harta-stare aria-live="polite">' . ('' === $x ? 'Încă nu e marcat pe hartă.' : 'Marcat pe hartă.') . '</p>'
@@ -231,6 +251,7 @@ final class GI_Harta {
             delete_post_meta($post_id, '_gi_x');
             delete_post_meta($post_id, '_gi_y');
         }
+        self::purge();
     }
 
     /** Pagina „Harta” din Zona echipei: încarcă, înlocuiește sau scoate planul. */
@@ -250,7 +271,7 @@ final class GI_Harta {
             <p>Încarci <strong>planul Grădinii</strong> (o poză sau un desen). Apoi, la fiecare loc din „Copaci și locuri”, apeși pe plan unde se află. Cine scanează codul QR al locului vede <strong>„Ești aici”</strong>, cu locul marcat pe plan.</p>
             <?php if ($map) : ?>
                 <p class="gi-zona-mic"><strong><?php echo (int) $placed; ?></strong> din <strong><?php echo (int) $all; ?></strong> locuri publicate sunt marcate pe hartă. <a class="gi-text-link" href="<?php echo esc_url(self::url()); ?>" target="_blank" rel="noopener">Vezi harta publică</a></p>
-                <div class="gi-harta-cadru gi-harta-previzualizare"><img src="<?php echo esc_url($map['url']); ?>" alt="<?php echo esc_attr($map['alt']); ?>" width="<?php echo (int) $map['w']; ?>" height="<?php echo (int) $map['h']; ?>"></div>
+                <div class="gi-harta-cadru gi-harta-previzualizare"><?php echo self::img($map); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>
             <?php else : ?>
                 <p class="gi-zona-mic">Planul nu e încărcat încă. Până îl încarci, hărțile nu apar nicăieri (restul paginilor merg ca până acum).</p>
             <?php endif; ?>
@@ -272,6 +293,15 @@ final class GI_Harta {
                 </form>
             <?php endif; ?>
         </div>
+        <div class="gi-zona-card">
+            <h2>Codul QR al ghidului întreg</h2>
+            <p class="gi-zona-mic">Duce la <strong>Harta și ghidul Grădinii</strong> (<?php echo esc_html(preg_replace('#^https?://#', '', self::url())); ?>): planul cu toate locurile (dacă l-ai încărcat) și lista paginilor. Bun pentru recepție, pentru intrare, pentru panourile mari.</p>
+            <div class="gi-qr-box gi-zona-qr" data-qr-url="<?php echo esc_attr(self::qr_url()); ?>"></div>
+            <p>
+                <a class="button button-primary" href="<?php echo esc_url(GI_Zona::print_url('ghid', array(1), 8)); ?>" target="_blank" rel="noopener">Printează acest cod</a>
+                <button type="button" class="button button-outline" data-qr-download data-qr-source=".gi-zona-qr" data-filename="cod-qr-ghid-gradina.svg">Descarcă (SVG)</button>
+            </p>
+        </div>
         <?php
     }
 
@@ -287,6 +317,8 @@ final class GI_Harta {
                 wp_delete_attachment($s['img'], true);
             }
             update_option(self::OPT, array('img' => 0, 'alt' => ''), false);
+            self::purge();
+            do_action('litespeed_purge_all');
             GI_Zona::flash(array('ok' => 'Planul a fost scos.'));
             return;
         }
@@ -315,6 +347,8 @@ final class GI_Harta {
         if ($s['img'] && 'attachment' === get_post_type($s['img'])) {
             update_post_meta($s['img'], '_wp_attachment_image_alt', $alt);
         }
+        self::purge();
+        do_action('litespeed_purge_all'); // paginile locurilor arată planul: toate se reîncarcă
         GI_Zona::flash(array('ok' => '' === $problem ? 'Salvat.' : '', 'errors' => '' !== $problem ? array($problem) : array()));
     }
 }

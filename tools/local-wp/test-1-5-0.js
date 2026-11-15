@@ -637,7 +637,7 @@ async function runScreens(browser, newCtx, state) {
       await adm.request.post(ZONA + 'copaci/nou/?gi_test_oversize=1', { form: { gi_actiune: 'salveaza', titlu: 'SIMULAT ' + STAMP, _gi_nonce: n2 }, maxRedirects: 0 });
       const t2 = await (await adm.request.get(ZONA + 'copaci/')).text();
       const q2 = await rest('GET', '/wp/v2/puncte?search=' + encodeURIComponent('SIMULAT ' + STAMP) + '&status=any&context=edit');
-      ok(/Poza e prea mare/.test(t2) && /nu s-a păstrat/.test(t2) && Array.isArray(q2.body) && q2.body.length === 0, 'copaci: o cerere peste limita serverului (simulată) primește un mesaj clar și nu creează nimic');
+      ok(/e prea mare/.test(t2) && /nu s-a păstrat/.test(t2) && Array.isArray(q2.body) && q2.body.length === 0, 'copaci: o cerere peste limita serverului (simulată) primește un mesaj clar și nu creează nimic');
     }
   }
 

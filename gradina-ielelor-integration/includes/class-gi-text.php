@@ -18,21 +18,35 @@ if (!defined('ABSPATH')) {
 final class GI_Text {
     /** Există etichete de bloc HTML în text? Atunci nu-l atingem. */
     public static function has_html($raw) {
-        return 1 === preg_match('~<\s*/?\s*(p|h[1-6]|ul|ol|li|div|br|table|blockquote|figure|img|a|strong|em|span)\b~i', $raw);
+        // O etichetă întreagă (<b>, </p>, <a href="...">, <br/>) sau un comentariu HTML; un „<” singur („preț 5 < 10”) nu e HTML.
+        return 1 === preg_match('~<\s*/?[a-z][a-z0-9-]*(\s[^<>]*)?/?>|<!--~i', $raw);
     }
 
-    /** Semnele din interiorul unui rând: îngroșat, înclinat, link-uri. */
+    /** Text simplu curat: fără etichete HTML și fără caractere nepermise, dar cu „%”, „&”, „>” și ghilimele neatinse (spre deosebire de sanitize_textarea_field, care scoate „%20”). */
+    private static function clean_plain($raw) {
+        $t = wp_check_invalid_utf8((string) $raw);
+        $t = wp_pre_kses_less_than($t);
+        $t = wp_strip_all_tags($t, false);
+        return str_replace("\0", '', $t);
+    }
+
+    /** Semnele din interiorul unui rând: link-uri, îngroșat, înclinat. Link-urile se pun deoparte întâi, ca semnele * din adresă să nu strice eticheta. */
     private static function inline($line) {
         $s = esc_html($line);
+        $links = array();
         // [text](adresa): numai http, https, tel și mailto
-        $s = preg_replace_callback('~\[([^\]\n]{1,200})\]\(((?:https?://|tel:|mailto:)[^\s)]{1,300})\)~u', function ($m) {
+        $s = preg_replace_callback('~\[([^\]\n]{1,200})\]\(((?:https?://|tel:|mailto:)[^\s)]{1,300})\)~u', function ($m) use (&$links) {
             $href = html_entity_decode($m[2], ENT_QUOTES);
             $external = 0 === strpos($href, 'http');
-            return '<a href="' . esc_url($href, array('http', 'https', 'tel', 'mailto')) . '"' . ($external ? ' target="_blank" rel="noopener"' : '') . '>' . $m[1] . '</a>';
+            $links[] = '<a href="' . esc_url($href, array('http', 'https', 'tel', 'mailto')) . '"' . ($external ? ' target="_blank" rel="noopener"' : '') . '>' . $m[1] . '</a>';
+            return "\x01" . (count($links) - 1) . "\x02";
         }, $s);
         $s = preg_replace('~\*\*(.+?)\*\*~us', '<strong>$1</strong>', $s);
         $s = preg_replace('~(?<![\*\w])\*(?!\s)([^*\n]+?)(?<!\s)\*(?![\*\w])~u', '<em>$1</em>', $s);
-        return $s;
+        // textul din interiorul unui link poate avea și el îngroșat sau înclinat; adresa nu
+        return preg_replace_callback('~\x01(\d+)\x02~', function ($m) use ($links) {
+            return isset($links[(int) $m[1]]) ? $links[(int) $m[1]] : '';
+        }, $s);
     }
 
     /**
@@ -41,7 +55,7 @@ final class GI_Text {
      */
     public static function clean_for_save($raw) {
         $raw = (string) $raw;
-        return self::has_html($raw) ? wp_kses_post($raw) : sanitize_textarea_field($raw);
+        return self::has_html($raw) ? wp_kses_post($raw) : self::clean_plain($raw);
     }
 
     /** Textul pentru caseta din formular: un text simplu salvat de o versiune mai veche (cu &amp; și &gt;) se arată cum a fost scris. */

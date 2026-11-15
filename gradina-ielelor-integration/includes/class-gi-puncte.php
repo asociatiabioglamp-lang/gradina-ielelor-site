@@ -511,7 +511,7 @@ body { margin: 0; padding: 16px; font: 16px/1.4 system-ui, -apple-system, "Segoe
     <main class="gi-sheet">
         <?php foreach ($tiles as $t) : ?>
             <figure class="gi-tile">
-                <?php if (!empty($t['brand'])) : ?>
+                <?php if (!isset($t['brand']) || $t['brand']) : // regula de bază: orice plăcuță de printat poartă sigla și numele Grădinii Ielelor ?>
                     <div class="brand"><img src="<?php echo esc_url(GI_URL . 'assets/logo-gradina-ielelor.png'); ?>" alt="Grădina Ielelor" width="150" height="70"><div><b>Grădina Ielelor</b><small>Sâmbăta de Sus, Brașov</small></div></div>
                 <?php endif; ?>
                 <div class="qr" data-qr-url="<?php echo esc_attr($t['url']); ?>" role="img" aria-label="<?php echo esc_attr('Cod QR: ' . $t['title']); ?>"></div>
