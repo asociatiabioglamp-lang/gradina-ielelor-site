@@ -27,20 +27,22 @@ Colegii de la vânzări nu văd nimic din administrarea WordPress: nici articole
 
 ## Un coleg nou, de la vânzări
 **Zona echipei → Echipă → Adaugă un coleg.** Scrii **numele** și **emailul**. Apeși „Creează contul”.
-- Pe ecran apar o dată **adresa, utilizatorul și parola**. **Notează-le și transmite-le colegului** (nu se mai arată a doua oară).
+- Pe ecran apar o dată **adresa, utilizatorul și parola**, chiar în răspunsul la formular (**nu reîncărca pagina**). **Notează-le și transmite-le colegului**. Parola nu se păstrează nicăieri în site.
 - **Nu se trimite niciun email** colegului. (Din motive de siguranță, parola nu pleacă prin email.)
 - Colegul intră la Administrare, cu aceste date. Dacă o uită, tu îi faci alta: **„Parolă nouă”** (parola veche nu mai merge, iar sesiunile lui deschise se închid).
-- Când pleacă din echipă: **„Scoate accesul”**. Contul rămâne, dar fără acces la nimic.
+- Când pleacă din echipă: **„Scoate accesul”**. Contul rămâne, dar fără acces la nimic (se scoate numai rolul „Vânzări”; contul dispare din lista echipei).
+- Dacă revine: la „Adaugă un coleg” scrii **același email**; contul se reactivează, cu o parolă nouă, arătată o singură dată.
 - Din Zonă poți schimba parola și poți scoate accesul **numai conturilor de vânzări**, nu și conturilor tale sau ale altor roluri.
 
 ## Cât poate da un coleg de la vânzări (limite)
 **Zona echipei → Echipă → Limite pentru vânzări.** Valorile de pornire sunt **provizorii** (le-am ales eu ca să nu pornească fără limite; schimbă-le după cum vrei):
-- reducere maximă în procente: **10%**
-- reducere maximă în lei: **100 lei**
+- reducere maximă în procente, **pe cod**: **10%**
+- reducere maximă în lei, **pe cod**: **100 lei**
 - câte coduri deodată: **10**
 
 Cu **0**, tipul respectiv e oprit (de ex. 0 la procente = colegul poate da numai sume fixe). Tu și managerii de magazin nu aveți limite.
-Fiecare voucher păstrează **cine l-a generat**; tu vezi asta în lista „Toate voucherele”.
+
+**Ce înseamnă limita, exact:** se aplică **fiecărui cod** și fiecărei generări. Codurile generate de un coleg se pot folosi **doar câte unul la o rezervare** (nu se adună), deci la o rezervare reducerea maximă e cea de pe un cod. **Nu există o limită pe zi:** un coleg poate genera, în zile diferite sau una după alta, câte coduri vrea. Fiecare cod păstrează cine l-a generat (vezi „Toate voucherele”). Vrei și o limită pe zi? Spune-mi și o adaug.
 
 ## Vouchere
 **Zona echipei → Vouchere.** Alegi tipul (sumă fixă sau procent), valoarea, câte coduri, începutul codului (de ex. GRADINA) și, dacă vrei, o notă („cadou de Crăciun”; **fără nume de persoane**).
@@ -54,7 +56,7 @@ Fiecare voucher păstrează **cine l-a generat**; tu vezi asta în lista „Toat
 - Scrii și „ce se vede în poză” (o frază), pentru cei care nu văd imaginea.
 - **Publică** = se vede vizitatorilor. Fără bifă, locul rămâne **ciornă** (nu se vede, nu se poate printa).
 - După salvare apare **codul QR**: **„Printează acest cod”** sau **„Descarcă (SVG)”**. Pentru mai multe deodată: bifezi în listă și apeși „Printează codurile alese”.
-- **Nu schimba titlul pe ascuns** după ce ai printat codul: adresa paginii e cea din cod. Textul îl poți schimba oricând, codul rămâne bun.
+- Adresa paginii **nu se schimbă** când modifici titlul sau textul, deci codul printat rămâne bun. Codul din teren **nu mai duce nicăieri** dacă scoți bifa „Publică” sau ștergi locul.
 - Fotografiile făcute cu telefonul pot păstra în fișier locul unde au fost făcute (aici, chiar Grădina). Pe pagină se arată o variantă redimensionată.
 
 Ghidul detaliat pentru codurile din teren (mărimi, unde le pui, statistici): `docs/zona-privata.md`. Aceleași funcții se găsesc și în administrarea WordPress, meniul **Grădina**.
@@ -66,10 +68,10 @@ Ghidul detaliat pentru codurile din teren (mărimi, unde le pui, statistici): `d
 
 ## Siguranță (pe scurt)
 - Fiecare formular are un cod de siguranță care expiră; dacă lași pagina deschisă mult timp, apare „Pagina a expirat” și nu se salvează nimic. Încarci pagina și o iei de la capăt.
-- Dacă un fișier nu e poză sau e prea mare, primești un mesaj clar; restul se salvează.
-- Parolele nu se scriu în site, nu se trimit prin email și nu se păstrează în text.
+- Dacă un fișier nu e poză, primești un mesaj clar; restul se salvează. Dacă poza e prea mare pentru server, formularul **nu se trimite deloc** (și textul scris se pierde): primești un mesaj, alegi o poză mai mică și scrii din nou. Limita (cel mult 8 MB) depinde și de setările hostingului.
+- Parolele noi se arată o singură dată, în răspunsul la formular; nu se trimit prin email și nu se păstrează în site.
 
 ## Dacă ceva nu merge
 - **„Pagina nu a fost găsită” la /zona-echipei/** imediat după instalare: **Setări → Permalinkuri → Salvează modificările** (o dată). Pluginul face asta singur la prima rulare.
-- **Revenire**: dezactivezi pluginul sau reinstalezi versiunea veche (vezi `docs/lansare.md`). Conturile colegilor rămân, fără acces.
+- **Revenire**: înainte să dezactivezi pluginul sau să reinstalezi o versiune fără Zonă, la **Echipă** apasă **„Scoate accesul”** pentru fiecare coleg. Altfel, rolul „Vânzări (Grădina)” rămâne în baza de date, iar fără Zonă colegii ar putea intra în administrarea WordPress ca simpli abonați (profil propriu, fără conținut). Rolul se șterge de tot numai la dezinstalare (vezi `docs/lansare.md`).
 - Colegul spune că „e trimis în Zonă când vrea administrarea”: așa e făcut (nu are voie în administrare).

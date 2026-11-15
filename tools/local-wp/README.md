@@ -52,3 +52,9 @@ NODE_PATH=$(npm root -g) node tools/local-wp/test-1-3-16.js
 NODE_PATH=$(npm root -g) node tools/local-wp/test-1-3-15.js
 ```
 Pozițiile din antetul temei vechi (produse, blog, coș) nu se pot verifica local, pentru că tema nu e în depozit: se verifică pe paginile reale, numai citire, cu stilurile noi aplicate în browserul de test.
+
+## Testul Zonei echipei (pluginul 1.5.0)
+`test-1-5-0.js` verifică căsuța „Administrare” din subsol (cinci pagini, șase ecrane, cu stilurile străine), Zona echipei fără cont (noindex, fără memorie intermediară), autentificarea greșită, administratorul (vouchere cu cod QR citit cu jsQR, copaci și locuri cu poză, echipă, limite), colegul de la vânzări (ce vede, ce nu poate, limitele, REST, wp-admin), parola nouă și „Scoate accesul”, apoi ecranele Zonei pe șase mărimi. Are nevoie de mu-plugin-ul `mu-plugins/gi-test-1-5-0.php` (numai local: se oprește singur pe orice alt domeniu decât 127.0.0.1/localhost; oprește emailurile și are adrese de test care șterg conturi) și de biblioteca de test `jsqr` (numai pentru test). Variabile opționale: `GI_PHP_LOG` (jurnalul de erori PHP al WordPress-ului local), `GI_SHOTS` (folder pentru capturi), `GI_ONLY_FOOTER=1` (numai căsuța din subsol), `GI_ONLY_SCREENS=1` (numai ecranele Zonei).
+```
+NODE_PATH="$(npm root -g):<folder>/node_modules" GI_PHP_LOG=<wp>/wp-content/gi-php-errors.log node tools/local-wp/test-1-5-0.js
+```

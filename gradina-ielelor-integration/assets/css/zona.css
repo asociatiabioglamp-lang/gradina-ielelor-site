@@ -48,6 +48,12 @@
 .gi-zona-site .gi-zona :is(.gi-zona-radio, .gi-zona-bifa, .gi-zona-cap) input[type="radio"], .gi-zona-site .gi-zona :is(.gi-zona-radio, .gi-zona-bifa, .gi-zona-cap) input[type="checkbox"] { width: 22px; height: 22px; margin: 0; flex: 0 0 auto; accent-color: var(--forest); }
 .gi-zona-site .gi-zona .gi-zona-foto { display: block; max-width: min(100%, 320px); height: auto; border-radius: 2px; margin: 4px 0; }
 
+/* Alegerea mărimii codului (în dreptul butonului „Printează”): același aspect cu câmpurile din formulare */
+.gi-zona-site .gi-zona .gi-zona-alege { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 14px; }
+.gi-zona-site .gi-zona .gi-zona-alege label { font-size: var(--fs-note); font-weight: 650; color: var(--ink); }
+.gi-zona-site .gi-zona .gi-zona-alege select { box-sizing: border-box; min-height: 50px; max-width: 100%; padding: 11px 14px; border: 1px solid var(--field-line); border-radius: 2px; background: #fff; color: var(--ink); font: inherit; font-size: var(--fs-ui); line-height: 1.4; box-shadow: none; }
+.gi-zona-site .gi-zona .gi-zona-alege select:focus { border-color: var(--forest); outline: 3px solid var(--accent) !important; outline-offset: 1px; }
+
 /* Butoane: „button”, „button-primary”, „button-outline” vin din site.css; aici doar așezarea în card și culorile păstrate peste tema veche */
 .gi-zona-site .gi-zona .button { min-height: 50px; padding: 12px 22px; font-size: var(--fs-ui); text-decoration: none; }
 .gi-zona-site .gi-zona .button.button-primary { background: var(--forest); border-color: var(--forest); color: #fff; }

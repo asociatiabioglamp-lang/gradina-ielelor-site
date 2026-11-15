@@ -91,6 +91,55 @@ const MEASURE = () => {
   };
 };
 
+async function runScreens(browser, newCtx, state) {
+  // ------------------------------------------------------------------ 6. Ecranele Zonei pe șase mărimi, cu stilurile străine
+  const screens = [['intrare', ZONA, false], ['prima pagină', ZONA, true], ['vouchere', ZONA + 'vouchere/', true], ['copaci', ZONA + 'copaci/', true], ['loc nou', ZONA + 'copaci/nou/', true], ['echipă', ZONA + 'echipa/', true]];
+  for (const [size, [w, h]] of Object.entries(SIZES)) {
+    const phone = Math.min(w, h) <= 430;
+    const problems = []; let primary = null;
+    for (const [name, url, logged] of screens) {
+      const ctx = await browser.newContext(Object.assign({ viewport: { width: w, height: h }, isMobile: phone, hasTouch: phone }, logged ? { storageState: state } : {}));
+      const page = await ctx.newPage(); page.setDefaultTimeout(90000);
+      await page.goto(url + '?gi_test=stiluri', { waitUntil: 'load' });
+      if (logged && /vouchere|copaci\/$/.test(url)) { await page.waitForSelector('.gi-qr-mini svg').catch(() => {}); }
+      await page.waitForTimeout(250);
+      const m = await page.evaluate(MEASURE);
+      if (m.sx > 0) { problems.push(name + ': derulare pe orizontală ' + m.sx); }
+      if (!m.h1Below) { problems.push(name + ': titlul sub antet'); }
+      if (m.wide.length) { problems.push(name + ': iese din ecran: ' + m.wide.slice(0, 3).join(',')); }
+      if (m.small.length) { problems.push(name + ': prea mic de atins: ' + m.small.slice(0, 3).join(',')); }
+      if (m.mobileBar !== 'none') { problems.push(name + ': bara „Rezervă” acoperă formularele'); }
+      if (!m.flagOk) { problems.push(name + ': steagul de limbă'); }
+      if (m.pColor && m.pColor !== 'rgb(51, 69, 79)') { problems.push(name + ': culoarea textului (' + m.pColor + ')'); }
+      if (m.h2Color && m.h2Color !== 'rgb(33, 80, 107)') { problems.push(name + ': culoarea titlurilor (' + m.h2Color + ')'); }
+      if (m.primary && (m.primary[0] !== 'rgb(29, 99, 128)' || m.primary[1] !== 'rgb(255, 255, 255)')) { problems.push(name + ': butonul principal (' + m.primary.join(' / ') + ')'); }
+      if (m.outline && m.outline[0] !== 'rgb(29, 99, 128)') { problems.push(name + ': butonul secundar (' + m.outline[0] + ')'); }
+      if (SHOTS && (w === 390 || w === 414 || w === 1440)) { await page.screenshot({ path: path.join(SHOTS, 'ecran-' + name.replace(/\s+/g, '-') + '-' + w + '.png'), fullPage: true }); }
+      await ctx.close();
+    }
+    ok(problems.length === 0, `Zona, ${size}: ${screens.length} ecrane cu stiluri străine: fără derulare orizontală, titlu sub antet, elemente ieșite sau prea mici, culori păstrate (${problems.join('; ') || 'în regulă'})`);
+  }
+  // contur la tastatură (stilurile străine îl opresc la linkuri): câmp, buton, link
+  {
+    const ctx = await newCtx(); const page = await ctx.newPage(); page.setDefaultTimeout(90000);
+    await page.goto(ZONA + '?gi_test=stiluri', { waitUntil: 'load' });
+    const seen = {};
+    for (let i = 0; i < 60 && Object.keys(seen).length < 3; i++) {
+      await page.keyboard.press('Tab');
+      const info = await page.evaluate(() => { const a = document.activeElement; const cs = getComputedStyle(a); return { id: a.id, tag: a.tagName, cls: String(a.className), outline: cs.outlineStyle, width: parseFloat(cs.outlineWidth) }; });
+      if (info.id === 'gi-zona-user' || info.id === 'gi-zona-pass') { seen.field = info; }
+      if (info.tag === 'BUTTON' && /button-primary/.test(info.cls)) { seen.button = info; }
+      if (info.tag === 'A' && /gi-text-link|gi-admin-box/.test(info.cls)) { seen.link = info; }
+    }
+    await page.evaluate(() => { const b = document.querySelector('.gi-admin-box'); if (b) { b.focus(); } }); // după tastatură, focus() cere conturul de tastatură
+    seen.box = await page.evaluate(() => { const a = document.activeElement; const cs = getComputedStyle(a); return { id: a.id, tag: a.tagName, cls: String(a.className), outline: cs.outlineStyle, width: parseFloat(cs.outlineWidth) }; });
+    ok(/gi-admin-box/.test(seen.box.cls) && seen.box.outline !== 'none' && seen.box.width >= 2, `acces cu tastatura: căsuța „Administrare” din subsol are contur vizibil (${seen.box.outline} ${seen.box.width})`);
+    ok(['field', 'button', 'link'].every((k) => seen[k] && seen[k].outline !== 'none' && seen[k].width >= 2), `acces cu tastatura: câmpul, butonul și linkul au contur vizibil (${JSON.stringify(Object.fromEntries(Object.entries(seen).map(([k, v]) => [k, v.outline + ' ' + v.width])))})`);
+    await ctx.close();
+  }
+
+}
+
 (async () => {
   const phpBefore = logLines();
   const browser = await chromium.launch();
@@ -99,6 +148,17 @@ const MEASURE = () => {
   const created = { posts: [], coupons: [], users: [], media: [] };
 
   // ------------------------------------------------------------------ cont de administrare (REST pentru curățenie) și starea de pornire
+  if (process.env.GI_ONLY_SCREENS) {
+    // Numai ecranele Zonei (după ce s-au reparat stilurile): intră ca administrator și măsoară.
+    const c = await newCtx(); const pg = await c.newPage(); pg.setDefaultTimeout(90000);
+    await pg.goto(ZONA, { waitUntil: 'domcontentloaded' });
+    await pg.fill('#gi-zona-user', 'admin'); await pg.fill('#gi-zona-pass', 'password');
+    await Promise.all([pg.waitForNavigation({ waitUntil: 'domcontentloaded' }), pg.click('.gi-zona-login button[type=submit]')]);
+    await runScreens(browser, newCtx, await c.storageState());
+    await browser.close();
+    console.log(failures ? `\n${failures} verificări au picat.` : '\nToate verificările au trecut.');
+    process.exit(failures ? 1 : 0);
+  }
   const actx = await newCtx();
   const admin = await actx.newPage(); admin.setDefaultTimeout(90000);
   await admin.goto(BASE + '/wp-login.php', { waitUntil: 'domcontentloaded' });
@@ -153,7 +213,7 @@ const MEASURE = () => {
     await Promise.all([page.waitForNavigation({ waitUntil: 'domcontentloaded' }), page.locator('.gi-admin-box').click()]);
     ok(/\/zona-echipei\/$/.test(page.url()) && (await page.locator('#gi-zona-user').count()) === 1, 'căsuța „Administrare”: un clic duce la formularul de intrare din Zona echipei');
     const box = await page.evaluate(() => { const b = document.querySelector('.gi-admin-box'); const cs = getComputedStyle(b); return { color: cs.color, bg: cs.backgroundColor, border: cs.borderTopColor }; });
-    ok(!!box.color, 'căsuța „Administrare”: se vede și pe pagina Zonei');
+    ok(box.border !== 'rgba(0, 0, 0, 0)' && box.color !== box.bg, `căsuța „Administrare”: se vede și pe pagina Zonei (chenar ${box.border}, text ${box.color})`);
     await ctx.close();
   }
 
@@ -177,10 +237,17 @@ const MEASURE = () => {
     const rr = await ctx.request.get(ZONA + 'oarecare/', { maxRedirects: 0 });
     ok(rr.status() === 302 && /\/zona-echipei\/$/.test(rr.headers().location || ''), `zona: o adresă necunoscută duce la prima pagină a Zonei (${rr.status()})`);
     const nf = await ctx.request.get(ZONA + '123/', { maxRedirects: 0 });
-    ok([302, 404].includes(nf.status()), `zona: adresa cu număr nu strică nimic (${nf.status()})`);
+    ok(nf.status() === 404, `zona: o adresă care nu e a Zonei (cu număr) rămâne 404 obișnuit (${nf.status()})`);
     const post = await ctx.request.post(ZONA + 'vouchere/', { form: { gi_actiune: 'genereaza', tip: 'suma', valoare: '50', numar: '1', prefix: 'FARACONT', _gi_nonce: 'x' }, maxRedirects: 0 });
     const aft = await api(ctx, 'cupon&cod=FARACONT');
     ok([200, 302].includes(post.status()) && aft.exists === false, 'zona fără cont: trimiterea unui formular de voucher nu face nimic');
+    {
+      const inj = await ctx.request.get(BASE + '/glamping/?gi_zona=acasa', { maxRedirects: 0 });
+      const it = await inj.text();
+      ok(inj.status() === 200 && !/gi-zona-user/.test(it) && !/noindex/.test(inj.headers()['x-robots-tag'] || '') && /gi-glamping|Glamping/.test(it), 'zona: ?gi_zona=acasa pus pe altă pagină (Glamping) nu o transformă în Zonă (rămâne pagina obișnuită, fără noindex)');
+      const inj404 = await ctx.request.get(BASE + '/nu-exista-' + STAMP + '/?gi_zona=acasa', { maxRedirects: 0 });
+      ok(inj404.status() === 404, `zona: ?gi_zona=acasa pus pe o adresă care nu există rămâne 404 (${inj404.status()})`);
+    }
     const sm = await (await ctx.request.get(BASE + '/wp-sitemap.xml')).text();
     ok(!/zona-echipei/.test(sm), 'zona: nu apare în harta site-ului');
     await ctx.close();
@@ -189,9 +256,12 @@ const MEASURE = () => {
   // ------------------------------------------------------------------ 3. Autentificare greșită (fără blocare în plugin: hotărâre din docs/securitate.md)
   {
     const ctx = await newCtx(); const page = await ctx.newPage(); page.setDefaultTimeout(90000);
+    await api(ctx, 'esecuri_login'); // pornim de la zero numărătoarea ascultătorului montat după cel din Zonă
     await page.goto(ZONA, { waitUntil: 'domcontentloaded' });
     await page.fill('#gi-zona-user', 'admin'); await page.fill('#gi-zona-pass', 'parola-gresita');
     await Promise.all([page.waitForNavigation({ waitUntil: 'domcontentloaded' }), page.click('.gi-zona-login button[type=submit]')]);
+    const seenFail = (await api(ctx, 'esecuri_login')).count;
+    ok(seenFail === 1, `autentificare greșită: alte pluginuri (limitare, jurnal) văd eșecul, chiar dacă vine din Zonă (${seenFail})`);
     const m1 = await page.locator('.gi-zona-notice').innerText().catch(() => '');
     ok(/\/zona-echipei\/\?eroare=1/.test(page.url()) && /nu sunt corecte/.test(m1), `autentificare greșită: rămâi în Zona echipei, cu mesaj în pagină („${m1.trim()}”)`);
     await page.goto(ZONA, { waitUntil: 'domcontentloaded' });
@@ -234,6 +304,7 @@ const MEASURE = () => {
   ok(flashCodes.length === 2 && flashCodes.every((c) => /^TESTZ-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(c)) && flashCodes[0] !== flashCodes[1], `vouchere: două coduri unice, cu începutul ales (${flashCodes.join(', ')})`);
   const cp = [];
   for (const c of flashCodes) { const d = await api(adm, 'cupon&cod=' + c); cp.push(d); if (d.id) { created.coupons.push(d.id); } }
+  ok(cp.every((d) => d.individual === false), 'vouchere: codurile proprietarei se pot cumula cu alte reduceri (fără „folosire individuală”)');
   const now = Date.now() / 1000; const month = 30.44 * 86400;
   ok(cp.every((d) => d.amount === 50 && d.type === 'fixed_cart' && d.limit === 1 && d.creator === adminInfo.id && /probă zona/.test(d.description)), 'vouchere: 50 lei, sumă fixă, o singură folosire, cine l-a generat e înregistrat, nota se păstrează');
   ok(cp.every((d) => Math.abs((d.expires - now) / month - 18) < 0.2), `vouchere: valabile 18 luni de azi (${((cp[0].expires - now) / month).toFixed(2)} luni)`);
@@ -364,6 +435,20 @@ const MEASURE = () => {
   const htmlTxt = await (await adm.request.get(ZONA + 'copaci/nou/')).text();
   ok(/Scrie titlul locului/.test(htmlTxt), 'copaci: titlu gol → mesaj clar');
 
+  {
+    const ini = await api(adm, 'ini');
+    const toBytes = (v) => { const n = parseFloat(v); const u = String(v).slice(-1).toUpperCase(); return u === 'G' ? n * 1073741824 : u === 'M' ? n * 1048576 : u === 'K' ? n * 1024 : n; };
+    const limit = toBytes(ini.post_max_size);
+    if (limit > 0 && limit <= 64 * 1048576) {
+      const n = await nonceFor(adm, 'gi_zona_salveaza');
+      await adm.request.post(ZONA + 'copaci/nou/', { multipart: { gi_actiune: 'salveaza', titlu: 'PREA MARE ' + STAMP, _gi_nonce: n, foto: { name: 'uriasa.jpg', mimeType: 'image/jpeg', buffer: Buffer.alloc(limit + 2 * 1048576, 1) } }, maxRedirects: 0 });
+      const tt = await (await adm.request.get(ZONA + 'copaci/')).text();
+      ok(/prea mare/.test(tt) && /nu s-a păstrat/.test(tt), `copaci: o cerere mai mare decât limita serverului (${ini.post_max_size}) primește un mesaj clar, nu o pagină goală`);
+    } else {
+      console.log(`[SĂRIT]  copaci: cererea peste limita serverului nu se poate încerca local (post_max_size=${ini.post_max_size}); ramura e verificată doar prin citirea codului`);
+    }
+  }
+
   // --- 4c. Echipă
   await api(adm, 'emailuri');
   await ap.goto(ZONA + 'echipa/', { waitUntil: 'domcontentloaded' });
@@ -374,6 +459,7 @@ const MEASURE = () => {
   const credText = await ap.locator('.gi-zona-notice .gi-zona-coduri').innerText();
   const cred = { login: (credText.match(/Utilizator: (\S+)/) || [])[1], pass: (credText.match(/Parola: (\S+)/) || [])[1] };
   ok(!!cred.login && !!cred.pass && cred.pass.length >= 12 && credText.includes(ZONA), `echipă: contul se creează și se arată o singură dată adresa, utilizatorul și parola (${cred.login})`);
+  ok((await api(adm, 'cauta_optiuni&q=' + encodeURIComponent(cred.pass))).count === 0, 'echipă: parola nouă nu rămâne în baza de date (nici temporar, în opțiuni)');
   const u1 = await api(adm, 'utilizator&login=' + cred.login);
   if (u1.id) { created.users.push(cred.login); }
   ok(u1.exists && u1.roles.join() === 'gi_vanzari' && u1.caps.gi_zona && u1.caps.gi_vouchere && !u1.caps.edit_posts && !u1.caps.upload_files && !u1.caps.gi_copaci && !u1.caps.gi_echipa && !u1.caps.gi_vouchere_toate && !u1.caps.manage_woocommerce, 'echipă: contul nou are numai rolul „Vânzări (Grădina)”: Zona + vouchere, nimic din administrare');
@@ -402,7 +488,7 @@ const MEASURE = () => {
   ok((await sp.locator('.gi-zona-tile strong').allInnerTexts()).join('|') === 'Vouchere' && (await sp.locator('.gi-zona-foot a', { hasText: 'Administrarea WordPress' }).count()) === 0 && (await sp.locator('#wpadminbar').count()) === 0, 'vânzări: vede numai „Vouchere”, fără link spre administrare, fără bara WordPress');
   ok(new RegExp('Bună, ' + COLEG).test(await sp.locator('.gi-zona-hello').innerText()), 'vânzări: e salutat cu numele lui');
   if (SHOTS) { await sp.screenshot({ path: path.join(SHOTS, 'zona-acasa-vanzari.png'), fullPage: true }); }
-  for (const p of ['/wp-admin/', '/wp-admin/profile.php', '/wp-admin/edit.php', '/wp-admin/edit.php?post_type=gi_punct', '/wp-admin/admin.php?page=gi-vouchere', '/wp-admin/post-new.php', '/wp-admin/users.php', '/wp-admin/upload.php', '/wp-admin/admin-post.php?action=gi_voucher_generate']) {
+  for (const p of ['/wp-admin/', '/wp-admin/profile.php', '/wp-admin/edit.php', '/wp-admin/edit.php?post_type=gi_punct', '/wp-admin/admin.php?page=gi-vouchere', '/wp-admin/post-new.php', '/wp-admin/users.php', '/wp-admin/upload.php', '/wp-admin/admin-post.php?action=gi_voucher_gen']) {
     await sp.goto(BASE + p, { waitUntil: 'domcontentloaded' });
     ok(sp.url().startsWith(ZONA), `vânzări: ${p} → înapoi în Zona echipei (${sp.url().replace(BASE, '')})`);
   }
@@ -465,6 +551,7 @@ const MEASURE = () => {
   ok(sCodes.length === 3 && sCodes.every((c) => /^VANZ-/.test(c)), `vânzări: 3 coduri de 10% generate în limite (${sCodes.join(', ')})`);
   const sc = []; for (const c of sCodes) { const d = await api(sal, 'cupon&cod=' + c); sc.push(d); if (d.id) { created.coupons.push(d.id); } }
   ok(sc.every((d) => d.type === 'percent' && d.amount === 10 && d.limit === 1 && d.creator === u1.id && Math.abs((d.expires - now) / month - 18) < 0.2), 'vânzări: voucherele lui: 10%, o folosire, 18 luni, înregistrate pe numele lui');
+  ok(sc.every((d) => d.individual === true), 'vânzări: codurile lui se aplică singure la o rezervare (nu se adună: zece coduri de 10% nu fac 100%)');
   await sp.goto(ZONA + 'vouchere/', { waitUntil: 'domcontentloaded' });
   await sp.waitForSelector('.gi-qr-mini svg');
   const sListed = await sp.locator('.gi-zona-lista .gi-zona-cod').allInnerTexts();
@@ -508,6 +595,7 @@ const MEASURE = () => {
   await submit(ap, '.gi-zona-lista li:has-text("' + COLEG + '") button:has-text("Parolă nouă")');
   const cred2 = { pass: ((await ap.locator('.gi-zona-notice .gi-zona-coduri').innerText()).match(/Parola: (\S+)/) || [])[1] };
   ok(!!cred2.pass && cred2.pass !== cred.pass, 'echipă: „Parolă nouă” arată o parolă nouă, o singură dată');
+  ok((await api(adm, 'cauta_optiuni&q=' + encodeURIComponent(cred2.pass))).count === 0, 'echipă: nici parola schimbată nu rămâne în baza de date');
   ok(sessionsBefore >= 1 && (await api(adm, 'utilizator&login=' + cred.login)).sessions === 0, `echipă: parola nouă închide sesiunile deschise (${sessionsBefore} → 0)`);
   await sp.goto(ZONA + 'vouchere/', { waitUntil: 'domcontentloaded' });
   ok((await sp.locator('#gi-zona-user').count()) === 1 && (await sp.locator('.gi-zona-lista').count()) === 0, 'vânzări: după parola nouă, sesiunea veche cere din nou intrarea');
@@ -517,10 +605,11 @@ const MEASURE = () => {
     await p2.fill('#gi-zona-user', cred.login); await p2.fill('#gi-zona-pass', cred.pass);
     await submit(p2, '.gi-zona-login button[type=submit]');
     ok(/eroare=1/.test(p2.url()), 'echipă: parola veche nu mai merge');
-    await p2.goto(ZONA, { waitUntil: 'domcontentloaded' });
+    await p2.goto(ZONA + 'vouchere/', { waitUntil: 'domcontentloaded' });
     await p2.fill('#gi-zona-user', cred.login); await p2.fill('#gi-zona-pass', cred2.pass);
     await submit(p2, '.gi-zona-login button[type=submit]');
-    ok(/Bună, /.test(await p2.locator('.gi-zona-hello').innerText().catch(() => '')), 'echipă: parola nouă merge (intrare cu utilizator din Zonă)');
+    ok(/\/zona-echipei\/vouchere\/$/.test(p2.url()) && (await p2.locator('#gi-v-valoare').count()) === 1, `echipă: parola nouă merge, iar după intrare ajungi unde voiai (vouchere), nu la prima pagină (${p2.url().replace(BASE, '')})`);
+    await p2.goto(ZONA, { waitUntil: 'domcontentloaded' });
     // ieșirea din cont
     await Promise.all([p2.waitForNavigation({ waitUntil: 'domcontentloaded' }), p2.locator('.gi-zona-foot a', { hasText: 'Ieși din cont' }).click()]);
     const outTxt = await p2.content();
@@ -558,50 +647,20 @@ const MEASURE = () => {
     ok((await p4.locator('.gi-zona-lista, form[action*="vouchere"]').count()) === 0, 'echipă: contul scos nu vede voucherele');
     await c4.close();
   }
-
-  // ------------------------------------------------------------------ 6. Ecranele Zonei pe șase mărimi, cu stilurile străine
-  const state = await adm.storageState();
-  const screens = [['intrare', ZONA, false], ['prima pagină', ZONA, true], ['vouchere', ZONA + 'vouchere/', true], ['copaci', ZONA + 'copaci/', true], ['loc nou', ZONA + 'copaci/nou/', true], ['echipă', ZONA + 'echipa/', true]];
-  for (const [size, [w, h]] of Object.entries(SIZES)) {
-    const phone = Math.min(w, h) <= 430;
-    const problems = []; let primary = null;
-    for (const [name, url, logged] of screens) {
-      const ctx = await browser.newContext(Object.assign({ viewport: { width: w, height: h }, isMobile: phone, hasTouch: phone }, logged ? { storageState: state } : {}));
-      const page = await ctx.newPage(); page.setDefaultTimeout(90000);
-      await page.goto(url + '?gi_test=stiluri', { waitUntil: 'load' });
-      if (logged && /vouchere|copaci\/$/.test(url)) { await page.waitForSelector('.gi-qr-mini svg').catch(() => {}); }
-      await page.waitForTimeout(250);
-      const m = await page.evaluate(MEASURE);
-      if (m.sx > 0) { problems.push(name + ': derulare pe orizontală ' + m.sx); }
-      if (!m.h1Below) { problems.push(name + ': titlul sub antet'); }
-      if (m.wide.length) { problems.push(name + ': iese din ecran: ' + m.wide.slice(0, 3).join(',')); }
-      if (m.small.length) { problems.push(name + ': prea mic de atins: ' + m.small.slice(0, 3).join(',')); }
-      if (m.mobileBar !== 'none') { problems.push(name + ': bara „Rezervă” acoperă formularele'); }
-      if (!m.flagOk) { problems.push(name + ': steagul de limbă'); }
-      if (m.pColor && m.pColor !== 'rgb(51, 69, 79)') { problems.push(name + ': culoarea textului (' + m.pColor + ')'); }
-      if (m.h2Color && m.h2Color !== 'rgb(33, 80, 107)') { problems.push(name + ': culoarea titlurilor (' + m.h2Color + ')'); }
-      if (m.primary && (m.primary[0] !== 'rgb(29, 99, 128)' || m.primary[1] !== 'rgb(255, 255, 255)')) { problems.push(name + ': butonul principal (' + m.primary.join(' / ') + ')'); }
-      if (m.outline && m.outline[0] !== 'rgb(29, 99, 128)') { problems.push(name + ': butonul secundar (' + m.outline[0] + ')'); }
-      if (SHOTS && (w === 390 || w === 414 || w === 1440)) { await page.screenshot({ path: path.join(SHOTS, 'ecran-' + name.replace(/\s+/g, '-') + '-' + w + '.png'), fullPage: true }); }
-      await ctx.close();
-    }
-    ok(problems.length === 0, `Zona, ${size}: ${screens.length} ecrane cu stiluri străine: fără derulare orizontală, titlu sub antet, elemente ieșite sau prea mici, culori păstrate (${problems.join('; ') || 'în regulă'})`);
-  }
-  // contur la tastatură (stilurile străine îl opresc la linkuri): câmp, buton, link
   {
-    const ctx = await newCtx(); const page = await ctx.newPage(); page.setDefaultTimeout(90000);
-    await page.goto(ZONA + '?gi_test=stiluri', { waitUntil: 'load' });
-    const seen = {};
-    for (let i = 0; i < 60 && Object.keys(seen).length < 3; i++) {
-      await page.keyboard.press('Tab');
-      const info = await page.evaluate(() => { const a = document.activeElement; const cs = getComputedStyle(a); return { id: a.id, tag: a.tagName, cls: String(a.className), outline: cs.outlineStyle, width: parseFloat(cs.outlineWidth) }; });
-      if (info.id === 'gi-zona-user' || info.id === 'gi-zona-pass') { seen.field = info; }
-      if (info.tag === 'BUTTON' && /button-primary/.test(info.cls)) { seen.button = info; }
-      if (info.tag === 'A' && /gi-text-link|gi-admin-box/.test(info.cls)) { seen.link = info; }
-    }
-    ok(['field', 'button', 'link'].every((k) => seen[k] && seen[k].outline !== 'none' && seen[k].width >= 2), `acces cu tastatura: câmpul, butonul și linkul au contur vizibil (${JSON.stringify(Object.fromEntries(Object.entries(seen).map(([k, v]) => [k, v.outline + ' ' + v.width])))})`);
-    await ctx.close();
+    // același email, a doua oară: contul fără rol se reactivează (nu rămâne orfan, nu trebuie wp-admin)
+    await ap.goto(ZONA + 'echipa/', { waitUntil: 'domcontentloaded' });
+    await ap.fill('#gi-t-nume', COLEG); await ap.fill('#gi-t-email', EMAIL);
+    await submit(ap, 'button:has-text("Creează contul")');
+    const t3 = await ap.locator('.gi-zona-notice').allInnerTexts();
+    const pass3 = ((await ap.locator('.gi-zona-notice .gi-zona-coduri').innerText().catch(() => '')).match(/Parola: (\S+)/) || [])[1];
+    const u3 = await api(adm, 'utilizator&login=' + cred.login);
+    ok(t3.some((x) => /reactivat/.test(x)) && u3.roles.join() === 'gi_vanzari' && u3.caps.gi_vouchere && !!pass3 && pass3 !== cred2.pass, 'echipă: același email după „Scoate accesul” → contul se reactivează, cu parolă nouă');
+    await ap.goto(ZONA + 'echipa/', { waitUntil: 'domcontentloaded' });
+    ok((await ap.locator('.gi-zona-lista li', { hasText: COLEG }).count()) === 1, 'echipă: colegul reactivat apare din nou în lista echipei');
   }
+
+  await runScreens(browser, newCtx, await adm.storageState());
 
   // ------------------------------------------------------------------ curățenie
   for (const id of created.coupons) { await rest('DELETE', '/wc/v3/coupons/' + id + '?force=true'); }

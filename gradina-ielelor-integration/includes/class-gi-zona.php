@@ -24,6 +24,9 @@ final class GI_Zona {
     /** @var array<string,string> */
     private static $ctx = array('sec' => '', 'id' => '');
 
+    /** @var array<string,mixed> Mesaj afișat în chiar răspunsul la formular (parolele noi: nu se păstrează nicăieri). */
+    private static $inline = array();
+
     public static function init() {
         add_action('init', array(__CLASS__, 'rewrite'), 6);
         add_action('init', array(__CLASS__, 'roles'), 7);
@@ -40,7 +43,7 @@ final class GI_Zona {
         add_action('init', array(__CLASS__, 'keep_sales_out_of_admin'), 1);
         add_filter('show_admin_bar', array(__CLASS__, 'hide_admin_bar'));
         add_filter('login_redirect', array(__CLASS__, 'login_redirect'), 10, 3);
-        add_action('wp_login_failed', array(__CLASS__, 'login_failed'), 10, 2);
+        add_action('wp_login_failed', array(__CLASS__, 'login_failed'), 9999, 2); // ultimul: alte pluginuri (limitare, jurnal) apucă să numere eșecul înainte de redirecționare
         add_action('wp_enqueue_scripts', array(__CLASS__, 'assets'));
     }
 
@@ -63,8 +66,13 @@ final class GI_Zona {
         return $vars;
     }
 
+    /**
+     * Pagina cerută e Zona echipei numai dacă a fost recunoscută de regulile noastre de adrese: un parametru ?gi_zona=… pus de cineva
+     * pe altă adresă nu o transformă în Zonă (nici nu o scoate din Google, nici nu o ține în afara memoriei).
+     */
     public static function is_zona() {
-        return '' !== (string) get_query_var(self::VAR);
+        global $wp;
+        return '' !== (string) get_query_var(self::VAR) && isset($wp->matched_rule) && 0 === strpos((string) $wp->matched_rule, '^' . self::BASE);
     }
 
     /* ---------- Roluri și drepturi ---------- */
@@ -73,7 +81,7 @@ final class GI_Zona {
      * Rolul „Vânzări (Grădina)” și drepturile zonei, puse o singură dată la prima rulare a unei versiuni.
      */
     public static function roles() {
-        if (get_option('gi_zona_roluri') === GI_VERSION) {
+        if (get_option('gi_zona_roluri') === GI_VERSION && self::roles_complete()) {
             return;
         }
         $sales = array('read' => true, 'gi_zona' => true, 'gi_vouchere' => true);
@@ -101,6 +109,24 @@ final class GI_Zona {
     }
 
     /**
+     * Drepturile sunt puse peste tot unde există rolul? (Un rol creat mai târziu, de ex. „manager de magazin” după instalarea WooCommerce,
+     * primește drepturile la următoarea cerere, nu abia la următoarea versiune.)
+     */
+    private static function roles_complete() {
+        $sales = get_role(self::ROLE);
+        if (!$sales || !$sales->has_cap('gi_zona')) {
+            return false;
+        }
+        foreach (array('administrator', 'shop_manager', 'editor') as $name) {
+            $r = get_role($name);
+            if ($r && !$r->has_cap('gi_zona')) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Cont de vânzări: are rolul „Vânzări (Grădina)” și nimic mai mult (nu poate edita conținut). Aceste conturi nu intră în administrare.
      */
     public static function is_sales_only($user) {
@@ -121,7 +147,8 @@ final class GI_Zona {
 
     public static function login_redirect($redirect_to, $requested, $user) {
         if ($user instanceof WP_User && self::is_sales_only($user)) {
-            return self::url();
+            $base = self::url();
+            return 0 === strpos((string) $redirect_to, $base) ? $redirect_to : $base; // colegul de la vânzări ajunge numai în Zonă
         }
         return $redirect_to;
     }
@@ -228,11 +255,6 @@ final class GI_Zona {
      */
     private static function check($action, $back_section, $back_id = '') {
         $nonce = sanitize_text_field((string) self::posted('_gi_nonce'));
-        if ('' === $nonce && empty($_POST) && !empty($_SERVER['CONTENT_LENGTH'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
-            // Un fișier peste limita serverului: PHP aruncă tot formularul, nu doar poza.
-            self::flash(array('errors' => array('Poza e prea mare (maximum 8 MB) și nu s-a putut trimite. Alege o poză mai mică.')));
-            self::go($back_section, $back_id);
-        }
         if (!wp_verify_nonce($nonce, 'gi_zona_' . $action)) {
             self::flash(array('errors' => array('Pagina a expirat. Încearcă din nou.')));
             self::go($back_section, $back_id);
@@ -268,8 +290,16 @@ final class GI_Zona {
             return; // se arată formularul de autentificare sau „contul nu are acces”
         }
         $method = isset($_SERVER['REQUEST_METHOD']) ? strtoupper((string) $_SERVER['REQUEST_METHOD']) : 'GET';
+        if ('POST' === $method && empty($_POST) && !empty($_SERVER['CONTENT_LENGTH'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+            // Un fișier peste limita serverului: PHP aruncă tot formularul (și textul scris), nu doar poza. Spunem clar ce s-a întâmplat.
+            self::flash(array('errors' => array('Poza e prea mare (maximum ' . self::photo_limit() . ') și nu s-a putut trimite, iar textul scris nu s-a păstrat. Alege o poză mai mică și scrie din nou.')));
+            self::go($sec, $id);
+        }
         if ('POST' === $method) {
             self::handle_post($sec, $id);
+            if (!empty(self::$inline)) {
+                return; // răspuns afișat direct (conține o parolă): nu trece prin baza de date
+            }
         }
         if ('tipar' === $sec) {
             self::print_sheet();
@@ -284,6 +314,9 @@ final class GI_Zona {
             self::post_place($id);
         } elseif ('echipa' === $sec && in_array($action, array('adauga', 'parola', 'elimina', 'limite'), true)) {
             self::post_team($action);
+        }
+        if (!empty(self::$inline)) {
+            return; // parola nouă se arată chiar în acest răspuns, nu după o redirecționare
         }
         self::go($sec, $id);
     }
@@ -305,12 +338,16 @@ final class GI_Zona {
 
     /* ---------- Copaci și locuri ---------- */
 
+    private static function photo_limit() {
+        return size_format(min(8 * MB_IN_BYTES, wp_max_upload_size()));
+    }
+
     private static function upload_photo($post_id, $alt) {
         if (empty($_FILES['foto']) || !is_array($_FILES['foto']) || UPLOAD_ERR_NO_FILE === (int) $_FILES['foto']['error']) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
             return '';
         }
-        if (UPLOAD_ERR_OK !== (int) $_FILES['foto']['error'] || (int) $_FILES['foto']['size'] > 8 * MB_IN_BYTES) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
-            return 'Poza nu s-a putut încărca (maximum 8 MB). Încearcă din nou, cu o poză mai mică.';
+        if (UPLOAD_ERR_OK !== (int) $_FILES['foto']['error'] || (int) $_FILES['foto']['size'] > min(8 * MB_IN_BYTES, wp_max_upload_size())) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+            return 'Poza nu s-a putut încărca (maximum ' . self::photo_limit() . '). Încearcă din nou, cu o poză mai mică.';
         }
         require_once ABSPATH . 'wp-admin/includes/file.php';
         require_once ABSPATH . 'wp-admin/includes/image.php';
@@ -321,9 +358,6 @@ final class GI_Zona {
             return 'Poza nu a fost acceptată: alege o poză JPG, PNG sau WebP.';
         }
         set_post_thumbnail($post_id, $att);
-        if ('' !== $alt) {
-            update_post_meta($att, '_wp_attachment_image_alt', $alt);
-        }
         return '';
     }
 
@@ -367,7 +401,7 @@ final class GI_Zona {
         update_post_meta($post_id, '_gi_stiintific', sanitize_text_field((string) self::posted('stiintific')));
         $alt = sanitize_text_field((string) self::posted('alt'));
         $problem = self::upload_photo($post_id, $alt);
-        if ('' === $problem && '' !== $alt && has_post_thumbnail($post_id)) {
+        if ('' === $problem && has_post_thumbnail($post_id)) { // și un text gol: proprietara poate șterge „ce se vede în poză”
             update_post_meta(get_post_thumbnail_id($post_id), '_wp_attachment_image_alt', $alt);
         }
         self::flash(array('ok' => 'Salvat.', 'errors' => '' !== $problem ? array($problem) : array()));
@@ -407,7 +441,18 @@ final class GI_Zona {
                 self::flash(array('errors' => array('Scrie numele și un email valid.')));
                 self::go('echipa');
             }
-            if (email_exists($email)) {
+            $existing_id = email_exists($email);
+            if ($existing_id) {
+                $old = get_userdata($existing_id);
+                if ($old && empty($old->roles)) {
+                    // Un cont căruia i s-a scos accesul înainte (rămas fără rol): îl reactivăm, cu o parolă nouă.
+                    $old->set_role(self::ROLE);
+                    $pass = wp_generate_password(12, false);
+                    wp_set_password($pass, $old->ID);
+                    WP_Session_Tokens::get_instance($old->ID)->destroy_all();
+                    self::$inline = array('ok' => 'Accesul a fost reactivat.', 'cont' => array('name' => $old->display_name, 'login' => $old->user_login, 'pass' => $pass));
+                    return;
+                }
                 self::flash(array('errors' => array('Există deja un cont cu acest email.')));
                 self::go('echipa');
             }
@@ -418,8 +463,8 @@ final class GI_Zona {
                 self::flash(array('errors' => array('Contul nu s-a putut crea. Încearcă din nou.')));
                 self::go('echipa');
             }
-            self::flash(array('ok' => 'Contul a fost creat.', 'cont' => array('name' => $name, 'login' => $login, 'pass' => $pass)));
-            self::go('echipa');
+            self::$inline = array('ok' => 'Contul a fost creat.', 'cont' => array('name' => $name, 'login' => $login, 'pass' => $pass));
+            return;
         }
         $uid = absint(self::posted('utilizator'));
         $user = $uid ? get_userdata($uid) : false;
@@ -431,9 +476,10 @@ final class GI_Zona {
             $pass = wp_generate_password(12, false);
             wp_set_password($pass, $uid);
             WP_Session_Tokens::get_instance($uid)->destroy_all();
-            self::flash(array('ok' => 'Parola a fost schimbată.', 'cont' => array('name' => $user->display_name, 'login' => $user->user_login, 'pass' => $pass)));
+            self::$inline = array('ok' => 'Parola a fost schimbată.', 'cont' => array('name' => $user->display_name, 'login' => $user->user_login, 'pass' => $pass));
+            return;
         } else {
-            $user->set_role('');
+            $user->remove_role(self::ROLE); // numai rolul de vânzări; alte roluri ale contului (dacă are) rămân
             WP_Session_Tokens::get_instance($uid)->destroy_all();
             self::flash(array('ok' => 'Accesul lui ' . $user->display_name . ' a fost scos.'));
         }
@@ -493,7 +539,7 @@ final class GI_Zona {
     }
 
     public static function render() {
-        $flash = self::take_flash();
+        $flash = array_merge(self::take_flash(), self::$inline);
         if (!is_user_logged_in()) {
             self::view_login();
             return;
@@ -536,7 +582,7 @@ final class GI_Zona {
             <p>Pentru echipa Grădinii. Intri cu utilizatorul și parola primite de la proprietară.</p>
             <?php if ('1' === $err) : ?><div class="gi-zona-notice gi-zona-err" role="alert">Datele de autentificare nu sunt corecte. Încearcă din nou.</div><?php endif; ?>
             <form method="post" action="<?php echo esc_url(wp_login_url()); ?>" class="gi-zona-form">
-                <input type="hidden" name="redirect_to" value="<?php echo esc_url(self::url()); ?>">
+                <input type="hidden" name="redirect_to" value="<?php echo esc_url(in_array(self::$ctx['sec'], array('vouchere', 'copaci', 'echipa'), true) ? self::url(self::$ctx['sec'], self::$ctx['id']) : self::url()); ?>">
                 <label for="gi-zona-user">Utilizator sau email</label>
                 <input type="text" id="gi-zona-user" name="log" autocomplete="username" autocapitalize="none" required>
                 <label for="gi-zona-pass">Parola</label>
@@ -603,7 +649,7 @@ final class GI_Zona {
         <div class="gi-zona-card">
             <h2>Voucher nou</h2>
             <p>Valabil <strong><?php echo (int) GI_Vouchere::MONTHS; ?> luni</strong> de azi, o singură folosire pe cod.
-                <?php if ($limits) : ?>Poți da cel mult <strong><?php echo esc_html($nice($limits['procent'])); ?>%</strong> sau <strong><?php echo esc_html($nice($limits['suma'])); ?> lei</strong> reducere, cel mult <strong><?php echo (int) $limits['numar']; ?></strong> coduri deodată.<?php endif; ?></p>
+                <?php if ($limits) : ?>Pe fiecare cod poți da cel mult <strong><?php echo esc_html($nice($limits['procent'])); ?>%</strong> sau <strong><?php echo esc_html($nice($limits['suma'])); ?> lei</strong> reducere, cel mult <strong><?php echo (int) $limits['numar']; ?></strong> coduri deodată. La o rezervare se poate folosi un singur cod de la tine.<?php endif; ?></p>
             <form method="post" action="<?php echo esc_url(self::url('vouchere')); ?>" class="gi-zona-form">
                 <input type="hidden" name="gi_actiune" value="genereaza">
                 <?php echo self::nonce_field('genereaza'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -650,7 +696,7 @@ final class GI_Zona {
                             </li>
                         <?php endforeach; ?>
                     </ul>
-                    <p>
+                    <p class="gi-zona-alege">
                         <label for="gi-v-size">Mărimea codului</label>
                         <select name="size" id="gi-v-size"><option value="4">mic (4 cm)</option><option value="6" selected>mediu (6 cm)</option><option value="8">mare (8 cm)</option><option value="10">foarte mare (10 cm)</option></select>
                     </p>
@@ -698,7 +744,7 @@ final class GI_Zona {
                             </li>
                         <?php endforeach; ?>
                     </ul>
-                    <p><label for="gi-p-size">Mărimea codului</label>
+                    <p class="gi-zona-alege"><label for="gi-p-size">Mărimea codului</label>
                         <select name="size" id="gi-p-size"><option value="4">mic (4 cm)</option><option value="6">mediu (6 cm)</option><option value="8" selected>mare (8 cm)</option><option value="10">foarte mare (10 cm)</option></select></p>
                     <p><button type="submit" class="button button-primary">Printează codurile alese</button></p>
                 </form>
@@ -741,17 +787,18 @@ final class GI_Zona {
                 <label for="gi-p-foto">Poza locului <?php echo $thumb ? '(alege alta ca s-o schimbi)' : ''; ?></label>
                 <?php if ($thumb) : ?><img class="gi-zona-foto" src="<?php echo esc_url($thumb); ?>" alt=""><?php endif; ?>
                 <input type="file" id="gi-p-foto" name="foto" accept="image/jpeg,image/png,image/webp">
-                <p class="gi-zona-mic">De pe telefon poți face poza chiar acum. JPG, PNG sau WebP, maximum 8 MB.</p>
+                <p class="gi-zona-mic">De pe telefon poți face poza chiar acum. JPG, PNG sau WebP, maximum <?php echo esc_html(self::photo_limit()); ?>.</p>
                 <label for="gi-p-alt">Ce se vede în poză (o frază scurtă)</label>
                 <input type="text" id="gi-p-alt" name="alt" maxlength="160" value="<?php echo esc_attr($alt); ?>" placeholder="ex. Stejarul, văzut de pe cărare">
                 <label class="gi-zona-radio"><input type="checkbox" name="publica" value="1" <?php checked($pub); ?>> Publică (se vede vizitatorilor)</label>
+                <p class="gi-zona-mic">Dacă ai printat deja codul și scoți bifa, codul din teren nu mai duce nicăieri.</p>
                 <p><button type="submit" class="button button-primary">Salvează</button> <a class="gi-text-link" href="<?php echo esc_url(self::url('copaci')); ?>">Înapoi la listă</a></p>
             </form>
         </div>
         <?php if ($post && 'publish' === $post->post_status) : ?>
         <div class="gi-zona-card">
             <h2>Codul QR</h2>
-            <p class="gi-zona-mic">Nu schimba titlul pe ascuns după ce ai printat codul: adresa paginii e cea din cod.</p>
+            <p class="gi-zona-mic">Adresa paginii nu se schimbă când modifici titlul sau textul, deci codul printat rămâne bun. Dacă scoți bifa „Publică” sau ștergi locul, codul din teren nu mai duce nicăieri.</p>
             <div class="gi-qr-box gi-zona-qr" data-qr-url="<?php echo esc_attr(GI_Puncte::qr_url($post)); ?>"></div>
             <p class="gi-zona-mic"><?php echo esc_html(GI_Puncte::qr_url($post)); ?></p>
             <p>
@@ -774,7 +821,7 @@ final class GI_Zona {
         }
         if (!empty($flash['cont'])) {
             $c = $flash['cont'];
-            echo '<div class="gi-zona-notice gi-zona-ok"><p><strong>Date de intrare pentru ' . esc_html($c['name']) . '</strong> (se arată o singură dată; notează-le și transmite-le):</p>'
+            echo '<div class="gi-zona-notice gi-zona-ok"><p><strong>Date de intrare pentru ' . esc_html($c['name']) . '</strong> (se arată o singură dată, nu reîncărca pagina; notează-le și transmite-le):</p>'
                 . '<p class="gi-zona-coduri">Adresa: ' . esc_html(self::url()) . '<br>Utilizator: ' . esc_html($c['login']) . '<br>Parola: ' . esc_html($c['pass']) . '</p></div>';
         }
         $team = get_users(array('role' => self::ROLE, 'orderby' => 'display_name'));

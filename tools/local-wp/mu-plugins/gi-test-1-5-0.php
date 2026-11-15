@@ -7,10 +7,23 @@
  *  - /?gi_test=cupon&cod=X      → datele cuponului (valoare, tip, folosiri, expirare, cine l-a generat)
  *  - /?gi_test=sterge_utilizator&login=X → șterge utilizatorul de probă
  *  - /?gi_test=zona_reset       → readuce limitele și opțiunile Zonei la starea de pornire
+ *  - /?gi_test=esecuri_login    → câte autentificări greșite a văzut un ascultător montat DUPĂ cel din Zonă (prioritate 10000); apoi se resetează
+ *  - /?gi_test=cauta_optiuni&q=X → de câte ori apare textul X în valorile opțiunilor (parolele nu trebuie să rămână în baza de date)
+ *  - /?gi_test=ini              → post_max_size și upload_max_filesize ale serverului local
  */
 if (!defined('ABSPATH')) {
     exit;
 }
+
+// Numai pe WordPress-ul local: pe orice alt domeniu nu face nimic (nu oprește emailurile, nu are adrese de test).
+$gi_test_host = isset($_SERVER['HTTP_HOST']) ? strtolower((string) $_SERVER['HTTP_HOST']) : '';
+if (!preg_match('/^(127\.0\.0\.1|localhost)(:\d+)?$/', $gi_test_host)) {
+    return;
+}
+
+add_action('wp_login_failed', function () {
+    update_option('gi_test_esecuri_login', (int) get_option('gi_test_esecuri_login', 0) + 1, false);
+}, 10000);
 
 add_filter('pre_wp_mail', function ($null, $atts) {
     update_option('gi_test_emailuri', (int) get_option('gi_test_emailuri', 0) + 1, false);
@@ -19,7 +32,7 @@ add_filter('pre_wp_mail', function ($null, $atts) {
 
 add_action('init', function () {
     $t = isset($_GET['gi_test']) ? sanitize_key(wp_unslash($_GET['gi_test'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-    if ('' === $t || !in_array($t, array('emailuri', 'utilizator', 'cupon', 'sterge_utilizator', 'zona_reset'), true)) {
+    if ('' === $t || !in_array($t, array('emailuri', 'utilizator', 'cupon', 'sterge_utilizator', 'zona_reset', 'esecuri_login', 'cauta_optiuni', 'ini'), true)) {
         return;
     }
     header('Content-Type: application/json');
@@ -47,7 +60,7 @@ add_action('init', function () {
         } else {
             $c = new WC_Coupon($id);
             $exp = $c->get_date_expires();
-            echo wp_json_encode(array('exists' => true, 'id' => $id, 'amount' => (float) $c->get_amount(), 'type' => $c->get_discount_type(), 'limit' => (int) $c->get_usage_limit(), 'expires' => $exp ? $exp->getTimestamp() : 0, 'creator' => (int) get_post_meta($id, '_gi_voucher_creator', true), 'lot' => (string) get_post_meta($id, '_gi_voucher_lot', true), 'description' => $c->get_description()));
+            echo wp_json_encode(array('exists' => true, 'id' => $id, 'amount' => (float) $c->get_amount(), 'type' => $c->get_discount_type(), 'limit' => (int) $c->get_usage_limit(), 'expires' => $exp ? $exp->getTimestamp() : 0, 'creator' => (int) get_post_meta($id, '_gi_voucher_creator', true), 'individual' => (bool) $c->get_individual_use(), 'lot' => (string) get_post_meta($id, '_gi_voucher_lot', true), 'description' => $c->get_description()));
         }
     } elseif ('sterge_utilizator' === $t) {
         $login = isset($_GET['login']) ? sanitize_user(wp_unslash($_GET['login'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -57,6 +70,17 @@ add_action('init', function () {
             wp_delete_user($u->ID);
         }
         echo wp_json_encode(array('ok' => (bool) $u));
+    } elseif ('esecuri_login' === $t) {
+        $n = (int) get_option('gi_test_esecuri_login', 0);
+        update_option('gi_test_esecuri_login', 0, false);
+        echo wp_json_encode(array('count' => $n));
+    } elseif ('cauta_optiuni' === $t) {
+        global $wpdb;
+        $q = isset($_GET['q']) ? (string) wp_unslash($_GET['q']) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $n = '' === $q ? -1 : (int) $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->options} WHERE option_value LIKE %s", '%' . $wpdb->esc_like($q) . '%'));
+        echo wp_json_encode(array('count' => $n));
+    } elseif ('ini' === $t) {
+        echo wp_json_encode(array('post_max_size' => ini_get('post_max_size'), 'upload_max_filesize' => ini_get('upload_max_filesize'), 'wp_max_upload_size' => wp_max_upload_size()));
     } elseif ('zona_reset' === $t) {
         delete_option('gi_zona_limite');
         echo wp_json_encode(array('ok' => true));

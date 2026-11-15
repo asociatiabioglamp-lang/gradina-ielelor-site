@@ -43,8 +43,8 @@ Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai 
 
 = 1.5.0 =
 * „Zona echipei” (adresa /zona-echipei/): administrare direct de pe site, fără administrarea WordPress, cu utilizator și parolă. În subsolul tuturor paginilor apare căsuța „Administrare”. Pagina nu apare în Google și nu se păstrează în memorii intermediare. Ghid: docs/zona-echipei.md.
-* Rol nou „Vânzări (Grădina)”: colegii de la vânzări văd numai Zona (vouchere), nu intră în administrarea WordPress (sunt trimiși înapoi în Zonă), nu pot scrie nimic prin REST. Conturile se fac din Zonă → Echipă: fără email, parola se arată o singură dată, „Parolă nouă” închide sesiunile, „Scoate accesul”.
-* Vouchere în Zonă: sumă fixă sau procent, 1–100 deodată, 18 luni, o folosire, cod QR de printat. Colegii de la vânzări au limite (provizorii: 10% / 100 lei / 10 coduri, schimbabile de proprietară) și văd numai voucherele lor; fiecare voucher păstrează cine l-a generat.
+* Rol nou „Vânzări (Grădina)”: colegii de la vânzări văd numai Zona (vouchere), nu intră în administrarea WordPress (sunt trimiși înapoi în Zonă), nu pot modifica conținutul. Conturile se fac din Zonă → Echipă: fără email, parola se arată o singură dată, „Parolă nouă” închide sesiunile, „Scoate accesul”.
+* Vouchere în Zonă: sumă fixă sau procent, 1–100 deodată, 18 luni, o folosire, cod QR de printat. Colegii de la vânzări au limite pe cod și pe generare (provizorii: 10% / 100 lei / 10 coduri, schimbabile de proprietară), codurile lor se aplică câte unul la o rezervare, și văd numai voucherele lor; fiecare voucher păstrează cine l-a generat.
 * Copaci și locuri în Zonă: titlu, tip, poveste, poză făcută chiar de pe telefon (JPG, PNG, WebP, maximum 8 MB), text alternativ, ciornă/publicat, cod QR de printat sau descărcat.
 * Drepturi noi pe roluri: administratorul (toate), managerul de magazin (zonă, vouchere, copaci), editorul (zonă, copaci). Se șterg la dezinstalare, împreună cu rolul „Vânzări (Grădina)”.
 

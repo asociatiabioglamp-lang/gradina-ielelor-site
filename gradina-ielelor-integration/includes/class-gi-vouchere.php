@@ -132,7 +132,9 @@ final class GI_Vouchere {
             if ('suma' === $type && $value > $limits['suma']) {
                 $errors[] = $limits['suma'] > 0 ? 'Poți da cel mult ' . $nice($limits['suma']) . ' lei reducere. Pentru mai mult, cere-i proprietarei.' : 'Nu ai voie să generezi reduceri în lei. Cere-i proprietarei.';
             }
-            if ($count > $limits['numar']) {
+            if ($limits['numar'] < 1) {
+                $errors[] = 'Nu ai voie să generezi coduri. Cere-i proprietarei.';
+            } elseif ($count > $limits['numar']) {
                 $errors[] = 'Poți genera cel mult ' . (int) $limits['numar'] . ' coduri deodată.';
             }
         }
@@ -167,7 +169,8 @@ final class GI_Vouchere {
             $coupon->set_discount_type('procent' === $type ? 'percent' : 'fixed_cart');
             $coupon->set_amount($value);
             $coupon->set_usage_limit(1);
-            $coupon->set_individual_use(false);
+            // Codurile celor cu limite se aplică singure la o rezervare: altfel zece coduri de 10% s-ar aduna la 100% reducere.
+            $coupon->set_individual_use($limits ? true : false);
             $coupon->set_date_expires($expires->getTimestamp());
             $coupon->set_description($note ? $note : 'Voucher generat din zona Grădina');
             $coupon->update_meta_data('_gi_voucher_lot', $lot);

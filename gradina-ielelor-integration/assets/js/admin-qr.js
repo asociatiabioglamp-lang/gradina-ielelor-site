@@ -52,23 +52,7 @@
     setTimeout(function () { URL.revokeObjectURL(link.href); }, 1000);
   }
 
-  function init() {
-    if (typeof window.qrcode !== 'function') return;
-    // Adresele sunt ASCII; totuși, codificarea UTF-8 evită orice caracter tăiat dacă apare vreodată unul în afara ASCII.
-    if (window.qrcode.stringToBytesFuncs && window.qrcode.stringToBytesFuncs['UTF-8']) {
-      window.qrcode.stringToBytes = window.qrcode.stringToBytesFuncs['UTF-8'];
-    }
-    draw(document);
-
-    // Căsuțele pot apărea după încărcare (ecrane care își mută conținutul): desenăm și ce se adaugă ulterior.
-    if (window.MutationObserver && document.body) {
-      var pending = null;
-      new MutationObserver(function () {
-        if (pending) return;
-        pending = setTimeout(function () { pending = null; draw(document); }, 120);
-      }).observe(document.body, { childList: true, subtree: true });
-    }
-
+  function bindActions() {
     document.addEventListener('click', function (event) {
       var button = event.target && event.target.closest ? event.target.closest('[data-qr-download]') : null;
       if (button) {
@@ -95,12 +79,32 @@
     });
 
     // Acțiuni care cer o confirmare (în Zona echipei): fără confirmare, formularul nu se trimite.
+    // Legat înaintea verificării bibliotecii de coduri: confirmarea nu depinde de ea.
     document.addEventListener('click', function (event) {
       var target = event.target && event.target.closest ? event.target.closest('[data-gi-confirma]') : null;
       if (target && !window.confirm(target.getAttribute('data-gi-confirma'))) {
         event.preventDefault();
       }
     });
+  }
+
+  function init() {
+    bindActions();
+    if (typeof window.qrcode !== 'function') return;
+    // Adresele sunt ASCII; totuși, codificarea UTF-8 evită orice caracter tăiat dacă apare vreodată unul în afara ASCII.
+    if (window.qrcode.stringToBytesFuncs && window.qrcode.stringToBytesFuncs['UTF-8']) {
+      window.qrcode.stringToBytes = window.qrcode.stringToBytesFuncs['UTF-8'];
+    }
+    draw(document);
+
+    // Căsuțele pot apărea după încărcare (ecrane care își mută conținutul): desenăm și ce se adaugă ulterior.
+    if (window.MutationObserver && document.body) {
+      var pending = null;
+      new MutationObserver(function () {
+        if (pending) return;
+        pending = setTimeout(function () { pending = null; draw(document); }, 120);
+      }).observe(document.body, { childList: true, subtree: true });
+    }
   }
 
   if (document.readyState === 'loading') {
