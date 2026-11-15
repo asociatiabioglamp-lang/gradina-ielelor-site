@@ -396,10 +396,11 @@ final class GI_Fise {
             $ok = $wpdb->insert($table, $row);
             $wpdb->suppress_errors($previous);
             if ($ok) {
+                $new_id = (int) $wpdb->insert_id; // înainte de orice altă scriere (update_option schimbă insert_id)
                 if ($nr > (int) get_option($counter, 0)) {
                     update_option($counter, $nr, false);
                 }
-                return (int) $wpdb->insert_id;
+                return $new_id;
             }
             $error = (string) $wpdb->last_error;
             if (false !== stripos($error, 'act_unic') || false !== stripos($error, 'act_cheie')) {

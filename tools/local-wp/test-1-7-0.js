@@ -145,7 +145,7 @@ const MRZ_EXPIRED = buildTD1({ doc: 'AB654321', dob: '800101', sex: 'M', exp: '2
   const f1 = r1[0] || {};
   ok(f1.serie === 'GI-' + YEAR + '-00001' && f1.nume === 'POPESCU' && f1.prenume === 'MARIA ELENA' && f1.nastere === '1990-03-14' && f1.sex === 'F' && f1.cnp === CNP1 && f1.serie_act === 'XY123456' && f1.cetatenie === 'România' && f1.loc_nastere === 'Brașov, România' && f1.adult_nr === '1' && f1.rezervare === CODE && String(f1.comanda) === String(A.id) && f1.sosire === '2027-02-10' && f1.plecare === '2027-02-12', 'înscriere: datele din fișă sunt cele din act și din rezervare, seria GI-' + YEAR + '-00001, adultul 1');
   ok((f1.semn_t || 0) > 300 && (f1.semn_r || 0) > 300 && f1.semn_t_start === 'data:image/png;base64,', 'înscriere: ambele semnături se păstrează ca imagini PNG (' + f1.semn_t + ' / ' + f1.semn_r + ' caractere)');
-  ok(/consimțământ|informat despre prelucrarea/.test(f1.gdpr_text || ''), 'înscriere: se păstrează textul bifat despre datele personale');
+  ok(/luat cunoștință de prelucrarea datelor/.test(f1.gdpr_text || ''), 'înscriere: se păstrează textul bifat despre datele personale');
   const sheet = await ap.locator('.gi-zona').innerText();
   ok(/Fișă de cazare/.test(sheet) && /Accommodation registration form/.test(sheet) && /Surname/.test(sheet) && /Date of birth/.test(sheet) && /GI-\d{4}-00001/.test(sheet) && /POPESCU/.test(sheet) && /14\.03\.1990/.test(sheet) && new RegExp(CNP1).test(sheet) && /10\.02\.2027/.test(sheet) && /2 nopți \/ nights/.test(sheet), 'fișă: română și engleză, serie, nume, data nașterii, CNP, sosire, plecare, nopți');
   ok((await ap.locator('.gi-fisa-semnaturi img').count()) === 2 && (await ap.locator('.gi-fisa-semnaturi img[src^="data:image/png;base64,"]').count()) === 2, 'fișă: cele două semnături apar ca imagini');
@@ -326,7 +326,7 @@ const MRZ_EXPIRED = buildTD1({ doc: 'AB654321', dob: '800101', sex: 'M', exp: '2
   const csvNo = await adm.request.post(ZONA + 'registru/', { form: { gi_actiune: 'csv', _gi_nonce: 'gresit' }, maxRedirects: 0 });
   ok(csvNo.status() === 302 && !/POPESCU/.test(await csvNo.text()), 'CSV: fără codul de siguranță valabil nu se descarcă nimic (' + csvNo.status() + ')');
   const csvGet = await adm.request.get(ZONA + 'registru/?export=csv&_gi_nonce=' + csvNonce, { maxRedirects: 0 });
-  ok(!/POPESCU/.test(await csvGet.text()) && !/text\/csv/.test(csvGet.headers()['content-type'] || ''), 'CSV: descărcarea prin adresă (GET) nu mai merge');
+  ok(!/text\/csv/.test(csvGet.headers()['content-type'] || '') && !/attachment/.test(csvGet.headers()['content-disposition'] || ''), 'CSV: descărcarea prin adresă (GET) nu mai merge (se afișează pagina obișnuită, nu un fișier)');
   // ștergere
   await ap.goto(ZONA + 'registru/', { waitUntil: 'domcontentloaded' });
   await Promise.all([ap.waitForNavigation({ waitUntil: 'domcontentloaded' }), ap.locator('tr:has-text("TERCER") button:has-text("Șterge")').click()]);
