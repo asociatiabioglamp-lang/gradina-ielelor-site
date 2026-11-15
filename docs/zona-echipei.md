@@ -1,11 +1,10 @@
-# Zona echipei (pluginul 1.6.0)
+# Zona echipei (pluginul 1.7.0)
 
 **Administrare** direct de pe site, fără să intri în administrarea WordPress. Utilizator + parolă.
 Adresa: **gradina-ielelor.ro/zona-echipei/**. În subsolul fiecărei pagini a site-ului e o căsuță **„Administrare”** care duce acolo.
 Pagina nu apare în Google și nu se păstrează în memoria browserului sau a serverului.
 
-Ce e acum în Zonă: **Vouchere**, **Copaci și locuri** (cu cod QR), **Recepție** (rezervări cu cod QR), **Echipă** și **Istoric**.
-Urmează **Fișa de cazare** (cerută de proprietară, 15.11.2026; vezi „Ce urmează”).
+Ce e acum în Zonă: **Vouchere**, **Copaci și locuri** (cu cod QR), **Recepție** (rezervări cu cod QR și fișa de cazare), **Registrul fișelor** (numai pentru tine), **Echipă** și **Istoric**.
 
 ## Intri
 1. Apeși **Administrare** din subsolul site-ului (sau scrii adresa de mai sus).
@@ -103,7 +102,26 @@ Voucherele sunt **cupoane WooCommerce obișnuite**, de două feluri: **sumă fix
 
 **Istoric.** Fiecare căutare apare în Istoric → **Recepție** („A căutat rezervarea …”), cu cine a căutat, fără numele sau telefonul turistului. O singură linie pe rezervare și pe persoană într-un minut; la „Tot” nu apar (sunt multe, zilnice).
 
-**Ce nu face (încă).** Nu creează fișa de cazare și nu citește actul de identitate: asta e etapa următoare (vezi „Ce urmează”). Datele de sosire, plecare, adulți și copii se citesc din câmpurile pe care le pune modulul de rezervări în comandă; dacă un câmp lipsește din comandă, Recepția scrie „nu apar în comandă”, nu inventează.
+**Ce nu face (încă).** Nu citește zona de jos a actului direct cu camera telefonului (vezi „Fișa de cazare” și „Ce urmează”). Datele de sosire, plecare, adulți și copii se citesc din câmpurile pe care le pune modulul de rezervări în comandă; dacă un câmp lipsește din comandă, Recepția scrie „nu apar în comandă”, nu inventează.
+
+## Fișa de cazare
+**Unde.** Recepție → cauți rezervarea → **„Fișa de cazare”**. Pentru fiecare **adult** (copiii nu au fișă); pagina spune „Adultul 2 din 3”.
+
+**Pașii la recepție**
+1. **Actul de identitate** (cartea de identitate; unitatea e de 1 stea, deci se cere actul): citești zona de jos a actului (rândurile cu „<<<”) cu un cititor de documente (care scrie în câmp ca o tastatură) sau o scrii/lipești, apoi **„Citește actul”**. Aplicația verifică cifrele de control (te avertizează dacă actul a fost citit greșit sau pare alterat), verifică dacă actul mai e valabil și completează numele, prenumele, data nașterii, sexul, cetățenia, tipul și seria actului, valabilitatea și **CNP-ul** (numai dacă e valid și se potrivește cu restul actului). **Actul nu se copiază**: se păstrează numai datele. Textul citit din act se șterge din pagină imediat.
+2. **Domiciliul și telefonul** vin din rezervare; le corectezi dacă turistul spune altceva. **Locul nașterii** îl scrii tu (nu apare în zona de jos a actului). La turiștii străini CNP-ul rămâne gol. Dacă nu ai cititor de acte, scrii datele de mână.
+3. **Semnături**: turistul semnează cu degetul pe ecran, apoi recepționerul. Bifezi că turistul a fost informat despre prelucrarea datelor personale.
+4. **„Înscrie fișa”**: se păstrează fișa, primește o **serie** (ex. `GI-2026-00017`) și se afișează în română și engleză. **„Printează fișa”** (o pagină A4) și **„Următorul adult”**.
+
+Dacă ceva nu e în regulă (CNP greșit, act expirat, același act de două ori, plecare înainte de sosire, semnături lipsă), apare un mesaj, iar ce ai scris și semnăturile **rămân în formular**.
+
+**Registrul (numai tu).** Zona echipei → **Registrul fișelor**: lista tuturor fișelor, căutare (serie, nume, rezervare, act, CNP, număr comandă), deschiderea unei fișe, **Descarcă CSV** (se deschide în Excel), **Șterge** (cu confirmare). Recepția **nu** vede registrul: înscrie fișe și vede fișa abia înscrisă, timp de o oră.
+
+**Setări fișă** (în Registru): denumirea unității, **operatorul (firma), CUI, clasificarea** (acestea nu sunt confirmate: le completezi tu, înainte de a folosi fișa), începutul seriei, textul bifei despre datele personale și **cât timp se păstrează fișele**. Fișele deja înscrise rămân cu datele din ziua în care au fost făcute. Dacă alegi un termen (în luni), registrul îți arată câte fișe l-au depășit și poți să le ștergi cu un clic; **nimic nu se șterge singur**.
+
+**Ce rămâne de hotărât (nu e pus de Claude, nu e inventat)**: textul notei de informare despre datele personale și cât se păstrează fișele (le dă un jurist); lista exactă de date din sistemul electronic național (SIT), dacă proiectul se adoptă; dacă CNP-ul apare în zona de jos pentru actele reale (se încearcă cu acte reale, pe un telefon); citirea zonei de jos direct cu camera telefonului (altă etapă, se încearcă separat).
+
+**Istoric.** Fiecare fișă înscrisă, ștearsă sau descărcată apare în Istoric → Fișe, **fără** nume, CNP, acte sau telefoane.
 
 ## Copaci și locuri (cod QR)
 **Zona echipei → Copaci și locuri → Adaugă un loc.** Scrii titlul, alegi ce este (copac, plantă, loc), numele științific (dacă vrei), o frază sub titlu, **povestea locului** și alegi **poza**. De pe telefon poți face poza chiar atunci (maximum 8 MB).
@@ -116,7 +134,7 @@ Voucherele sunt **cupoane WooCommerce obișnuite**, de două feluri: **sumă fix
 Ghidul detaliat pentru codurile din teren (mărimi, unde le pui, statistici): `docs/zona-privata.md`. Aceleași funcții se găsesc și în administrarea WordPress, meniul **Grădina**.
 
 ## Ce urmează (în aceeași Zonă)
-- **Fișa de cazare**: la recepție, de pe telefon, scanezi codul rezervării și generezi fișa de cazare (obligație legală). Are nevoie de **modelul fișei pe care o folosiți acum** (proprietara îl trimite, 15.11) și de hotărâri despre datele personale (ce se păstrează, cât timp, cine are acces). **Nu** se face înainte să fie lămurite; textele legale se confirmă cu un jurist.
+- **Citirea actului cu camera telefonului** (a zonei de jos a actului, fără cititor): etapă separată, se încearcă pe un telefon real. Mai înainte: textul notei despre datele personale și termenul de păstrare (jurist).
 - Nu se pune nimic live fără aprobarea ta.
 
 ## Siguranță (pe scurt)

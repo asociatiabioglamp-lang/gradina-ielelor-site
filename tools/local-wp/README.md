@@ -64,3 +64,11 @@ NODE_PATH="$(npm root -g):<folder>/node_modules" GI_PHP_LOG=<wp>/wp-content/gi-p
 ```bash
 NODE_PATH="$(npm root -g):<folder>/node_modules" GI_PHP_LOG=<wp>/wp-content/gi-php-errors.log node tools/local-wp/test-1-6-0.js
 ```
+
+`test-mrz.js` (fără browser, fără WordPress; `node tools/local-wp/test-mrz.js`) verifică citirea zonei de jos a actului (`assets/js/mrz.js`) cu exemplele oficiale ICAO 9303 (pașaport, carte de identitate cu 3 rânduri, act cu 2 rânduri), cifre greșite, intrări nepotrivite, litere mici, „«” în loc de „<”, tot textul pe un rând, acte românești de probă cu CNP calculat, regulile CNP (data nașterii, sex, secol).
+
+`test-1-7-0.js` verifică fișa de cazare și registrul: butonul din Recepție, formularul (adultul k din N, datele din rezervare), citirea actului în browser, semnături (mouse pe canvas), înscrierea și afișarea fișei în română și engleză, tiparul pe o pagină A4 (PDF), greșelile cu păstrarea formularului, al treilea adult, rezervare veche fără cod, contul „Recepție” (poate înscrie, nu vede registrul, nu șterge, nu descarcă), registrul (căutare după nume, CNP, serie; CSV cu protecție la formule; ștergere), setările (prefix, unitate, text GDPR), termenul de păstrare, Istoric fără date personale și ecranele pe patru mărimi. Are nevoie de `mu-plugins/gi-test-1-7-0.php` (numai local), de `gi-test-1-6-0.php`, `gi-test-1-5-0.php`, `gi-test-1-3-14.php` și de produsul „Rezervare de probă”. Variabile opționale: `GI_BASE` (alt port local, ex. `http://127.0.0.1:9401`), `GI_PHP_LOG`, `GI_SHOTS`.
+
+```bash
+NODE_PATH="$(npm root -g):<folder>/node_modules" GI_PHP_LOG=<wp>/wp-content/gi-php-errors.log node tools/local-wp/test-1-7-0.js
+```

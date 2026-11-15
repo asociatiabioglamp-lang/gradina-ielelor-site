@@ -3,7 +3,7 @@ Contributors: gradina-ielelor
 Tags: one-page, woocommerce, booking, ovabrw, seo
 Requires at least: 6.0
 Requires PHP: 7.4
-Stable tag: 1.6.0
+Stable tag: 1.7.0
 License: GPLv2 or later
 
 Template-uri server-side pentru pagina principală (hub de rezervare) și paginile dedicate ofertelor Grădina Ielelor, cu WooCommerce + OVABRW drept singur motor de rezervări.
@@ -40,6 +40,12 @@ Nu. Constanta GI_REACT_DEMO_ENABLED este false, bundle-ul React nu este inclus, 
 Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai opțiunile acestui plugin.
 
 == Changelog ==
+
+= 1.7.0 =
+* Fișa de cazare (Zona echipei → Recepție → „Fișa de cazare”): pentru fiecare adult al rezervării (copiii nu au fișă). Datele turistului se iau din zona de jos a actului de identitate (citită în browser: cifrele de control ICAO 9303, valabilitatea, CNP-ul numai dacă are cifra de control corectă și se potrivește cu data nașterii, sexul și secolul), din rezervare (domiciliu, telefon, sosire, plecare) sau se scriu de mână. Actul nu se copiază și textul brut al zonei de jos nu se trimite și nu se păstrează. Include biblioteca proprie assets/js/mrz.js (fără serviciu extern).
+* Fișa e în română și engleză, cu serie (prefix-an-număr), semnătura turistului și a recepționerului (desenate pe ecran, păstrate ca imagini PNG), confirmarea că turistul a fost informat despre prelucrarea datelor (textul se schimbă din Setări; provizoriu până îl dă juristul), datele unității (păstrate pe fiecare fișă) și tipar pe A4 (o pagină).
+* Registrul fișelor (Zona echipei → Registrul fișelor): numai administratorul. Căutare, deschidere, descărcare CSV (Excel, cu protecție la formule), ștergere, termen de păstrare ales de proprietară (nu se șterge nimic singur) și Setări (unitate, operator, CUI, clasificare, prefixul seriei, textul GDPR). Recepția doar înscrie fișe și vede fișa abia înscrisă (o oră).
+* Istoric → Fișe: cine a înscris, a șters sau a descărcat, fără nume, CNP, acte sau telefoane. Datele stau într-un tabel al site-ului (gi_fise), care rămâne și dacă pluginul e șters (acte ținute pe termen legal).
 
 = 1.6.0 =
 * Cod QR la fiecare rezervare finalizată (comandă în procesare, finalizată sau cu plata la locație): cod scurt XXXX-XXXX (fără 0, O, 1, I, L, ușor de dictat), arătat pe pagina de mulțumire, în Contul meu, în emailul de confirmare și pe pagina /cod-rezervare/<cod>/ (cod QR mare, de arătat pe telefon sau de printat; nu apare în Google). Codul QR conține numai GI1.<cod>.<sumă de control>: fără nume, telefon sau email.
