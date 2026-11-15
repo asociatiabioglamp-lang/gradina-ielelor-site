@@ -68,19 +68,48 @@ final class GI_Vouchere {
         return $date->modify('+' . self::MONTHS . ' months')->setTime(23, 59, 59);
     }
 
-    public static function generate() {
-        if (!self::allowed()) {
-            wp_die('Nu ai voie să faci asta.', '', array('response' => 403));
+    /**
+     * Limitele pentru echipa de vânzări (cei fără drept de a vedea toate voucherele): procent maxim, sumă maximă, număr maxim de coduri
+     * într-o generare. Le setează proprietara în Zona echipei → Echipă. Valorile de pornire sunt provizorii.
+     */
+    public static function default_limits() {
+        return array('procent' => 10, 'suma' => 100, 'numar' => 10);
+    }
+
+    public static function limits() {
+        $saved = get_option('gi_zona_limite');
+        $d = self::default_limits();
+        if (!is_array($saved)) {
+            return $d;
         }
-        check_admin_referer('gi_voucher_gen');
+        return array(
+            'procent' => isset($saved['procent']) ? max(0, min(100, (float) $saved['procent'])) : $d['procent'],
+            'suma' => isset($saved['suma']) ? max(0, (float) $saved['suma']) : $d['suma'],
+            'numar' => isset($saved['numar']) ? max(0, min(100, (int) $saved['numar'])) : $d['numar'],
+        );
+    }
 
-        $type = isset($_POST['tip']) && 'procent' === sanitize_key(wp_unslash($_POST['tip'])) ? 'procent' : 'suma';
-        $value = isset($_POST['valoare']) ? (float) str_replace(',', '.', sanitize_text_field(wp_unslash($_POST['valoare']))) : 0.0;
-        $count = isset($_POST['numar']) ? absint(wp_unslash($_POST['numar'])) : 1;
-        $prefix = isset($_POST['prefix']) ? strtoupper(preg_replace('/[^A-Za-z0-9]/', '', sanitize_text_field(wp_unslash($_POST['prefix'])))) : '';
-        $note = isset($_POST['nota']) ? sanitize_text_field(wp_unslash($_POST['nota'])) : '';
+    /**
+     * Limitele care se aplică unui utilizator, sau null dacă nu are limite (administratori și manageri de magazin).
+     */
+    public static function limits_for($user_id) {
+        $user = get_userdata((int) $user_id);
+        if ($user && ($user->has_cap('gi_vouchere_toate') || $user->has_cap('manage_woocommerce'))) {
+            return null;
+        }
+        return self::limits();
+    }
 
+    /**
+     * Generează un lot de vouchere (cupoane WooCommerce) în numele unui utilizator. Întoarce array('errors' => [...], 'ids' => [...]).
+     * Verificările de drepturi (cine are voie să cheme funcția) se fac la apelant; limitele de valoare se aplică aici.
+     */
+    public static function create_batch($type, $value, $count, $prefix, $note, $user_id) {
         $errors = array();
+        $type = 'procent' === $type ? 'procent' : 'suma';
+        $value = (float) $value;
+        $count = (int) $count;
+        $prefix = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', (string) $prefix));
         if ($value <= 0) {
             $errors[] = 'Scrie valoarea reducerii (un număr mai mare ca 0).';
         } elseif ('procent' === $type && $value > 100) {
@@ -92,12 +121,23 @@ final class GI_Vouchere {
         if (strlen($prefix) < 2 || strlen($prefix) > 10) {
             $errors[] = 'Începutul codului trebuie să aibă între 2 și 10 litere sau cifre (de ex. GRADINA).';
         }
-
-        $key = 'gi_voucher_rezultat_' . get_current_user_id();
+        $limits = self::limits_for($user_id);
+        if (!$errors && $limits) {
+            $nice = function ($n) {
+                return rtrim(rtrim(number_format((float) $n, 2, ',', ''), '0'), ',');
+            };
+            if ('procent' === $type && $value > $limits['procent']) {
+                $errors[] = $limits['procent'] > 0 ? 'Poți da cel mult ' . $nice($limits['procent']) . '% reducere. Pentru mai mult, cere-i proprietarei.' : 'Nu ai voie să generezi reduceri în procente. Cere-i proprietarei.';
+            }
+            if ('suma' === $type && $value > $limits['suma']) {
+                $errors[] = $limits['suma'] > 0 ? 'Poți da cel mult ' . $nice($limits['suma']) . ' lei reducere. Pentru mai mult, cere-i proprietarei.' : 'Nu ai voie să generezi reduceri în lei. Cere-i proprietarei.';
+            }
+            if ($count > $limits['numar']) {
+                $errors[] = 'Poți genera cel mult ' . (int) $limits['numar'] . ' coduri deodată.';
+            }
+        }
         if ($errors) {
-            set_transient($key, array('errors' => $errors, 'codes' => array()), 300);
-            wp_safe_redirect(admin_url('admin.php?page=' . self::SCREEN));
-            exit;
+            return array('errors' => $errors, 'ids' => array());
         }
 
         $expires = self::expiry();
@@ -131,18 +171,38 @@ final class GI_Vouchere {
             $coupon->set_date_expires($expires->getTimestamp());
             $coupon->set_description($note ? $note : 'Voucher generat din zona Grădina');
             $coupon->update_meta_data('_gi_voucher_lot', $lot);
+            $coupon->update_meta_data('_gi_voucher_creator', (int) $user_id);
             $coupon->save();
             $created[] = $coupon->get_id();
         }
-        set_transient($key, array('errors' => $errors, 'ids' => $created, 'type' => $type, 'value' => $value), 300);
+        return array('errors' => $errors, 'ids' => $created);
+    }
+
+    public static function generate() {
+        if (!self::allowed()) {
+            wp_die('Nu ai voie să faci asta.', '', array('response' => 403));
+        }
+        check_admin_referer('gi_voucher_gen');
+
+        $type = isset($_POST['tip']) && 'procent' === sanitize_key(wp_unslash($_POST['tip'])) ? 'procent' : 'suma';
+        $value = isset($_POST['valoare']) ? (float) str_replace(',', '.', sanitize_text_field(wp_unslash($_POST['valoare']))) : 0.0;
+        $count = isset($_POST['numar']) ? absint(wp_unslash($_POST['numar'])) : 1;
+        $prefix = isset($_POST['prefix']) ? sanitize_text_field(wp_unslash($_POST['prefix'])) : '';
+        $note = isset($_POST['nota']) ? sanitize_text_field(wp_unslash($_POST['nota'])) : '';
+
+        $result = self::create_batch($type, $value, $count, $prefix, $note, get_current_user_id());
+        set_transient('gi_voucher_rezultat_' . get_current_user_id(), array('errors' => $result['errors'], 'ids' => $result['ids'], 'type' => $type, 'value' => $value), 300);
         wp_safe_redirect(admin_url('admin.php?page=' . self::SCREEN));
         exit;
     }
 
     /* ---------- Ecranul „Vouchere” ---------- */
 
-    public static function vouchers($limit = 200) {
-        return get_posts(array(
+    /**
+     * Voucherele generate din zona Grădina. Cu $creator (id de utilizator): numai cele generate de acel utilizator.
+     */
+    public static function vouchers($limit = 200, $creator = 0) {
+        $args = array(
             'post_type' => 'shop_coupon',
             'post_status' => array('publish', 'draft', 'pending', 'private'),
             'numberposts' => $limit,
@@ -150,7 +210,27 @@ final class GI_Vouchere {
             'order' => 'DESC',
             'meta_key' => '_gi_voucher_lot', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
             'suppress_filters' => true,
-        ));
+        );
+        if ($creator) {
+            $args['meta_query'] = array(array('key' => '_gi_voucher_creator', 'value' => (int) $creator, 'compare' => '=', 'type' => 'NUMERIC')); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+        }
+        return get_posts($args);
+    }
+
+    /**
+     * Poate utilizatorul să vadă și să printeze acest voucher? Cine are „gi_vouchere_toate” sau administrează magazinul: toate;
+     * ceilalți (vânzări): numai pe ale lor.
+     */
+    public static function can_see($coupon_id, $user_id = 0) {
+        $user_id = $user_id ? (int) $user_id : get_current_user_id();
+        $user = get_userdata($user_id);
+        if (!$user || !metadata_exists('post', $coupon_id, '_gi_voucher_lot')) {
+            return false;
+        }
+        if ($user->has_cap('gi_vouchere_toate') || $user->has_cap('manage_woocommerce')) {
+            return true;
+        }
+        return $user->has_cap('gi_vouchere') && (int) get_post_meta($coupon_id, '_gi_voucher_creator', true) === $user_id;
     }
 
     public static function describe($coupon) {
@@ -286,7 +366,7 @@ final class GI_Vouchere {
         $tiles = array();
         foreach ($ids as $id) {
             $post = get_post($id);
-            if (!$post || 'shop_coupon' !== $post->post_type || !metadata_exists('post', $post->ID, '_gi_voucher_lot')) {
+            if (!$post || 'shop_coupon' !== $post->post_type || !self::can_see($post->ID)) {
                 continue;
             }
             $c = new WC_Coupon($post->ID);

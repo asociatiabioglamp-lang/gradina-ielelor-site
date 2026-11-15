@@ -403,6 +403,16 @@ final class GI_Puncte {
             }
         }
 
+        self::render_print($tiles, $size);
+    }
+
+    /**
+     * Pagina de printat, gata de trimis browserului (HTML curat, fără meniurile administrării sau ale site-ului). Încheie cererea.
+     *
+     * @param array<int,array<string,string>> $tiles
+     * @param int $size mărimea codului, în cm (4, 6, 8 sau 10)
+     */
+    public static function render_print($tiles, $size) {
         nocache_headers();
         header('Content-Type: text/html; charset=' . get_option('blog_charset'));
         header('X-Robots-Tag: noindex, nofollow');

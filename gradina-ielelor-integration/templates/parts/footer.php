@@ -30,6 +30,8 @@ if (gi_from_checkout()) {
             <?php endforeach; ?>
         </nav>
         <div class="container footer-bottom"><span>Rezervările și plățile se fac online, direct pe site.</span><span>© <?php echo esc_html(wp_date('Y')); ?> Grădina Ielelor</span></div>
+        <?php // Căsuța pentru echipă: duce la Zona echipei (utilizator + parolă), fără să se intre în administrarea WordPress. ?>
+        <div class="container gi-admin-wrap"><a class="gi-admin-box" href="<?php echo esc_url(GI_Zona::url()); ?>" rel="nofollow"><?php echo gi_icon('lock'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> <span>Administrare</span></a></div>
     </footer>
 
     <?php if ($gi_footer_cart_url && !gi_from_checkout()) : ?>

@@ -1,0 +1,82 @@
+/* „Zona echipei” (/zona-echipei/): formular de intrare, vouchere, copaci și locuri, echipă.
+   Se încarcă numai pe aceste pagini, după site.css, pages.css și content-page.css, și folosește variabilele lor.
+   Selectoarele au două clase intenționat: stilurile temei vechi (Elementor, WoodMart, hoteller) se încarcă după ale noastre
+   și, la clase simple, ar suprascrie câmpurile, butoanele și linkurile. */
+
+/* ---------- Pagina ---------- */
+.gi-zona-site .gi-mobile-booking, .gi-zona-site .gi-cart-float { display: none !important; } /* nu acoperă formularele */
+.gi-zona-site .gi-zona { max-width: 860px; margin: clamp(28px, 5vw, 56px) auto 0; display: flex; flex-direction: column; gap: 22px; font-size: var(--fs-ui); line-height: 1.55; color: var(--ink); }
+.gi-zona-site .gi-zona > * { margin: 0; min-width: 0; }
+.gi-zona-site .gi-zona p, .gi-zona-site .gi-zona li { max-width: none; font-size: var(--fs-ui); color: var(--ink-soft); }
+.gi-zona-site .gi-zona h2 { margin: 0 0 10px; font-family: var(--display); font-weight: 500; font-size: clamp(26px, 3vw, 32px); line-height: 1.15; color: var(--forest-deep); }
+.gi-zona-site .gi-zona a:not(.button):not(.gi-zona-tile) { color: var(--forest); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: .2em; }
+.gi-zona-site .gi-zona a:not(.button):not(.gi-zona-tile):hover { text-decoration-color: var(--forest); }
+.gi-zona-site .gi-zona .gi-zona-mic { margin: 6px 0 0; font-size: var(--fs-note); color: var(--text-2); }
+.gi-zona-site .gi-zona .gi-zona-hello { margin: 0; font-size: var(--fs-lead); }
+.gi-zona-site .gi-zona .gi-zona-foot { margin: 8px 0 0; font-size: var(--fs-note); }
+.gi-zona-site .gi-zona .gi-zona-back { margin: 0; font-size: var(--fs-note); }
+
+.gi-zona-site .gi-zona .gi-zona-card { padding: clamp(20px, 3vw, 32px); border: 1px solid var(--line); border-radius: 4px; background: #fff; box-shadow: 0 1px 0 rgba(27, 58, 75, .04); }
+.gi-zona-site .gi-zona .gi-zona-login { max-width: 520px; margin-inline: auto; width: 100%; box-sizing: border-box; }
+
+/* ---------- Mesaje ---------- */
+.gi-zona-site .gi-zona .gi-zona-notice { padding: 14px 18px; border-left: 4px solid var(--meadow-em); border-radius: 2px; background: var(--meadow-50); color: var(--ink); }
+.gi-zona-site .gi-zona .gi-zona-notice.gi-zona-err { border-left-color: #b3261e; background: #fdeceb; }
+.gi-zona-site .gi-zona .gi-zona-notice p, .gi-zona-site .gi-zona .gi-zona-notice li { color: var(--ink); }
+.gi-zona-site .gi-zona .gi-zona-notice ul { margin: 0; padding-left: 1.2em; }
+.gi-zona-site .gi-zona .gi-zona-notice p + p { margin-top: 8px; }
+.gi-zona-site .gi-zona .gi-zona-coduri { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 18px; font-weight: 700; letter-spacing: .02em; overflow-wrap: anywhere; user-select: all; }
+
+/* ---------- Dale de pe prima pagină ---------- */
+.gi-zona-site .gi-zona .gi-zona-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.gi-zona-site .gi-zona .gi-zona-tile { display: flex; flex-direction: column; gap: 8px; min-height: 120px; padding: 22px; border: 1px solid var(--line); border-radius: 4px; background: #fff; color: var(--ink); text-decoration: none; transition: transform .2s, box-shadow .2s, border-color .2s; }
+.gi-zona-site .gi-zona .gi-zona-tile:hover, .gi-zona-site .gi-zona .gi-zona-tile:focus-visible { transform: translateY(-2px); border-color: var(--forest); box-shadow: 0 10px 26px -12px rgb(var(--shade) / .35); }
+.gi-zona-site .gi-zona .gi-zona-tile strong { font-family: var(--display); font-weight: 500; font-size: 25px; line-height: 1.15; color: var(--forest-deep); }
+.gi-zona-site .gi-zona .gi-zona-tile span { font-size: var(--fs-note); line-height: 1.5; color: var(--text-2); }
+
+/* ---------- Formulare ---------- */
+.gi-zona-site .gi-zona .gi-zona-form { display: flex; flex-direction: column; gap: 6px; }
+.gi-zona-site .gi-zona .gi-zona-form > * { margin: 0; }
+.gi-zona-site .gi-zona .gi-zona-form label:not(.gi-zona-radio) { margin-top: 12px; font-size: var(--fs-note); font-weight: 650; color: var(--ink); }
+.gi-zona-site .gi-zona .gi-zona-form fieldset { margin: 0; padding: 0; border: 0; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.gi-zona-site .gi-zona .gi-zona-form legend { padding: 0; margin-bottom: 4px; font-size: var(--fs-note); font-weight: 650; color: var(--ink); }
+.gi-zona-site .gi-zona .gi-zona-form :is(input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select) { box-sizing: border-box; width: 100%; max-width: 100%; min-height: 50px; padding: 11px 14px; border: 1px solid var(--field-line); border-radius: 2px; background: #fff; color: var(--ink); font: inherit; font-size: var(--fs-ui); line-height: 1.4; box-shadow: none; }
+.gi-zona-site .gi-zona .gi-zona-form textarea { min-height: 180px; resize: vertical; }
+.gi-zona-site .gi-zona .gi-zona-form :is(input, textarea, select):focus { border-color: var(--forest); outline: 3px solid var(--accent) !important; outline-offset: 1px; box-shadow: none; }
+.gi-zona-site .gi-zona .gi-zona-form input[type="file"] { max-width: 100%; padding: 8px 0; font-size: var(--fs-note); }
+.gi-zona-site .gi-zona .gi-zona-form .gi-zona-radio { display: flex; align-items: center; gap: 10px; min-height: 44px; margin: 0; font-size: var(--fs-ui); font-weight: 500; color: var(--ink-soft); }
+.gi-zona-site .gi-zona :is(.gi-zona-radio, .gi-zona-bifa, .gi-zona-cap) input[type="radio"], .gi-zona-site .gi-zona :is(.gi-zona-radio, .gi-zona-bifa, .gi-zona-cap) input[type="checkbox"] { width: 22px; height: 22px; margin: 0; flex: 0 0 auto; accent-color: var(--forest); }
+.gi-zona-site .gi-zona .gi-zona-foto { display: block; max-width: min(100%, 320px); height: auto; border-radius: 2px; margin: 4px 0; }
+
+/* Butoane: „button”, „button-primary”, „button-outline” vin din site.css; aici doar așezarea în card și culorile păstrate peste tema veche */
+.gi-zona-site .gi-zona .button { min-height: 50px; padding: 12px 22px; font-size: var(--fs-ui); text-decoration: none; }
+.gi-zona-site .gi-zona .button.button-primary { background: var(--forest); border-color: var(--forest); color: #fff; }
+.gi-zona-site .gi-zona .button.button-primary:hover { background: var(--lake-hover); color: #fff; }
+.gi-zona-site .gi-zona .button.button-outline { background: transparent; border: 1px solid var(--forest); color: var(--forest); }
+.gi-zona-site .gi-zona .button.button-outline:hover { background: var(--forest); color: #fff; }
+.gi-zona-site .gi-zona .gi-zona-form .button { align-self: flex-start; }
+
+/* ---------- Liste (vouchere, locuri, echipă) ---------- */
+.gi-zona-site .gi-zona .gi-zona-lista { list-style: none; margin: 0 0 14px; padding: 0; display: flex; flex-direction: column; }
+.gi-zona-site .gi-zona .gi-zona-lista > li { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-top: 1px solid var(--line); min-width: 0; }
+.gi-zona-site .gi-zona .gi-zona-lista > li.gi-zona-cap { padding: 6px 0 10px; border-top: 0; }
+.gi-zona-site .gi-zona .gi-zona-lista > li.gi-zona-cap label { display: inline-flex; align-items: center; gap: 10px; min-height: 40px; font-size: var(--fs-note); font-weight: 650; color: var(--ink); }
+.gi-zona-site .gi-zona .gi-zona-bifa { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; min-height: 44px; }
+.gi-zona-site .gi-zona .gi-zona-rand { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.gi-zona-site .gi-zona .gi-zona-rand > * { margin: 0; overflow-wrap: anywhere; }
+.gi-zona-site .gi-zona .gi-zona-rand span { font-size: var(--fs-note); line-height: 1.45; color: var(--text-2); }
+.gi-zona-site .gi-zona .gi-zona-rand small { font-size: 15px; color: var(--text-2); }
+.gi-zona-site .gi-zona .gi-zona-cod { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 18px; letter-spacing: .02em; color: var(--forest-deep); }
+.gi-zona-site .gi-zona .gi-zona-inline { margin: 0; flex: 0 0 auto; }
+.gi-zona-site .gi-zona .gi-zona-inline .button { min-height: 44px; padding: 8px 14px; font-size: var(--fs-note); }
+.gi-zona-site .gi-zona .gi-qr-mini { flex: 0 0 auto; width: 76px; height: 76px; }
+.gi-zona-site .gi-zona .gi-qr-mini svg, .gi-zona-site .gi-zona .gi-qr-box svg { display: block; width: 100%; height: auto; }
+.gi-zona-site .gi-zona .gi-zona-qr { width: min(100%, 240px); }
+
+@media (max-width: 640px) {
+  .gi-zona-site .gi-zona .gi-zona-lista > li { flex-wrap: wrap; }
+  .gi-zona-site .gi-zona .gi-zona-lista > li .gi-zona-rand { flex-basis: calc(100% - 100px); }
+  .gi-zona-site .gi-zona .gi-zona-form .button, .gi-zona-site .gi-zona .gi-zona-card > p .button { width: 100%; }
+  .gi-zona-site .gi-zona .gi-zona-inline { flex: 1 1 140px; }
+  .gi-zona-site .gi-zona .gi-zona-inline .button { width: 100%; }
+}

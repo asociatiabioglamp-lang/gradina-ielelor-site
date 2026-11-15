@@ -7,6 +7,8 @@
  *   [data-qr-url]                   → se umple cu SVG-ul codului pentru adresa din atribut
  *   [data-qr-download]              → descarcă SVG-ul din elementul indicat de data-qr-source, cu numele din data-filename
  *   [data-qr-select-all]            → bifează / debifează toate căsuțele din tabelul în care se află
+ *   [data-qr-select-all-list]       → la fel, pentru listele din Zona echipei (căsuțele „ids[]” din același formular)
+ *   [data-gi-confirma]              → cere o confirmare înainte de a trimite formularul (ex. „Scoți accesul acestui cont?”)
  */
 (function () {
   'use strict';
@@ -77,11 +79,27 @@
 
     document.addEventListener('change', function (event) {
       var box = event.target;
-      if (!box || !box.hasAttribute || !box.hasAttribute('data-qr-select-all')) return;
-      var table = box.closest('table');
-      if (!table) return;
-      var boxes = table.querySelectorAll('tbody input[type="checkbox"]');
+      if (!box || !box.hasAttribute) return;
+      var scope = null;
+      var selector = '';
+      if (box.hasAttribute('data-qr-select-all')) {
+        scope = box.closest('table');
+        selector = 'tbody input[type="checkbox"]';
+      } else if (box.hasAttribute('data-qr-select-all-list')) {
+        scope = box.closest('form');
+        selector = 'input[type="checkbox"][name="ids[]"]';
+      }
+      if (!scope) return;
+      var boxes = scope.querySelectorAll(selector);
       for (var i = 0; i < boxes.length; i++) boxes[i].checked = box.checked;
+    });
+
+    // Acțiuni care cer o confirmare (în Zona echipei): fără confirmare, formularul nu se trimite.
+    document.addEventListener('click', function (event) {
+      var target = event.target && event.target.closest ? event.target.closest('[data-gi-confirma]') : null;
+      if (target && !window.confirm(target.getAttribute('data-gi-confirma'))) {
+        event.preventDefault();
+      }
     });
   }
 

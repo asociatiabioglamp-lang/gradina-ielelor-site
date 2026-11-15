@@ -31,8 +31,8 @@ final class GI_Plugin {
      * ca steagul să nu stea peste ele când se deschid. Cu bara de administrare WordPress, totul coboară cu 32 px (46 px pe telefon).
      */
     public static function old_theme_flag_position() {
-        if (gi_is_site_page()) {
-            return;
+        if (gi_is_site_page() || (class_exists('GI_Zona') && GI_Zona::is_zona())) {
+            return; // paginile noastre (și Zona echipei) au regula lor în site.css
         }
         echo '<style id="gi-steag-tema-veche">#gt_float_wrapper{position:absolute!important;top:66px!important;right:10px!important;bottom:auto!important;left:auto!important;z-index:395!important}body.admin-bar #gt_float_wrapper{top:98px!important}@media (max-width:1024px){#gt_float_wrapper{top:49px!important;right:auto!important;left:8px!important;transform:scale(.84);transform-origin:0 0}body.admin-bar #gt_float_wrapper{top:81px!important}}@media (max-width:782px){body.admin-bar #gt_float_wrapper{top:95px!important}}</style>' . "\n";
     }

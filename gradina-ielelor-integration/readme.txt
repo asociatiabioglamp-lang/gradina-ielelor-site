@@ -3,7 +3,7 @@ Contributors: gradina-ielelor
 Tags: one-page, woocommerce, booking, ovabrw, seo
 Requires at least: 6.0
 Requires PHP: 7.4
-Stable tag: 1.4.0
+Stable tag: 1.5.0
 License: GPLv2 or later
 
 Template-uri server-side pentru pagina principală (hub de rezervare) și paginile dedicate ofertelor Grădina Ielelor, cu WooCommerce + OVABRW drept singur motor de rezervări.
@@ -40,6 +40,13 @@ Nu. Constanta GI_REACT_DEMO_ENABLED este false, bundle-ul React nu este inclus, 
 Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai opțiunile acestui plugin.
 
 == Changelog ==
+
+= 1.5.0 =
+* „Zona echipei” (adresa /zona-echipei/): administrare direct de pe site, fără administrarea WordPress, cu utilizator și parolă. În subsolul tuturor paginilor apare căsuța „Administrare”. Pagina nu apare în Google și nu se păstrează în memorii intermediare. Ghid: docs/zona-echipei.md.
+* Rol nou „Vânzări (Grădina)”: colegii de la vânzări văd numai Zona (vouchere), nu intră în administrarea WordPress (sunt trimiși înapoi în Zonă), nu pot scrie nimic prin REST. Conturile se fac din Zonă → Echipă: fără email, parola se arată o singură dată, „Parolă nouă” închide sesiunile, „Scoate accesul”.
+* Vouchere în Zonă: sumă fixă sau procent, 1–100 deodată, 18 luni, o folosire, cod QR de printat. Colegii de la vânzări au limite (provizorii: 10% / 100 lei / 10 coduri, schimbabile de proprietară) și văd numai voucherele lor; fiecare voucher păstrează cine l-a generat.
+* Copaci și locuri în Zonă: titlu, tip, poveste, poză făcută chiar de pe telefon (JPG, PNG, WebP, maximum 8 MB), text alternativ, ciornă/publicat, cod QR de printat sau descărcat.
+* Drepturi noi pe roluri: administratorul (toate), managerul de magazin (zonă, vouchere, copaci), editorul (zonă, copaci). Se șterg la dezinstalare, împreună cu rolul „Vânzări (Grădina)”.
 
 = 1.4.0 =
 * Zona privată „Grădina” în administrare (meniul din stânga, cu utilizator și parolă): vezi docs/zona-privata.md.
