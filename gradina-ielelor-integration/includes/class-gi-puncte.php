@@ -37,6 +37,25 @@ final class GI_Puncte {
         // Editor clasic (titlu, text, poză): mai simplu pentru proprietară decât editorul de blocuri; datele rămân disponibile și prin REST.
         add_filter('use_block_editor_for_post_type', array(__CLASS__, 'classic_editor'), 10, 2);
         add_filter('old_slug_redirect_url', array(__CLASS__, 'keep_utm'));
+        add_filter('the_content', array(__CLASS__, 'format_content'), 8);
+    }
+
+    /** Textul scris simplu (Zona echipei) devine pagină cu titluri, liste și link-uri; vezi GI_Text. */
+    public static function format_content($content) {
+        return self::TYPE === get_post_type() ? GI_Text::to_html($content) : $content;
+    }
+
+    /** Documentul PDF atașat unui loc: array(id, url, nume, mărime) sau null. */
+    public static function pdf($post_id) {
+        $id = (int) get_post_meta($post_id, '_gi_pdf', true);
+        if (!$id || 'attachment' !== get_post_type($id)) {
+            return null;
+        }
+        $file = get_attached_file($id);
+        if (!$file || !file_exists($file)) {
+            return null;
+        }
+        return array('id' => $id, 'url' => (string) wp_get_attachment_url($id), 'nume' => basename($file), 'marime' => size_format((int) filesize($file)));
     }
 
     public static function classic_editor($use, $post_type) {
@@ -49,9 +68,29 @@ final class GI_Puncte {
         return array(
             'copac' => 'Copac',
             'planta' => 'Plantă',
+            'info' => 'Informații',
+            'bucatarie' => 'Bucătărie',
+            'terasa' => 'Terasă',
+            'wifi' => 'Wi-Fi',
+            'joaca' => 'Loc de joacă',
+            'bai' => 'Băi și dușuri',
+            'vatra' => 'Vatră (foc de tabără)',
+            'parcare' => 'Parcare',
+            'lac' => 'Lac sau ponton',
             'loc' => 'Loc din Grădină',
             'altceva' => 'Altceva',
         );
+    }
+
+    /** Grupa unui tip, pentru lista de pe pagina Ghidului: natură, informații sau facilități. */
+    public static function type_group($key) {
+        if (in_array($key, array('copac', 'planta'), true)) {
+            return 'natura';
+        }
+        if ('info' === $key) {
+            return 'info';
+        }
+        return 'locuri';
     }
 
     public static function type_label($post_id) {
@@ -99,11 +138,22 @@ final class GI_Puncte {
             'sanitize_callback' => array(__CLASS__, 'sanitize_type'),
             'auth_callback' => array(__CLASS__, 'can_edit_meta'),
         ));
+        foreach (array('_gi_x', '_gi_y') as $coord) { // poziția pe harta Grădinii, în procente (0–100)
+            register_post_meta(self::TYPE, $coord, array(
+                'type' => 'number', 'single' => true, 'show_in_rest' => true,
+                'sanitize_callback' => array(__CLASS__, 'sanitize_percent'),
+                'auth_callback' => array(__CLASS__, 'can_edit_meta'),
+            ));
+        }
         register_post_meta(self::TYPE, '_gi_stiintific', array(
             'type' => 'string', 'single' => true, 'show_in_rest' => true,
             'sanitize_callback' => 'sanitize_text_field',
             'auth_callback' => array(__CLASS__, 'can_edit_meta'),
         ));
+    }
+
+    public static function sanitize_percent($value) {
+        return is_numeric($value) ? max(0, min(100, round((float) $value, 1))) : '';
     }
 
     public static function sanitize_type($value) {

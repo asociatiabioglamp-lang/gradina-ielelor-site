@@ -1,0 +1,51 @@
+/* Harta și ghidul Grădinii: planul cu locurile marcate, „Ești aici”, lista ghidului, alegerea poziției din Zona echipei */
+.gi-harta, .gi-harta-editor { --pin-natura: #2e7d32; --pin-locuri: #1d6380; --pin-info: #c96b00; --pin-aici: #c0392b; }
+.gi-harta-cadru { position: relative; max-width: 100%; line-height: 0; border: 1px solid var(--line, #d8e3e8); border-radius: 4px; overflow: hidden; background: #f3f7f5; }
+.gi-harta-cadru img { display: block; width: 100%; height: auto; max-width: 100%; }
+.gi-harta-pini { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; }
+.gi-pin { position: absolute; transform: translate(-50%, -50%); margin: 0; padding: 0; line-height: 1; }
+.gi-pin-buton { position: relative; display: block; width: 44px; height: 44px; margin: 0; padding: 0; border: 0; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.gi-pin-punct { display: block; width: 16px; height: 16px; margin: 0 auto; border: 2px solid #fff; border-radius: 50%; background: var(--pin-locuri); box-shadow: 0 1px 4px rgba(0, 0, 0, .45); }
+.gi-pin-buton .gi-pin-punct { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.gi-pin-natura .gi-pin-punct { background: var(--pin-natura); }
+.gi-pin-info .gi-pin-punct { background: var(--pin-info); }
+.gi-pin-ales .gi-pin-punct { width: 22px; height: 22px; outline: 3px solid rgba(0, 0, 0, .35); }
+.gi-pin-buton:focus-visible { outline: 3px solid var(--accent, #f2a04b); outline-offset: -4px; border-radius: 50%; }
+.gi-pin-curent { z-index: 2; }
+.gi-pin-curent .gi-pin-punct { width: 22px; height: 22px; background: var(--pin-aici); animation: gi-puls 1.8s ease-out infinite; }
+.gi-pin-eticheta { position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); padding: 3px 9px; border-radius: 12px; background: var(--pin-aici); color: #fff; font: 700 13px/1.3 var(--sans, system-ui, sans-serif); white-space: nowrap; box-shadow: 0 1px 4px rgba(0, 0, 0, .35); }
+.gi-harta-mini .gi-pin:not(.gi-pin-curent) .gi-pin-punct { width: 9px; height: 9px; border-width: 1px; background: #5b6b73; opacity: .7; }
+@keyframes gi-puls { 0% { box-shadow: 0 0 0 0 rgba(192, 57, 43, .55); } 70% { box-shadow: 0 0 0 16px rgba(192, 57, 43, 0); } 100% { box-shadow: 0 0 0 0 rgba(192, 57, 43, 0); } }
+@media (prefers-reduced-motion: reduce) { .gi-pin-curent .gi-pin-punct { animation: none; } }
+
+.gi-harta-fisa { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 12px; padding: 14px 16px; border: 1px solid var(--line, #d8e3e8); border-radius: 4px; background: #fff; line-height: 1.4; }
+.gi-harta-fisa[hidden] { display: none; }
+.gi-harta-fisa strong { font-family: var(--display, Georgia, serif); font-size: 22px; font-weight: 500; }
+.gi-harta-fisa span { color: var(--text-2, #5b6b73); font-size: 15px; flex: 1 1 100px; }
+
+.gi-aici { margin: 0 0 28px; padding: 18px; border: 1px solid var(--line, #d8e3e8); border-radius: 4px; background: #fff; }
+.gi-aici h2 { margin: 0 0 12px; font-size: 26px; }
+.gi-aici .gi-harta { max-width: 560px; }
+.gi-aici-link { margin: 12px 0 0; }
+.gi-aici-text { margin: 0 0 12px; font-size: 18px; }
+
+.gi-harta-pagina { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; padding-block: 8px 24px; }
+.gi-harta-pagina > *, .gi-aici > * { min-width: 0; }
+.gi-harta, .gi-harta-fisa { max-width: 100%; }
+.gi-ghid-grupa h2 { margin: 0 0 10px; font-family: var(--display, Georgia, serif); font-weight: 500; font-size: 28px; }
+.gi-ghid-lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.gi-ghid-lista a { display: flex; flex-direction: column; gap: 2px; min-height: 56px; padding: 12px 14px; border: 1px solid var(--line, #d8e3e8); border-radius: 4px; background: #fff; text-decoration: none; color: inherit; }
+.gi-ghid-lista a:hover, .gi-ghid-lista a:focus-visible { border-color: var(--forest, #2f5d50); }
+.gi-ghid-lista span { font-weight: 650; }
+.gi-ghid-lista small { color: var(--text-2, #5b6b73); font-size: 14px; }
+
+.gi-punct-pdf { margin: 24px 0 0; padding: 16px 18px; border: 1px solid var(--line, #d8e3e8); border-radius: 4px; background: #fff; }
+.gi-punct-pdf p { margin: 0 0 10px; }
+
+/* Zona echipei */
+.gi-harta-editor { margin-top: 14px; }
+.gi-harta-editor .gi-harta-cadru { cursor: crosshair; max-width: 720px; }
+.gi-harta-editor .gi-pin-ales { pointer-events: none; }
+.gi-harta-previzualizare { max-width: 720px; margin: 10px 0 14px; }
+.gi-scris-bara { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0; }
+.gi-scris-bara .button { min-height: 44px; padding: 8px 14px; }

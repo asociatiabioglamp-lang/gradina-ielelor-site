@@ -45,12 +45,20 @@ while (have_posts()) :
 
         <div class="container">
             <article class="gi-content-body gi-prose gi-punct-body">
+                <?php echo GI_Harta::here($gi_id); // „Ești aici”: planul cu locul acesta marcat (gol dacă planul nu e încărcat sau locul nu are poziție) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                 <?php if (has_post_thumbnail()) : ?>
                     <figure class="gi-punct-foto">
                         <?php the_post_thumbnail('large', array('loading' => 'eager', 'decoding' => 'async', 'alt' => (string) get_post_meta(get_post_thumbnail_id(), '_wp_attachment_image_alt', true))); // textul alternativ îl scrie proprietara la poză; fără el, poza e decorativă ?>
                     </figure>
                 <?php endif; ?>
                 <?php the_content(); ?>
+                <?php $gi_pdf = GI_Puncte::pdf($gi_id); ?>
+                <?php if ($gi_pdf) : ?>
+                    <aside class="gi-punct-pdf" aria-label="Document de descărcat">
+                        <p>Fișa completă, ca document de salvat sau de printat.</p>
+                        <a class="button button-primary" href="<?php echo esc_url($gi_pdf['url']); ?>" target="_blank" rel="noopener">Descarcă fișa (PDF, <?php echo esc_html($gi_pdf['marime']); ?>)</a>
+                    </aside>
+                <?php endif; ?>
             </article>
 
             <?php if ($gi_others) : ?>
@@ -80,6 +88,7 @@ while (have_posts()) :
                 <?php else : ?>
                     <a class="button button-primary" href="<?php echo esc_url($gi_back_url); ?>" data-gi-book><?php echo gi_icon('chevron-left'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> Rezervă-ți locul în Grădină</a>
                 <?php endif; ?>
+                <a class="gi-text-link" href="<?php echo esc_url(GI_Harta::url(get_post_field('post_name', $gi_id))); ?>">Harta și ghidul Grădinii</a>
                 <a class="gi-text-link" href="tel:+40721333164"><?php echo gi_icon('phone'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> sau sună-ne la 0721 333 164</a>
             </nav>
         </div>

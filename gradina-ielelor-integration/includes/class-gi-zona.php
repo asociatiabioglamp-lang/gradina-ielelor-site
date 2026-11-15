@@ -363,6 +363,11 @@ final class GI_Zona {
         if ('receptie' === self::$ctx['sec'] && is_user_logged_in() && current_user_can('gi_receptie')) {
             wp_enqueue_script('gi-scanare', gi_asset_url('js/scanare.js'), array(), GI_VERSION, true);
         }
+        if (in_array(self::$ctx['sec'], array('copaci', 'harta'), true) && is_user_logged_in() && current_user_can('gi_copaci')) {
+            wp_enqueue_style('gi-harta', gi_asset_url('css/harta.css'), array('gi-zona'), GI_VERSION);
+            wp_enqueue_script('gi-harta-editor', gi_asset_url('js/harta-editor.js'), array(), GI_VERSION, true);
+            wp_enqueue_script('gi-scris', gi_asset_url('js/scris.js'), array(), GI_VERSION, true);
+        }
         if ('fisa' === self::$ctx['sec'] && is_user_logged_in() && current_user_can('gi_receptie')) {
             wp_enqueue_script('gi-mrz', gi_asset_url('js/mrz.js'), array(), GI_VERSION, true);
             wp_enqueue_script('gi-fisa', gi_asset_url('js/fisa.js'), array('gi-mrz'), GI_VERSION, true);
@@ -427,7 +432,7 @@ final class GI_Zona {
         header('X-LiteSpeed-Cache-Control: no-cache');
         $sec = sanitize_key((string) get_query_var(self::VAR));
         $id = sanitize_title((string) get_query_var(self::ID_VAR));
-        if (!in_array($sec, array('acasa', 'vouchere', 'copaci', 'echipa', 'istoric', 'receptie', 'fisa', 'registru', 'tipar'), true)) {
+        if (!in_array($sec, array('acasa', 'vouchere', 'copaci', 'harta', 'echipa', 'istoric', 'receptie', 'fisa', 'registru', 'tipar'), true)) {
             self::go();
         }
         self::$ctx = array('sec' => $sec, 'id' => $id);
@@ -437,7 +442,7 @@ final class GI_Zona {
         $method = isset($_SERVER['REQUEST_METHOD']) ? strtoupper((string) $_SERVER['REQUEST_METHOD']) : 'GET';
         if ('POST' === $method && empty($_POST) && !empty($_SERVER['CONTENT_LENGTH'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
             // Un fișier peste limita serverului: PHP aruncă tot formularul (și textul scris), nu doar poza. Spunem clar ce s-a întâmplat.
-            self::flash(array('errors' => array('Poza e prea mare (maximum ' . self::photo_limit() . ') și nu s-a putut trimite, iar textul scris nu s-a păstrat. Alege o poză mai mică și scrie din nou.')));
+            self::flash(array('errors' => array('Fișierul (poza sau documentul) e prea mare (poza: maximum ' . self::photo_limit() . ') și nu s-a putut trimite, iar textul scris nu s-a păstrat. Alege un fișier mai mic și scrie din nou.')));
             self::go($sec, $id);
         }
         if ('POST' === $method) {
@@ -459,6 +464,8 @@ final class GI_Zona {
             self::post_voucher_delete();
         } elseif ('copaci' === $sec && 'salveaza' === $action) {
             self::post_place($id);
+        } elseif ('harta' === $sec && in_array($action, array('salveaza', 'scoate'), true)) {
+            GI_Harta::handle_post($action);
         } elseif ('echipa' === $sec && in_array($action, array('adauga', 'parola', 'elimina', 'limite'), true)) {
             self::post_team($action);
         } elseif (in_array($sec, array('fisa', 'registru'), true) && class_exists('GI_Fise')) {
@@ -539,6 +546,46 @@ final class GI_Zona {
         return '';
     }
 
+    /** Documentul PDF al unui loc: încărcare (cu confirmarea că are sigla și numele Grădinii) sau ștergere. Întoarce un mesaj de eroare sau ''. */
+    private static function handle_pdf($post_id) {
+        $old = (int) get_post_meta($post_id, '_gi_pdf', true);
+        if (self::posted('pdf_sterge') && $old) {
+            if ('attachment' === get_post_type($old)) {
+                wp_delete_attachment($old, true);
+            }
+            delete_post_meta($post_id, '_gi_pdf');
+            $old = 0;
+        }
+        if (empty($_FILES['pdf']) || !is_array($_FILES['pdf']) || UPLOAD_ERR_NO_FILE === (int) $_FILES['pdf']['error']) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+            return '';
+        }
+        $limit = min(15 * MB_IN_BYTES, wp_max_upload_size());
+        if (UPLOAD_ERR_OK !== (int) $_FILES['pdf']['error'] || (int) $_FILES['pdf']['size'] > $limit) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+            return 'Documentul nu s-a putut încărca (PDF, maximum ' . size_format($limit) . ').';
+        }
+        if (!self::posted('pdf_sigla')) {
+            return 'Documentul nu s-a încărcat: bifează că are sigla și numele Grădinii Ielelor (regula de bază: tot ce descarcă clienții poartă sigla și numele).';
+        }
+        $tmp = (string) $_FILES['pdf']['tmp_name']; // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+        $head = is_readable($tmp) ? (string) file_get_contents($tmp, false, null, 0, 5) : '';
+        $name = isset($_FILES['pdf']['name']) ? (string) $_FILES['pdf']['name'] : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+        if ('%PDF-' !== $head || 'pdf' !== strtolower((string) pathinfo($name, PATHINFO_EXTENSION))) {
+            return 'Documentul nu a fost acceptat: alege un fișier PDF.';
+        }
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        require_once ABSPATH . 'wp-admin/includes/image.php';
+        require_once ABSPATH . 'wp-admin/includes/media.php';
+        $att = media_handle_upload('pdf', $post_id, array('post_title' => get_the_title($post_id) . ' (fișă PDF)'), array('test_form' => false, 'mimes' => array('pdf' => 'application/pdf')));
+        if (is_wp_error($att)) {
+            return 'Documentul nu a fost acceptat: alege un fișier PDF.';
+        }
+        if ($old && 'attachment' === get_post_type($old)) {
+            wp_delete_attachment($old, true); // documentul vechi nu mai trebuie
+        }
+        update_post_meta($post_id, '_gi_pdf', (int) $att);
+        return '';
+    }
+
     private static function post_place($id) {
         self::check('salveaza', 'copaci', $id);
         if (!current_user_can('gi_copaci')) {
@@ -560,7 +607,7 @@ final class GI_Zona {
         $args = array(
             'post_type' => GI_Puncte::TYPE,
             'post_title' => $title,
-            'post_content' => wp_kses_post((string) self::posted('text')),
+            'post_content' => GI_Text::clean_for_save((string) self::posted('text')),
             'post_excerpt' => sanitize_text_field((string) self::posted('rezumat')),
             'post_status' => self::posted('publica') ? 'publish' : 'draft',
         );
@@ -578,7 +625,16 @@ final class GI_Zona {
         update_post_meta($post_id, '_gi_tip', GI_Puncte::sanitize_type((string) self::posted('tip')));
         update_post_meta($post_id, '_gi_stiintific', sanitize_text_field((string) self::posted('stiintific')));
         $alt = sanitize_text_field((string) self::posted('alt'));
+        if (isset($_POST['poz_x'])) { // formularul are planul (altfel pozițiile existente rămân neatinse)
+            GI_Harta::save_position($post_id, self::posted('poz_x'), self::posted('poz_y'));
+        }
         $problem = self::upload_photo($post_id, $alt);
+        $problem_pdf = self::handle_pdf($post_id);
+        if ('' === $problem) {
+            $problem = $problem_pdf;
+        } elseif ('' !== $problem_pdf) {
+            $problem .= ' ' . $problem_pdf;
+        }
         if ('' === $problem && has_post_thumbnail($post_id)) { // și un text gol: proprietara poate șterge „ce se vede în poză”
             update_post_meta(get_post_thumbnail_id($post_id), '_wp_attachment_image_alt', $alt);
         }
@@ -783,7 +839,7 @@ final class GI_Zona {
             foreach ($ids as $pid) {
                 $p = get_post($pid);
                 if ($p && GI_Puncte::TYPE === $p->post_type && 'publish' === $p->post_status) {
-                    $tiles[] = array('url' => GI_Puncte::qr_url($p), 'title' => get_the_title($p), 'note' => 'Scanează și afli mai multe', 'foot' => preg_replace('#^https?://#', '', get_permalink($p)));
+                    $tiles[] = array('url' => GI_Puncte::qr_url($p), 'title' => get_the_title($p), 'note' => 'Scanează și afli mai multe', 'foot' => preg_replace('#^https?://#', '', get_permalink($p)), 'brand' => true);
                 }
             }
         }
@@ -801,7 +857,7 @@ final class GI_Zona {
     }
 
     private static function title_for($sec) {
-        $titles = array('acasa' => 'Zona echipei', 'vouchere' => 'Vouchere', 'copaci' => 'Copaci și locuri', 'echipa' => 'Echipă', 'istoric' => 'Istoric', 'receptie' => 'Recepție', 'fisa' => 'Fișa de cazare', 'registru' => 'Registrul fișelor', 'tipar' => 'Printare');
+        $titles = array('acasa' => 'Zona echipei', 'vouchere' => 'Vouchere', 'copaci' => 'Copaci și locuri', 'harta' => 'Harta Grădinii', 'echipa' => 'Echipă', 'istoric' => 'Istoric', 'receptie' => 'Recepție', 'fisa' => 'Fișa de cazare', 'registru' => 'Registrul fișelor', 'tipar' => 'Printare');
         return isset($titles[$sec]) ? $titles[$sec] : 'Zona echipei';
     }
 
@@ -829,6 +885,8 @@ final class GI_Zona {
             self::view_vouchers($flash);
         } elseif ('copaci' === $sec) {
             self::view_places(self::$ctx['id']);
+        } elseif ('harta' === $sec) {
+            GI_Harta::view_zona();
         } elseif ('echipa' === $sec) {
             self::view_team($flash);
         } elseif ('istoric' === $sec) {
@@ -1208,7 +1266,7 @@ final class GI_Zona {
         }
         $posts = get_posts(array('post_type' => GI_Puncte::TYPE, 'post_status' => array('publish', 'draft'), 'numberposts' => 200, 'orderby' => 'title', 'order' => 'ASC'));
         ?>
-        <p><a class="button button-primary" href="<?php echo esc_url(self::url('copaci', 'nou')); ?>">Adaugă un loc</a></p>
+        <p class="gi-zona-butoane"><a class="button button-primary" href="<?php echo esc_url(self::url('copaci', 'nou')); ?>">Adaugă un loc</a> <a class="button button-outline" href="<?php echo esc_url(self::url('harta')); ?>">Harta Grădinii</a></p>
         <div class="gi-zona-card">
             <h2>Locurile tale</h2>
             <?php if (!$posts) : ?>
@@ -1265,18 +1323,30 @@ final class GI_Zona {
                 <select id="gi-p-tip" name="tip">
                     <?php foreach (GI_Puncte::types() as $k => $l) : ?><option value="<?php echo esc_attr($k); ?>" <?php selected($tip, $k); ?>><?php echo esc_html($l); ?></option><?php endforeach; ?>
                 </select>
+                <p class="gi-zona-mic">„Informații” sunt paginile de tip „Ce poți vizita” sau „Parteneri”: textul lor îl schimbi oricând, iar codul QR printat rămâne același.</p>
                 <label for="gi-p-st">Numele științific (opțional)</label>
                 <input type="text" id="gi-p-st" name="stiintific" maxlength="120" value="<?php echo esc_attr($post ? (string) get_post_meta($post->ID, '_gi_stiintific', true) : ''); ?>" placeholder="ex. Quercus robur">
                 <label for="gi-p-rez">O frază sub titlu (opțional)</label>
                 <input type="text" id="gi-p-rez" name="rezumat" maxlength="200" value="<?php echo esc_attr($post ? $post->post_excerpt : ''); ?>">
                 <label for="gi-p-text">Povestea locului (ce citește vizitatorul după ce scanează codul)</label>
-                <textarea id="gi-p-text" name="text" rows="9"><?php echo esc_textarea($post ? $post->post_content : ''); ?></textarea>
+                <textarea id="gi-p-text" name="text" rows="12" data-gi-scris><?php echo esc_textarea($post ? GI_Text::for_edit($post->post_content) : ''); ?></textarea>
+                <p class="gi-zona-mic">Scrii simplu. <strong># </strong>la început de rând = titlu, <strong>## </strong>= subtitlu, <strong>- </strong>= listă, <strong>**text**</strong> = îngroșat, <strong>[text](https://adresa)</strong> = link (pentru telefon: <strong>[0721 333 164](tel:0721333164)</strong>). Rând gol = paragraf nou.</p>
                 <label for="gi-p-foto">Poza locului <?php echo $thumb ? '(alege alta ca s-o schimbi)' : ''; ?></label>
                 <?php if ($thumb) : ?><img class="gi-zona-foto" src="<?php echo esc_url($thumb); ?>" alt=""><?php endif; ?>
                 <input type="file" id="gi-p-foto" name="foto" accept="image/jpeg,image/png,image/webp">
                 <p class="gi-zona-mic">De pe telefon poți face poza chiar acum. JPG, PNG sau WebP, maximum <?php echo esc_html(self::photo_limit()); ?>.</p>
                 <label for="gi-p-alt">Ce se vede în poză (o frază scurtă)</label>
                 <input type="text" id="gi-p-alt" name="alt" maxlength="160" value="<?php echo esc_attr($alt); ?>" placeholder="ex. Stejarul, văzut de pe cărare">
+                <?php echo GI_Harta::editor($post); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                <?php $pdf = $post ? GI_Puncte::pdf($post->ID) : null; ?>
+                <label for="gi-p-pdf">Document PDF (opțional): fișa plantei sau a locului, de descărcat <?php echo $pdf ? '(alege altul ca să-l înlocuiești)' : ''; ?></label>
+                <?php if ($pdf) : ?>
+                    <p class="gi-zona-mic">Acum: <a class="gi-text-link" href="<?php echo esc_url($pdf['url']); ?>" target="_blank" rel="noopener"><?php echo esc_html($pdf['nume']); ?></a> (<?php echo esc_html($pdf['marime']); ?>)</p>
+                    <label class="gi-zona-radio"><input type="checkbox" name="pdf_sterge" value="1"> Șterge documentul</label>
+                <?php endif; ?>
+                <input type="file" id="gi-p-pdf" name="pdf" accept="application/pdf,.pdf">
+                <label class="gi-zona-radio"><input type="checkbox" name="pdf_sigla" value="1"> Documentul are sigla și numele Grădinii Ielelor</label>
+                <p class="gi-zona-mic">PDF, maximum <?php echo esc_html(size_format(min(15 * MB_IN_BYTES, wp_max_upload_size()))); ?>. Regula de bază: tot ce descarcă clienții poartă sigla și numele Grădinii Ielelor, deci bifezi doar dacă e adevărat. Documentul se vede public (buton „Descarcă fișa”) cât timp locul e publicat.</p>
                 <label class="gi-zona-radio"><input type="checkbox" name="publica" value="1" <?php checked($pub); ?>> Publică (se vede vizitatorilor)</label>
                 <p class="gi-zona-mic">Dacă ai printat deja codul și scoți bifa, codul din teren nu mai duce nicăieri.</p>
                 <p><button type="submit" class="button button-primary">Salvează</button> <a class="gi-text-link" href="<?php echo esc_url(self::url('copaci')); ?>">Înapoi la listă</a></p>
