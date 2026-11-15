@@ -93,11 +93,15 @@ Voucherele sunt **cupoane WooCommerce obișnuite**, de două feluri: **sumă fix
 2. Vezi: titularul, telefonul, sosirea, plecarea, nopțile, adulții, copiii, starea plății (**plătită** / **neplătită încă**, la plata la locație) și toate câmpurile din comandă. Dacă rezervarea e anulată sau nefinalizată, apare un avertisment roșu.
 3. Dacă scrie „suma de control nu se potrivește”, codul a fost citit incomplet: scanează din nou.
 
+**Rezervări făcute înainte de codul QR (fără cod).** În Recepție, a doua casetă: scrii **numărul comenzii** (din emailul de confirmare) și **numele de familie** al titularului. Ambele trebuie să se potrivească (diacriticele și literele mari nu contează). Numărul singur nu ajunge: recepția nu poate răsfoi comenzile.
+
+**Plata la locație.** Dacă turistul a ales „plata la locație / la livrare”, Recepția scrie **„de încasat la recepție”** și suma, chiar dacă WooCommerce numește comanda „În procesare”. „Plătită” apare numai la plăți încasate. Pagina de mulțumire a unei rezervări cu cardul, încă neconfirmate de bancă (câteva minute), spune turistului că „Codul apare aici și în email imediat ce banca confirmă plata”.
+
 **Cum merge pe un telefon simplu.** Se deschide în browserul telefonului (Chrome, Safari, Samsung Internet), pe `https`, fără aplicație din magazin. Camera cere permisiunea o dată. Dacă telefonul nu are cameră sau o refuzi, scrii codul. Imaginea de la cameră nu pleacă de pe telefon.
 
 **Cont pentru recepție.** Echipă → Adaugă un coleg → rolul **„Recepție”**. Colegul vede numai Recepția: nu vede vouchere, copaci, echipă sau istoric și nu intră în administrarea WordPress. Utilizatorul și parola le alegi tu, iar parola o schimbi numai tu (ca la vânzări).
 
-**Istoric.** Fiecare căutare apare în Istoric („A căutat rezervarea …”), cu cine a căutat, fără numele sau telefonul turistului.
+**Istoric.** Fiecare căutare apare în Istoric → **Recepție** („A căutat rezervarea …”), cu cine a căutat, fără numele sau telefonul turistului. O singură linie pe rezervare și pe persoană într-un minut; la „Tot” nu apar (sunt multe, zilnice).
 
 **Ce nu face (încă).** Nu creează fișa de cazare și nu citește actul de identitate: asta e etapa următoare (vezi „Ce urmează”). Datele de sosire, plecare, adulți și copii se citesc din câmpurile pe care le pune modulul de rezervări în comandă; dacă un câmp lipsește din comandă, Recepția scrie „nu apar în comandă”, nu inventează.
 

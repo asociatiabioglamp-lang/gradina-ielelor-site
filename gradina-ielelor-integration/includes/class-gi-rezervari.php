@@ -109,13 +109,32 @@ final class GI_Rezervari {
         return $order instanceof WC_Order && $order->has_status(array('processing', 'completed', 'on-hold'));
     }
 
+    /**
+     * Metodele „plată la locație” (cele pe care se aplică majorarea din Setări, implicit „cod”): WooCommerce le pune în „În procesare”
+     * imediat ce comanda e plasată, deci „is_paid()” ar spune „plătită” deși banii se încasează la sosire.
+     */
+    public static function is_pay_on_site($order) {
+        $gateways = array('cod');
+        if (function_exists('gi_onsite_surcharge_settings')) {
+            $s = gi_onsite_surcharge_settings();
+            $gateways = array_merge($gateways, (array) $s['gateways']);
+        }
+        return in_array((string) $order->get_payment_method(), $gateways, true);
+    }
+
+    /** Plătită cu adevărat: WooCommerce o socotește plătită și nu e o plată care se încasează la locație. */
+    public static function is_really_paid($order) {
+        return (bool) $order->is_paid() && !self::is_pay_on_site($order) && !$order->has_status('on-hold');
+    }
+
     /** Codul unei comenzi; dacă nu are încă și $create e adevărat, i se dă unul. */
     public static function code_for_order($order, $create = true) {
         if (!($order instanceof WC_Order)) {
             return '';
         }
         $code = (string) $order->get_meta(self::META);
-        if ('' === $code && $create) {
+        // Numai pentru o comandă salvată (o comandă fictivă, de previzualizare a emailurilor, n-are număr: nu o salvăm).
+        if ('' === $code && $create && $order->get_id() > 0) {
             $code = self::make_code();
             if ('' !== $code) {
                 $order->update_meta_data(self::META, $code);
@@ -132,6 +151,27 @@ final class GI_Rezervari {
         }
         $found = wc_get_orders(array('limit' => 1, 'status' => 'any', 'meta_key' => self::META, 'meta_value' => $code, 'return' => 'objects')); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.SlowDBQuery.slow_db_query_meta_value
         return $found ? $found[0] : null;
+    }
+
+    /**
+     * Rezervări făcute înainte de 1.6.0 (fără cod): se găsesc după numărul comenzii ȘI numele de familie al titularului (cele două apar în emailul de
+     * confirmare). Numărul singur nu ajunge: recepția nu poate răsfoi comenzile după număr.
+     */
+    public static function find_by_number_and_name($number, $surname) {
+        $id = absint(preg_replace('/\D+/', '', (string) $number));
+        $fold = function ($s) {
+            return preg_replace('/[^a-z0-9]+/', '', strtolower(remove_accents((string) $s)));
+        };
+        $want = $fold($surname);
+        if ($id < 1 || strlen($want) < 2 || !function_exists('wc_get_order')) {
+            return null;
+        }
+        $order = wc_get_order($id);
+        if (!($order instanceof WC_Order) || 'shop_order' !== $order->get_type()) {
+            return null;
+        }
+        $have = $fold($order->get_billing_last_name());
+        return '' !== $have && $have === $want ? $order : null;
     }
 
     public static function page_url($code) {
@@ -167,7 +207,8 @@ final class GI_Rezervari {
             'comanda' => $order->get_order_number(),
             'stare' => wc_get_order_status_name($order->get_status()),
             'finalizata' => self::is_finalized($order),
-            'platita' => (bool) $order->is_paid(),
+            'platita' => self::is_really_paid($order),
+            'la_locatie' => self::is_pay_on_site($order),
             'plata' => $order->get_payment_method_title(),
             'total' => wp_strip_all_tags(wc_price($order->get_total(), array('currency' => $order->get_currency()))),
             'nume' => trim($order->get_billing_first_name() . ' ' . $order->get_billing_last_name()),
@@ -228,7 +269,16 @@ final class GI_Rezervari {
     }
 
     public static function show_for_customer($order) {
-        if (!self::is_finalized($order) || isset(self::$shown[$order->get_id()])) {
+        if (!($order instanceof WC_Order) || isset(self::$shown[$order->get_id()])) {
+            return;
+        }
+        if ($order->has_status('pending')) {
+            // Plata cu cardul se confirmă de la bancă după câteva minute: până atunci comanda nu e finalizată și nu are cod.
+            self::$shown[$order->get_id()] = true;
+            echo '<p class="gi-cod-asteptare">Codul tău de rezervare apare aici și în emailul de confirmare imediat ce banca confirmă plata (de obicei în câteva minute). Reîncarcă pagina după un minut.</p>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            return;
+        }
+        if (!self::is_finalized($order)) {
             return;
         }
         self::$shown[$order->get_id()] = true;
@@ -303,19 +353,28 @@ final class GI_Rezervari {
         }
         $code = self::normalize((string) get_query_var(self::VAR));
         $order = '' !== $code ? self::find_order($code) : null;
+        self::no_cache();
         if (!$order || !self::is_finalized($order)) {
             global $wp_query;
             $wp_query->set_404();
             status_header(404);
-            nocache_headers();
             return;
         }
         self::$page_code = $code;
         status_header(200);
         global $wp_query;
         $wp_query->is_404 = false;
-        nocache_headers();
         header('X-Robots-Tag: noindex, nofollow, noarchive');
+    }
+
+    /** Nici navigatorul, nici serverul (LiteSpeed Cache, folosit pe site) nu păstrează pagina, nici măcar un 404. */
+    private static function no_cache() {
+        nocache_headers();
+        if (!defined('DONOTCACHEPAGE')) {
+            define('DONOTCACHEPAGE', true);
+        }
+        do_action('litespeed_control_set_nocache', 'Cod rezervare');
+        header('X-LiteSpeed-Cache-Control: no-cache');
     }
 
     public static function page_code() {

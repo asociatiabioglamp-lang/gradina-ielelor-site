@@ -831,7 +831,7 @@ final class GI_Zona {
             <p>Pentru echipa Grădinii. Intri cu utilizatorul și parola primite de la proprietară.</p>
             <?php if ('1' === $err) : ?><div class="gi-zona-notice gi-zona-err" role="alert">Datele de autentificare nu sunt corecte. Încearcă din nou.</div><?php endif; ?>
             <form method="post" action="<?php echo esc_url(wp_login_url()); ?>" class="gi-zona-form">
-                <input type="hidden" name="redirect_to" value="<?php echo esc_url(in_array(self::$ctx['sec'], array('vouchere', 'copaci', 'echipa'), true) ? self::url(self::$ctx['sec'], self::$ctx['id']) : self::url()); ?>">
+                <input type="hidden" name="redirect_to" value="<?php echo esc_url(in_array(self::$ctx['sec'], array('vouchere', 'copaci', 'echipa', 'receptie'), true) ? self::url(self::$ctx['sec'], self::$ctx['id']) : self::url()); ?>">
                 <label for="gi-zona-user">Utilizator sau email</label>
                 <input type="text" id="gi-zona-user" name="log" autocomplete="username" autocapitalize="none" required>
                 <label for="gi-zona-pass">Parola</label>
@@ -839,7 +839,7 @@ final class GI_Zona {
                 <p><button type="submit" class="button button-primary">Intră</button></p>
             </form>
             <p><a class="gi-text-link" href="<?php echo esc_url(wp_lostpassword_url(self::url())); ?>">Mi-am uitat parola</a></p>
-            <p class="gi-zona-mic">Colegii de la vânzări: parola o dă proprietara, ea o și schimbă.</p>
+            <p class="gi-zona-mic">Colegii de la vânzări și de la recepție: parola o dă proprietara, ea o și schimbă.</p>
         </div>
         <?php
     }
@@ -975,6 +975,8 @@ final class GI_Zona {
             return;
         }
         $raw = isset($_GET['cod']) ? sanitize_text_field(wp_unslash($_GET['cod'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $num = isset($_GET['comanda']) ? sanitize_text_field(wp_unslash($_GET['comanda'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $fam = isset($_GET['nume']) ? sanitize_text_field(wp_unslash($_GET['nume'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
         ?>
         <div class="gi-zona-card" data-gi-scan data-gi-scan-field="#gi-r-cod" data-gi-jsqr="<?php echo esc_url(gi_asset_url('js/vendor/jsQR.js')); ?>">
             <h2>Caută rezervarea</h2>
@@ -988,36 +990,65 @@ final class GI_Zona {
                 <p><button type="submit" class="button button-primary">Caută</button></p>
             </form>
         </div>
+        <div class="gi-zona-card">
+            <h2>Rezervare mai veche, fără cod</h2>
+            <p>Rezervările făcute înainte de codul QR nu au cod. Le găsești cu <strong>numărul comenzii</strong> (din emailul de confirmare) și <strong>numele de familie</strong> al titularului.</p>
+            <form method="get" action="<?php echo esc_url(self::url('receptie')); ?>" class="gi-zona-form">
+                <label for="gi-r-comanda">Numărul comenzii</label>
+                <input type="text" id="gi-r-comanda" name="comanda" value="<?php echo esc_attr($num); ?>" inputmode="numeric" autocomplete="off" maxlength="12" placeholder="ex. 1234">
+                <label for="gi-r-nume">Numele de familie</label>
+                <input type="text" id="gi-r-nume" name="nume" value="<?php echo esc_attr($fam); ?>" autocomplete="off" maxlength="60">
+                <p><button type="submit" class="button button-outline">Caută după număr și nume</button></p>
+            </form>
+        </div>
         <?php
-        if ('' === $raw) {
-            return;
-        }
-        $parsed = GI_Rezervari::parse($raw);
-        if (!$parsed) {
-            echo '<div class="gi-zona-notice gi-zona-err" role="alert">Codul nu are forma așteptată: 8 caractere (litere și cifre), de ex. 7K4M-Q2XP. Verifică și caută din nou.</div>';
-            return;
-        }
-        if (false === $parsed['suma']) {
-            echo '<div class="gi-zona-notice gi-zona-err" role="alert">Suma de control din cod nu se potrivește: codul e greșit sau a fost citit incomplet. Scanează din nou.</div>';
-            return;
-        }
-        $order = GI_Rezervari::find_order($parsed['cod']);
-        if (!$order) {
-            echo '<div class="gi-zona-notice gi-zona-err" role="alert">Nu găsesc rezervarea ' . esc_html($parsed['cod']) . '. Verifică codul sau caută în comenzi.</div>';
+        $order = null;
+        $label = '';
+        if ('' !== $raw) {
+            $parsed = GI_Rezervari::parse($raw);
+            if (!$parsed) {
+                echo '<div class="gi-zona-notice gi-zona-err" role="alert">Codul nu are forma așteptată: 8 caractere (litere și cifre), de ex. 7K4M-Q2XP. Verifică și caută din nou.</div>';
+                return;
+            }
+            if (false === $parsed['suma']) {
+                echo '<div class="gi-zona-notice gi-zona-err" role="alert">Suma de control din cod nu se potrivește: codul e greșit sau a fost citit incomplet. Scanează din nou.</div>';
+                return;
+            }
+            $order = GI_Rezervari::find_order($parsed['cod']);
+            $label = $parsed['cod'];
+            if (!$order) {
+                echo '<div class="gi-zona-notice gi-zona-err" role="alert">Nu găsesc rezervarea ' . esc_html($label) . '. Verifică codul sau caută după numărul comenzii și nume.</div>';
+                return;
+            }
+        } elseif ('' !== $num || '' !== $fam) {
+            $order = GI_Rezervari::find_by_number_and_name($num, $fam);
+            $label = '#' . absint(preg_replace('/\D+/', '', $num));
+            if (!$order) {
+                echo '<div class="gi-zona-notice gi-zona-err" role="alert">Nu găsesc o rezervare cu numărul și numele acestea. Verifică numărul comenzii și numele de familie (exact cum sunt în emailul de confirmare).</div>';
+                return;
+            }
+        } else {
             return;
         }
         $s = GI_Rezervari::summary($order);
         if (class_exists('GI_Istoric')) {
-            GI_Istoric::log('receptie_cautare', $parsed['cod'], array('comanda' => $s['comanda']));
+            // O singură înregistrare pe utilizator și rezervare într-un minut: reîncărcarea paginii sau „înapoi” nu umple istoricul.
+            $once = 'gi_rc_' . md5(get_current_user_id() . '|' . $label);
+            if (!get_transient($once)) {
+                set_transient($once, 1, MINUTE_IN_SECONDS);
+                GI_Istoric::log('receptie_cautare', $label, array('comanda' => $s['comanda']));
+            }
         }
         $date = function ($iso) {
             return '' !== $iso ? wp_date('d.m.Y', strtotime($iso . ' 12:00:00 UTC')) : '—';
         };
         ?>
         <div class="gi-zona-card">
-            <h2>Rezervarea <?php echo esc_html($parsed['cod']); ?></h2>
+            <h2>Rezervarea <?php echo esc_html($label); ?></h2>
             <?php if (!$s['finalizata']) : ?>
                 <div class="gi-zona-notice gi-zona-err" role="alert">Atenție: comanda nu e finalizată (stare: <?php echo esc_html($s['stare']); ?>). Nu o trata ca rezervare confirmată fără să verifici.</div>
+            <?php elseif ($s['la_locatie']) : ?>
+                <div class="gi-zona-notice gi-zona-err" role="status">Rezervare confirmată, <strong>de încasat la recepție</strong>: <?php echo esc_html($s['total']); ?> (<?php echo esc_html($s['plata']); ?>). Rezervarea nu e plătită încă.</div>
             <?php elseif (!$s['platita']) : ?>
                 <div class="gi-zona-notice gi-zona-err" role="status">Rezervare confirmată, <strong>neplătită încă</strong> (<?php echo esc_html($s['plata']); ?>). Totalul: <?php echo esc_html($s['total']); ?>.</div>
             <?php else : ?>
@@ -1028,7 +1059,7 @@ final class GI_Zona {
                 <dt>Telefon</dt><dd><?php echo esc_html($s['telefon']); ?></dd>
                 <dt>Adresa (din rezervare)</dt><dd><?php echo esc_html($s['adresa']); ?></dd>
                 <dt>Sosire</dt><dd><?php echo esc_html($date($s['sosire'])); ?></dd>
-                <dt>Plecare</dt><dd><?php echo esc_html($date($s['plecare'])); ?><?php echo null !== $s['nopti'] ? ' (' . (int) $s['nopti'] . ($s['nopti'] === 1 ? ' noapte' : ' nopți') . ')' : ''; ?></dd>
+                <dt>Plecare</dt><dd><?php echo esc_html($date($s['plecare'])); ?><?php echo null !== $s['nopti'] ? ' (' . (int) $s['nopti'] . (1 === $s['nopti'] ? ' noapte' : ' nopți') . ')' : ''; ?></dd>
                 <dt>Adulți</dt><dd><?php echo null !== $s['adulti'] ? esc_html((string) $s['adulti']) : '<span class="gi-zona-mic">nu apar în comandă</span>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></dd>
                 <dt>Copii</dt><dd><?php echo null !== $s['copii'] ? esc_html((string) $s['copii']) : '<span class="gi-zona-mic">nu apar în comandă</span>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></dd>
                 <dt>Comanda</dt><dd>#<?php echo esc_html((string) $s['comanda']); ?> · <?php echo esc_html($s['stare']); ?> · <?php echo esc_html($s['total']); ?></dd>
@@ -1087,7 +1118,9 @@ final class GI_Zona {
         $kind = in_array($kind, $allowed, true) ? $kind : '';
         $page = isset($_GET['pagina']) ? max(1, absint(wp_unslash($_GET['pagina']))) : 1; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
         $per = 100;
-        $rows = GI_Istoric::recent('' === $kind ? $allowed : array($kind), $per, ($page - 1) * $per);
+        // „Tot” nu amestecă căutările de la Recepție (multe, zilnice) printre vouchere și conturi: se văd la „Recepție”.
+        $without_reception = array_values(array_diff($allowed, array('receptie_')));
+        $rows = GI_Istoric::recent('' === $kind ? ($without_reception ? $without_reception : $allowed) : array($kind), $per, ($page - 1) * $per);
         $more = count($rows) > $per;
         $rows = array_slice($rows, 0, $per);
         $link = function ($k, $pg = 1) {
@@ -1256,10 +1289,10 @@ final class GI_Zona {
         $lim = class_exists('GI_Vouchere') ? GI_Vouchere::limits() : array('procent' => 0, 'suma' => 0, 'numar' => 0);
         ?>
         <div class="gi-zona-card">
-            <h2>Colegii de la vânzări</h2>
-            <p>Au cont cu rolul „Vânzări (Grădina)”: văd numai Zona echipei, generează vouchere (în limitele de mai jos) și le văd numai pe ale lor. Nu intră în administrarea WordPress.</p>
+            <h2>Colegii de la vânzări și de la recepție</h2>
+            <p>Cu rolul „Vânzări (Grădina)”: văd numai Zona echipei, generează vouchere (în limitele de mai jos) și le văd numai pe ale lor. Cu rolul „Recepție (Grădina)”: văd numai Recepția (caută rezervările după codul QR). Niciunul nu intră în administrarea WordPress.</p>
             <?php if (!$team) : ?>
-                <p>Nu ai încă niciun cont de vânzări.</p>
+                <p>Nu ai încă niciun cont de vânzări sau de recepție.</p>
             <?php else : ?>
                 <ul class="gi-zona-lista">
                     <?php foreach ($team as $u) : ?>

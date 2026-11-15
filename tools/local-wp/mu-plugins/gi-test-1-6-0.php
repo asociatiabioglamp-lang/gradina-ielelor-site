@@ -2,7 +2,7 @@
 /**
  * NUMAI LOCAL, niciodată pe staging sau live.
  * Pentru test-1-6-0.js (codul QR al rezervării și pagina Recepție):
- *  - /?gi_test=comanda&stare=processing&nume=X&tel=Y&sosire=aaaa-ll-zz&plecare=aaaa-ll-zz&adulti=2&copii=1[&eticheta=ro]
+ *  - /?gi_test=comanda&stare=processing&nume=X&prenume=Y&tel=Z&sosire=aaaa-ll-zz&plecare=aaaa-ll-zz&adulti=2&copii=1[&metoda=cod]
  *        → creează o comandă de probă (produsul „Rezervare de probă”, câmpurile „Check in:”, „Check out:”, „Cantitate:”, „Adulți”, „Copii”), întoarce id, cheie și adresa paginii de mulțumire
  *  - /?gi_test=stare_comanda&id=N&stare=cancelled → schimbă starea comenzii
  *  - /?gi_test=cod_comanda&id=N → codul rezervării păstrat în comandă (gol dacă încă nu are)
@@ -63,6 +63,9 @@ add_action('init', function () {
         $order->set_billing_city('Brașov');
         $order->set_billing_country('RO');
         $order->set_payment_method_title($q('plata', 'Card online'));
+        if ('' !== $q('metoda')) {
+            $order->set_payment_method($q('metoda'));
+        }
         $order->set_total(450);
         $order->update_meta_data('_gi_test_comanda', '1');
         $order->save();

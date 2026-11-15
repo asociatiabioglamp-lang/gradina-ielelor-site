@@ -18,7 +18,8 @@
   var field = document.querySelector(root.getAttribute('data-gi-scan-field'));
   var form = field ? field.form : null;
   var jsqrUrl = root.getAttribute('data-gi-jsqr');
-  var stream = null, timer = null, detector = null, canvas = null, ctx = null, busy = false, errors = 0;
+  var stream = null, timer = null, detector = null, canvas = null, ctx = null, busy = false, errors = 0, starting = false, generation = 0;
+  var SHAPE = /^(GI1\.[A-Z0-9-]+\.[A-Z0-9]{2}|[A-Z0-9]{4}-?[A-Z0-9]{4})$/;
 
   function say(text, bad) {
     msg.textContent = text || '';
@@ -26,13 +27,23 @@
   }
 
   function stop() {
+    generation++; // anulează o pornire care încă așteaptă permisiunea camerei
+    starting = false;
     if (timer) { clearTimeout(timer); timer = null; }
     if (stream) { stream.getTracks().forEach(function (t) { t.stop(); }); stream = null; }
     busy = false;
-    video.hidden = true; stopBtn.hidden = true; openBtn.hidden = false;
+    video.hidden = true; stopBtn.hidden = true; openBtn.hidden = false; openBtn.disabled = false;
   }
 
   function found(text) {
+    if (!stream) return; // citire întoarsă după ce s-a oprit camera
+    var clean = String(text || '').replace(/\s+/g, '').toUpperCase();
+    if (!SHAPE.test(clean)) {
+      // un alt cod QR (afiș, wifi...): nu e al rezervării; continuă să caute
+      say('Acesta nu e un cod de rezervare. Îndreaptă camera spre codul turistului.', true);
+      schedule();
+      return;
+    }
     stop();
     field.value = text;
     say('Cod citit. Se caută rezervarea...');
@@ -92,21 +103,32 @@
       say('Camera nu se poate porni în acest browser (sau pagina nu e pe https). Scrie codul de mai jos.', true);
       return;
     }
+    if (starting || stream) return; // al doilea apăsat, cât camera se pornește sau merge deja
+    starting = true;
+    openBtn.disabled = true;
+    var mine = ++generation;
     say('Se pornește camera...');
     errors = 0;
     navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false }).then(function (s) {
+      if (mine !== generation) { // între timp s-a apăsat „Oprește” sau s-a părăsit pagina
+        s.getTracks().forEach(function (t) { t.stop(); });
+        return Promise.reject(null);
+      }
+      starting = false;
       stream = s;
       video.srcObject = s;
       video.setAttribute('playsinline', 'true');
       video.hidden = false; stopBtn.hidden = false; openBtn.hidden = true;
       return video.play();
     }).then(function () {
+      if (mine !== generation) { return; }
       say('Îndreaptă camera spre codul QR.');
       if (window.BarcodeDetector) {
         try { detector = new window.BarcodeDetector({ formats: ['qr_code'] }); } catch (e) { detector = null; }
       }
       if (detector) { schedule(); } else { useJsqr(); }
     }).catch(function () {
+      if (mine !== generation) { return; } // anulată de utilizator sau pagină părăsită: fără mesaj de eroare
       stop();
       say('Nu am acces la cameră. Permite camera pentru acest site sau scrie codul de mai jos.', true);
     });
