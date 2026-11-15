@@ -121,7 +121,7 @@ final class GI_Zona {
         }
         $grants = array(
             'administrator' => array('gi_zona', 'gi_vouchere', 'gi_vouchere_toate', 'gi_copaci', 'gi_echipa', 'gi_receptie', 'gi_fise_vezi'),
-            'shop_manager' => array('gi_zona', 'gi_vouchere', 'gi_vouchere_toate', 'gi_copaci', 'gi_receptie', 'gi_fise_vezi'),
+            'shop_manager' => array('gi_zona', 'gi_vouchere', 'gi_vouchere_toate', 'gi_copaci', 'gi_receptie'), // registrul fișelor (gi_fise_vezi) numai administratorul: „îl vede numai managementul”
             'editor' => array('gi_zona', 'gi_copaci'),
         );
         foreach ($grants as $role => $caps) {

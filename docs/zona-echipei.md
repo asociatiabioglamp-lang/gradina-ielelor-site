@@ -24,7 +24,7 @@ Limitarea încercărilor repetate de parolă **nu** e în plugin (hotărâre din
 | **Vânzări (Grădina)** — conturile colegilor | **numai ale lui**, în limite | nu | nu | **nu** (e trimis înapoi în Zonă) |
 | **Recepție (Grădina)** — conturile colegilor de la recepție | nu | nu | nu | **nu** (e trimis înapoi în Zonă) |
 
-La **Recepție** (căutarea rezervărilor) au acces: administratorul, managerul de magazin și conturile „Recepție (Grădina)”.
+La **Recepție** (căutarea rezervărilor) au acces: administratorul, managerul de magazin și conturile „Recepție (Grădina)”. **Istoricul căutărilor** de la Recepție îl vede numai administratorul.
 
 Colegii de la vânzări nu văd nimic din administrarea WordPress: nici articole, nici pagini, nici comenzi, nici alte conturi. Văd numai Zona echipei.
 
