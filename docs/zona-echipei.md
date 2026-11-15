@@ -128,6 +128,8 @@ Dacă ceva nu e în regulă (CNP greșit, act expirat, același act de două ori
 
 **Ce rămâne de hotărât (nu e pus de Claude, nu e inventat)**: textul notei de informare despre datele personale și cât se păstrează fișele (le dă un jurist); lista exactă de date din sistemul electronic național (SIT), dacă proiectul se adoptă; dacă CNP-ul apare în zona de jos pentru actele reale (se încearcă cu acte reale, pe un telefon); citirea zonei de jos direct cu camera telefonului (altă etapă, se încearcă separat).
 
+**Siguranța datelor din fișe (pe înțelesul tuturor).** CNP-ul, seria actului, domiciliul și semnăturile stau în baza de date a site-ului, **necriptate**, deci se află și în copiile de siguranță ale bazei de date (ale hostingului). De aceea: registrul îl vede numai administratorul, contul tău să aibă o parolă lungă și nepusă în altă parte, iar fișele trecute de termen se șterg (din Registru). Dacă ștergi pluginul, tabelul cu fișe **rămâne** în baza de date (ca să nu pierzi documente din greșeală): ștergerea lui se face la cerere, de către cine administrează baza de date. Pagina Zonei nu se traduce automat și nu are steagul de limbă, ca să nu ajungă datele la un serviciu extern de traducere.
+
 **Istoric.** Fiecare fișă înscrisă, ștearsă sau descărcată apare în Istoric → Fișe, **fără** nume, CNP, acte sau telefoane.
 
 ## Copaci și locuri (cod QR)
