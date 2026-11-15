@@ -262,7 +262,7 @@ Fără nume, date sau istorie inventate: povestea e doar cea de pe pagina veche 
 
 Apoi, mereu vizibile: **Cine suntem** (datele firmei de pe site-ul actual) · **Protecția consumatorului** (ANPC, SAL, ODR) · contact. Despre linkul ODR: vezi nota de mai jos și întrebarea 13.
 
-**Noua politică de anulare, exact cum a decis proprietarul** (`docs/decizii.md`): banii nu se returnează; clientul primește un **voucher cu toată suma plătită**, fără nicio reținere, **valabil până la 31 decembrie a anului următor**, folosibil pentru altă rezervare, **și parțial** (restul rămâne pe voucher). Restul regulilor de rezervare (anulare pentru toată perioada, plecare mai devreme, prelungire negarantată) vin din politica de anulare de pe site-ul actual.
+**Noua politică de anulare, exact cum a decis proprietarul** (`docs/decizii.md`): banii nu se returnează; clientul primește un **voucher cu toată suma plătită**, fără nicio reținere, **valabil până la 31 decembrie a anului următor**, folosibil pentru altă rezervare, **o singură dată, în întregime** (**nu parțial**: hotărâre 15.11.2026). Restul regulilor de rezervare (anulare pentru toată perioada, plecare mai devreme, prelungire negarantată) vin din politica de anulare de pe site-ul actual.
 
 **Linkurile pentru consumatori:** ANPC (https://anpc.ro/), SAL (https://anpc.ro/categorie/1271/sal) și ODR (https://ec.europa.eu/consumers/odr/main/index.cfm?event=main.home2.show&lng=RO) sunt cele din footer-ul site-ului actual. **Linkul ODR redirecționează acum.** Adresa nouă nu am putut-o verifica: mediul de lucru blochează accesul la ec.europa.eu și anpc.ro. Așa că a rămas linkul vechi, cu notă pentru avocat (întrebarea 13).
 
@@ -309,7 +309,7 @@ Apoi, mereu vizibile: **Cine suntem** (datele firmei de pe site-ul actual) · **
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->
-<li>Îl poți folosi și parțial: suma nefolosită rămâne pe voucher, până la aceeași dată.</li>
+<li>Voucherul se folosește o singură dată, în întregime; nu se poate folosi parțial.</li>
 <!-- /wp:list-item --></ul>
 <!-- /wp:list --></div>
 <!-- /wp:group -->

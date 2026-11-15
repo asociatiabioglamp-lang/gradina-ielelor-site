@@ -377,7 +377,7 @@ final class GI_Vouchere {
             $tiles[] = array(
                 'url' => self::code_url($c->get_code()),
                 'title' => strtoupper($c->get_code()),
-                'note' => 'Reducere ' . self::describe($c) . ($exp ? ' · valabil până la ' . wp_date('d.m.Y', $exp->getTimestamp()) : ''),
+                'note' => 'Reducere ' . self::describe($c) . ($exp ? ' · valabil până la ' . wp_date('d.m.Y', $exp->getTimestamp()) : '') . ' · o singură folosire',
                 'foot' => preg_replace('#^https?://#', '', home_url('/')),
             );
         }

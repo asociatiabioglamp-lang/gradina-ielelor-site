@@ -648,7 +648,7 @@ final class GI_Zona {
         ?>
         <div class="gi-zona-card">
             <h2>Voucher nou</h2>
-            <p>Valabil <strong><?php echo (int) GI_Vouchere::MONTHS; ?> luni</strong> de azi, o singură folosire pe cod.
+            <p>Valabil <strong><?php echo (int) GI_Vouchere::MONTHS; ?> luni</strong> de azi. Un cod se folosește <strong>o singură dată, în întregime</strong>: nu se poate folosi parțial, iar dacă rezervarea e mai mică decât valoarea lui, diferența nu se păstrează.
                 <?php if ($limits) : ?>Pe fiecare cod poți da cel mult <strong><?php echo esc_html($nice($limits['procent'])); ?>%</strong> sau <strong><?php echo esc_html($nice($limits['suma'])); ?> lei</strong> reducere, cel mult <strong><?php echo (int) $limits['numar']; ?></strong> coduri deodată. La o rezervare se poate folosi un singur cod de la tine.<?php endif; ?></p>
             <form method="post" action="<?php echo esc_url(self::url('vouchere')); ?>" class="gi-zona-form">
                 <input type="hidden" name="gi_actiune" value="genereaza">

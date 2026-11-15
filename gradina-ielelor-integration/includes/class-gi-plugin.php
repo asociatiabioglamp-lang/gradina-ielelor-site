@@ -11,6 +11,7 @@ final class GI_Plugin {
         add_action('wp_enqueue_scripts', array(__CLASS__, 'trim_dedicated_assets'), 999);
         add_action('wp_footer', array(__CLASS__, 'trim_dedicated_assets'), 1); // wc-blocks-style se adaugă târziu.
         add_filter('render_block', array(__CLASS__, 'hide_editor_note'), 10, 2);
+        add_filter('render_block', array(__CLASS__, 'voucher_whole_use'), 11, 2);
         add_filter('get_the_excerpt', array(__CLASS__, 'excerpt_without_notes'), 9, 2);
         add_filter('body_class', array(__CLASS__, 'body_class'));
         add_action('wp_head', array(__CLASS__, 'favicon'), 1);
@@ -80,6 +81,20 @@ final class GI_Plugin {
      * Plasă de siguranță: un bloc cu clasa `gi-nota-editor` nu ajunge la vizitatori (pagină, căutare, REST, flux).
      * Notele nu se pun în pagină (docs/pagini-continut.md); cine poate edita pagini le vede în continuare.
      */
+    /**
+     * Voucherul (de reducere sau de anulare) NU se poate folosi parțial (hotărârea proprietarei, 15.11.2026): se folosește o singură dată,
+     * în întregime. Pagina „Regulament & politici” (text scris în editor) spunea încă „Îl poți folosi și parțial: suma nefolosită rămâne
+     * pe voucher”. Înlocuim numai această propoziție, la afișare; textul din baza de date nu se atinge. Când proprietara îl schimbă și în editor,
+     * filtrul nu mai are ce înlocui. Lista se poate completa cu `gi_voucher_partial_patterns`.
+     */
+    public static function voucher_whole_use($content, $block) {
+        if (!is_string($content) || false === stripos($content, 'parțial')) {
+            return $content;
+        }
+        $patterns = apply_filters('gi_voucher_partial_patterns', array('/Îl poți folosi și parțial:[^<]*/u'));
+        return preg_replace($patterns, 'Voucherul se folosește o singură dată, în întregime; nu se poate folosi parțial.', $content);
+    }
+
     public static function hide_editor_note($content, $block) {
         if (empty($block['attrs']['className']) || current_user_can('edit_pages')) {
             return $content;

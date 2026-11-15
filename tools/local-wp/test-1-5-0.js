@@ -3,7 +3,7 @@
 // NUMAI LOCAL: se autentifică cu admin/password, creează și șterge conturi, vouchere și locuri de probă.
 // Are nevoie de: mu-plugin-urile din tools/local-wp/mu-plugins (inclusiv gi-test-1-5-0.php și gi-test-1-3-14.php), WooCommerce activ
 // și biblioteca de test jsqr (numai pentru test, nu face parte din plugin):  npm install jsqr  și  NODE_PATH să includă folderul ei node_modules.
-// Variabile opționale: GI_PHP_LOG (calea spre wp-content/gi-php-errors.log, ca să se verifice că nu apar erori PHP), GI_SHOTS (folder pentru capturi).
+// Variabile opționale: GI_SKIP_HEAVY=1 (sare peste cele 66 de încărcări de pagini pentru ecrane și subsol, când stilurile nu s-au schimbat), GI_PHP_LOG (calea spre wp-content/gi-php-errors.log, ca să se verifice că nu apar erori PHP), GI_SHOTS (folder pentru capturi).
 // Verifică:
 //  - căsuța „Administrare” din subsol (pe cinci pagini, șase ecrane, cu stilurile străine): se vede, nu e acoperită, se poate atinge, duce la Zona echipei;
 //  - Zona echipei fără cont: formular de intrare, nu se arată nimic, nu apare în Google (antet + meta), fără păstrare în memorii intermediare;
@@ -178,6 +178,7 @@ async function runScreens(browser, newCtx, state) {
   const nonceFor = async (ctx, action) => (await api(ctx, 'nonce&n=' + action)).nonce;
 
   // ------------------------------------------------------------------ 1. Căsuța „Administrare” în subsol
+  if (!process.env.GI_SKIP_HEAVY) {
   const PUBLIC = ['/', '/glamping/', '/contact/', '/galerie-foto/', '/despre-noi/'];
   for (const [size, [w, h]] of Object.entries(SIZES)) {
     const phone = Math.min(w, h) <= 430;
@@ -206,6 +207,7 @@ async function runScreens(browser, newCtx, state) {
     }
     ok(problems.length === 0, `căsuța „Administrare” — ${size}: pe ${PUBLIC.length} pagini se vede, e ușor de atins, nu e acoperită, duce la Zona echipei (${problems.join('; ') || 'în regulă'})`);
     await ctx.close();
+  }
   }
   {
     const ctx = await newCtx(); const page = await ctx.newPage(); page.setDefaultTimeout(90000);
@@ -251,6 +253,15 @@ async function runScreens(browser, newCtx, state) {
     const sm = await (await ctx.request.get(BASE + '/wp-sitemap.xml')).text();
     ok(!/zona-echipei/.test(sm), 'zona: nu apare în harta site-ului');
     await ctx.close();
+  }
+
+  // ------------------------------------------------------------------ 2b. Regulament: voucherul nu se folosește parțial (hotărâre 15.11.2026)
+  {
+    // În baza de date locală rămâne textul vechi de pe live („Îl poți folosi și parțial…”), ca să se vadă că pluginul îl înlocuiește la afișare.
+    const v = await newCtx(); const r = await v.request.get(BASE + '/regulament-politici/'); const html = await r.text();
+    ok(r.status() === 200 && /Voucherul se folosește o singură dată, în întregime; nu se poate folosi parțial\./.test(html) && !/Îl poți folosi și parțial/.test(html) && !/suma nefolosită rămâne pe voucher/.test(html), 'regulament: „Voucherul se folosește o singură dată, în întregime; nu se poate folosi parțial.” înlocuiește propoziția veche, iar restul paginii rămâne');
+    ok(/Primești un voucher cu toată suma plătită/.test(html) && /31 decembrie/.test(html), 'regulament: celelalte reguli despre voucher (toată suma, 31 decembrie) rămân neatinse');
+    await v.close();
   }
 
   // ------------------------------------------------------------------ 3. Autentificare greșită (fără blocare în plugin: hotărâre din docs/securitate.md)
@@ -668,7 +679,7 @@ async function runScreens(browser, newCtx, state) {
     ok((await ap.locator('.gi-zona-lista li', { hasText: COLEG }).count()) === 1, 'echipă: colegul reactivat apare din nou în lista echipei');
   }
 
-  await runScreens(browser, newCtx, await adm.storageState());
+  if (!process.env.GI_SKIP_HEAVY) { await runScreens(browser, newCtx, await adm.storageState()); }
 
   // ------------------------------------------------------------------ curățenie
   for (const id of created.coupons) { await rest('DELETE', '/wc/v3/coupons/' + id + '?force=true'); }

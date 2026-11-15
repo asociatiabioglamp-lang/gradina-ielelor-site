@@ -8,7 +8,7 @@ Fișierul vechi: `ROI-GRADINA-IELELOR-ver-10.06.2022.pdf` (6 pagini, publicat pe
 
 ## Ce a rămas din vechiul regulament și nu se potrivește cu deciziile noi
 Nu am schimbat aceste locuri fără o decizie scrisă a proprietarului:
-- **Pagina 2: voucherul.** Textul vechi: valabil „în sezonul în care a primit voucherul”, folosibil de altă persoană. Decizia nouă: valabil până la 31 decembrie anul următor, valoare întreagă, folosibil parțial. Dacă se poate transfera altei persoane nu e hotărât (`docs/decizii.md`, întrebarea 5).
+- **Pagina 2: voucherul.** Textul vechi: valabil „în sezonul în care a primit voucherul”, folosibil de altă persoană. Decizia nouă: valabil până la 31 decembrie anul următor, valoare întreagă, **nu se poate folosi parțial** (o singură folosire, în întregime; hotărâre 15.11.2026). Dacă se poate transfera altei persoane nu e hotărât (`docs/decizii.md`, întrebarea 5).
 - **Antet:** `office@gradina-ielelor.ro`, în timp ce rezervările merg pe `rezervari@`.
 - **Câinii, mașinile, grătarul:** regulile din 2022 pot fi mai vechi decât cele de pe site-ul nou. Pagina nouă „Regulament & politici” e cea de referință.
 

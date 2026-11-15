@@ -15,7 +15,7 @@
 
 ## Politica de anulare: voucher, nu bani înapoi
 - La anulare nu se returnează bani; clientul primește un **voucher cu valoarea plătită**.
-- **Confirmat:** valoarea întreagă plătită, fără reținere; valabil până la **31 decembrie anul următor**; folosibil și parțial, restul rămâne pe voucher.
+- **Confirmat:** valoarea întreagă plătită, fără reținere; valabil până la **31 decembrie anul următor**; **nu se poate folosi parțial**: o singură folosire, în întregime (hotărâre 15.11.2026, înlocuiește „folosibil parțial”).
 - Regula se scrie clar în termeni și se acceptă explicit înainte de plată.
 - Baza tehnică: pluginul `gradina-ielelor-vouchers` (v0.1.0: sold, istoric, restaurare la anulare), adaptat la plata pe site.
 
