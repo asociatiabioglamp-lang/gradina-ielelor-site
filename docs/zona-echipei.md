@@ -99,6 +99,13 @@ Voucherele sunt **cupoane WooCommerce obișnuite**, de două feluri: **sumă fix
 
 **Cum merge pe un telefon simplu.** Se deschide în browserul telefonului (Chrome, Safari, Samsung Internet), pe `https`, fără aplicație din magazin. Camera cere permisiunea o dată. Dacă telefonul nu are cameră sau o refuzi, scrii codul. Imaginea de la cameră nu pleacă de pe telefon.
 
+**Prima încercare (pe copia de test, înainte de live).** Pe copia de test, cu plata în regim de probă (sandbox):
+1. Faci o rezervare de probă până la pagina de mulțumire. Verifici că apare **„Codul tău de rezervare”** (cod + cod QR). Pe copia de test emailurile către clienți sunt oprite, deci codul din email îl verifici în comanda din administrare (se vede „Cod rezervare (QR)”).
+2. Deschizi pagina de mulțumire pe calculator, iar de pe **telefonul de la recepție** intri în Zona echipei → **Recepție** → **Scanează cu camera** și îndrepți telefonul spre codul de pe ecran. Trebuie să apară rezervarea, cu datele corecte (sosire, plecare, adulți, copii, plătită sau de încasat).
+3. Încerci și cu **codul scris**, și cu o rezervare cu **plata la locație**.
+4. Dacă telefonul nu pornește camera, îmi spui ce telefon e (iPhone sau Android) și ce browser; atunci scrii codul și mergem mai departe.
+Ce nu pot verifica eu din calculator: camera unui telefon real (am încercat cu o cameră simulată) și datele exacte pe care le pune modulul de rezervări (sosire, plecare, adulți, copii) pe o rezervare adevărată. Dacă apare „nu apar în comandă” la adulți sau copii, îmi spui cum se numesc câmpurile în comandă și le adaug.
+
 **Cont pentru recepție.** Echipă → Adaugă un coleg → rolul **„Recepție”**. Colegul vede numai Recepția: nu vede vouchere, copaci, echipă sau istoric și nu intră în administrarea WordPress. Utilizatorul și parola le alegi tu, iar parola o schimbi numai tu (ca la vânzări).
 
 **Istoric.** Fiecare căutare apare în Istoric → **Recepție** („A căutat rezervarea …”), cu cine a căutat, fără numele sau telefonul turistului. O singură linie pe rezervare și pe persoană într-un minut; la „Tot” nu apar (sunt multe, zilnice).
