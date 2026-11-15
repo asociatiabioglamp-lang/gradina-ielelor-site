@@ -110,3 +110,20 @@
 .gi-zona-site .gi-zona .gi-zona-inline input.gi-zona-parola-noua:focus { border-color: var(--forest); outline: 3px solid var(--accent) !important; outline-offset: 1px; }
 @media (max-width: 640px) { .gi-zona-site .gi-zona .gi-zona-inline input.gi-zona-parola-noua { width: 100%; } }
 
+/* ---------- Pagina cu codul QR al rezervării (/cod-rezervare/<cod>/) ---------- */
+.gi-cod-site .gi-zona .gi-cod-card { align-items: center; text-align: center; }
+.gi-cod-site .gi-zona .gi-cod-text { margin: 0; font: 700 clamp(30px, 8vw, 46px)/1.1 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; letter-spacing: .06em; color: var(--forest-deep); }
+.gi-cod-site .gi-zona .gi-cod-qr-mare { width: min(100%, 340px); padding: 12px; background: #fff; border: 1px solid var(--line); border-radius: 4px; }
+.gi-cod-site .gi-zona .gi-cod-qr-mare svg { display: block; width: 100%; height: auto; }
+@media print { .gi-cod-site .site-header, .gi-cod-site .site-footer, .gi-cod-site .gi-content-hero, .gi-cod-site .gi-mobile-booking, .gi-cod-site .button, .gi-cod-site #gt_float_wrapper { display: none !important; } }
+
+/* ---------- Recepție: scanare cu camera, rezervarea găsită ---------- */
+.gi-zona-site .gi-zona .gi-scan-video { display: block; width: 100%; max-width: 420px; aspect-ratio: 4 / 3; object-fit: cover; background: #000; border-radius: 4px; }
+.gi-zona-site .gi-zona .gi-scan-video[hidden] { display: none; }
+.gi-zona-site .gi-zona .gi-scan-err { color: #b3261e; font-weight: 600; }
+.gi-zona-site .gi-zona dl.gi-zona-fapte { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 18px; margin: 0; }
+.gi-zona-site .gi-zona dl.gi-zona-fapte dt { margin: 0; color: var(--text-2); font-size: var(--fs-note); }
+.gi-zona-site .gi-zona dl.gi-zona-fapte dd { margin: 0; font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
+.gi-zona-site .gi-zona .gi-zona-card h3 { margin: 6px 0 0; font-family: var(--display); font-weight: 500; font-size: 22px; color: var(--forest-deep); }
+@media (max-width: 560px) { .gi-zona-site .gi-zona dl.gi-zona-fapte { grid-template-columns: 1fr; gap: 2px; } .gi-zona-site .gi-zona dl.gi-zona-fapte dd { margin-bottom: 8px; } }
+

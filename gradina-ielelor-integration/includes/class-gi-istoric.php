@@ -148,8 +148,11 @@ final class GI_Istoric {
             case 'loc_modificat':
                 $out['text'] = 'A modificat locul „' . $v('titlu') . '” (' . ('publish' === $v('status') ? 'publicat' : 'ciornă') . ').';
                 break;
+            case 'receptie_cautare':
+                $out['text'] = 'A căutat rezervarea ' . $row->obiect . ' (comanda #' . $v('comanda') . ').';
+                break;
             case 'cont_creat':
-                $out['text'] = 'A creat contul colegului ' . $v('nume') . ' (' . $v('utilizator') . ').';
+                $out['text'] = 'A creat contul colegului ' . $v('nume') . ' (' . $v('utilizator') . ')' . ('' !== $v('rol') ? ', rol: ' . $v('rol') : '') . '.';
                 break;
             case 'cont_reactivat':
                 $out['text'] = 'A reactivat contul lui ' . $v('nume') . ' (' . $v('utilizator') . '), cu o parolă nouă.';

@@ -58,3 +58,9 @@ Pozițiile din antetul temei vechi (produse, blog, coș) nu se pot verifica loca
 ```
 NODE_PATH="$(npm root -g):<folder>/node_modules" GI_PHP_LOG=<wp>/wp-content/gi-php-errors.log node tools/local-wp/test-1-5-0.js
 ```
+
+`test-1-6-0.js` verifică codul QR al rezervării (pagina de mulțumire, numai pentru comenzi finalizate; cod stabil și unic; QR citit cu jsQR, fără date personale; pagina `/cod-rezervare/<cod>/`: noindex, 404 pentru coduri necunoscute sau anulate; emailul), Recepția (cod scris, text din QR, suma de control greșită, rezervare plătită / la locație / anulată, datele din comandă, ecrane pe patru mărimi), camera (antetul o permite numai pe Recepție; scanare cu o **cameră simulată** de Chromium, care arată codul QR dintr-un film făcut cu `ffmpeg`; refuzul camerei) și contul „Recepție” (vede numai Recepția, fără administrare, fără schimbare de parolă, „Mi-am uitat parola” uniform, Istoric fără date personale). Are nevoie de `mu-plugins/gi-test-1-6-0.php` (numai local), de produsul „Rezervare de probă” (îl pune `gi-local-setup.php`), de `ffmpeg` și de biblioteca de test `jsqr`. Variabile opționale: `GI_PHP_LOG`, `GI_SHOTS`, `GI_TMP`.
+
+```bash
+NODE_PATH="$(npm root -g):<folder>/node_modules" GI_PHP_LOG=<wp>/wp-content/gi-php-errors.log node tools/local-wp/test-1-6-0.js
+```

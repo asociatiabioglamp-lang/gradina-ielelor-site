@@ -15,11 +15,13 @@ delete_option('gi_zona_roluri');
 delete_option('gi_zona_limite');
 // Istoricul (tabelul gi_istoric) se păstrează: e istoric. Se poate șterge din baza de date, dacă nu mai e nevoie de el.
 delete_option('gi_istoric_db');
+delete_option('gi_rezervari_rewrite');
 remove_role('gi_vanzari');
+remove_role('gi_receptie');
 foreach (array('administrator', 'shop_manager', 'editor') as $gi_role_name) {
     $gi_role = get_role($gi_role_name);
     if ($gi_role) {
-        foreach (array('gi_zona', 'gi_vouchere', 'gi_vouchere_toate', 'gi_copaci', 'gi_echipa') as $gi_cap) {
+        foreach (array('gi_zona', 'gi_vouchere', 'gi_vouchere_toate', 'gi_copaci', 'gi_echipa', 'gi_receptie', 'gi_fise_vezi') as $gi_cap) {
             $gi_role->remove_cap($gi_cap);
         }
     }

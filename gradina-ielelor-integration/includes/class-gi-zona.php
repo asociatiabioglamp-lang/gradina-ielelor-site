@@ -20,6 +20,7 @@ final class GI_Zona {
     const ID_VAR = 'gi_zona_id';
     const BASE = 'zona-echipei';
     const ROLE = 'gi_vanzari';
+    const ROLE_RECEPTIE = 'gi_receptie';
 
     /** @var array<string,string> */
     private static $ctx = array('sec' => '', 'id' => '');
@@ -51,6 +52,18 @@ final class GI_Zona {
         add_action('woocommerce_save_account_details_errors', array(__CLASS__, 'account_block_sales_password'), 10, 2);
         add_action('wp_login_failed', array(__CLASS__, 'login_failed'), 9999, 2); // ultimul: alte pluginuri (limitare, jurnal) apucă să numere eșecul înainte de redirecționare
         add_action('wp_enqueue_scripts', array(__CLASS__, 'assets'));
+        add_filter('gi_security_headers', array(__CLASS__, 'allow_camera_on_reception'));
+    }
+
+    /**
+     * Camera e oprită pe tot site-ul (antetul de securitate). Numai pagina Recepție din Zona echipei o primește (camera=(self)): acolo se scanează codul QR.
+     * Browserul tot cere permisiunea utilizatorului; fără acest antet nu ar mai întreba deloc.
+     */
+    public static function allow_camera_on_reception($headers) {
+        if (is_array($headers) && self::is_zona() && 'receptie' === (string) get_query_var(self::VAR) && isset($headers['Permissions-Policy'])) {
+            $headers['Permissions-Policy'] = str_replace('camera=()', 'camera=(self)', (string) $headers['Permissions-Policy']);
+        }
+        return $headers;
     }
 
     /* ---------- Adrese ---------- */
@@ -98,9 +111,17 @@ final class GI_Zona {
                 get_role(self::ROLE)->add_cap($cap, $grant);
             }
         }
+        $reception = array('read' => true, 'gi_zona' => true, 'gi_receptie' => true);
+        if (!get_role(self::ROLE_RECEPTIE)) {
+            add_role(self::ROLE_RECEPTIE, 'Recepție (Grădina)', $reception);
+        } else {
+            foreach ($reception as $cap => $grant) {
+                get_role(self::ROLE_RECEPTIE)->add_cap($cap, $grant);
+            }
+        }
         $grants = array(
-            'administrator' => array('gi_zona', 'gi_vouchere', 'gi_vouchere_toate', 'gi_copaci', 'gi_echipa'),
-            'shop_manager' => array('gi_zona', 'gi_vouchere', 'gi_vouchere_toate', 'gi_copaci'),
+            'administrator' => array('gi_zona', 'gi_vouchere', 'gi_vouchere_toate', 'gi_copaci', 'gi_echipa', 'gi_receptie', 'gi_fise_vezi'),
+            'shop_manager' => array('gi_zona', 'gi_vouchere', 'gi_vouchere_toate', 'gi_copaci', 'gi_receptie', 'gi_fise_vezi'),
             'editor' => array('gi_zona', 'gi_copaci'),
         );
         foreach ($grants as $role => $caps) {
@@ -120,12 +141,13 @@ final class GI_Zona {
      */
     private static function roles_complete() {
         $sales = get_role(self::ROLE);
-        if (!$sales || !$sales->has_cap('gi_zona')) {
+        $reception = get_role(self::ROLE_RECEPTIE);
+        if (!$sales || !$sales->has_cap('gi_zona') || !$reception || !$reception->has_cap('gi_receptie')) {
             return false;
         }
         foreach (array('administrator', 'shop_manager', 'editor') as $name) {
             $r = get_role($name);
-            if ($r && !$r->has_cap('gi_zona')) {
+            if ($r && (!$r->has_cap('gi_zona') || ('editor' !== $name && !$r->has_cap('gi_receptie')))) {
                 return false;
             }
         }
@@ -136,7 +158,28 @@ final class GI_Zona {
      * Cont de vânzări: are rolul „Vânzări (Grădina)” și nimic mai mult (nu poate edita conținut). Aceste conturi nu intră în administrare.
      */
     public static function is_sales_only($user) {
-        return $user instanceof WP_User && in_array(self::ROLE, (array) $user->roles, true) && !$user->has_cap('edit_posts');
+        return $user instanceof WP_User && self::roles_has_team((array) $user->roles) && !$user->has_cap('edit_posts');
+    }
+
+    /** Rolurile conturilor de echipă create din Zonă: „Vânzări (Grădina)” și „Recepție (Grădina)”. */
+    public static function team_roles() {
+        return array(self::ROLE, self::ROLE_RECEPTIE);
+    }
+
+    public static function roles_has_team($roles) {
+        return (bool) array_intersect((array) $roles, self::team_roles());
+    }
+
+    public static function role_label($roles) {
+        $roles = (array) $roles;
+        $labels = array();
+        if (in_array(self::ROLE, $roles, true)) {
+            $labels[] = 'Vânzări';
+        }
+        if (in_array(self::ROLE_RECEPTIE, $roles, true)) {
+            $labels[] = 'Recepție';
+        }
+        return implode(' + ', $labels);
     }
 
     public static function keep_sales_out_of_admin() {
@@ -152,7 +195,7 @@ final class GI_Zona {
      */
     public static function block_sales_reset($allow, $user_id) {
         $user = get_userdata((int) $user_id);
-        if ($user && in_array(self::ROLE, (array) $user->roles, true)) {
+        if ($user && self::roles_has_team((array) $user->roles)) {
             return new WP_Error('gi_parola_proprietara', 'Parola contului tău o schimbă numai proprietara. Cere-i una nouă.');
         }
         return $allow;
@@ -167,7 +210,7 @@ final class GI_Zona {
             return $data;
         }
         $user = get_userdata((int) $user_id);
-        if ($user && in_array(self::ROLE, (array) $user->roles, true) && !current_user_can('gi_echipa')) {
+        if ($user && self::roles_has_team((array) $user->roles) && !current_user_can('gi_echipa')) {
             $data['user_pass'] = $user->user_pass;
         }
         return $data;
@@ -175,7 +218,7 @@ final class GI_Zona {
 
     private static function is_sales_id($user_id) {
         $user = get_userdata((int) $user_id);
-        return $user && in_array(self::ROLE, (array) $user->roles, true);
+        return $user && self::roles_has_team((array) $user->roles);
     }
 
     /**
@@ -293,6 +336,9 @@ final class GI_Zona {
         wp_enqueue_style('gi-content-page', gi_asset_url('css/content-page.css'), array('gi-pages'), GI_VERSION); // antetul de pagină (titlu pe cer senin)
         wp_enqueue_style('gi-zona', gi_asset_url('css/zona.css'), array('gi-content-page'), GI_VERSION);
         wp_enqueue_script('gi-one-page', gi_asset_url('js/site.js'), array(), GI_VERSION, true);
+        if ('receptie' === self::$ctx['sec'] && is_user_logged_in() && current_user_can('gi_receptie')) {
+            wp_enqueue_script('gi-scanare', gi_asset_url('js/scanare.js'), array(), GI_VERSION, true);
+        }
         if (is_user_logged_in() && current_user_can('gi_zona')) {
             wp_enqueue_script('gi-qrcode', gi_asset_url('js/vendor/qrcode.js'), array(), GI_VERSION, true);
             wp_enqueue_script('gi-admin-qr', gi_asset_url('js/admin-qr.js'), array('gi-qrcode'), GI_VERSION, true);
@@ -353,7 +399,7 @@ final class GI_Zona {
         header('X-LiteSpeed-Cache-Control: no-cache');
         $sec = sanitize_key((string) get_query_var(self::VAR));
         $id = sanitize_title((string) get_query_var(self::ID_VAR));
-        if (!in_array($sec, array('acasa', 'vouchere', 'copaci', 'echipa', 'istoric', 'tipar'), true)) {
+        if (!in_array($sec, array('acasa', 'vouchere', 'copaci', 'echipa', 'istoric', 'receptie', 'tipar'), true)) {
             self::go();
         }
         self::$ctx = array('sec' => $sec, 'id' => $id);
@@ -582,6 +628,7 @@ final class GI_Zona {
         if ('adauga' === $action) {
             $name = sanitize_text_field((string) self::posted('nume'));
             $email = sanitize_email((string) self::posted('email'));
+            $role = 'receptie' === sanitize_key((string) self::posted('rol')) ? self::ROLE_RECEPTIE : self::ROLE;
             if ('' === $name || !is_email($email)) {
                 self::flash(array('errors' => array('Scrie numele și un email valid.')));
                 self::go('echipa');
@@ -590,16 +637,16 @@ final class GI_Zona {
             if ($existing_id) {
                 $old = get_userdata($existing_id);
                 $old_roles = $old ? (array) $old->roles : array();
-                if ($old && !empty($old_roles) && !in_array(self::ROLE, $old_roles, true) && !$old->has_cap('edit_posts') && !array_diff($old_roles, array('customer', 'subscriber'))) {
+                if ($old && !empty($old_roles) && !self::roles_has_team($old_roles) && !$old->has_cap('edit_posts') && !array_diff($old_roles, array('customer', 'subscriber'))) {
                     // Un cont de client (cineva din echipă care a rezervat și el): primește și rolul de vânzări, cu aceeași parolă ca până acum.
-                    $old->add_role(self::ROLE);
+                    $old->add_role($role);
                     if (class_exists('GI_Istoric')) {
                         GI_Istoric::log('cont_rol', $old->user_login, array('nume' => $old->display_name, 'utilizator' => $old->user_login));
                     }
                     self::flash(array('ok' => 'Contul exista deja (cont de client): ' . $old->display_name . ' (' . $old->user_login . '). Are acum acces la Zonă și intră cu parola lui obișnuită. De acum, parola lui o schimbi numai tu (Parolă nouă), inclusiv pentru contul de client.'));
                     self::go('echipa');
                 }
-                if ($old && in_array(self::ROLE, $old_roles, true)) {
+                if ($old && self::roles_has_team($old_roles)) {
                     self::flash(array('errors' => array('Acest coleg e deja în echipă.')));
                     self::go('echipa');
                 }
@@ -610,7 +657,7 @@ final class GI_Zona {
                         self::flash(array('errors' => array($perr)));
                         self::go('echipa');
                     }
-                    $old->set_role(self::ROLE);
+                    $old->set_role($role);
                     wp_set_password(wp_slash($pass), $old->ID); // WordPress compară la intrare parola cu „bare de escape” (ca în $_POST): o salvăm la fel, ca și cele cu \\ sau ghilimele să intre
                     WP_Session_Tokens::get_instance($old->ID)->destroy_all();
                     if (class_exists('GI_Istoric')) {
@@ -640,21 +687,21 @@ final class GI_Zona {
                 self::go('echipa');
             }
             // Contul se creează cu o parolă provizorie, apoi se pune exact parola aleasă (wp_set_password o ia ca atare, fără alte prelucrări).
-            $uid = wp_insert_user(array('user_login' => $login, 'user_email' => $email, 'user_pass' => wp_generate_password(24, true, true), 'display_name' => $name, 'first_name' => $name, 'role' => self::ROLE));
+            $uid = wp_insert_user(array('user_login' => $login, 'user_email' => $email, 'user_pass' => wp_generate_password(24, true, true), 'display_name' => $name, 'first_name' => $name, 'role' => $role));
             if (is_wp_error($uid)) {
                 self::flash(array('errors' => array('Contul nu s-a putut crea. Încearcă din nou.')));
                 self::go('echipa');
             }
             wp_set_password(wp_slash($pass), $uid); // la fel ca mai sus
             if (class_exists('GI_Istoric')) {
-                GI_Istoric::log('cont_creat', $login, array('nume' => $name, 'utilizator' => $login));
+                GI_Istoric::log('cont_creat', $login, array('nume' => $name, 'utilizator' => $login, 'rol' => self::role_label(array($role))));
             }
             self::$inline = array('ok' => 'Contul a fost creat.', 'cont' => array('name' => $name, 'login' => $login, 'pass' => $pass));
             return;
         }
         $uid = absint(self::posted('utilizator'));
         $user = $uid ? get_userdata($uid) : false;
-        if (!$user || !in_array(self::ROLE, (array) $user->roles, true) || $user->has_cap('edit_posts') || (int) $uid === get_current_user_id()) {
+        if (!$user || !self::roles_has_team((array) $user->roles) || $user->has_cap('edit_posts') || (int) $uid === get_current_user_id()) {
             self::flash(array('errors' => array('Acest cont nu se poate modifica de aici.')));
             self::go('echipa');
         }
@@ -672,7 +719,9 @@ final class GI_Zona {
             self::$inline = array('ok' => 'Parola a fost schimbată.', 'cont' => array('name' => $user->display_name, 'login' => $user->user_login, 'pass' => $pass));
             return;
         } else {
-            $user->remove_role(self::ROLE); // numai rolul de vânzări; alte roluri ale contului (dacă are) rămân
+            foreach (self::team_roles() as $team_role) {
+                $user->remove_role($team_role); // numai rolurile de echipă; alte roluri ale contului (dacă are) rămân
+            }
             if (class_exists('GI_Istoric')) {
                 GI_Istoric::log('cont_scos', $user->user_login, array('nume' => $user->display_name, 'utilizator' => $user->user_login));
             }
@@ -722,7 +771,7 @@ final class GI_Zona {
     }
 
     private static function title_for($sec) {
-        $titles = array('acasa' => 'Zona echipei', 'vouchere' => 'Vouchere', 'copaci' => 'Copaci și locuri', 'echipa' => 'Echipă', 'istoric' => 'Istoric', 'tipar' => 'Printare');
+        $titles = array('acasa' => 'Zona echipei', 'vouchere' => 'Vouchere', 'copaci' => 'Copaci și locuri', 'echipa' => 'Echipă', 'istoric' => 'Istoric', 'receptie' => 'Recepție', 'tipar' => 'Printare');
         return isset($titles[$sec]) ? $titles[$sec] : 'Zona echipei';
     }
 
@@ -754,6 +803,8 @@ final class GI_Zona {
             self::view_team($flash);
         } elseif ('istoric' === $sec) {
             self::view_history();
+        } elseif ('receptie' === $sec) {
+            self::view_reception();
         } else {
             self::view_home();
         }
@@ -806,6 +857,9 @@ final class GI_Zona {
             <?php endif; ?>
             <?php if (current_user_can('gi_echipa')) : ?>
                 <a class="gi-zona-tile" href="<?php echo esc_url(self::url('echipa')); ?>"><strong>Echipă</strong><span>Conturi pentru colegii de la vânzări și limitele lor.</span></a>
+            <?php endif; ?>
+            <?php if (current_user_can('gi_receptie') && class_exists('GI_Rezervari') && class_exists('WooCommerce')) : ?>
+                <a class="gi-zona-tile" href="<?php echo esc_url(self::url('receptie')); ?>"><strong>Recepție</strong><span>Scanezi codul QR al rezervării și vezi rezervarea turistului.</span></a>
             <?php endif; ?>
             <?php if (self::history_prefixes()) : ?>
                 <a class="gi-zona-tile" href="<?php echo esc_url(self::url('istoric')); ?>"><strong>Istoric</strong><span>Cine a creat sau a șters ce, și când: vouchere, locuri, conturi.</span></a>
@@ -912,6 +966,87 @@ final class GI_Zona {
         <?php
     }
 
+    /* --- Recepție --- */
+
+    private static function view_reception() {
+        self::back_link();
+        if (!current_user_can('gi_receptie') || !class_exists('GI_Rezervari') || !class_exists('WooCommerce')) {
+            echo '<div class="gi-zona-card"><p>Contul tău nu are acces la Recepție.</p></div>';
+            return;
+        }
+        $raw = isset($_GET['cod']) ? sanitize_text_field(wp_unslash($_GET['cod'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        ?>
+        <div class="gi-zona-card" data-gi-scan data-gi-scan-field="#gi-r-cod" data-gi-jsqr="<?php echo esc_url(gi_asset_url('js/vendor/jsQR.js')); ?>">
+            <h2>Caută rezervarea</h2>
+            <p>Scanează codul QR al turistului (din emailul de confirmare, de pe pagina de mulțumire sau printat) sau scrie codul.</p>
+            <video class="gi-scan-video" muted playsinline hidden></video>
+            <p class="gi-zona-butoane"><button type="button" class="button button-primary" data-gi-scan-open>Scanează cu camera</button><button type="button" class="button button-outline" data-gi-scan-stop hidden>Oprește camera</button></p>
+            <p class="gi-zona-mic" data-gi-scan-msg aria-live="polite"></p>
+            <form method="get" action="<?php echo esc_url(self::url('receptie')); ?>" class="gi-zona-form">
+                <label for="gi-r-cod">Codul rezervării</label>
+                <input type="text" id="gi-r-cod" name="cod" value="<?php echo esc_attr($raw); ?>" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ex. 7K4M-Q2XP" maxlength="40">
+                <p><button type="submit" class="button button-primary">Caută</button></p>
+            </form>
+        </div>
+        <?php
+        if ('' === $raw) {
+            return;
+        }
+        $parsed = GI_Rezervari::parse($raw);
+        if (!$parsed) {
+            echo '<div class="gi-zona-notice gi-zona-err" role="alert">Codul nu are forma așteptată: 8 caractere (litere și cifre), de ex. 7K4M-Q2XP. Verifică și caută din nou.</div>';
+            return;
+        }
+        if (false === $parsed['suma']) {
+            echo '<div class="gi-zona-notice gi-zona-err" role="alert">Suma de control din cod nu se potrivește: codul e greșit sau a fost citit incomplet. Scanează din nou.</div>';
+            return;
+        }
+        $order = GI_Rezervari::find_order($parsed['cod']);
+        if (!$order) {
+            echo '<div class="gi-zona-notice gi-zona-err" role="alert">Nu găsesc rezervarea ' . esc_html($parsed['cod']) . '. Verifică codul sau caută în comenzi.</div>';
+            return;
+        }
+        $s = GI_Rezervari::summary($order);
+        if (class_exists('GI_Istoric')) {
+            GI_Istoric::log('receptie_cautare', $parsed['cod'], array('comanda' => $s['comanda']));
+        }
+        $date = function ($iso) {
+            return '' !== $iso ? wp_date('d.m.Y', strtotime($iso . ' 12:00:00 UTC')) : '—';
+        };
+        ?>
+        <div class="gi-zona-card">
+            <h2>Rezervarea <?php echo esc_html($parsed['cod']); ?></h2>
+            <?php if (!$s['finalizata']) : ?>
+                <div class="gi-zona-notice gi-zona-err" role="alert">Atenție: comanda nu e finalizată (stare: <?php echo esc_html($s['stare']); ?>). Nu o trata ca rezervare confirmată fără să verifici.</div>
+            <?php elseif (!$s['platita']) : ?>
+                <div class="gi-zona-notice gi-zona-err" role="status">Rezervare confirmată, <strong>neplătită încă</strong> (<?php echo esc_html($s['plata']); ?>). Totalul: <?php echo esc_html($s['total']); ?>.</div>
+            <?php else : ?>
+                <div class="gi-zona-notice gi-zona-ok" role="status">Rezervare confirmată și <strong>plătită</strong> (<?php echo esc_html($s['plata']); ?>).</div>
+            <?php endif; ?>
+            <dl class="gi-zona-fapte">
+                <dt>Rezervant</dt><dd><?php echo esc_html($s['nume']); ?><?php echo '' !== $s['firma'] ? ' · ' . esc_html($s['firma']) : ''; ?></dd>
+                <dt>Telefon</dt><dd><?php echo esc_html($s['telefon']); ?></dd>
+                <dt>Adresa (din rezervare)</dt><dd><?php echo esc_html($s['adresa']); ?></dd>
+                <dt>Sosire</dt><dd><?php echo esc_html($date($s['sosire'])); ?></dd>
+                <dt>Plecare</dt><dd><?php echo esc_html($date($s['plecare'])); ?><?php echo null !== $s['nopti'] ? ' (' . (int) $s['nopti'] . ($s['nopti'] === 1 ? ' noapte' : ' nopți') . ')' : ''; ?></dd>
+                <dt>Adulți</dt><dd><?php echo null !== $s['adulti'] ? esc_html((string) $s['adulti']) : '<span class="gi-zona-mic">nu apar în comandă</span>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></dd>
+                <dt>Copii</dt><dd><?php echo null !== $s['copii'] ? esc_html((string) $s['copii']) : '<span class="gi-zona-mic">nu apar în comandă</span>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></dd>
+                <dt>Comanda</dt><dd>#<?php echo esc_html((string) $s['comanda']); ?> · <?php echo esc_html($s['stare']); ?> · <?php echo esc_html($s['total']); ?></dd>
+                <?php if ('' !== trim((string) $s['nota'])) : ?><dt>Nota clientului</dt><dd><?php echo esc_html($s['nota']); ?></dd><?php endif; ?>
+            </dl>
+            <?php foreach ($s['produse'] as $row) : ?>
+                <h3><?php echo esc_html($row['nume']); ?> <span class="gi-zona-mic">× <?php echo (int) $row['cantitate']; ?></span></h3>
+                <?php if ($row['detalii']) : ?>
+                    <dl class="gi-zona-fapte">
+                        <?php foreach ($row['detalii'] as $d) : ?><dt><?php echo esc_html($d['eticheta']); ?></dt><dd><?php echo esc_html($d['valoare']); ?></dd><?php endforeach; ?>
+                    </dl>
+                <?php endif; ?>
+            <?php endforeach; ?>
+            <p class="gi-zona-mic">Fișa de cazare (scanarea actului) urmează în versiunea următoare. Căutările de aici se păstrează în Istoric.</p>
+        </div>
+        <?php
+    }
+
     /* --- Istoric --- */
 
     /**
@@ -930,6 +1065,9 @@ final class GI_Zona {
         if (current_user_can('gi_echipa')) {
             $p[] = 'cont_';
         }
+        if (current_user_can('gi_fise_vezi')) {
+            $p[] = 'receptie_';
+        }
         return $p;
     }
 
@@ -944,7 +1082,7 @@ final class GI_Zona {
             echo '<div class="gi-zona-card"><p><strong>Tabelul istoricului lipsește</strong>, deci nu s-a putut păstra nimic. Spune-i lui Claude (probabil contul de bază de date nu are drept să creeze tabele).</p></div>';
             return;
         }
-        $kinds = array('' => 'Tot', 'voucher_' => 'Vouchere', 'loc_' => 'Locuri', 'cont_' => 'Conturi');
+        $kinds = array('' => 'Tot', 'voucher_' => 'Vouchere', 'loc_' => 'Locuri', 'cont_' => 'Conturi', 'receptie_' => 'Recepție');
         $kind = isset($_GET['tip']) ? sanitize_text_field(wp_unslash($_GET['tip'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
         $kind = in_array($kind, $allowed, true) ? $kind : '';
         $page = isset($_GET['pagina']) ? max(1, absint(wp_unslash($_GET['pagina']))) : 1; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -1114,7 +1252,7 @@ final class GI_Zona {
             echo '<div class="gi-zona-notice gi-zona-ok"><p><strong>Date de intrare pentru ' . esc_html($c['name']) . '</strong> (se arată o singură dată, nu reîncărca pagina; notează-le și transmite-le):</p>'
                 . '<p class="gi-zona-coduri">Adresa: ' . esc_html(self::url()) . '<br>Utilizator: ' . esc_html($c['login']) . '<br>Parola: ' . esc_html($c['pass']) . '</p></div>';
         }
-        $team = get_users(array('role' => self::ROLE, 'orderby' => 'display_name'));
+        $team = get_users(array('role__in' => self::team_roles(), 'orderby' => 'display_name'));
         $lim = class_exists('GI_Vouchere') ? GI_Vouchere::limits() : array('procent' => 0, 'suma' => 0, 'numar' => 0);
         ?>
         <div class="gi-zona-card">
@@ -1128,7 +1266,7 @@ final class GI_Zona {
                         <li>
                             <div class="gi-zona-rand">
                                 <strong><?php echo esc_html($u->display_name); ?></strong>
-                                <span>Utilizator: <?php echo esc_html($u->user_login); ?> · <?php echo esc_html($u->user_email); ?></span>
+                                <span>Utilizator: <?php echo esc_html($u->user_login); ?> · <?php echo esc_html($u->user_email); ?> · <?php echo esc_html(self::role_label($u->roles)); ?></span>
                             </div>
                             <form method="post" data-gi-o-data action="<?php echo esc_url(self::url('echipa')); ?>" class="gi-zona-inline">
                                 <input type="hidden" name="gi_actiune" value="parola">
@@ -1157,6 +1295,11 @@ final class GI_Zona {
                 <input type="text" id="gi-t-nume" name="nume" maxlength="80" required>
                 <label for="gi-t-email">Emailul</label>
                 <input type="email" id="gi-t-email" name="email" required>
+                <fieldset>
+                    <legend>Rolul</legend>
+                    <label class="gi-zona-radio"><input type="radio" name="rol" value="vanzari" checked> Vânzări: generează vouchere, cu limite, numai pe ale lui</label>
+                    <label class="gi-zona-radio"><input type="radio" name="rol" value="receptie"> Recepție: scanează codurile QR ale rezervărilor și vede rezervarea</label>
+                </fieldset>
                 <label for="gi-t-login">Utilizatorul <span class="gi-zona-mic">(cu el intră în Zonă; lasă gol și se face din email)</span></label>
                 <input type="text" id="gi-t-login" name="login" maxlength="60" autocomplete="off" autocapitalize="none" spellcheck="false">
                 <label for="gi-t-parola">Parola <span class="gi-zona-mic">(cel puțin 12 caractere; lasă gol și se generează una)</span></label>

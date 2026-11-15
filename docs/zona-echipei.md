@@ -1,11 +1,11 @@
-# Zona echipei (pluginul 1.5.1)
+# Zona echipei (pluginul 1.6.0)
 
 **Administrare** direct de pe site, fără să intri în administrarea WordPress. Utilizator + parolă.
 Adresa: **gradina-ielelor.ro/zona-echipei/**. În subsolul fiecărei pagini a site-ului e o căsuță **„Administrare”** care duce acolo.
 Pagina nu apare în Google și nu se păstrează în memoria browserului sau a serverului.
 
-Ce e acum în Zonă: **Vouchere**, **Copaci și locuri** (cu cod QR), **Echipă** și **Istoric**.
-Urmează, în aceeași Zonă, două dale noi: **QR la rezervare** și **Fișa de cazare** (cerute de proprietară, 15.11.2026; vezi „Ce urmează”).
+Ce e acum în Zonă: **Vouchere**, **Copaci și locuri** (cu cod QR), **Recepție** (rezervări cu cod QR), **Echipă** și **Istoric**.
+Urmează **Fișa de cazare** (cerută de proprietară, 15.11.2026; vezi „Ce urmează”).
 
 ## Intri
 1. Apeși **Administrare** din subsolul site-ului (sau scrii adresa de mai sus).
@@ -22,6 +22,9 @@ Limitarea încercărilor repetate de parolă **nu** e în plugin (hotărâre din
 | **Manager de magazin** | toate | da | nu | cum are acum |
 | **Editor** | nu | da | nu | cum are acum |
 | **Vânzări (Grădina)** — conturile colegilor | **numai ale lui**, în limite | nu | nu | **nu** (e trimis înapoi în Zonă) |
+| **Recepție (Grădina)** — conturile colegilor de la recepție | nu | nu | nu | **nu** (e trimis înapoi în Zonă) |
+
+La **Recepție** (căutarea rezervărilor) au acces: administratorul, managerul de magazin și conturile „Recepție (Grădina)”.
 
 Colegii de la vânzări nu văd nimic din administrarea WordPress: nici articole, nici pagini, nici comenzi, nici alte conturi. Văd numai Zona echipei.
 
@@ -82,6 +85,22 @@ Voucherele sunt **cupoane WooCommerce obișnuite**, de două feluri: **sumă fix
 4. Scanezi codul QR cu telefonul: se deschide site-ul și codul se aplică singur la coș.
 5. Dacă ceva nu se potrivește (reducerea nu apare, suma de la plată nu e cea redusă, se aplică și la avans etc.), îmi spui exact ce vezi, cu o captură. Voucherele se pot vedea și în WooCommerce → Marketing → Cupoane.
 
+## Recepție: rezervări cu cod QR
+**Ce primește turistul.** După ce rezervarea e finalizată (plătită cu cardul sau cu plata la locație), pe pagina de mulțumire apare **„Codul tău de rezervare”**: un cod scurt (ex. `7K4M-Q2XP`) și un cod QR. Același cod e în Contul meu, în emailul de confirmare (scris și cu link) și pe pagina `/cod-rezervare/<cod>/`, cu codul QR mare, de arătat pe telefon sau de printat. Codul QR conține **numai** numărul rezervării (`GI1.7K4M-Q2XP.<sumă de control>`), fără nume, telefon sau email, iar pagina nu apare în Google.
+
+**Ce faci la recepție.** Zona echipei → **Recepție**:
+1. Apeși **„Scanează cu camera”**, accepți camera (prima dată telefonul întreabă) și îndrepți telefonul spre codul turistului. Când îl citește, caută singur rezervarea. Merge și cu codul scris de mână în câmpul de dedesubt (cu sau fără cratimă, cu litere mari sau mici).
+2. Vezi: titularul, telefonul, sosirea, plecarea, nopțile, adulții, copiii, starea plății (**plătită** / **neplătită încă**, la plata la locație) și toate câmpurile din comandă. Dacă rezervarea e anulată sau nefinalizată, apare un avertisment roșu.
+3. Dacă scrie „suma de control nu se potrivește”, codul a fost citit incomplet: scanează din nou.
+
+**Cum merge pe un telefon simplu.** Se deschide în browserul telefonului (Chrome, Safari, Samsung Internet), pe `https`, fără aplicație din magazin. Camera cere permisiunea o dată. Dacă telefonul nu are cameră sau o refuzi, scrii codul. Imaginea de la cameră nu pleacă de pe telefon.
+
+**Cont pentru recepție.** Echipă → Adaugă un coleg → rolul **„Recepție”**. Colegul vede numai Recepția: nu vede vouchere, copaci, echipă sau istoric și nu intră în administrarea WordPress. Utilizatorul și parola le alegi tu, iar parola o schimbi numai tu (ca la vânzări).
+
+**Istoric.** Fiecare căutare apare în Istoric („A căutat rezervarea …”), cu cine a căutat, fără numele sau telefonul turistului.
+
+**Ce nu face (încă).** Nu creează fișa de cazare și nu citește actul de identitate: asta e etapa următoare (vezi „Ce urmează”). Datele de sosire, plecare, adulți și copii se citesc din câmpurile pe care le pune modulul de rezervări în comandă; dacă un câmp lipsește din comandă, Recepția scrie „nu apar în comandă”, nu inventează.
+
 ## Copaci și locuri (cod QR)
 **Zona echipei → Copaci și locuri → Adaugă un loc.** Scrii titlul, alegi ce este (copac, plantă, loc), numele științific (dacă vrei), o frază sub titlu, **povestea locului** și alegi **poza**. De pe telefon poți face poza chiar atunci (maximum 8 MB).
 - Scrii și „ce se vede în poză” (o frază), pentru cei care nu văd imaginea.
@@ -93,7 +112,6 @@ Voucherele sunt **cupoane WooCommerce obișnuite**, de două feluri: **sumă fix
 Ghidul detaliat pentru codurile din teren (mărimi, unde le pui, statistici): `docs/zona-privata.md`. Aceleași funcții se găsesc și în administrarea WordPress, meniul **Grădina**.
 
 ## Ce urmează (în aceeași Zonă)
-- **QR la rezervare**: un cod QR pentru fiecare rezervare finalizată (pagina de mulțumire, emailul de confirmare, contul clientului), fără date personale în cod.
 - **Fișa de cazare**: la recepție, de pe telefon, scanezi codul rezervării și generezi fișa de cazare (obligație legală). Are nevoie de **modelul fișei pe care o folosiți acum** (proprietara îl trimite, 15.11) și de hotărâri despre datele personale (ce se păstrează, cât timp, cine are acces). **Nu** se face înainte să fie lămurite; textele legale se confirmă cu un jurist.
 - Nu se pune nimic live fără aprobarea ta.
 

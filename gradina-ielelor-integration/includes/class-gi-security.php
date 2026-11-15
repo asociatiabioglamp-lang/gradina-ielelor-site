@@ -183,7 +183,7 @@ final class GI_Security {
     private static function account_exists($login) {
         $login = (string) $login;
         $user = false !== strpos($login, '@') ? get_user_by('email', sanitize_email($login)) : get_user_by('login', sanitize_user($login));
-        if ($user instanceof WP_User && in_array('gi_vanzari', (array) $user->roles, true)) {
+        if ($user instanceof WP_User && array_intersect(array('gi_vanzari', 'gi_receptie'), (array) $user->roles)) {
             return false; // parola colegilor de la vânzări o dă proprietara: „Mi-am uitat parola” răspunde ca pentru un cont inexistent și nu trimite nimic
         }
         return $user instanceof WP_User;

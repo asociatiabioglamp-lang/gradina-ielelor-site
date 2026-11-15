@@ -3,7 +3,7 @@ Contributors: gradina-ielelor
 Tags: one-page, woocommerce, booking, ovabrw, seo
 Requires at least: 6.0
 Requires PHP: 7.4
-Stable tag: 1.5.1
+Stable tag: 1.6.0
 License: GPLv2 or later
 
 Template-uri server-side pentru pagina principală (hub de rezervare) și paginile dedicate ofertelor Grădina Ielelor, cu WooCommerce + OVABRW drept singur motor de rezervări.
@@ -40,6 +40,13 @@ Nu. Constanta GI_REACT_DEMO_ENABLED este false, bundle-ul React nu este inclus, 
 Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai opțiunile acestui plugin.
 
 == Changelog ==
+
+= 1.6.0 =
+* Cod QR la fiecare rezervare finalizată (comandă în procesare, finalizată sau cu plata la locație): cod scurt XXXX-XXXX (fără 0, O, 1, I, L, ușor de dictat), arătat pe pagina de mulțumire, în Contul meu, în emailul de confirmare și pe pagina /cod-rezervare/<cod>/ (cod QR mare, de arătat pe telefon sau de printat; nu apare în Google). Codul QR conține numai GI1.<cod>.<sumă de control>: fără nume, telefon sau email.
+* Zona echipei → Recepție: personalul scanează codul QR al turistului cu camera telefonului (în browser, fără aplicație; imaginea nu pleacă de pe telefon) sau scrie codul și vede rezervarea: titularul, telefonul, sosirea, plecarea, nopțile, adulții, copiii, starea plății și toate câmpurile din comandă. Suma de control prinde codurile citite greșit. Camera e permisă numai pe această pagină (antetul de securitate o ținea oprită pe tot site-ul). Include biblioteca „jsQR” (Apache-2.0) în assets/js/vendor/, încărcată numai când se pornește camera.
+* Rol nou „Recepție (Grădina)”: vede numai Recepția. Se creează de proprietară din Echipă (alegere „Vânzări” sau „Recepție”), cu aceleași reguli ca la vânzări: utilizator și parolă alese de proprietară, parola o schimbă numai ea, „Mi-am uitat parola” răspunde ca pentru un cont inexistent, fără acces în administrarea WordPress.
+* Istoric: căutările de la Recepție apar („A căutat rezervarea XXXX-XXXX”), fără nume sau telefon. Drepturi noi: gi_receptie, gi_fise_vezi (administrator, manager de magazin).
+* Fișa de cazare (scanarea actului) urmează în versiunea următoare.
 
 = 1.5.1 =
 * Zona echipei → Vouchere: ștergerea voucherelor gata create („Șterge voucherele alese”), numai pentru administrator și managerul de magazin, numai pentru cele nefolosite (cele folosite rămân ca dovadă). Se pun în Coșul WooCommerce: un cupon din coș nu se mai poate folosi, iar un administrator îl poate readuce 30 de zile.
