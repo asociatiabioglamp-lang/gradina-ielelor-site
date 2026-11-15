@@ -470,7 +470,7 @@ async function runScreens(browser, newCtx, state) {
     process.exit(failures ? 1 : 0);
   }
   const tiles = await ap.locator('.gi-zona-tile strong').allInnerTexts();
-  ok(tiles.join('|') === 'Vouchere|Copaci și locuri|Echipă|Istoric', `administrator: pagina Zonei arată cele patru dale (${tiles.join(' | ')})`);
+  ok(tiles.join('|') === 'Vouchere|Copaci și locuri|Echipă|Recepție|Registrul fișelor|Istoric', `administrator: pagina Zonei arată cele șase dale (${tiles.join(' | ')})`);
   ok((await ap.locator('.gi-zona-foot a', { hasText: 'Administrarea WordPress' }).count()) === 1, 'administrator: are și linkul „Administrarea WordPress”');
   ok((await ap.locator('#wpadminbar').count()) === 1, 'administrator: bara de administrare WordPress rămâne');
   if (SHOTS) { fs.mkdirSync(SHOTS, { recursive: true }); await ap.screenshot({ path: path.join(SHOTS, 'zona-acasa-admin.png'), fullPage: true }); }

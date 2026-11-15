@@ -16,6 +16,8 @@ delete_option('gi_zona_limite');
 // Istoricul (tabelul gi_istoric) se păstrează: e istoric. Se poate șterge din baza de date, dacă nu mai e nevoie de el.
 delete_option('gi_istoric_db');
 delete_option('gi_rezervari_rewrite');
+delete_option('gi_fisa_setari');
+delete_option('gi_fise_db');
 remove_role('gi_vanzari');
 remove_role('gi_receptie');
 foreach (array('administrator', 'shop_manager', 'editor') as $gi_role_name) {

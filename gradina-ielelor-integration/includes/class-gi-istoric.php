@@ -151,6 +151,22 @@ final class GI_Istoric {
             case 'receptie_cautare':
                 $out['text'] = 'A căutat rezervarea ' . $row->obiect . ' (comanda #' . $v('comanda') . ').';
                 break;
+            case 'fisa_creata':
+                $out['text'] = 'A înscris fișa ' . $row->obiect . ' (rezervarea ' . $v('rezervare') . ', adultul ' . (int) $v('adult') . ').';
+                break;
+            case 'fisa_stearsa':
+                $out['text'] = 'A șters fișa ' . $row->obiect . '.';
+                break;
+            case 'fisa_stearsa_vechi':
+                $out['text'] = 'A șters ' . (int) $v('fise') . ' fișe mai vechi de ' . (int) $v('luni') . ' luni (termenul de păstrare).';
+                break;
+            case 'fisa_export':
+                $out['text'] = 'A descărcat registrul fișelor (CSV, ' . (int) $v('fise') . ' fișe' . (!empty($d['cautare']) ? ', după o căutare' : '') . ').';
+                break;
+            case 'fisa_setari':
+                $changed = isset($d['campuri']) && is_array($d['campuri']) ? implode(', ', array_map('strval', $d['campuri'])) : '';
+                $out['text'] = 'A schimbat setările fișei' . ('' !== $changed ? ' (' . $changed . ')' : '') . '.';
+                break;
             case 'cont_creat':
                 $out['text'] = 'A creat contul colegului ' . $v('nume') . ' (' . $v('utilizator') . ')' . ('' !== $v('rol') ? ', rol: ' . $v('rol') : '') . '.';
                 break;

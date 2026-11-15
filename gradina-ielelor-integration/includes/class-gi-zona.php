@@ -339,13 +339,17 @@ final class GI_Zona {
         if ('receptie' === self::$ctx['sec'] && is_user_logged_in() && current_user_can('gi_receptie')) {
             wp_enqueue_script('gi-scanare', gi_asset_url('js/scanare.js'), array(), GI_VERSION, true);
         }
+        if ('fisa' === self::$ctx['sec'] && is_user_logged_in() && current_user_can('gi_receptie')) {
+            wp_enqueue_script('gi-mrz', gi_asset_url('js/mrz.js'), array(), GI_VERSION, true);
+            wp_enqueue_script('gi-fisa', gi_asset_url('js/fisa.js'), array('gi-mrz'), GI_VERSION, true);
+        }
         if (is_user_logged_in() && current_user_can('gi_zona')) {
             wp_enqueue_script('gi-qrcode', gi_asset_url('js/vendor/qrcode.js'), array(), GI_VERSION, true);
             wp_enqueue_script('gi-admin-qr', gi_asset_url('js/admin-qr.js'), array('gi-qrcode'), GI_VERSION, true);
         }
     }
 
-    private static function flash($data) {
+    public static function flash($data) {
         set_transient('gi_zona_f_' . get_current_user_id(), $data, 300);
     }
 
@@ -358,19 +362,19 @@ final class GI_Zona {
         return is_array($data) ? $data : array();
     }
 
-    private static function go($section = '', $id = '') {
+    public static function go($section = '', $id = '') {
         wp_safe_redirect(self::url($section, $id));
         exit;
     }
 
-    private static function posted($key) {
+    public static function posted($key) {
         return isset($_POST[$key]) && is_scalar($_POST[$key]) ? wp_unslash($_POST[$key]) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
     }
 
     /**
      * Verifică codul de siguranță al formularului. Fără el (pagină expirată) nu se face nimic.
      */
-    private static function check($action, $back_section, $back_id = '', $field = '_gi_nonce') {
+    public static function check($action, $back_section, $back_id = '', $field = '_gi_nonce') {
         $nonce = sanitize_text_field((string) self::posted($field));
         if (!wp_verify_nonce($nonce, 'gi_zona_' . $action)) {
             self::flash(array('errors' => array('Pagina a expirat. Încearcă din nou.')));
@@ -378,7 +382,7 @@ final class GI_Zona {
         }
     }
 
-    private static function deny($section = '') {
+    public static function deny($section = '') {
         self::flash(array('errors' => array('Nu ai voie să faci asta cu acest cont.')));
         self::go($section);
     }
@@ -399,7 +403,7 @@ final class GI_Zona {
         header('X-LiteSpeed-Cache-Control: no-cache');
         $sec = sanitize_key((string) get_query_var(self::VAR));
         $id = sanitize_title((string) get_query_var(self::ID_VAR));
-        if (!in_array($sec, array('acasa', 'vouchere', 'copaci', 'echipa', 'istoric', 'receptie', 'tipar'), true)) {
+        if (!in_array($sec, array('acasa', 'vouchere', 'copaci', 'echipa', 'istoric', 'receptie', 'fisa', 'registru', 'tipar'), true)) {
             self::go();
         }
         self::$ctx = array('sec' => $sec, 'id' => $id);
@@ -418,6 +422,9 @@ final class GI_Zona {
                 return; // răspuns afișat direct (conține o parolă): nu trece prin baza de date
             }
         }
+        if (in_array($sec, array('fisa', 'registru'), true) && class_exists('GI_Fise')) {
+            GI_Fise::route($sec, $id);
+        }
         if ('tipar' === $sec) {
             self::print_sheet();
         }
@@ -433,6 +440,8 @@ final class GI_Zona {
             self::post_place($id);
         } elseif ('echipa' === $sec && in_array($action, array('adauga', 'parola', 'elimina', 'limite'), true)) {
             self::post_team($action);
+        } elseif (in_array($sec, array('fisa', 'registru'), true) && class_exists('GI_Fise')) {
+            GI_Fise::handle_post($sec, $id, $action);
         }
         if (!empty(self::$inline)) {
             return; // parola nouă se arată chiar în acest răspuns, nu după o redirecționare
@@ -766,12 +775,12 @@ final class GI_Zona {
 
     /* ---------- Afișare ---------- */
 
-    private static function nonce_field($action) {
+    public static function nonce_field($action) {
         return '<input type="hidden" name="_gi_nonce" value="' . esc_attr(wp_create_nonce('gi_zona_' . $action)) . '">';
     }
 
     private static function title_for($sec) {
-        $titles = array('acasa' => 'Zona echipei', 'vouchere' => 'Vouchere', 'copaci' => 'Copaci și locuri', 'echipa' => 'Echipă', 'istoric' => 'Istoric', 'receptie' => 'Recepție', 'tipar' => 'Printare');
+        $titles = array('acasa' => 'Zona echipei', 'vouchere' => 'Vouchere', 'copaci' => 'Copaci și locuri', 'echipa' => 'Echipă', 'istoric' => 'Istoric', 'receptie' => 'Recepție', 'fisa' => 'Fișa de cazare', 'registru' => 'Registrul fișelor', 'tipar' => 'Printare');
         return isset($titles[$sec]) ? $titles[$sec] : 'Zona echipei';
     }
 
@@ -805,6 +814,8 @@ final class GI_Zona {
             self::view_history();
         } elseif ('receptie' === $sec) {
             self::view_reception();
+        } elseif (('fisa' === $sec || 'registru' === $sec) && class_exists('GI_Fise')) {
+            GI_Fise::view($sec, self::$ctx['id']);
         } else {
             self::view_home();
         }
@@ -861,6 +872,9 @@ final class GI_Zona {
             <?php if (current_user_can('gi_receptie') && class_exists('GI_Rezervari') && class_exists('WooCommerce')) : ?>
                 <a class="gi-zona-tile" href="<?php echo esc_url(self::url('receptie')); ?>"><strong>Recepție</strong><span>Scanezi codul QR al rezervării și vezi rezervarea turistului.</span></a>
             <?php endif; ?>
+            <?php if (current_user_can('gi_fise_vezi') && class_exists('GI_Fise')) : ?>
+                <a class="gi-zona-tile" href="<?php echo esc_url(self::url('registru')); ?>"><strong>Registrul fișelor</strong><span>Fișele de cazare înscrise: căutare, descărcare, ștergere. Îl vezi numai tu.</span></a>
+            <?php endif; ?>
             <?php if (self::history_prefixes()) : ?>
                 <a class="gi-zona-tile" href="<?php echo esc_url(self::url('istoric')); ?>"><strong>Istoric</strong><span>Cine a creat sau a șters ce, și când: vouchere, locuri, conturi.</span></a>
             <?php endif; ?>
@@ -872,8 +886,13 @@ final class GI_Zona {
         <?php
     }
 
-    private static function back_link() {
-        echo '<p class="gi-zona-back"><a class="gi-text-link" href="' . esc_url(self::url()) . '">← Zona echipei</a></p>';
+    public static function back_link($section = '', $label = 'Zona echipei') {
+        echo '<p class="gi-zona-back"><a class="gi-text-link" href="' . esc_url(self::url($section)) . '">← ' . esc_html($label) . '</a></p>';
+    }
+
+    /** Răspuns afișat chiar în pagina care a primit formularul (cu valorile scrise, fără redirecționare): erorile de completare. */
+    public static function inline($data) {
+        self::$inline = array_merge(self::$inline, (array) $data);
     }
 
     /* --- Vouchere --- */
@@ -1002,34 +1021,16 @@ final class GI_Zona {
             </form>
         </div>
         <?php
-        $order = null;
-        $label = '';
-        if ('' !== $raw) {
-            $parsed = GI_Rezervari::parse($raw);
-            if (!$parsed) {
-                echo '<div class="gi-zona-notice gi-zona-err" role="alert">Codul nu are forma așteptată: 8 caractere (litere și cifre), de ex. 7K4M-Q2XP. Verifică și caută din nou.</div>';
-                return;
-            }
-            if (false === $parsed['suma']) {
-                echo '<div class="gi-zona-notice gi-zona-err" role="alert">Suma de control din cod nu se potrivește: codul e greșit sau a fost citit incomplet. Scanează din nou.</div>';
-                return;
-            }
-            $order = GI_Rezervari::find_order($parsed['cod']);
-            $label = $parsed['cod'];
-            if (!$order) {
-                echo '<div class="gi-zona-notice gi-zona-err" role="alert">Nu găsesc rezervarea ' . esc_html($label) . '. Verifică codul sau caută după numărul comenzii și nume.</div>';
-                return;
-            }
-        } elseif ('' !== $num || '' !== $fam) {
-            $order = GI_Rezervari::find_by_number_and_name($num, $fam);
-            $label = '#' . absint(preg_replace('/\D+/', '', $num));
-            if (!$order) {
-                echo '<div class="gi-zona-notice gi-zona-err" role="alert">Nu găsesc o rezervare cu numărul și numele acestea. Verifică numărul comenzii și numele de familie (exact cum sunt în emailul de confirmare).</div>';
-                return;
-            }
-        } else {
+        $found = GI_Rezervari::resolve($raw, $num, $fam);
+        if ($found['empty']) {
             return;
         }
+        if ($found['error']) {
+            echo '<div class="gi-zona-notice gi-zona-err" role="alert">' . esc_html($found['error']) . '</div>';
+            return;
+        }
+        $order = $found['order'];
+        $label = $found['label'];
         $s = GI_Rezervari::summary($order);
         if (class_exists('GI_Istoric')) {
             // O singură înregistrare pe utilizator și rezervare într-un minut: reîncărcarea paginii sau „înapoi” nu umple istoricul.
@@ -1073,7 +1074,10 @@ final class GI_Zona {
                     </dl>
                 <?php endif; ?>
             <?php endforeach; ?>
-            <p class="gi-zona-mic">Fișa de cazare (scanarea actului) urmează în versiunea următoare. Căutările de aici se păstrează în Istoric.</p>
+            <?php if (class_exists('GI_Fise') && GI_Rezervari::is_finalized($order)) : ?>
+                <p class="gi-zona-butoane"><a class="button button-primary" href="<?php echo esc_url(add_query_arg('' !== $raw ? array('cod' => $raw) : array('comanda' => $num, 'nume' => $fam), self::url('fisa'))); ?>">Fișa de cazare</a></p>
+            <?php endif; ?>
+            <p class="gi-zona-mic">Căutările de aici se păstrează în Istoric.</p>
         </div>
         <?php
     }
@@ -1098,6 +1102,7 @@ final class GI_Zona {
         }
         if (current_user_can('gi_fise_vezi')) {
             $p[] = 'receptie_';
+            $p[] = 'fisa_';
         }
         return $p;
     }
@@ -1113,7 +1118,7 @@ final class GI_Zona {
             echo '<div class="gi-zona-card"><p><strong>Tabelul istoricului lipsește</strong>, deci nu s-a putut păstra nimic. Spune-i lui Claude (probabil contul de bază de date nu are drept să creeze tabele).</p></div>';
             return;
         }
-        $kinds = array('' => 'Tot', 'voucher_' => 'Vouchere', 'loc_' => 'Locuri', 'cont_' => 'Conturi', 'receptie_' => 'Recepție');
+        $kinds = array('' => 'Tot', 'voucher_' => 'Vouchere', 'loc_' => 'Locuri', 'cont_' => 'Conturi', 'receptie_' => 'Recepție', 'fisa_' => 'Fișe');
         $kind = isset($_GET['tip']) ? sanitize_text_field(wp_unslash($_GET['tip'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
         $kind = in_array($kind, $allowed, true) ? $kind : '';
         $page = isset($_GET['pagina']) ? max(1, absint(wp_unslash($_GET['pagina']))) : 1; // phpcs:ignore WordPress.Security.NonceVerification.Recommended

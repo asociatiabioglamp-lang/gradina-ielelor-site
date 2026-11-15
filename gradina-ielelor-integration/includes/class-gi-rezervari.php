@@ -174,6 +174,37 @@ final class GI_Rezervari {
         return '' !== $have && $have === $want ? $order : null;
     }
 
+    /**
+     * Găsește rezervarea după ce a scris sau a scanat personalul: cod (sau tot textul din QR) ori număr de comandă + nume de familie.
+     * Întoarce array('order' => WC_Order|null, 'label' => 'XXXX-XXXX' sau '#123', 'error' => text sau '', 'empty' => true dacă n-a căutat nimic).
+     */
+    public static function resolve($cod, $comanda, $nume) {
+        $out = array('order' => null, 'label' => '', 'error' => '', 'empty' => false);
+        if ('' !== trim((string) $cod)) {
+            $parsed = self::parse($cod);
+            if (!$parsed) {
+                $out['error'] = 'Codul nu are forma așteptată: 8 caractere (litere și cifre), de ex. 7K4M-Q2XP. Verifică și caută din nou.';
+            } elseif (false === $parsed['suma']) {
+                $out['error'] = 'Suma de control din cod nu se potrivește: codul e greșit sau a fost citit incomplet. Scanează din nou.';
+            } else {
+                $out['label'] = $parsed['cod'];
+                $out['order'] = self::find_order($parsed['cod']);
+                if (!$out['order']) {
+                    $out['error'] = 'Nu găsesc rezervarea ' . $parsed['cod'] . '. Verifică codul sau caută după numărul comenzii și nume.';
+                }
+            }
+        } elseif ('' !== trim((string) $comanda) || '' !== trim((string) $nume)) {
+            $out['label'] = '#' . absint(preg_replace('/\D+/', '', (string) $comanda));
+            $out['order'] = self::find_by_number_and_name($comanda, $nume);
+            if (!$out['order']) {
+                $out['error'] = 'Nu găsesc o rezervare cu numărul și numele acestea. Verifică numărul comenzii și numele de familie (exact cum sunt în emailul de confirmare).';
+            }
+        } else {
+            $out['empty'] = true;
+        }
+        return $out;
+    }
+
     public static function page_url($code) {
         return home_url('/cod-rezervare/' . rawurlencode(self::normalize($code)) . '/');
     }
