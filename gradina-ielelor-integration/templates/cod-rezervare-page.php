@@ -30,6 +30,7 @@ gi_part('header');
         <div class="container">
             <div class="gi-zona">
                 <div class="gi-zona-card gi-cod-card">
+                    <?php echo gi_print_brand(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                     <p class="gi-cod-text"><?php echo esc_html($gi_cod); ?></p>
                     <div class="gi-qr-box gi-cod-qr-mare" data-qr-url="<?php echo esc_attr(GI_Rezervari::payload($gi_cod)); ?>" role="img" aria-label="<?php echo esc_attr('Cod QR al rezervării ' . $gi_cod); ?>"></div>
                     <p class="gi-zona-mic">Ține telefonul cu ecranul luminos. Dacă nu se citește, recepția poate scrie codul de mai sus.</p>

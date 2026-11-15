@@ -55,6 +55,16 @@ function gi_icon($name, $class = '') {
     return '<svg class="' . esc_attr($class) . '" aria-hidden="true" focusable="false"><use href="#gi-icon-' . esc_attr($name) . '"></use></svg>';
 }
 
+/**
+ * REGULA DE BAZĂ (proprietara, 15.11.2026): tot ce primesc clienții și pot descărca sau printa poartă sigla și numele Grădinii Ielelor.
+ * Antetul acesta se pune pe orice pagină sau fișier de acest fel (codul rezervării, vouchere, fișa de cazare, documente).
+ */
+function gi_print_brand($class = '') {
+    $host = (string) wp_parse_url(home_url('/'), PHP_URL_HOST);
+    return '<div class="gi-print-brand ' . esc_attr($class) . '"><img src="' . esc_url(gi_asset_url('logo-gradina-ielelor.png')) . '" alt="Grădina Ielelor" width="150" height="70">'
+        . '<p><b>Grădina Ielelor</b><span>Sâmbăta de Sus, Brașov · ' . esc_html($host) . '</span></p></div>';
+}
+
 function gi_brand($white = false, $extra_class = '') {
     $image = $white ? 'logo-gradina-ielelor-white.png' : 'logo-gradina-ielelor.png';
     $class = trim('official-brand ' . $extra_class);

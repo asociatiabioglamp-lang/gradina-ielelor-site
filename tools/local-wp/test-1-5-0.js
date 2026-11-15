@@ -503,6 +503,10 @@ async function runScreens(browser, newCtx, state) {
   await pop.waitForLoadState('load'); await pop.waitForSelector('.gi-tile .qr svg');
   ok((await pop.locator('.gi-tile').count()) === 2 && !(await pop.locator('#wpadminbar, .site-header').count()), 'vouchere: pagina de printat are cele două coduri și nimic din meniurile site-ului');
   ok((await decode(pop, '.gi-tile .qr', 0)) === BASE + '/?gi_cod=' + (await pop.locator('.gi-tile strong').nth(0).innerText()), 'vouchere: codul QR din pagina de printat se citește și duce la voucherul de sub el');
+  {
+    const brand = await pop.evaluate(() => Array.from(document.querySelectorAll('.gi-tile .brand')).map((b) => { const i = b.querySelector('img'); return { text: b.innerText, alt: i && i.alt, loaded: !!(i && i.complete && i.naturalWidth > 0) }; }));
+    ok(brand.length === 2 && brand.every((b) => /Grădina Ielelor/.test(b.text) && b.alt === 'Grădina Ielelor' && b.loaded), 'regula de bază: fiecare voucher printat are sigla și numele „Grădina Ielelor” (' + brand.length + ' vouchere)');
+  }
   ok(/--w:\s*8cm/.test(await pop.locator('style').first().innerText()), 'vouchere: mărimea aleasă (8 cm) ajunge în pagina de printat');
   const popHead = await adm.request.get(pop.url());
   ok(/noindex/.test(popHead.headers()['x-robots-tag'] || '') && /no-store|no-cache/.test(popHead.headers()['cache-control'] || ''), 'vouchere: pagina de printat nu e indexată și nu se păstrează în memorie');

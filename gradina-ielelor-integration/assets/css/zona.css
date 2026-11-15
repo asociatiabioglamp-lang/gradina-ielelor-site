@@ -179,3 +179,14 @@ body.gi-page-zona #gt_float_wrapper, body.gi-page-zona .gt_float_wrapper, body.g
   .gi-zona-site .gi-zona .gi-fisa-semnaturi { grid-template-columns: 1fr 1fr; margin-top: 10px; }
   .gi-zona-site .gi-zona .gi-fisa-semnaturi img { height: 64px; }
 }
+
+/* ---------- Sigla și numele Grădinii Ielelor pe tot ce primesc clienții (regula de bază, 15.11.2026) ---------- */
+.gi-zona-site .gi-zona .gi-print-brand { display: flex; align-items: center; gap: 14px; margin: 0 0 14px; }
+.gi-zona-site .gi-zona .gi-print-brand img { display: block; width: 110px; max-width: 34%; height: auto; flex: none; }
+.gi-zona-site .gi-zona .gi-print-brand p { margin: 0; display: flex; flex-direction: column; gap: 2px; }
+.gi-zona-site .gi-zona .gi-print-brand b { font-family: var(--display); font-weight: 500; font-size: 22px; line-height: 1.1; color: #11293a; }
+.gi-zona-site .gi-zona .gi-print-brand span { font-size: 13px; color: var(--text-2); }
+.gi-zona-site .gi-zona .gi-fisa-brand { margin-bottom: 8px; }
+.gi-zona-site .gi-zona .gi-fisa-brand img { width: 84px; }
+@media print { .gi-zona-site .gi-zona .gi-print-brand { display: flex !important; } .gi-zona-site .gi-zona .gi-print-brand img { width: 26mm; } .gi-zona-site .gi-zona .gi-print-brand b { font-size: 14pt; } .gi-zona-site .gi-zona .gi-print-brand span { font-size: 9pt; } }
+

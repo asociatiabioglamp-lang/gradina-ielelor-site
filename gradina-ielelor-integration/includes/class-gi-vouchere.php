@@ -439,6 +439,7 @@ final class GI_Vouchere {
                 'title' => strtoupper($c->get_code()),
                 'note' => 'Reducere ' . self::describe($c) . ($exp ? ' · valabil până la ' . wp_date('d.m.Y', $exp->getTimestamp()) : '') . ' · o singură folosire',
                 'foot' => preg_replace('#^https?://#', '', home_url('/')),
+                'brand' => true, // voucherul îl primește clientul: poartă sigla și numele Grădinii Ielelor
             );
         }
         return $tiles;

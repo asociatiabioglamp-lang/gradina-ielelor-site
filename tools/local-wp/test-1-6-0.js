@@ -133,6 +133,14 @@ function checksum(code) {
     await p2.goto(BASE + '/cod-rezervare/' + codes.A.toLowerCase() + '/', { waitUntil: 'load' });
     ok((await decode(p2, '.gi-cod-qr-mare', 0)) === 'GI1.' + codes.A + '.' + checksum(codes.A), 'pagina codului: cu litere mici în adresă tot arată codul, iar codul QR mare se citește');
     ok((await p2.locator('.gi-cod-text').innerText()).trim() === codes.A, 'pagina codului: codul scris mare');
+    {
+      const brand = await p2.evaluate(() => { const b = document.querySelector('.gi-cod-card .gi-print-brand'); const i = b && b.querySelector('img'); return b ? { text: b.innerText, alt: i && i.alt, loaded: !!(i && i.complete && i.naturalWidth > 0) } : null; });
+      ok(brand && /Grădina Ielelor/.test(brand.text) && brand.alt === 'Grădina Ielelor' && brand.loaded, 'regula de bază: pagina cu codul rezervării (de printat sau salvat) are sigla și numele „Grădina Ielelor”' + (brand ? '' : ' (lipsește)'));
+      await p2.emulateMedia({ media: 'print' });
+      const pr = await p2.evaluate(() => ({ brand: getComputedStyle(document.querySelector('.gi-cod-card .gi-print-brand')).display, header: getComputedStyle(document.querySelector('.site-header')).display }));
+      ok(pr.brand !== 'none' && pr.header === 'none', 'regula de bază: la tipărire, antetul site-ului dispare, dar sigla și numele rămân pe pagina codului');
+      await p2.emulateMedia({ media: 'screen' });
+    }
     ok((await p2.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)) <= 0, 'pagina codului: fără derulare pe orizontală');
     await pg.close();
     for (const [what, url] of [['un cod care nu există', '/cod-rezervare/ZZZZ-ZZZZ/'], ['un cod prea scurt', '/cod-rezervare/ABC/'], ['un text cu semne', '/cod-rezervare/<script>/']]) {

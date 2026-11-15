@@ -856,6 +856,7 @@ final class GI_Fise {
         <article class="gi-fisa-sheet" aria-label="Fișa de cazare <?php echo esc_attr($row->serie); ?>">
             <header class="gi-fisa-head">
                 <div>
+                    <?php echo gi_print_brand('gi-fisa-brand'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                     <h2>Fișă de cazare<small>Accommodation registration form</small></h2>
                     <p><?php echo esc_html(isset($u['unitate']) ? $u['unitate'] : ''); ?><?php echo !empty($u['operator']) ? ' · ' . esc_html($u['operator']) : ''; ?><?php echo !empty($u['cui']) ? ' · CUI ' . esc_html($u['cui']) : ''; ?><?php echo !empty($u['clasificare']) ? ' · ' . esc_html($u['clasificare']) : ''; ?></p>
                 </div>

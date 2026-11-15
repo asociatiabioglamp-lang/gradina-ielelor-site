@@ -433,6 +433,10 @@ body { margin: 0; padding: 16px; font: 16px/1.4 system-ui, -apple-system, "Segoe
 .gi-bar a { background: #fff; color: #1d6380; }
 .gi-sheet { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--w) + 1cm), 1fr)); gap: 8mm; }
 .gi-tile { margin: 0; padding: 5mm; border: 1px dashed #8a9aa3; border-radius: 4mm; text-align: center; break-inside: avoid; page-break-inside: avoid; }
+.gi-tile .brand { display: flex; align-items: center; justify-content: center; gap: 3mm; margin: 0 0 3mm; text-align: left; }
+.gi-tile .brand img { display: block; width: 22mm; height: auto; }
+.gi-tile .brand b { display: block; font-size: 11pt; line-height: 1.15; }
+.gi-tile .brand small { display: block; margin: 0; font-size: 7.5pt; color: #44545c; word-break: normal; }
 .gi-tile .qr { width: var(--w); margin: 0 auto 3mm; }
 .gi-tile .qr svg { display: block; width: 100%; height: auto; }
 .gi-tile strong { display: block; font-size: 15pt; line-height: 1.2; }
@@ -457,6 +461,9 @@ body { margin: 0; padding: 16px; font: 16px/1.4 system-ui, -apple-system, "Segoe
     <main class="gi-sheet">
         <?php foreach ($tiles as $t) : ?>
             <figure class="gi-tile">
+                <?php if (!empty($t['brand'])) : ?>
+                    <div class="brand"><img src="<?php echo esc_url(GI_URL . 'assets/logo-gradina-ielelor.png'); ?>" alt="Grădina Ielelor" width="150" height="70"><div><b>Grădina Ielelor</b><small>Sâmbăta de Sus, Brașov</small></div></div>
+                <?php endif; ?>
                 <div class="qr" data-qr-url="<?php echo esc_attr($t['url']); ?>" role="img" aria-label="<?php echo esc_attr('Cod QR: ' . $t['title']); ?>"></div>
                 <figcaption>
                     <strong><?php echo esc_html($t['title']); ?></strong>

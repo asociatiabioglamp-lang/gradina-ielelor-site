@@ -151,6 +151,8 @@ const MRZ_AMBIGUOUS = buildTD1({ doc: 'AB654322', dob: '081201', sex: 'F', exp: 
   ok(/luat cunoștință de prelucrarea datelor/.test(f1.gdpr_text || ''), 'înscriere: se păstrează textul bifat despre datele personale');
   const sheet = await ap.locator('.gi-zona').innerText();
   ok(/Fișă de cazare/.test(sheet) && /Accommodation registration form/.test(sheet) && /Surname/.test(sheet) && /Date of birth/.test(sheet) && /GI-\d{4}-00001/.test(sheet) && /POPESCU/.test(sheet) && /14\.03\.1990/.test(sheet) && new RegExp(CNP1).test(sheet) && /10\.02\.2027/.test(sheet) && /2 nopți \/ nights/.test(sheet), 'fișă: română și engleză, serie, nume, data nașterii, CNP, sosire, plecare, nopți');
+  const sheetBrand = await ap.evaluate(() => { const b = document.querySelector('.gi-fisa-sheet .gi-print-brand'); const i = b && b.querySelector('img'); return b ? { text: b.innerText, alt: i && i.alt, loaded: !!(i && i.complete && i.naturalWidth > 0) } : null; });
+  ok(sheetBrand && /Grădina Ielelor/.test(sheetBrand.text) && sheetBrand.alt === 'Grădina Ielelor' && sheetBrand.loaded, 'regula de bază: fișa de cazare are sigla și numele „Grădina Ielelor”' + (sheetBrand ? '' : ' (lipsește)'));
   ok((await ap.locator('.gi-fisa-semnaturi img').count()) === 2 && (await ap.locator('.gi-fisa-semnaturi img[src^="data:image/png;base64,"]').count()) === 2, 'fișă: cele două semnături apar ca imagini');
   ok(/Fișa a fost înscrisă: GI-/.test(await ap.locator('.gi-zona-notice').innerText()) && (await ap.locator('button:has-text("Printează fișa")').count()) === 1 && (await ap.locator('a:has-text("Următorul adult")').count()) === 1, 'fișă: mesaj de reușită, buton de tipărire și „Următorul adult”');
   // tipar

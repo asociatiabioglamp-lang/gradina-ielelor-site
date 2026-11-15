@@ -15,6 +15,7 @@ Proprietar: Asociația Bioglamp. Comunicarea cu proprietarul se face în român�
   Paginile dedicate nu încarcă formularul BRW; butoanele „Rezervă” duc la `/#rezervare-<tip>` pe pagina principală, cu oferta preselectată.
 - Până la publicarea paginii dedicate a unei oferte, secțiunea ei detaliată rămâne pe pagina principală.
 - Stil: pagini suple și prietenoase, ton cald („tu”), fraze scurte, fără termeni tehnici vizibili vizitatorilor.
+- **REGULA DE BAZĂ (proprietara, 15.11.2026):** tot ce primesc clienții și pot descărca sau printa (codul rezervării, vouchere, fișa de cazare, documente PDF, orice fișier nou) trebuie să poarte **sigla Grădina Ielelor și numele**. În cod: `gi_print_brand()`. Orice funcție nouă cu descărcare sau printare pentru clienți se verifică după regula aceasta.
 
 ## Surse de adevăr
 - `docs/decizii.md`: deciziile proprietarului. Are prioritate față de orice document.
