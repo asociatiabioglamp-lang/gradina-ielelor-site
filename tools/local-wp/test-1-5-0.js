@@ -259,7 +259,7 @@ async function runScreens(browser, newCtx, state) {
   {
     // În baza de date locală rămâne textul vechi de pe live („Îl poți folosi și parțial…”), ca să se vadă că pluginul îl înlocuiește la afișare.
     const v = await newCtx(); const r = await v.request.get(BASE + '/regulament-politici/'); const html = await r.text();
-    ok(r.status() === 200 && /Voucherul se folosește o singură dată, în întregime; nu se poate folosi parțial\./.test(html) && !/Îl poți folosi și parțial/.test(html) && !/suma nefolosită rămâne pe voucher/.test(html), 'regulament: „Voucherul se folosește o singură dată, în întregime; nu se poate folosi parțial.” înlocuiește propoziția veche, iar restul paginii rămâne');
+    ok(r.status() === 200 && /Voucherul se folosește o singură dată, în întregime; nu se poate folosi parțial\. Dacă rezervarea e mai mică decât valoarea voucherului, diferența se pierde\./.test(html) && !/Îl poți folosi și parțial/.test(html) && !/suma nefolosită rămâne pe voucher/.test(html), 'regulament: „Voucherul se folosește o singură dată, în întregime; nu se poate folosi parțial. Dacă rezervarea e mai mică decât valoarea voucherului, diferența se pierde.” înlocuiește propoziția veche, iar restul paginii rămâne');
     ok(/Primești un voucher cu toată suma plătită/.test(html) && /31 decembrie/.test(html), 'regulament: celelalte reguli despre voucher (toată suma, 31 decembrie) rămân neatinse');
     await v.close();
   }

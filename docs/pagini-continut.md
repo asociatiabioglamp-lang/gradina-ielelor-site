@@ -309,7 +309,7 @@ Apoi, mereu vizibile: **Cine suntem** (datele firmei de pe site-ul actual) · **
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->
-<li>Voucherul se folosește o singură dată, în întregime; nu se poate folosi parțial.</li>
+<li>Voucherul se folosește o singură dată, în întregime; nu se poate folosi parțial. Dacă rezervarea e mai mică decât valoarea voucherului, diferența se pierde.</li>
 <!-- /wp:list-item --></ul>
 <!-- /wp:list --></div>
 <!-- /wp:group -->

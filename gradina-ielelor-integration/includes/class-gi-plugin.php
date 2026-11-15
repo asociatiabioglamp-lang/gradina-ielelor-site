@@ -92,7 +92,7 @@ final class GI_Plugin {
             return $content;
         }
         $patterns = apply_filters('gi_voucher_partial_patterns', array('/Îl poți folosi și parțial:[^<]*/u'));
-        return preg_replace($patterns, 'Voucherul se folosește o singură dată, în întregime; nu se poate folosi parțial.', $content);
+        return preg_replace($patterns, 'Voucherul se folosește o singură dată, în întregime; nu se poate folosi parțial. Dacă rezervarea e mai mică decât valoarea voucherului, diferența se pierde.', $content);
     }
 
     public static function hide_editor_note($content, $block) {

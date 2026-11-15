@@ -46,7 +46,7 @@ Cu **0**, tipul respectiv e oprit (de ex. 0 la procente = colegul poate da numai
 
 ## Vouchere
 **Zona echipei → Vouchere.** Alegi tipul (sumă fixă sau procent), valoarea, câte coduri, începutul codului (de ex. GRADINA) și, dacă vrei, o notă („cadou de Crăciun”; **fără nume de persoane**).
-- Valabile **18 luni**, o singură folosire, **în întregime** (nu se poate folosi parțial; dacă rezervarea e mai mică decât valoarea codului, diferența nu se păstrează), cod unic (de ex. GRADINA-K7M2-Q9XP), fiecare cu **cod QR**.
+- Valabile **18 luni**, o singură folosire, **în întregime** (nu se poate folosi parțial; dacă rezervarea e mai mică decât valoarea codului, **diferența se pierde**: nu se împarte și nu rămâne pe cod), cod unic (de ex. GRADINA-K7M2-Q9XP), fiecare cu **cod QR**.
 - Bifezi voucherele din listă, alegi mărimea și apeși **„Printează voucherele alese”**.
 - Cine scanează codul ajunge pe site; codul se aplică singur la rezervare (la coș).
 - Un coleg de la vânzări vede și printează **numai voucherele lui**.
