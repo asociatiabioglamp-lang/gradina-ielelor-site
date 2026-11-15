@@ -445,7 +445,15 @@ async function runScreens(browser, newCtx, state) {
       const tt = await (await adm.request.get(ZONA + 'copaci/')).text();
       ok(/prea mare/.test(tt) && /nu s-a păstrat/.test(tt), `copaci: o cerere mai mare decât limita serverului (${ini.post_max_size}) primește un mesaj clar, nu o pagină goală`);
     } else {
-      console.log(`[SĂRIT]  copaci: cererea peste limita serverului nu se poate încerca local (post_max_size=${ini.post_max_size}); ramura e verificată doar prin citirea codului`);
+      console.log(`[nota]   copaci: serverul local are post_max_size=${ini.post_max_size}; cererea peste limită se simulează (PHP lasă $_POST gol, CONTENT_LENGTH rămâne mare)`);
+    }
+    // simulare: exact condițiile pe care le produce PHP la o cerere peste post_max_size
+    {
+      const n2 = await nonceFor(adm, 'gi_zona_salveaza');
+      await adm.request.post(ZONA + 'copaci/nou/?gi_test_oversize=1', { form: { gi_actiune: 'salveaza', titlu: 'SIMULAT ' + STAMP, _gi_nonce: n2 }, maxRedirects: 0 });
+      const t2 = await (await adm.request.get(ZONA + 'copaci/')).text();
+      const q2 = await rest('GET', '/wp/v2/puncte?search=' + encodeURIComponent('SIMULAT ' + STAMP) + '&status=any&context=edit');
+      ok(/Poza e prea mare/.test(t2) && /nu s-a păstrat/.test(t2) && Array.isArray(q2.body) && q2.body.length === 0, 'copaci: o cerere peste limita serverului (simulată) primește un mesaj clar și nu creează nimic');
     }
   }
 

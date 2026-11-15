@@ -51,6 +51,14 @@ Cu **0**, tipul respectiv e oprit (de ex. 0 la procente = colegul poate da numai
 - Cine scanează codul ajunge pe site; codul se aplică singur la rezervare (la coș).
 - Un coleg de la vânzări vede și printează **numai voucherele lui**.
 
+### Prima încercare cu platforma de rezervări (înainte să dai vouchere clienților)
+Voucherele sunt **cupoane WooCommerce obișnuite**, de două feluri: **sumă fixă** (în lei) sau **procent**. Sunt același sistem cu care lucrează și modulul de rezervări (BRW), dar eu **nu pot încerca aici** o rezervare reală cu BRW (modulul nu e disponibil în mediul meu de test). Faci o încercare, o dată, **pe copia de test (staging)**, nu pe site-ul real:
+1. **Zona echipei → Vouchere:** generezi două coduri, unul de **10 lei** (sumă fixă) și unul de **10%** (procent), cu începutul „TEST”.
+2. Pe site pornești o rezervare (de ex. Glamping), mergi la coș sau la plată și scrii codul la „Ai un cod de reducere?”.
+3. Verifici: apare un rând de reducere, iar totalul scade cu 10 lei, respectiv cu 10%. Pe staging, plata (NETOPIA, mod de test) trebuie să ceară suma redusă.
+4. Scanezi codul QR cu telefonul: se deschide site-ul și codul se aplică singur la coș.
+5. Dacă ceva nu se potrivește (reducerea nu apare, suma de la plată nu e cea redusă, se aplică și la avans etc.), îmi spui exact ce vezi, cu o captură. Voucherele se pot vedea și în WooCommerce → Marketing → Cupoane.
+
 ## Copaci și locuri (cod QR)
 **Zona echipei → Copaci și locuri → Adaugă un loc.** Scrii titlul, alegi ce este (copac, plantă, loc), numele științific (dacă vrei), o frază sub titlu, **povestea locului** și alegi **poza**. De pe telefon poți face poza chiar atunci (maximum 8 MB).
 - Scrii și „ce se vede în poză” (o frază), pentru cei care nu văd imaginea.

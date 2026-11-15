@@ -30,6 +30,15 @@ add_filter('pre_wp_mail', function ($null, $atts) {
     return true; // nu trimite nimic
 }, 10, 2);
 
+// /zona-echipei/…?gi_test_oversize=1 (POST): ca la o cerere mai mare decât post_max_size, PHP lasă $_POST gol, iar CONTENT_LENGTH rămâne mare.
+add_action('init', function () {
+    if (isset($_GET['gi_test_oversize']) && isset($_SERVER['REQUEST_METHOD']) && 'POST' === $_SERVER['REQUEST_METHOD']) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $_POST = array();
+        $_FILES = array();
+        $_SERVER['CONTENT_LENGTH'] = '99999999';
+    }
+}, 0);
+
 add_action('init', function () {
     $t = isset($_GET['gi_test']) ? sanitize_key(wp_unslash($_GET['gi_test'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
     if ('' === $t || !in_array($t, array('emailuri', 'utilizator', 'cupon', 'sterge_utilizator', 'zona_reset', 'esecuri_login', 'cauta_optiuni', 'ini'), true)) {
