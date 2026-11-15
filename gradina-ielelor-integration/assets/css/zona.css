@@ -100,3 +100,13 @@
 .gi-zona-site .gi-zona .gi-zona-tabel details { margin-top: 6px; }
 .gi-zona-site .gi-zona .gi-zona-tabel summary { cursor: pointer; font-weight: 650; color: var(--forest); min-height: 32px; }
 .gi-zona-site .gi-zona .gi-zona-coduri-istoric { display: block; margin-top: 4px; font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 14px; overflow-wrap: anywhere; user-select: all; }
+
+/* ---------- Echipă: utilizator și parolă alese de proprietară ---------- */
+.gi-zona-site .gi-zona .gi-zona-parola-rand { display: flex; gap: 8px; align-items: stretch; }
+.gi-zona-site .gi-zona .gi-zona-parola-rand input { flex: 1 1 auto; min-width: 0; }
+.gi-zona-site .gi-zona .gi-zona-parola-rand .button { flex: 0 0 auto; }
+.gi-zona-site .gi-zona .gi-zona-inline { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.gi-zona-site .gi-zona .gi-zona-inline input.gi-zona-parola-noua { box-sizing: border-box; width: 230px; max-width: 100%; min-height: 44px; padding: 8px 12px; border: 1px solid var(--field-line); border-radius: 2px; background: #fff; color: var(--ink); font: inherit; font-size: var(--fs-note); box-shadow: none; }
+.gi-zona-site .gi-zona .gi-zona-inline input.gi-zona-parola-noua:focus { border-color: var(--forest); outline: 3px solid var(--accent) !important; outline-offset: 1px; }
+@media (max-width: 640px) { .gi-zona-site .gi-zona .gi-zona-inline input.gi-zona-parola-noua { width: 100%; } }
+

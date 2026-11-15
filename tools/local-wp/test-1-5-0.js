@@ -296,6 +296,49 @@ async function runScreens(browser, newCtx, state) {
   // ------------------------------------------------------------------ 4. Administratorul în Zonă
   const adm = await newCtx(); const ap = await adm.newPage(); ap.setDefaultTimeout(90000);
   const submit = async (page, sel) => { await Promise.all([page.waitForNavigation({ waitUntil: 'domcontentloaded' }), page.click(sel)]); };
+  const credChecks = async () => {
+    // utilizatorul și parola alese de proprietară (1.5.1)
+    const L = 'alesul.' + STAMP, PW = 'Aleasa-Parola-' + STAMP;
+    await ap.goto(ZONA + 'echipa/', { waitUntil: 'domcontentloaded' });
+    await ap.click('[data-gi-genereaza="#gi-t-parola"]');
+    const gen = await ap.inputValue('#gi-t-parola');
+    ok(/^[a-km-zA-HJ-NP-Z2-9]{16}$/.test(gen), `echipă: butonul „Generează” pune o parolă aleatoare de 16 caractere (${gen.length} caractere)`);
+    await ap.fill('#gi-t-nume', 'Ales ' + STAMP); await ap.fill('#gi-t-email', L + '@example.com'); await ap.fill('#gi-t-login', L); await ap.fill('#gi-t-parola', PW);
+    await submit(ap, 'button:has-text("Creează contul")');
+    const tx = await ap.locator('.gi-zona-notice .gi-zona-coduri').innerText().catch(() => '');
+    created.users.push(L);
+    ok(tx.includes('Utilizator: ' + L) && tx.includes('Parola: ' + PW), 'echipă: contul se creează cu utilizatorul și parola alese de proprietară');
+    const lg = await (await newCtx()).request.post(BASE + '/wp-login.php', { form: { log: L, pwd: PW, 'wp-submit': 'Log In' }, maxRedirects: 0 });
+    ok(lg.status() === 302 && (lg.headers().location || '') === ZONA, 'echipă: colegul intră cu utilizatorul și parola alese, și ajunge în Zonă');
+    ok((await api(adm, 'cauta_optiuni&q=' + encodeURIComponent(PW))).count === 0 && (await api(adm, 'cauta_istoric&q=' + encodeURIComponent(PW))).count === 0, 'echipă: parola aleasă nu rămâne în baza de date, nici în istoric');
+    const tryCreate = async (fields) => {
+      await ap.goto(ZONA + 'echipa/', { waitUntil: 'domcontentloaded' });
+      await ap.fill('#gi-t-nume', 'Alt ' + STAMP); await ap.fill('#gi-t-email', fields.email); await ap.fill('#gi-t-login', fields.login); await ap.fill('#gi-t-parola', fields.parola);
+      await submit(ap, 'button:has-text("Creează contul")');
+      return (await ap.locator('.gi-zona-notice').allInnerTexts()).join(' ');
+    };
+    ok(/există deja/.test(await tryCreate({ email: 'alt.' + STAMP + '@example.com', login: L, parola: 'Alta-Parola-Lunga-' + STAMP })), 'echipă: un utilizator care există deja e refuzat');
+    ok(/cel puțin 12/.test(await tryCreate({ email: 'alt2.' + STAMP + '@example.com', login: 'altul.' + STAMP, parola: 'scurta' })), 'echipă: o parolă prea scurtă e refuzată');
+    ok(/la fel cu utilizatorul/.test(await tryCreate({ email: 'alt3.' + STAMP + '@example.com', login: 'identic.' + STAMP, parola: 'identic.' + STAMP })), 'echipă: parola identică cu utilizatorul e refuzată');
+    ok(/3–60 de caractere/.test(await tryCreate({ email: 'alt4.' + STAMP + '@example.com', login: 'ab', parola: 'Parola-Lunga-' + STAMP })), 'echipă: un utilizator prea scurt e refuzat');
+    ok((await api(adm, 'utilizator&login=altul.' + STAMP)).exists === false && (await api(adm, 'utilizator&login=identic.' + STAMP)).exists === false, 'echipă: la o cerere refuzată nu se creează niciun cont');
+    // „Parolă nouă” cu parola scrisă de proprietară, inclusiv cu bară inversă și ghilimele
+    const PW2 = 'Noua\\Parola"cu\'semne-' + STAMP;
+    await ap.goto(ZONA + 'echipa/', { waitUntil: 'domcontentloaded' });
+    await ap.locator('.gi-zona-lista li:has-text("' + L + '") input[name="parola_noua"]').fill(PW2);
+    await submit(ap, '.gi-zona-lista li:has-text("' + L + '") button:has-text("Parolă nouă")');
+    const tx2 = await ap.locator('.gi-zona-notice .gi-zona-coduri').innerText().catch(() => '');
+    ok(tx2.includes('Parola: ' + PW2), 'echipă: „Parolă nouă” cu parola scrisă de proprietară (cu \\ și ghilimele) se arată exact');
+    const lgA = await (await newCtx()).request.post(BASE + '/wp-login.php', { form: { log: L, pwd: PW, 'wp-submit': 'Log In' }, maxRedirects: 0 });
+    const lgB = await (await newCtx()).request.post(BASE + '/wp-login.php', { form: { log: L, pwd: PW2, 'wp-submit': 'Log In' }, maxRedirects: 0 });
+    ok(lgA.status() === 200 && lgB.status() === 302, `echipă: parola veche nu mai merge (${lgA.status()}), cea nouă, cu semne speciale, merge (${lgB.status()})`);
+    await ap.goto(ZONA + 'echipa/', { waitUntil: 'domcontentloaded' });
+    await ap.locator('.gi-zona-lista li:has-text("' + L + '") input[name="parola_noua"]').fill('scurta');
+    await ap.evaluate(() => { const i = document.querySelector('input[name="parola_noua"]'); i.closest('form').noValidate = true; });
+    await submit(ap, '.gi-zona-lista li:has-text("' + L + '") button:has-text("Parolă nouă")');
+    ok(/cel puțin 12/.test((await ap.locator('.gi-zona-notice').allInnerTexts()).join(' ')) && (await (await newCtx()).request.post(BASE + '/wp-login.php', { form: { log: L, pwd: PW2, 'wp-submit': 'Log In' }, maxRedirects: 0 })).status() === 302, 'echipă: „Parolă nouă” cu parolă scurtă e refuzată, iar parola de până atunci rămâne');
+  };
+
   const histChecks = async () => {
     // ---- ștergerea voucherelor (1.5.1)
     const del = flashCodes[1], used = flashCodes[0];
@@ -329,7 +372,7 @@ async function runScreens(browser, newCtx, state) {
     ok(by('voucher_creat').some((r) => Number(r.user_id) === u1.id && /VANZ/.test(r.detalii)), 'istoric: și generarea făcută de colegul de la vânzări, pe numele lui');
     ok(by('voucher_sters').some((r) => r.obiect === del && /admin/.test(r.utilizator)), 'istoric: ștergerea e înregistrată (cine, ce cod)');
     ok(by('voucher_sters').length === 1, 'istoric: o singură ștergere (folositul și cuponul străin nu s-au șters, deci nu apar)');
-    for (const a of ['cont_creat', 'cont_parola', 'cont_scos', 'cont_reactivat', 'cont_rol', 'cont_limite', 'cont_parola_proprie']) {
+    for (const a of ['cont_creat', 'cont_parola', 'cont_scos', 'cont_reactivat', 'cont_rol', 'cont_limite']) {
       ok(by(a).length >= 1, 'istoric: evenimentul „' + a + '” e înregistrat');
     }
     ok(by('loc_creat').some((r) => /Stejarul zonei/.test(r.detalii)) && by('loc_modificat').length >= 1, 'istoric: crearea și modificarea unui loc sunt înregistrate');
@@ -341,7 +384,7 @@ async function runScreens(browser, newCtx, state) {
     await ap.goto(ZONA + 'istoric/', { waitUntil: 'domcontentloaded' });
     const ht = await ap.locator('.gi-zona').innerText();
     const hh = await ap.content();
-    ok(/A generat 2 vouchere de 50 lei/.test(ht) && new RegExp('A șters voucherul ' + del).test(ht) && /A creat contul colegului/.test(ht) && /A adăugat locul/.test(ht) && /Și-a schimbat parola/.test(ht), 'istoric (pagina): se văd generarea, ștergerea, contul creat, locul adăugat și parola schimbată, în română');
+    ok(/A generat 2 vouchere de 50 lei/.test(ht) && new RegExp('A șters voucherul ' + del).test(ht) && /A creat contul colegului/.test(ht) && /A adăugat locul/.test(ht) && /A dat o parolă nouă lui/.test(ht), 'istoric (pagina): se văd generarea, ștergerea, contul creat, locul adăugat și parola nouă dată, în română');
     ok(hh.includes('gi-zona-coduri-istoric') && hh.split(del).length > 2, 'istoric (pagina): codul voucherului șters rămâne în istoric, în lista codurilor generate');
     await ap.goto(ZONA + 'istoric/?tip=cont_', { waitUntil: 'domcontentloaded' });
     const ct = await ap.locator('.gi-zona-tabel').innerText();
@@ -707,30 +750,19 @@ async function runScreens(browser, newCtx, state) {
     await sp.goto(ZONA + 'istoric/', { waitUntil: 'domcontentloaded' });
     ok(/nu are acces la istoric/.test(await sp.locator('.gi-zona').innerText()) && (await sp.locator('.gi-zona-tabel').count()) === 0, 'vânzări: istoricul e închis');
     await sp.goto(ZONA, { waitUntil: 'domcontentloaded' });
-    ok((await sp.locator('.gi-zona-tile', { hasText: 'Istoric' }).count()) === 0 && (await sp.locator('#gi-pm-curenta').count()) === 1, 'vânzări: pe prima pagină nu are dala „Istoric”, dar are „Parola ta”');
-    const fillPw = async (cur, n1, n2) => {
-      await sp.goto(ZONA, { waitUntil: 'domcontentloaded' });
-      await sp.fill('#gi-pm-curenta', cur); await sp.fill('#gi-pm-noua', n1); await sp.fill('#gi-pm-noua2', n2);
-      await submit(sp, 'button:has-text("Schimbă parola")');
-      return (await sp.locator('.gi-zona-notice').allInnerTexts()).join(' ');
-    };
-    const NEWPW = 'ParolaMea-' + STAMP + 'Q!';
-    ok(/Parola curentă nu e corectă/.test(await fillPw('gresita-gresita-1', NEWPW, NEWPW)), 'parola ta: parola curentă greșită → refuzat');
-    ok(/nu sunt la fel/.test(await fillPw(cred.pass, NEWPW, NEWPW + 'x')), 'parola ta: cele două parole noi diferite → refuzat');
-    ok(/alta decât cea curentă/.test(await fillPw(cred.pass, cred.pass, cred.pass)), 'parola ta: aceeași parolă ca cea curentă → refuzat');
-    {
-      const nPw = await nonceFor(sal, 'gi_zona_parola_mea');
-      await sal.request.post(ZONA, { form: { gi_actiune: 'parola_mea', parola_curenta: cred.pass, parola_noua: 'scurta1', parola_noua2: 'scurta1', _gi_nonce: nPw }, maxRedirects: 0 });
-      ok(/cel puțin 12 caractere/.test(await (await sal.request.get(ZONA)).text()), 'parola ta: o parolă prea scurtă (trimisă de mână) → refuzată');
-    }
-    ok(/a fost schimbată/.test(await fillPw(cred.pass, NEWPW, NEWPW)), 'parola ta: parola corectă, cu parola nouă de două ori → schimbată');
-    await sp.goto(ZONA + 'vouchere/', { waitUntil: 'domcontentloaded' });
-    ok((await sp.locator('.gi-zona-lista').count()) === 1, 'parola ta: după schimbare rămâne conectat pe acest dispozitiv');
-    const oldOk = await (await newCtx()).request.post(BASE + '/wp-login.php', { form: { log: cred.login, pwd: cred.pass, 'wp-submit': 'Log In' }, maxRedirects: 0 });
-    const newOk = await (await newCtx()).request.post(BASE + '/wp-login.php', { form: { log: cred.login, pwd: NEWPW, 'wp-submit': 'Log In' }, maxRedirects: 0 });
-    ok(oldOk.status() === 200 && newOk.status() === 302, `parola ta: parola veche nu mai merge (${oldOk.status()}), cea nouă merge (${newOk.status()})`);
-    ok((await api(adm, 'cauta_optiuni&q=' + encodeURIComponent(NEWPW))).count === 0 && (await api(adm, 'cauta_istoric&q=' + encodeURIComponent(NEWPW))).count === 0, 'parola ta: parola nouă nu apare nici în opțiuni, nici în istoric');
-    cred.pass = NEWPW;
+    ok((await sp.locator('.gi-zona-tile', { hasText: 'Istoric' }).count()) === 0 && (await sp.locator('input[type=password]').count()) === 0, 'vânzări: pe prima pagină nu are dala „Istoric” și nici formular de schimbare a parolei');
+    // nu-și poate schimba parola: nici prin REST (users/me), nici prin „Mi-am uitat parola”; proprietara o poate
+    const ALTA = 'AltaParola-' + STAMP + 'Zz';
+    const rr = await sal.request.fetch(BASE + '/wp-json/wp/v2/users/me', { method: 'POST', headers: SH, data: { password: ALTA } });
+    const lgOld = await (await newCtx()).request.post(BASE + '/wp-login.php', { form: { log: cred.login, pwd: cred.pass, 'wp-submit': 'Log In' }, maxRedirects: 0 });
+    const lgNew = await (await newCtx()).request.post(BASE + '/wp-login.php', { form: { log: cred.login, pwd: ALTA, 'wp-submit': 'Log In' }, maxRedirects: 0 });
+    ok(lgOld.status() === 302 && lgNew.status() === 200, `vânzări: prin REST (users/me) parola NU se schimbă (cerere: ${rr.status()}; parola veche merge, cea nouă nu)`);
+    const lp = await (await newCtx()).request.post(BASE + '/wp-login.php?action=lostpassword', { form: { user_login: cred.login }, maxRedirects: 0 });
+    ok(lp.status() === 200 && /numai proprietara/.test(await lp.text()), 'vânzări: „Mi-am uitat parola” nu merge pentru contul lui („Parola contului tău o schimbă numai proprietara”)');
+    const lpAdmin = await (await newCtx()).request.post(BASE + '/wp-login.php?action=lostpassword', { form: { user_login: 'admin' }, maxRedirects: 0 });
+    ok(lpAdmin.status() === 302 && /checkemail=confirm/.test(lpAdmin.headers().location || ''), 'proprietara: „Mi-am uitat parola” merge ca până acum (link pe email)');
+    ok(/parola o dă proprietara/.test(await (await (await newCtx()).request.get(ZONA)).text()), 'intrare: sub formular scrie că parola colegilor o dă proprietara');
+    ok((await api(adm, 'cauta_optiuni&q=' + encodeURIComponent(ALTA))).count === 0, 'vânzări: parola încercată prin REST nu rămâne nicăieri');
   }
 
   // --- limitele se schimbă de proprietară și se aplică imediat
@@ -821,6 +853,7 @@ async function runScreens(browser, newCtx, state) {
     await ap.goto(ZONA + 'echipa/', { waitUntil: 'domcontentloaded' });
     ok((await ap.locator('.gi-zona-lista li', { hasText: COLEG }).count()) === 1, 'echipă: colegul reactivat apare din nou în lista echipei');
   }
+  await credChecks();
   await histChecks();
   await tailChecks();
 

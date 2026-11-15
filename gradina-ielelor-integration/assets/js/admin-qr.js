@@ -9,6 +9,7 @@
  *   [data-qr-select-all]            → bifează / debifează toate căsuțele din tabelul în care se află
  *   [data-qr-select-all-list]       → la fel, pentru listele din Zona echipei (căsuțele „ids[]” din același formular)
  *   [data-gi-confirma]              → cere o confirmare înainte de a trimite formularul (ex. „Scoți accesul acestui cont?”)
+ *   [data-gi-genereaza="#câmp"]      → pune în câmpul indicat o parolă aleatoare de 16 caractere (butonul „Generează” din Echipă)
  *   form[data-gi-o-data]            → după trimitere, butoanele de trimitere se opresc (un dublu clic nu trimite formularul de două ori)
  */
 (function () {
@@ -77,6 +78,22 @@
       if (!scope) return;
       var boxes = scope.querySelectorAll(selector);
       for (var i = 0; i < boxes.length; i++) boxes[i].checked = box.checked;
+    });
+
+    // Parolă aleatoare, din caractere ușor de citit și de dictat (fără 0/O, 1/l/I).
+    document.addEventListener('click', function (event) {
+      var button = event.target && event.target.closest ? event.target.closest('[data-gi-genereaza]') : null;
+      if (!button) return;
+      var field = document.querySelector(button.getAttribute('data-gi-genereaza'));
+      var crypto = window.crypto || window.msCrypto;
+      if (!field || !crypto || !crypto.getRandomValues) return;
+      var chars = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      var values = new Uint32Array(16);
+      crypto.getRandomValues(values);
+      var out = '';
+      for (var i = 0; i < values.length; i++) out += chars.charAt(values[i] % chars.length);
+      field.value = out;
+      field.focus();
     });
 
     // O singură trimitere: un dublu clic ar crea două conturi, două loturi de vouchere sau ar schimba parola de două ori.

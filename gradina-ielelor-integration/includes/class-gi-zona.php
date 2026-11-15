@@ -43,6 +43,9 @@ final class GI_Zona {
         add_action('init', array(__CLASS__, 'keep_sales_out_of_admin'), 1);
         add_filter('show_admin_bar', array(__CLASS__, 'hide_admin_bar'));
         add_filter('login_redirect', array(__CLASS__, 'login_redirect'), 10, 3);
+        // Parola colegilor de la vânzări o schimbă numai proprietara (hotărâre 15.11.2026): nici prin „Mi-am uitat parola”, nici din profil, nici prin REST.
+        add_filter('allow_password_reset', array(__CLASS__, 'block_sales_reset'), 10, 2);
+        add_filter('wp_pre_insert_user_data', array(__CLASS__, 'guard_sales_password'), 10, 3);
         add_action('wp_login_failed', array(__CLASS__, 'login_failed'), 9999, 2); // ultimul: alte pluginuri (limitare, jurnal) apucă să numere eșecul înainte de redirecționare
         add_action('wp_enqueue_scripts', array(__CLASS__, 'assets'));
     }
@@ -139,6 +142,32 @@ final class GI_Zona {
         }
         wp_safe_redirect(self::url());
         exit;
+    }
+
+    /**
+     * „Mi-am uitat parola” nu merge pentru conturile de vânzări: parola nouă o dă proprietara (Echipă → Parolă nouă).
+     */
+    public static function block_sales_reset($allow, $user_id) {
+        $user = get_userdata((int) $user_id);
+        if ($user && in_array(self::ROLE, (array) $user->roles, true)) {
+            return new WP_Error('gi_parola_proprietara', 'Parola contului tău o schimbă numai proprietara. Cere-i una nouă.');
+        }
+        return $allow;
+    }
+
+    /**
+     * Un cont de vânzări nu-și poate schimba parola nici prin profil, Contul meu sau REST: la orice modificare făcută de altcineva decât un
+     * administrator, parola rămâne cea veche. (Parolele pe care le dă proprietara trec prin wp_set_password, deci nu sunt oprite.)
+     */
+    public static function guard_sales_password($data, $update, $user_id) {
+        if (!$update || !$user_id || !isset($data['user_pass'])) {
+            return $data;
+        }
+        $user = get_userdata((int) $user_id);
+        if ($user && in_array(self::ROLE, (array) $user->roles, true) && !current_user_can('gi_echipa')) {
+            $data['user_pass'] = $user->user_pass;
+        }
+        return $data;
     }
 
     public static function hide_admin_bar($show) {
@@ -313,8 +342,6 @@ final class GI_Zona {
             self::post_voucher();
         } elseif ('vouchere' === $sec && 'sterge' === $action) {
             self::post_voucher_delete();
-        } elseif ('acasa' === $sec && 'parola_mea' === $action) {
-            self::post_own_password();
         } elseif ('copaci' === $sec && 'salveaza' === $action) {
             self::post_place($id);
         } elseif ('echipa' === $sec && in_array($action, array('adauga', 'parola', 'elimina', 'limite'), true)) {
@@ -366,41 +393,6 @@ final class GI_Zona {
         $ok = $r['sterse'] ? ($r['sterse'] === array_slice($r['sterse'], 0, 1) ? 'Am șters voucherul ' . $r['sterse'][0] . '.' : 'Am șters ' . count($r['sterse']) . ' vouchere.') . ' Nu se mai pot folosi. Un administrator le poate readuce 30 de zile din WooCommerce → Marketing → Cupoane → Coș.' : '';
         self::flash(array('ok' => $ok, 'errors' => $errors));
         self::go('vouchere');
-    }
-
-    /**
-     * Fiecare cont din Zonă își poate schimba parola (cu parola curentă). Rămâne conectat pe acest dispozitiv; celelalte sesiuni se închid.
-     */
-    private static function post_own_password() {
-        self::check('parola_mea', '');
-        $user = wp_get_current_user();
-        $current = (string) self::posted('parola_curenta');
-        $new = (string) self::posted('parola_noua');
-        $again = (string) self::posted('parola_noua2');
-        $error = '';
-        if (!$user->exists() || !wp_check_password($current, $user->user_pass, $user->ID)) {
-            $error = 'Parola curentă nu e corectă.';
-        } elseif (strlen($new) < 12) {
-            $error = 'Parola nouă trebuie să aibă cel puțin 12 caractere.';
-        } elseif ($new !== $again) {
-            $error = 'Cele două parole noi nu sunt la fel.';
-        } elseif ($new === $current) {
-            $error = 'Parola nouă trebuie să fie alta decât cea curentă.';
-        }
-        if ('' !== $error) {
-            self::flash(array('errors' => array($error)));
-            self::go();
-        }
-        wp_set_password($new, $user->ID);
-        wp_clear_auth_cookie();
-        wp_set_current_user($user->ID);
-        wp_set_auth_cookie($user->ID, false);
-        wp_destroy_other_sessions();
-        if (class_exists('GI_Istoric')) {
-            GI_Istoric::log('cont_parola_proprie', $user->user_login, array());
-        }
-        self::flash(array('ok' => 'Parola ta a fost schimbată. Rămâi conectat aici; pe alte dispozitive va trebui să intri din nou.'));
-        self::go();
     }
 
     /* ---------- Copaci și locuri ---------- */
@@ -480,6 +472,28 @@ final class GI_Zona {
 
     /* ---------- Echipă ---------- */
 
+    /**
+     * Parola dată de proprietară (sau generată, dacă lasă câmpul gol). Întoarce array(parola, eroare).
+     *
+     * @return array{0:string,1:string}
+     */
+    private static function chosen_password($field, $login, $email) {
+        $typed = (string) self::posted($field);
+        if ('' === $typed) {
+            return array(wp_generate_password(16, false), '');
+        }
+        if (strlen($typed) < 12) {
+            return array('', 'Parola trebuie să aibă cel puțin 12 caractere (sau lasă câmpul gol și se generează una).');
+        }
+        if (strlen($typed) > 128 || preg_match('/[\x00-\x1F\x7F]/', $typed)) {
+            return array('', 'Parola are caractere nepermise sau e prea lungă (cel mult 128).');
+        }
+        if (0 === strcasecmp($typed, (string) $login) || ('' !== (string) $email && 0 === strcasecmp($typed, (string) $email))) {
+            return array('', 'Parola nu poate fi la fel cu utilizatorul sau cu emailul.');
+        }
+        return array($typed, '');
+    }
+
     private static function unique_login($email) {
         $base = sanitize_user(strstr($email, '@', true), true);
         $base = '' !== $base ? $base : 'colegul';
@@ -534,8 +548,12 @@ final class GI_Zona {
                 }
                 if ($old && empty($old_roles)) {
                     // Un cont căruia i s-a scos accesul înainte (rămas fără rol): îl reactivăm, cu o parolă nouă.
+                    list($pass, $perr) = self::chosen_password('parola', $old->user_login, $email);
+                    if ('' !== $perr) {
+                        self::flash(array('errors' => array($perr)));
+                        self::go('echipa');
+                    }
                     $old->set_role(self::ROLE);
-                    $pass = wp_generate_password(12, false);
                     wp_set_password($pass, $old->ID);
                     WP_Session_Tokens::get_instance($old->ID)->destroy_all();
                     if (class_exists('GI_Istoric')) {
@@ -547,13 +565,30 @@ final class GI_Zona {
                 self::flash(array('errors' => array('Există deja un cont cu acest email.')));
                 self::go('echipa');
             }
-            $pass = wp_generate_password(12, false);
-            $login = self::unique_login($email);
-            $uid = wp_insert_user(array('user_login' => $login, 'user_email' => $email, 'user_pass' => $pass, 'display_name' => $name, 'first_name' => $name, 'role' => self::ROLE));
+            $typed_login = sanitize_user((string) self::posted('login'), true);
+            if ('' !== $typed_login) {
+                if (strlen($typed_login) < 3 || strlen($typed_login) > 60 || !validate_username($typed_login)) {
+                    self::flash(array('errors' => array('Utilizatorul trebuie să aibă 3–60 de caractere: litere, cifre, punct, cratimă sau liniuță de subliniere.')));
+                    self::go('echipa');
+                }
+                if (username_exists($typed_login)) {
+                    self::flash(array('errors' => array('Utilizatorul „' . $typed_login . '” există deja. Alege altul.')));
+                    self::go('echipa');
+                }
+            }
+            $login = '' !== $typed_login ? $typed_login : self::unique_login($email);
+            list($pass, $perr) = self::chosen_password('parola', $login, $email);
+            if ('' !== $perr) {
+                self::flash(array('errors' => array($perr)));
+                self::go('echipa');
+            }
+            // Contul se creează cu o parolă provizorie, apoi se pune exact parola aleasă (wp_set_password o ia ca atare, fără alte prelucrări).
+            $uid = wp_insert_user(array('user_login' => $login, 'user_email' => $email, 'user_pass' => wp_generate_password(24, true, true), 'display_name' => $name, 'first_name' => $name, 'role' => self::ROLE));
             if (is_wp_error($uid)) {
                 self::flash(array('errors' => array('Contul nu s-a putut crea. Încearcă din nou.')));
                 self::go('echipa');
             }
+            wp_set_password($pass, $uid);
             if (class_exists('GI_Istoric')) {
                 GI_Istoric::log('cont_creat', $login, array('nume' => $name, 'utilizator' => $login));
             }
@@ -567,7 +602,11 @@ final class GI_Zona {
             self::go('echipa');
         }
         if ('parola' === $action) {
-            $pass = wp_generate_password(12, false);
+            list($pass, $perr) = self::chosen_password('parola_noua', $user->user_login, $user->user_email);
+            if ('' !== $perr) {
+                self::flash(array('errors' => array($perr)));
+                self::go('echipa');
+            }
             wp_set_password($pass, $uid);
             WP_Session_Tokens::get_instance($uid)->destroy_all();
             if (class_exists('GI_Istoric')) {
@@ -692,6 +731,7 @@ final class GI_Zona {
                 <p><button type="submit" class="button button-primary">Intră</button></p>
             </form>
             <p><a class="gi-text-link" href="<?php echo esc_url(wp_lostpassword_url(self::url())); ?>">Mi-am uitat parola</a></p>
+            <p class="gi-zona-mic">Colegii de la vânzări: parola o dă proprietara, ea o și schimbă.</p>
         </div>
         <?php
     }
@@ -713,21 +753,6 @@ final class GI_Zona {
             <?php if (self::history_prefixes()) : ?>
                 <a class="gi-zona-tile" href="<?php echo esc_url(self::url('istoric')); ?>"><strong>Istoric</strong><span>Cine a creat sau a șters ce, și când: vouchere, locuri, conturi.</span></a>
             <?php endif; ?>
-        </div>
-        <div class="gi-zona-card">
-            <h2>Parola ta</h2>
-            <p>Parola contului tău. Dacă ai primit una generată, e bine să o schimbi cu una a ta, de cel puțin 12 caractere.</p>
-            <form method="post" action="<?php echo esc_url(self::url()); ?>" class="gi-zona-form" data-gi-o-data>
-                <input type="hidden" name="gi_actiune" value="parola_mea">
-                <?php echo self::nonce_field('parola_mea'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-                <label for="gi-pm-curenta">Parola curentă</label>
-                <input type="password" id="gi-pm-curenta" name="parola_curenta" autocomplete="current-password" required>
-                <label for="gi-pm-noua">Parola nouă (cel puțin 12 caractere)</label>
-                <input type="password" id="gi-pm-noua" name="parola_noua" autocomplete="new-password" minlength="12" required>
-                <label for="gi-pm-noua2">Parola nouă, încă o dată</label>
-                <input type="password" id="gi-pm-noua2" name="parola_noua2" autocomplete="new-password" minlength="12" required>
-                <p><button type="submit" class="button button-outline">Schimbă parola</button></p>
-            </form>
         </div>
         <p class="gi-zona-foot">
             <?php if (current_user_can('edit_posts')) : ?><a class="gi-text-link" href="<?php echo esc_url(admin_url()); ?>">Administrarea WordPress</a> · <?php endif; ?>
@@ -1048,6 +1073,7 @@ final class GI_Zona {
                                 <input type="hidden" name="gi_actiune" value="parola">
                                 <input type="hidden" name="utilizator" value="<?php echo esc_attr((string) $u->ID); ?>">
                                 <?php echo self::nonce_field('echipa_parola'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                                <input type="text" name="parola_noua" class="gi-zona-parola-noua" maxlength="128" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="parola nouă (gol = generată)" aria-label="Parola nouă pentru <?php echo esc_attr($u->display_name); ?>">
                                 <button type="submit" class="button button-outline">Parolă nouă</button>
                             </form>
                             <form method="post" data-gi-o-data action="<?php echo esc_url(self::url('echipa')); ?>" class="gi-zona-inline">
@@ -1070,7 +1096,11 @@ final class GI_Zona {
                 <input type="text" id="gi-t-nume" name="nume" maxlength="80" required>
                 <label for="gi-t-email">Emailul</label>
                 <input type="email" id="gi-t-email" name="email" required>
-                <p class="gi-zona-mic">Utilizatorul se face din email, iar parola se generează și ți se arată o singură dată. Nu se trimite nimic prin email.</p>
+                <label for="gi-t-login">Utilizatorul <span class="gi-zona-mic">(cu el intră în Zonă; lasă gol și se face din email)</span></label>
+                <input type="text" id="gi-t-login" name="login" maxlength="60" autocomplete="off" autocapitalize="none" spellcheck="false">
+                <label for="gi-t-parola">Parola <span class="gi-zona-mic">(cel puțin 12 caractere; lasă gol și se generează una)</span></label>
+                <div class="gi-zona-parola-rand"><input type="text" id="gi-t-parola" name="parola" maxlength="128" autocomplete="off" autocapitalize="none" spellcheck="false"><button type="button" class="button button-outline gi-zona-mic-buton" data-gi-genereaza="#gi-t-parola">Generează</button></div>
+                <p class="gi-zona-mic">Utilizatorul și parola le alegi tu. Colegul <strong>nu își poate schimba parola</strong>: numai tu, din „Parolă nouă”. Nu se trimite nimic prin email; după creare ți se arată o dată datele de intrare, ca să i le transmiți.</p>
                 <p><button type="submit" class="button button-primary">Creează contul</button></p>
             </form>
         </div>

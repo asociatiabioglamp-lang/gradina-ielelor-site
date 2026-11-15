@@ -148,9 +148,6 @@ final class GI_Istoric {
             case 'cont_parola':
                 $out['text'] = 'A dat o parolă nouă lui ' . $v('nume') . ' (' . $v('utilizator') . ').';
                 break;
-            case 'cont_parola_proprie':
-                $out['text'] = 'Și-a schimbat parola.';
-                break;
             case 'cont_scos':
                 $out['text'] = 'A scos accesul lui ' . $v('nume') . ' (' . $v('utilizator') . ').';
                 break;

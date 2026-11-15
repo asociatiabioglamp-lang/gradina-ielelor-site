@@ -4,13 +4,13 @@
 Adresa: **gradina-ielelor.ro/zona-echipei/**. În subsolul fiecărei pagini a site-ului e o căsuță **„Administrare”** care duce acolo.
 Pagina nu apare în Google și nu se păstrează în memoria browserului sau a serverului.
 
-Ce e acum în Zonă: **Vouchere**, **Copaci și locuri** (cu cod QR), **Echipă** și **Istoric**. Fiecare își schimbă singur parola din „Parola ta”, pe prima pagină.
+Ce e acum în Zonă: **Vouchere**, **Copaci și locuri** (cu cod QR), **Echipă** și **Istoric**.
 Urmează, în aceeași Zonă, două dale noi: **QR la rezervare** și **Fișa de cazare** (cerute de proprietară, 15.11.2026; vezi „Ce urmează”).
 
 ## Intri
 1. Apeși **Administrare** din subsolul site-ului (sau scrii adresa de mai sus).
 2. Scrii utilizatorul și parola. Sunt **aceleași** cu cele cu care intri în administrarea WordPress (nu faci un cont nou).
-3. Dacă ai uitat parola: **„Mi-am uitat parola”**, sub formular. Primești un email cu un link.
+3. Dacă ai uitat parola: **„Mi-am uitat parola”**, sub formular. Primești un email cu un link. (Asta e pentru contul tău. **Colegii de la vânzări** nu pot schimba parola: ei o cer de la tine.)
 4. Ieși cu **„Ieși din cont”**, jos, pe prima pagină a Zonei.
 
 Limitarea încercărilor repetate de parolă **nu** e în plugin (hotărâre din `docs/securitate.md`: se face din firewall-ul hostingului, ca să nu poată un atacator să blocheze pe toată lumea). Parolele generate pentru colegi sunt lungi (12 caractere, litere și cifre).
@@ -27,12 +27,14 @@ Colegii de la vânzări nu văd nimic din administrarea WordPress: nici articole
 
 ## Cine creează conturile și cine ține parolele
 - **Conturile le creezi tu**, ca administrator, din **Echipă → Adaugă un coleg**. Nimeni altcineva nu poate crea conturi: nici managerul de magazin, nici colegii de la vânzări.
-- **Parola o generează sistemul** (lungă, aleatoare) și ți-o arată o singură dată. **Nu o poate vedea nimeni după aceea**, nici tu: nu se păstrează în clar. Dacă se pierde, dai **Parolă nouă**.
-- **Colegul își poate schimba parola** singur, din „Parola ta” (cu parola curentă, cel puțin 12 caractere), sau, dacă a uitat-o, cu **„Mi-am uitat parola”** (primește un link pe email).
-- **Tu poți oricând** să dai o parolă nouă sau să scoți accesul. Ce faci cu conturile rămâne în **Istoric**.
+- **Utilizatorul și parola le alegi tu.** Poți lăsa câmpurile goale (utilizatorul se face din email, parola se generează) sau poți apăsa „Generează” pentru o parolă aleatoare. Parola are cel puțin 12 caractere.
+- **Parola o schimbi numai tu**, din **Echipă → Parolă nouă** (scrii una sau lași câmpul gol și se generează). **Colegul nu și-o poate schimba**: nici din Zonă, nici prin „Mi-am uitat parola” (la conturile de vânzări nu merge; primește mesajul „Cere-i proprietarei”), nici din profil sau Contul meu.
+- După ce o schimbi, parola veche nu mai merge, iar sesiunile deschise ale colegului se închid.
+- Parola **nu se păstrează în clar**: după ce ai creat contul sau ai dat „Parolă nouă”, ți se arată o singură dată, ca să i-o transmiți; apoi n-o mai vede nimeni. Dacă o pierzi, dai din nou „Parolă nouă”.
+- Tot ce faci cu conturile (creat, parolă nouă, acces scos) rămâne în **Istoric**, fără parole.
 
 ## Un coleg nou, de la vânzări
-**Zona echipei → Echipă → Adaugă un coleg.** Scrii **numele** și **emailul**. Apeși „Creează contul”.
+**Zona echipei → Echipă → Adaugă un coleg.** Scrii **numele**, **emailul**, **utilizatorul** și **parola** (sau lași ultimele două goale). Apeși „Creează contul”.
 - Pe ecran apar o dată **adresa, utilizatorul și parola**, chiar în răspunsul la formular (**nu reîncărca pagina**). **Notează-le și transmite-le colegului**. Parola nu se păstrează nicăieri în site. Dacă ai reîncărcat sau ai pierdut pagina, apeși „Parolă nouă” și iei alta.
 - **Nu se trimite niciun email** colegului. (Din motive de siguranță, parola nu pleacă prin email.)
 - Colegul intră la Administrare, cu aceste date. Dacă o uită, tu îi faci alta: **„Parolă nouă”** (parola veche nu mai merge, iar sesiunile lui deschise se închid).
