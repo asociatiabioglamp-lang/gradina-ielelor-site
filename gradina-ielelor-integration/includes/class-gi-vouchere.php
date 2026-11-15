@@ -106,6 +106,7 @@ final class GI_Vouchere {
      */
     public static function create_batch($type, $value, $count, $prefix, $note, $user_id) {
         $errors = array();
+        $note = function_exists('mb_substr') ? mb_substr((string) $note, 0, 200) : substr((string) $note, 0, 200); // nota nu poate fi un text lung (nici în cupon, nici în istoric)
         $type = 'procent' === $type ? 'procent' : 'suma';
         $value = (float) $value;
         $count = (int) $count;
@@ -291,7 +292,17 @@ final class GI_Vouchere {
         return 'percent' === $coupon->get_discount_type() ? $nice . '%' : $nice . ' lei';
     }
 
+    /**
+     * Zile cât stau în Coș lucrurile șterse (setarea WordPress EMPTY_TRASH_DAYS; 0 = coșul e dezactivat, ștergerea e definitivă).
+     */
+    public static function trash_days() {
+        return defined('EMPTY_TRASH_DAYS') ? (int) EMPTY_TRASH_DAYS : 30;
+    }
+
     public static function status($coupon) {
+        if ('publish' !== $coupon->get_status()) {
+            return 'oprit'; // ex. un voucher readus din coș: WooCommerce nu-l aplică până nu e publicat din nou
+        }
         $expires = $coupon->get_date_expires();
         if ($expires && $expires->getTimestamp() < time()) {
             return 'expirat';

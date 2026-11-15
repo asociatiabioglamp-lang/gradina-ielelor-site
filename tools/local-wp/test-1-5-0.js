@@ -298,7 +298,7 @@ async function runScreens(browser, newCtx, state) {
   const submit = async (page, sel) => { await Promise.all([page.waitForNavigation({ waitUntil: 'domcontentloaded' }), page.click(sel)]); };
   const credChecks = async () => {
     // utilizatorul și parola alese de proprietară (1.5.1)
-    const L = 'alesul.' + STAMP, PW = 'Aleasa-Parola-' + STAMP;
+    const L = 'alesul.' + STAMP, PW = 'Aleasa-Cheie-' + STAMP;
     await ap.goto(ZONA + 'echipa/', { waitUntil: 'domcontentloaded' });
     await ap.click('[data-gi-genereaza="#gi-t-parola"]');
     const gen = await ap.inputValue('#gi-t-parola');
@@ -320,10 +320,12 @@ async function runScreens(browser, newCtx, state) {
     ok(/există deja/.test(await tryCreate({ email: 'alt.' + STAMP + '@example.com', login: L, parola: 'Alta-Parola-Lunga-' + STAMP })), 'echipă: un utilizator care există deja e refuzat');
     ok(/cel puțin 12/.test(await tryCreate({ email: 'alt2.' + STAMP + '@example.com', login: 'altul.' + STAMP, parola: 'scurta' })), 'echipă: o parolă prea scurtă e refuzată');
     ok(/la fel cu utilizatorul/.test(await tryCreate({ email: 'alt3.' + STAMP + '@example.com', login: 'identic.' + STAMP, parola: 'identic.' + STAMP })), 'echipă: parola identică cu utilizatorul e refuzată');
+    ok(/prea ușor de ghicit/.test(await tryCreate({ email: 'alt5.' + STAMP + '@example.com', login: 'usor1.' + STAMP, parola: 'Gradina-2026-Cheie' })), 'echipă: o parolă cu numele Grădinii e refuzată (prea ușor de ghicit)');
+    ok(/prea ușor de ghicit/.test(await tryCreate({ email: 'alt6.' + STAMP + '@example.com', login: 'usor2.' + STAMP, parola: '123456789012' })), 'echipă: o parolă numai din cifre e refuzată');
     ok(/3–60 de caractere/.test(await tryCreate({ email: 'alt4.' + STAMP + '@example.com', login: 'ab', parola: 'Parola-Lunga-' + STAMP })), 'echipă: un utilizator prea scurt e refuzat');
     ok((await api(adm, 'utilizator&login=altul.' + STAMP)).exists === false && (await api(adm, 'utilizator&login=identic.' + STAMP)).exists === false, 'echipă: la o cerere refuzată nu se creează niciun cont');
     // „Parolă nouă” cu parola scrisă de proprietară, inclusiv cu bară inversă și ghilimele
-    const PW2 = 'Noua\\Parola"cu\'semne-' + STAMP;
+    const PW2 = 'Noua\\Cheie"cu\'semne-' + STAMP;
     await ap.goto(ZONA + 'echipa/', { waitUntil: 'domcontentloaded' });
     await ap.locator('.gi-zona-lista li:has-text("' + L + '") input[name="parola_noua"]').fill(PW2);
     await submit(ap, '.gi-zona-lista li:has-text("' + L + '") button:has-text("Parolă nouă")');
@@ -391,6 +393,24 @@ async function runScreens(browser, newCtx, state) {
     ok(/A creat contul colegului/.test(ct) && !/vouchere de/.test(ct) && !/A adăugat locul/.test(ct), 'istoric (pagina): filtrul „Conturi” arată numai conturile');
     ok((await ap.locator('.gi-zona-tabel td:first-child').first().innerText()).match(/^\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}$/) !== null, 'istoric (pagina): data și ora sunt în formatul zz.ll.aaaa hh:mm');
     ok((await ap.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)) <= 0, 'istoric (pagina): fără derulare pe orizontală');
+    // ora afișată e ora site-ului (nu ora GMT, nici ora dublată): cu fusul Europe/Bucharest, un eveniment nou apare la ora de acolo
+    await api(adm, 'fus&z=Europe/Bucharest');
+    try {
+      await ap.goto(ZONA + 'echipa/', { waitUntil: 'domcontentloaded' });
+      await submit(ap, 'button:has-text("Salvează limitele")');
+      const lastRow = (await api(adm, 'istoric&n=1')).rows[0];
+      const gmtNow = new Date();
+      const stored = new Date(lastRow.creat.replace(' ', 'T') + 'Z');
+      ok(lastRow.actiune === 'cont_limite' && Math.abs(gmtNow - stored) < 3 * 60 * 1000, `istoric: ora se păstrează în GMT (${lastRow.creat}, acum GMT ${gmtNow.toISOString().slice(0, 16).replace('T', ' ')})`);
+      await ap.goto(ZONA + 'istoric/', { waitUntil: 'domcontentloaded' });
+      const shown = (await ap.locator('.gi-zona-tabel td:first-child').first().innerText()).trim();
+      const parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Bucharest', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).formatToParts(gmtNow).reduce((o, x) => { o[x.type] = x.value; return o; }, {});
+      const expect = `${parts.day}.${parts.month}.${parts.year} ${parts.hour === '24' ? '00' : parts.hour}:${parts.minute}`;
+      const toMin = (s) => { const m = s.match(/^(\d{2})\.(\d{2})\.(\d{4}) (\d{2}):(\d{2})$/); return m ? Date.UTC(+m[3], +m[2] - 1, +m[1], +m[4], +m[5]) / 60000 : NaN; };
+      ok(Math.abs(toMin(shown) - toMin(expect)) <= 3, `istoric: ora afișată e ora site-ului (se vede ${shown}, la București ar fi ${expect})`);
+    } finally {
+      await api(adm, 'fus&z=');
+    }
   };
 
   const tailChecks = async () => {
@@ -450,7 +470,7 @@ async function runScreens(browser, newCtx, state) {
     process.exit(failures ? 1 : 0);
   }
   const tiles = await ap.locator('.gi-zona-tile strong').allInnerTexts();
-  ok(tiles.join('|') === 'Vouchere|Copaci și locuri|Echipă', `administrator: pagina Zonei arată cele trei dale (${tiles.join(' | ')})`);
+  ok(tiles.join('|') === 'Vouchere|Copaci și locuri|Echipă|Istoric', `administrator: pagina Zonei arată cele patru dale (${tiles.join(' | ')})`);
   ok((await ap.locator('.gi-zona-foot a', { hasText: 'Administrarea WordPress' }).count()) === 1, 'administrator: are și linkul „Administrarea WordPress”');
   ok((await ap.locator('#wpadminbar').count()) === 1, 'administrator: bara de administrare WordPress rămâne');
   if (SHOTS) { fs.mkdirSync(SHOTS, { recursive: true }); await ap.screenshot({ path: path.join(SHOTS, 'zona-acasa-admin.png'), fullPage: true }); }
@@ -474,7 +494,7 @@ async function runScreens(browser, newCtx, state) {
   ok(flashCodes.every((c) => listed.includes(c)) && (await ap.locator('.gi-zona-card h2', { hasText: 'Toate voucherele' }).count()) === 1, 'vouchere: lista „Toate voucherele” arată codurile generate');
   const idx = listed.indexOf(flashCodes[0]);
   ok((await decode(ap, '.gi-qr-mini', idx)) === BASE + '/?gi_cod=' + flashCodes[0], 'vouchere: codul QR din listă se citește și duce la adresa cu codul voucherului');
-  ok(/Generat de: /.test(await ap.locator('.gi-zona-lista li', { hasText: flashCodes[0] }).innerText()), 'vouchere: administratorul vede cine a generat fiecare voucher');
+  ok(/Creat la \d{2}\.\d{2}\.\d{4} \d{2}:\d{2} · generat de /.test(await ap.locator('.gi-zona-lista li', { hasText: flashCodes[0] }).innerText()), 'vouchere: administratorul vede când a fost creat fiecare voucher și cine l-a generat');
   // printare
   await ap.locator('.gi-zona-lista li', { hasText: flashCodes[0] }).locator('input[name="ids[]"]').check();
   await ap.locator('.gi-zona-lista li', { hasText: flashCodes[1] }).locator('input[name="ids[]"]').check();
@@ -724,7 +744,7 @@ async function runScreens(browser, newCtx, state) {
   await sp.waitForSelector('.gi-qr-mini svg');
   const sListed = await sp.locator('.gi-zona-lista .gi-zona-cod').allInnerTexts();
   ok(sListed.length === 3 && sListed.every((c) => sCodes.includes(c)) && !sListed.some((c) => flashCodes.includes(c)), 'vânzări: vede numai voucherele lui, nu și pe ale proprietarei');
-  ok(!/Generat de:/.test(await sp.locator('.gi-zona-lista').innerText()), 'vânzări: nu vede „Generat de” (e doar pentru proprietară)');
+  ok(/Creat la /.test(await sp.locator('.gi-zona-lista').innerText()) && !/generat de/i.test(await sp.locator('.gi-zona-lista').innerText()), 'vânzări: vede când a fost creat voucherul, dar nu „generat de” (e doar pentru proprietară)');
   ok((await decode(sp, '.gi-qr-mini', 0)) === BASE + '/?gi_cod=' + sListed[0], 'vânzări: codul QR al voucherului lui se citește');
   const [pop3] = await Promise.all([sal.waitForEvent('page'), (async () => { await sp.locator('.gi-zona-lista input[name="ids[]"]').nth(0).check(); await sp.click('button:has-text("Printează voucherele alese")'); })()]);
   await pop3.waitForLoadState('load'); await pop3.waitForSelector('.gi-tile .qr svg');
@@ -756,9 +776,11 @@ async function runScreens(browser, newCtx, state) {
     const rr = await sal.request.fetch(BASE + '/wp-json/wp/v2/users/me', { method: 'POST', headers: SH, data: { password: ALTA } });
     const lgOld = await (await newCtx()).request.post(BASE + '/wp-login.php', { form: { log: cred.login, pwd: cred.pass, 'wp-submit': 'Log In' }, maxRedirects: 0 });
     const lgNew = await (await newCtx()).request.post(BASE + '/wp-login.php', { form: { log: cred.login, pwd: ALTA, 'wp-submit': 'Log In' }, maxRedirects: 0 });
-    ok(lgOld.status() === 302 && lgNew.status() === 200, `vânzări: prin REST (users/me) parola NU se schimbă (cerere: ${rr.status()}; parola veche merge, cea nouă nu)`);
+    ok(rr.status() === 403 && lgOld.status() === 302 && lgNew.status() === 200, `vânzări: prin REST (users/me) parola NU se schimbă, cu eroare clară (cerere: ${rr.status()}; parola veche merge, cea nouă nu)`);
+    await api(adm, 'emailuri'); // pornim numărătoarea de emailuri de la zero
     const lp = await (await newCtx()).request.post(BASE + '/wp-login.php?action=lostpassword', { form: { user_login: cred.login }, maxRedirects: 0 });
-    ok(lp.status() === 200 && /numai proprietara/.test(await lp.text()), 'vânzări: „Mi-am uitat parola” nu merge pentru contul lui („Parola contului tău o schimbă numai proprietara”)');
+    const lpUnknown = await (await newCtx()).request.post(BASE + '/wp-login.php?action=lostpassword', { form: { user_login: 'nu.exista.' + STAMP }, maxRedirects: 0 });
+    ok(lp.status() === 302 && (lp.headers().location || '') === (lpUnknown.headers().location || '') && /checkemail=confirm/.test(lp.headers().location || '') && (await api(adm, 'emailuri')).count === 0, 'vânzări: „Mi-am uitat parola” răspunde ca pentru un cont inexistent și nu trimite niciun email (nu se poate afla cine e coleg de la vânzări)');
     const lpAdmin = await (await newCtx()).request.post(BASE + '/wp-login.php?action=lostpassword', { form: { user_login: 'admin' }, maxRedirects: 0 });
     ok(lpAdmin.status() === 302 && /checkemail=confirm/.test(lpAdmin.headers().location || ''), 'proprietara: „Mi-am uitat parola” merge ca până acum (link pe email)');
     ok(/parola o dă proprietara/.test(await (await (await newCtx()).request.get(ZONA)).text()), 'intrare: sub formular scrie că parola colegilor o dă proprietara');
@@ -854,8 +876,8 @@ async function runScreens(browser, newCtx, state) {
     ok((await ap.locator('.gi-zona-lista li', { hasText: COLEG }).count()) === 1, 'echipă: colegul reactivat apare din nou în lista echipei');
   }
   await credChecks();
-  await histChecks();
   await tailChecks();
+  await histChecks();
 
   if (!process.env.GI_SKIP_HEAVY) { await runScreens(browser, newCtx, await adm.storageState()); }
 

@@ -44,7 +44,7 @@ Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai 
 = 1.5.1 =
 * Zona echipei → Vouchere: ștergerea voucherelor gata create („Șterge voucherele alese”), numai pentru administrator și managerul de magazin, numai pentru cele nefolosite (cele folosite rămân ca dovadă). Se pun în Coșul WooCommerce: un cupon din coș nu se mai poate folosi, iar un administrator îl poate readuce 30 de zile.
 * Istoric de creare (Zona echipei → Istoric): cine a generat sau a șters vouchere, a adăugat sau a modificat locuri, a creat conturi, a dat parole noi, a scos accesul sau a schimbat limitele, cu data și ora. Rămâne și după ștergere. Parolele nu apar niciodată. Se păstrează într-un tabel al site-ului (gi_istoric), care rămâne și dacă pluginul e șters.
-* Echipă: utilizatorul și parola colegilor le alege proprietara (sau lasă câmpurile goale și se generează), cu butonul „Generează”; „Parolă nouă” tot ea o dă. Colegii de la vânzări **nu își pot schimba parola**: nici prin „Mi-am uitat parola”, nici din profil, Contul meu sau REST.
+* Echipă: utilizatorul și parola colegilor le alege proprietara (sau lasă câmpurile goale și se generează), cu butonul „Generează”; „Parolă nouă” tot ea o dă. Parolele alese trebuie să fie lungi (12 caractere) și greu de ghicit. Colegii de la vânzări **nu își pot schimba parola**: „Mi-am uitat parola” răspunde ca pentru un cont inexistent, iar din profil, Contul meu sau REST schimbarea e refuzată cu un mesaj.
 * Fiecare voucher din listă arată când a fost creat.
 
 = 1.5.0 =

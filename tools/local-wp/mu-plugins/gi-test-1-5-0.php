@@ -14,6 +14,7 @@
  *  - /?gi_test=folosit&cod=X    → marchează voucherul X drept folosit o dată
  *  - /?gi_test=cupon_simplu&cod=X → creează un cupon WooCommerce obișnuit (fără semnul voucherelor din Zonă)
  *  - /?gi_test=istoric&n=N      → ultimele N rânduri din istoricul Zonei
+ *  - /?gi_test=fus&z=Europe/Bucharest → pune fusul orar al site-ului (z gol = UTC), ca să se verifice orele din istoric
  *  - /?gi_test=cauta_istoric&q=X → de câte ori apare textul X în istoricul Zonei
  *  - /?gi_test=curata_teste     → șterge conturile de probă rămase (colega.test.*, client.test.*) după o rulare întreruptă
  *  - /?gi_test=filtru_voucher&html=… → ce întoarce filtrul care înlocuiește propoziția despre folosirea parțială a voucherului
@@ -53,7 +54,7 @@ add_action('init', function () {
 
 add_action('init', function () {
     $t = isset($_GET['gi_test']) ? sanitize_key(wp_unslash($_GET['gi_test'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-    if ('' === $t || !in_array($t, array('emailuri', 'utilizator', 'cupon', 'sterge_utilizator', 'zona_reset', 'esecuri_login', 'cauta_optiuni', 'ini', 'creeaza_client', 'filtru_voucher', 'curata_teste', 'folosit', 'cupon_simplu', 'istoric', 'cauta_istoric'), true)) {
+    if ('' === $t || !in_array($t, array('emailuri', 'utilizator', 'cupon', 'sterge_utilizator', 'zona_reset', 'esecuri_login', 'cauta_optiuni', 'ini', 'creeaza_client', 'filtru_voucher', 'curata_teste', 'folosit', 'cupon_simplu', 'istoric', 'cauta_istoric', 'fus'), true)) {
         return;
     }
     header('Content-Type: application/json');
@@ -132,8 +133,13 @@ add_action('init', function () {
         global $wpdb;
         $n = isset($_GET['n']) ? max(1, min(200, absint(wp_unslash($_GET['n'])))) : 20; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
         $table = $wpdb->prefix . 'gi_istoric';
-        $rows = $wpdb->get_results($wpdb->prepare("SELECT actiune, obiect, utilizator, user_id, detalii FROM {$table} ORDER BY id DESC LIMIT %d", $n), ARRAY_A); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        $rows = $wpdb->get_results($wpdb->prepare("SELECT creat, actiune, obiect, utilizator, user_id, detalii FROM {$table} ORDER BY id DESC LIMIT %d", $n), ARRAY_A); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         echo wp_json_encode(array('rows' => $rows ? $rows : array()));
+    } elseif ('fus' === $t) {
+        $z = isset($_GET['z']) ? sanitize_text_field(wp_unslash($_GET['z'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        update_option('timezone_string', $z);
+        update_option('gmt_offset', '');
+        echo wp_json_encode(array('ok' => true, 'z' => get_option('timezone_string')));
     } elseif ('cauta_istoric' === $t) {
         global $wpdb;
         $q = isset($_GET['q']) ? (string) wp_unslash($_GET['q']) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended

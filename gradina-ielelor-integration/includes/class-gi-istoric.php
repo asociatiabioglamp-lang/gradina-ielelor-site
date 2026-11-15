@@ -2,7 +2,7 @@
 /**
  * Istoricul Zonei echipei: cine a creat sau a schimbat ce și când (vouchere generate și șterse, locuri cu cod QR, conturile colegilor,
  * limitele de reducere, parolele schimbate). Fiecare eveniment e o linie într-un tabel al site-ului; rămâne și după ce un voucher sau un
- * loc e șters. Nu se scriu niciodată parole sau chei în istoric.
+ * loc e șters. Nu se scriu niciodată parole sau chei în istoric. Orele se păstrează în GMT și se afișează în ora site-ului.
  *
  * Se vede în Zona echipei → Istoric: vouchere (cine are drept la toate voucherele), locuri (cine administrează copacii), conturi (administratorul).
  * Tabelul se păstrează și dacă pluginul e șters (e istoric); se poate șterge din baza de date.
@@ -48,7 +48,19 @@ final class GI_Istoric {
   KEY user_id (user_id),
   KEY creat (creat)
 ) {$charset};");
-        update_option(self::DB_OPTION, self::DB_VERSION, true);
+        // Marcajul „instalat” se pune numai dacă tabelul chiar există (un cont de bază de date fără drept de creare nu trebuie să dea o falsă siguranță).
+        if (self::exists()) {
+            update_option(self::DB_OPTION, self::DB_VERSION, true);
+        }
+    }
+
+    /**
+     * Există tabelul istoricului?
+     */
+    public static function exists() {
+        global $wpdb;
+        $table = self::table();
+        return $table === $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $wpdb->esc_like($table)));
     }
 
     /**
@@ -63,12 +75,12 @@ final class GI_Istoric {
         global $wpdb;
         $uid = null === $user_id ? get_current_user_id() : (int) $user_id;
         $user = $uid ? get_userdata($uid) : false;
-        $label = $user ? $user->display_name . ' (' . $user->user_login . ')' : 'sistem';
+        $label = $user ? $user->user_login . ' (' . $user->display_name . ')' : 'sistem'; // utilizatorul întâi: numele afișat îl poate schimba oricine
         $previous = $wpdb->suppress_errors(true);
         $done = $wpdb->insert(
             self::table(),
             array(
-                'creat' => current_time('mysql'),
+                'creat' => current_time('mysql', true), // ora GMT; se afișează în ora site-ului
                 'user_id' => $uid,
                 'utilizator' => mb_substr($label, 0, 190),
                 'actiune' => substr(sanitize_key($action), 0, 40),

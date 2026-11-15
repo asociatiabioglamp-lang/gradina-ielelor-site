@@ -46,6 +46,9 @@ final class GI_Zona {
         // Parola colegilor de la vânzări o schimbă numai proprietara (hotărâre 15.11.2026): nici prin „Mi-am uitat parola”, nici din profil, nici prin REST.
         add_filter('allow_password_reset', array(__CLASS__, 'block_sales_reset'), 10, 2);
         add_filter('wp_pre_insert_user_data', array(__CLASS__, 'guard_sales_password'), 10, 3);
+        add_filter('send_password_change_email', array(__CLASS__, 'no_change_email_for_sales'), 10, 2);
+        add_filter('rest_pre_insert_user', array(__CLASS__, 'rest_block_sales_password'), 10, 2);
+        add_action('woocommerce_save_account_details_errors', array(__CLASS__, 'account_block_sales_password'), 10, 2);
         add_action('wp_login_failed', array(__CLASS__, 'login_failed'), 9999, 2); // ultimul: alte pluginuri (limitare, jurnal) apucă să numere eșecul înainte de redirecționare
         add_action('wp_enqueue_scripts', array(__CLASS__, 'assets'));
     }
@@ -168,6 +171,38 @@ final class GI_Zona {
             $data['user_pass'] = $user->user_pass;
         }
         return $data;
+    }
+
+    private static function is_sales_id($user_id) {
+        $user = get_userdata((int) $user_id);
+        return $user && in_array(self::ROLE, (array) $user->roles, true);
+    }
+
+    /**
+     * Nu se trimite emailul „Parola a fost schimbată” când schimbarea a fost oprită (contul de vânzări).
+     */
+    public static function no_change_email_for_sales($send, $user) {
+        $id = is_array($user) && isset($user['ID']) ? (int) $user['ID'] : 0;
+        return $id && self::is_sales_id($id) && !current_user_can('gi_echipa') ? false : $send;
+    }
+
+    /**
+     * REST: un cont de vânzări care încearcă să-și schimbe parola primește o eroare clară (nu un „succes” fără efect).
+     */
+    public static function rest_block_sales_password($prepared, $request) {
+        if (is_object($prepared) && !empty($prepared->ID) && isset($request['password']) && self::is_sales_id($prepared->ID) && !current_user_can('gi_echipa')) {
+            return new WP_Error('gi_parola_proprietara', 'Parola contului o schimbă numai proprietara.', array('status' => 403));
+        }
+        return $prepared;
+    }
+
+    /**
+     * Contul meu (WooCommerce): același lucru, cu mesaj pe pagină.
+     */
+    public static function account_block_sales_password($errors, $user) {
+        if (is_object($user) && !empty($user->ID) && self::is_sales_id($user->ID) && !current_user_can('gi_echipa') && !empty($_POST['password_1'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+            $errors->add('gi_parola_proprietara', 'Parola contului tău o schimbă numai proprietara. Cere-i una nouă.');
+        }
     }
 
     public static function hide_admin_bar($show) {
@@ -390,7 +425,9 @@ final class GI_Zona {
         if ($r['refuzate']) {
             $errors[] = $r['refuzate'] . ($r['refuzate'] === 1 ? ' voucher nu s-a putut șterge.' : ' vouchere nu s-au putut șterge.');
         }
-        $ok = $r['sterse'] ? ($r['sterse'] === array_slice($r['sterse'], 0, 1) ? 'Am șters voucherul ' . $r['sterse'][0] . '.' : 'Am șters ' . count($r['sterse']) . ' vouchere.') . ' Nu se mai pot folosi. Un administrator le poate readuce 30 de zile din WooCommerce → Marketing → Cupoane → Coș.' : '';
+        $kept = GI_Vouchere::trash_days();
+        $tail = $kept > 0 ? ' Nu se mai pot folosi. Un administrator le poate readuce ' . $kept . ' de zile din WooCommerce → Marketing → Cupoane → Coș.' : ' Nu se mai pot folosi (au fost șterse definitiv: coșul e dezactivat pe acest site).';
+        $ok = $r['sterse'] ? ($r['sterse'] === array_slice($r['sterse'], 0, 1) ? 'Am șters voucherul ' . $r['sterse'][0] . '.' : 'Am șters ' . count($r['sterse']) . ' vouchere.') . $tail : '';
         self::flash(array('ok' => $ok, 'errors' => $errors));
         self::go('vouchere');
     }
@@ -491,6 +528,20 @@ final class GI_Zona {
         if (0 === strcasecmp($typed, (string) $login) || ('' !== (string) $email && 0 === strcasecmp($typed, (string) $email))) {
             return array('', 'Parola nu poate fi la fel cu utilizatorul sau cu emailul.');
         }
+        $lower = strtolower($typed);
+        $local = strtolower((string) strstr((string) $email, '@', true));
+        $obvious = array('gradina', 'ielelor', 'parola', 'password', 'bioglamp', strtolower((string) $login));
+        if ('' !== $local && strlen($local) >= 4) {
+            $obvious[] = $local;
+        }
+        foreach ($obvious as $word) {
+            if (strlen($word) >= 4 && false !== strpos($lower, $word)) {
+                return array('', 'Parola e prea ușor de ghicit: nu folosi numele Grădinii, „parola”, utilizatorul sau emailul. Apasă „Generează” pentru una bună.');
+            }
+        }
+        if (1 === preg_match('/^(.)\1+$/u', $typed) || 1 === preg_match('/^[0-9]+$/', $typed)) {
+            return array('', 'Parola e prea ușor de ghicit (aceleași caractere sau numai cifre). Apasă „Generează” pentru una bună.');
+        }
         return array($typed, '');
     }
 
@@ -539,7 +590,7 @@ final class GI_Zona {
                     if (class_exists('GI_Istoric')) {
                         GI_Istoric::log('cont_rol', $old->user_login, array('nume' => $old->display_name, 'utilizator' => $old->user_login));
                     }
-                    self::flash(array('ok' => 'Contul exista deja (cont de client). Colegul are acum acces la Zonă și intră cu parola lui obișnuită.'));
+                    self::flash(array('ok' => 'Contul exista deja (cont de client): ' . $old->display_name . ' (' . $old->user_login . '). Are acum acces la Zonă și intră cu parola lui obișnuită. De acum, parola lui o schimbi numai tu (Parolă nouă), inclusiv pentru contul de client.'));
                     self::go('echipa');
                 }
                 if ($old && in_array(self::ROLE, $old_roles, true)) {
@@ -554,7 +605,7 @@ final class GI_Zona {
                         self::go('echipa');
                     }
                     $old->set_role(self::ROLE);
-                    wp_set_password($pass, $old->ID);
+                    wp_set_password(wp_slash($pass), $old->ID); // WordPress compară la intrare parola cu „bare de escape” (ca în $_POST): o salvăm la fel, ca și cele cu \\ sau ghilimele să intre
                     WP_Session_Tokens::get_instance($old->ID)->destroy_all();
                     if (class_exists('GI_Istoric')) {
                         GI_Istoric::log('cont_reactivat', $old->user_login, array('nume' => $old->display_name, 'utilizator' => $old->user_login));
@@ -588,7 +639,7 @@ final class GI_Zona {
                 self::flash(array('errors' => array('Contul nu s-a putut crea. Încearcă din nou.')));
                 self::go('echipa');
             }
-            wp_set_password($pass, $uid);
+            wp_set_password(wp_slash($pass), $uid); // la fel ca mai sus
             if (class_exists('GI_Istoric')) {
                 GI_Istoric::log('cont_creat', $login, array('nume' => $name, 'utilizator' => $login));
             }
@@ -607,7 +658,7 @@ final class GI_Zona {
                 self::flash(array('errors' => array($perr)));
                 self::go('echipa');
             }
-            wp_set_password($pass, $uid);
+            wp_set_password(wp_slash($pass), $uid); // la fel ca mai sus
             WP_Session_Tokens::get_instance($uid)->destroy_all();
             if (class_exists('GI_Istoric')) {
                 GI_Istoric::log('cont_parola', $user->user_login, array('nume' => $user->display_name, 'utilizator' => $user->user_login));
@@ -848,7 +899,7 @@ final class GI_Zona {
                     </p>
                     <p class="gi-zona-butoane"><button type="submit" class="button button-primary">Printează voucherele alese</button>
                         <?php if ($all) : ?><button type="submit" class="button button-outline" formmethod="post" formaction="<?php echo esc_url(self::url('vouchere')); ?>" formtarget="_self" name="gi_actiune" value="sterge" data-gi-confirma="Ștergi voucherele alese? Codurile nu vor mai putea fi folosite.">Șterge voucherele alese</button><?php endif; ?></p>
-                    <?php if ($all) : ?><p class="gi-zona-mic">Se șterg numai voucherele nefolosite. Cele șterse merg în Coșul WooCommerce (un administrator le poate readuce 30 de zile). Fiecare ștergere rămâne în <a href="<?php echo esc_url(self::url('istoric')); ?>">Istoric</a>.</p><?php endif; ?>
+                    <?php if ($all) : ?><p class="gi-zona-mic">Se șterg numai voucherele nefolosite. <?php echo GI_Vouchere::trash_days() > 0 ? 'Cele șterse merg în Coșul WooCommerce (un administrator le poate readuce ' . (int) GI_Vouchere::trash_days() . ' de zile).' : 'Atenție: pe acest site coșul e dezactivat, deci ștergerea e definitivă.'; ?> Fiecare ștergere rămâne în <a href="<?php echo esc_url(self::url('istoric')); ?>">Istoric</a>.</p><?php endif; ?>
                 </form>
             <?php endif; ?>
         </div>
@@ -881,6 +932,10 @@ final class GI_Zona {
         $allowed = self::history_prefixes();
         if (!$allowed || !class_exists('GI_Istoric')) {
             echo '<div class="gi-zona-card"><p>Contul tău nu are acces la istoric.</p></div>';
+            return;
+        }
+        if (!GI_Istoric::exists()) {
+            echo '<div class="gi-zona-card"><p><strong>Tabelul istoricului lipsește</strong>, deci nu s-a putut păstra nimic. Spune-i lui Claude (probabil contul de bază de date nu are drept să creeze tabele).</p></div>';
             return;
         }
         $kinds = array('' => 'Tot', 'voucher_' => 'Vouchere', 'loc_' => 'Locuri', 'cont_' => 'Conturi');
@@ -918,7 +973,7 @@ final class GI_Zona {
                     <tbody>
                     <?php foreach ($rows as $row) : $d = GI_Istoric::describe($row); ?>
                         <tr>
-                            <td><?php echo esc_html(wp_date('d.m.Y H:i', strtotime((string) $row->creat))); ?></td>
+                            <td><?php echo esc_html(wp_date('d.m.Y H:i', strtotime((string) $row->creat . ' UTC'))); ?></td>
                             <td><?php echo esc_html($row->utilizator); ?></td>
                             <td><?php echo esc_html($d['text']); ?>
                                 <?php if ($d['coduri']) : ?><details><summary>Coduri (<?php echo esc_html((string) count($d['coduri'])); ?>)</summary><span class="gi-zona-coduri-istoric"><?php echo esc_html(implode(', ', $d['coduri'])); ?></span></details><?php endif; ?>

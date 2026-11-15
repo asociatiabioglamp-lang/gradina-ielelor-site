@@ -26,9 +26,9 @@ Limitarea încercărilor repetate de parolă **nu** e în plugin (hotărâre din
 Colegii de la vânzări nu văd nimic din administrarea WordPress: nici articole, nici pagini, nici comenzi, nici alte conturi. Văd numai Zona echipei.
 
 ## Cine creează conturile și cine ține parolele
-- **Conturile le creezi tu**, ca administrator, din **Echipă → Adaugă un coleg**. Nimeni altcineva nu poate crea conturi: nici managerul de magazin, nici colegii de la vânzări.
-- **Utilizatorul și parola le alegi tu.** Poți lăsa câmpurile goale (utilizatorul se face din email, parola se generează) sau poți apăsa „Generează” pentru o parolă aleatoare. Parola are cel puțin 12 caractere.
-- **Parola o schimbi numai tu**, din **Echipă → Parolă nouă** (scrii una sau lași câmpul gol și se generează). **Colegul nu și-o poate schimba**: nici din Zonă, nici prin „Mi-am uitat parola” (la conturile de vânzări nu merge; primește mesajul „Cere-i proprietarei”), nici din profil sau Contul meu.
+- **Conturile le creezi tu**, ca administrator, din **Echipă → Adaugă un coleg**. **Din Zonă** nu poate crea conturi nimeni altcineva: nici managerul de magazin, nici colegii de la vânzări. (Administratorii WordPress pot, ca oricând, din administrarea WordPress.)
+- **Utilizatorul și parola le alegi tu.** Poți lăsa câmpurile goale (utilizatorul se face din email, parola se generează) sau poți apăsa „Generează” pentru o parolă aleatoare. Parola are cel puțin 12 caractere și nu poate fi ușor de ghicit (fără numele Grădinii, „parola”, utilizatorul sau emailul, fără numai cifre). Pentru una bună, apasă „Generează”.
+- **Parola o schimbi numai tu**, din **Echipă → Parolă nouă** (scrii una sau lași câmpul gol și se generează). **Colegul nu și-o poate schimba**: nici din Zonă, nici prin „Mi-am uitat parola” (la conturile de vânzări nu merge: răspunsul e ca pentru un cont inexistent și nu se trimite niciun email, ca să nu se poată afla cine e coleg de la vânzări), nici din profil sau Contul meu.
 - După ce o schimbi, parola veche nu mai merge, iar sesiunile deschise ale colegului se închid.
 - Parola **nu se păstrează în clar**: după ce ai creat contul sau ai dat „Parolă nouă”, ți se arată o singură dată, ca să i-o transmiți; apoi n-o mai vede nimeni. Dacă o pierzi, dai din nou „Parolă nouă”.
 - Tot ce faci cu conturile (creat, parolă nouă, acces scos) rămâne în **Istoric**, fără parole.
@@ -64,14 +64,15 @@ Cu **0**, tipul respectiv e oprit (de ex. 0 la procente = colegul poate da numai
 În lista de vouchere bifezi unul sau mai multe și apeși **„Șterge voucherele alese”** (apare confirmarea). Numai administratorul și managerii de magazin pot șterge; colegii de la vânzări nu.
 - Se șterg numai voucherele **nefolosite**. Unul folosit rămâne în listă (e dovada reducerii de pe comandă).
 - Voucherul șters **nu se mai poate folosi** (nici cu codul scris, nici cu QR-ul printat).
-- Nu dispare definitiv: merge în **Coșul WooCommerce** (WooCommerce → Marketing → Cupoane → Coș) și un administrator îl poate readuce în 30 de zile.
+- Nu dispare definitiv: merge în **Coșul WooCommerce** (WooCommerce → Marketing → Cupoane → Coș) și un administrator îl poate readuce în 30 de zile (dacă hostingul a dezactivat coșul, ștergerea e definitivă; ecranul te avertizează). Un voucher readus din coș rămâne **oprit** până îl publici din nou.
 - Ștergerea rămâne în **Istoric** (cine, când, ce cod).
 
 ### Istoric de creare
 **Zona echipei → Istoric:** cine a generat vouchere (cu codurile), cine a șters vouchere, cine a adăugat sau a modificat locuri, cine a creat conturi, a dat parole noi, a scos accesul sau a schimbat limitele, cu data și ora. Poți filtra pe Vouchere, Locuri sau Conturi. Rămâne și după ce voucherul sau locul e șters. **Parolele nu apar niciodată.**
 - Fiecare vede doar ce are voie să administreze: voucherele (administrator, manager de magazin), locurile (cine administrează copacii), conturile (numai administratorul).
 - Istoricul începe de la instalarea acestei versiuni: ce s-a creat înainte nu apare aici (voucherele mai vechi se văd în lista de vouchere, cu cine le-a generat).
-- Se păstrează într-un tabel al site-ului (`gi_istoric`), care rămâne chiar dacă pluginul e șters.
+- Se păstrează într-un tabel al site-ului (`gi_istoric`), care rămâne chiar dacă pluginul e șters. Conține numele și utilizatorii colegilor, notele de la vouchere și titlurile locurilor, nu și parole. Orele se arată în ora site-ului. Nu are ștergere automată: dacă vrei să-l golești sau să-l ștergi, se face din baza de date (spune-mi).
+- Notele de la vouchere au cel mult 200 de caractere.
 
 ### Prima încercare cu platforma de rezervări (înainte să dai vouchere clienților)
 Voucherele sunt **cupoane WooCommerce obișnuite**, de două feluri: **sumă fixă** (în lei) sau **procent**. Sunt același sistem cu care lucrează și modulul de rezervări (BRW), dar eu **nu pot încerca aici** o rezervare reală cu BRW (modulul nu e disponibil în mediul meu de test). Faci o încercare, o dată, **pe copia de test (staging)**, nu pe site-ul real:
