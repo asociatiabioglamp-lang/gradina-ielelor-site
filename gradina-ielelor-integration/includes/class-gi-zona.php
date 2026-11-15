@@ -47,7 +47,7 @@ final class GI_Zona {
         add_filter('allow_password_reset', array(__CLASS__, 'block_sales_reset'), 10, 2);
         add_filter('wp_pre_insert_user_data', array(__CLASS__, 'guard_sales_password'), 10, 3);
         add_filter('send_password_change_email', array(__CLASS__, 'no_change_email_for_sales'), 10, 2);
-        add_filter('rest_pre_insert_user', array(__CLASS__, 'rest_block_sales_password'), 10, 2);
+        add_filter('rest_pre_dispatch', array(__CLASS__, 'rest_block_sales_password'), 10, 3);
         add_action('woocommerce_save_account_details_errors', array(__CLASS__, 'account_block_sales_password'), 10, 2);
         add_action('wp_login_failed', array(__CLASS__, 'login_failed'), 9999, 2); // ultimul: alte pluginuri (limitare, jurnal) apucă să numere eșecul înainte de redirecționare
         add_action('wp_enqueue_scripts', array(__CLASS__, 'assets'));
@@ -189,11 +189,17 @@ final class GI_Zona {
     /**
      * REST: un cont de vânzări care încearcă să-și schimbe parola primește o eroare clară (nu un „succes” fără efect).
      */
-    public static function rest_block_sales_password($prepared, $request) {
-        if (is_object($prepared) && !empty($prepared->ID) && isset($request['password']) && self::is_sales_id($prepared->ID) && !current_user_can('gi_echipa')) {
-            return new WP_Error('gi_parola_proprietara', 'Parola contului o schimbă numai proprietara.', array('status' => 403));
+    public static function rest_block_sales_password($result, $server, $request) {
+        if (null !== $result || !is_user_logged_in() || !in_array($request->get_method(), array('POST', 'PUT', 'PATCH'), true)) {
+            return $result;
         }
-        return $prepared;
+        if (1 === preg_match('#^/wp/v2/users/(me|\d+)$#', (string) $request->get_route(), $m) && isset($request['password'])) {
+            $uid = 'me' === $m[1] ? get_current_user_id() : (int) $m[1];
+            if (self::is_sales_id($uid) && !current_user_can('gi_echipa')) {
+                return new WP_Error('gi_parola_proprietara', 'Parola contului o schimbă numai proprietara.', array('status' => 403));
+            }
+        }
+        return $result;
     }
 
     /**

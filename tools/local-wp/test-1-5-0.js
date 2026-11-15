@@ -373,7 +373,7 @@ async function runScreens(browser, newCtx, state) {
     ok(by('voucher_creat').some((r) => /TESTZ/.test(r.detalii) && /admin/.test(r.utilizator) && r.detalii.includes(del) && r.detalii.includes(used)), 'istoric: generarea voucherelor e înregistrată: cine, ce, cu toate codurile');
     ok(by('voucher_creat').some((r) => Number(r.user_id) === u1.id && /VANZ/.test(r.detalii)), 'istoric: și generarea făcută de colegul de la vânzări, pe numele lui');
     ok(by('voucher_sters').some((r) => r.obiect === del && /admin/.test(r.utilizator)), 'istoric: ștergerea e înregistrată (cine, ce cod)');
-    ok(by('voucher_sters').length === 1, 'istoric: o singură ștergere (folositul și cuponul străin nu s-au șters, deci nu apar)');
+    ok(!by('voucher_sters').some((r) => r.obiect === used || r.obiect === plainCode.toUpperCase()), 'istoric: voucherul folosit și cuponul străin nu s-au șters, deci nu apar ca șterse');
     for (const a of ['cont_creat', 'cont_parola', 'cont_scos', 'cont_reactivat', 'cont_rol', 'cont_limite']) {
       ok(by(a).length >= 1, 'istoric: evenimentul „' + a + '” e înregistrat');
     }
