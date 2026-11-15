@@ -11,7 +11,8 @@
  *    recepția doar înscrie fișe și vede fișa abia înscrisă (cel mult o oră), nu și registrul;
  *  - istoricul (Zona echipei → Istoric) păstrează cine a înscris, a șters sau a descărcat, fără nume, CNP sau alte date ale turiștilor.
  *
- * Datele stau într-un tabel al site-ului (gi_fise), care rămâne și dacă pluginul e șters (sunt acte ținute pe termen legal): se șterge din registru.
+ * Datele stau într-un tabel al site-ului (gi_fise), necriptat, deci și în copiile de siguranță ale bazei de date. Tabelul rămâne și dacă pluginul e șters; fișele se șterg din
+ * registru (una câte una sau cele care au trecut de termenul ales de proprietară). Termenul de păstrare îl hotărăște proprietara împreună cu un jurist: pluginul nu afirmă niciunul.
  */
 if (!defined('ABSPATH')) {
     exit;
@@ -19,9 +20,9 @@ if (!defined('ABSPATH')) {
 
 final class GI_Fise {
     const DB_OPTION = 'gi_fise_db';
-    const DB_VERSION = '1';
+    const DB_VERSION = '2';
     const SETTINGS = 'gi_fisa_setari';
-    const DEFAULT_GDPR = 'Turistul a fost informat despre prelucrarea datelor sale personale (Regulamentul UE 2016/679) și despre scopul colectării lor, conform notei de informare de la recepție.';
+    const DEFAULT_GDPR = 'Turistul a luat cunoștință de prelucrarea datelor sale personale, conform Regulamentului (UE) 2016/679.';
 
     /** @var array<string,string> Valorile trimise la ultima încercare, ca formularul să nu se golească după o greșeală. */
     private static $sticky = array();
@@ -50,6 +51,7 @@ final class GI_Fise {
   serie varchar(40) NOT NULL,
   creat datetime NOT NULL,
   creat_de bigint(20) unsigned NOT NULL DEFAULT 0,
+  act_cheie varchar(40) NOT NULL DEFAULT '',
   receptioner varchar(120) NOT NULL DEFAULT '',
   rezervare varchar(20) NOT NULL DEFAULT '',
   comanda bigint(20) unsigned NOT NULL DEFAULT 0,
@@ -74,6 +76,7 @@ final class GI_Fise {
   semn_receptie mediumtext NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY an_nr (an,nr),
+  UNIQUE KEY act_unic (comanda,act_cheie),
   KEY comanda (comanda),
   KEY rezervare (rezervare),
   KEY creat (creat)
@@ -149,7 +152,7 @@ final class GI_Fise {
 
     /** Cifra de control a unui CNP (ponderile 279146358279). */
     public static function cnp_ok($cnp) {
-        if (1 !== preg_match('/^\d{13}$/', (string) $cnp)) {
+        if (1 !== preg_match('/^[1-9]\d{12}$/', (string) $cnp)) { // prima cifră (sexul și secolul) e 1–9
             return false;
         }
         $w = '279146358279';
@@ -192,6 +195,29 @@ final class GI_Fise {
         $bin = base64_decode($m[1], true);
         if (false === $bin || strlen($bin) < 150 || "\x89PNG\r\n\x1a\n" !== substr($bin, 0, 8)) {
             return '';
+        }
+        $info = @getimagesizefromstring($bin);
+        if (!$info || IMAGETYPE_PNG !== $info[2] || $info[0] < 100 || $info[0] > 2000 || $info[1] < 40 || $info[1] > 400) {
+            return '';
+        }
+        if (function_exists('imagecreatefromstring')) { // o imagine fără niciun pixel desenat nu e o semnătură
+            $im = @imagecreatefromstring($bin);
+            if ($im && imageistruecolor($im)) {
+                $ink = 0;
+                $w = imagesx($im);
+                $h = imagesy($im);
+                for ($y = 0; $y < $h && $ink < 15; $y += 2) {
+                    for ($x = 0; $x < $w; $x += 2) {
+                        if ((((imagecolorat($im, $x, $y) >> 24) & 0x7F) < 100) && ++$ink >= 15) {
+                            break;
+                        }
+                    }
+                }
+                imagedestroy($im);
+                if ($ink < 15) {
+                    return '';
+                }
+            }
         }
         return $v;
     }
@@ -265,6 +291,9 @@ final class GI_Fise {
         $d['sex'] = in_array($sex, array('F', 'M'), true) ? $sex : '';
         $d['loc_nastere'] = $text('f_loc', 'locul nașterii', 2, 160, false);
         $d['cetatenie'] = $text('f_cet', 'cetățenia', 2, 80);
+        if (1 === preg_match('/[<>]/', $d['cetatenie'])) {
+            $errors[] = 'Cetățenia: fără semnele „<” sau „>” (scrie țara, de ex. Germania).';
+        }
         $d['tip_act'] = $text('f_tip', 'tipul actului', 2, 60);
         $d['serie_act'] = $text('f_doc', 'seria și numărul actului', 3, 40);
         if ('' !== $d['serie_act'] && 1 !== preg_match('#^[A-Za-z0-9 /.-]+$#', $d['serie_act'])) {
@@ -308,7 +337,9 @@ final class GI_Fise {
             $errors[] = 'Lipsește o semnătură: semnează turistul și recepționerul în câmpurile de jos.';
         }
         if ('1' !== $g('gdpr')) {
-            $errors[] = 'Bifează că turistul a fost informat despre prelucrarea datelor personale.';
+            $errors[] = 'Bifează că turistul a luat cunoștință de prelucrarea datelor personale.';
+        } elseif (md5(self::settings()['gdpr']) !== $g('gdpr_h')) {
+            $errors[] = 'Textul despre datele personale s-a schimbat în timp ce completai. Citește-l din nou și bifează.';
         }
         if ('' !== $d['serie_act'] && self::doc_exists_for($order, $d['serie_act'])) {
             $errors[] = 'Pentru această rezervare există deja o fișă cu același act (' . $d['serie_act'] . ').';
@@ -326,16 +357,19 @@ final class GI_Fise {
         $table = self::table();
         $settings = self::settings();
         $an = (int) gmdate('Y');
+        $counter = 'gi_fise_ultim_' . $an;
         $code = GI_Rezervari::code_for_order($order, false);
         for ($try = 0; $try < 6; $try++) {
             $previous = $wpdb->suppress_errors(true);
-            $nr = 1 + (int) $wpdb->get_var($wpdb->prepare("SELECT COALESCE(MAX(nr), 0) FROM {$table} WHERE an = %d", $an)); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            // Numărul urmează după cel mai mare dat vreodată în anul acesta (și după o ștergere a ultimei fișe: seria nu se refolosește).
+            $nr = 1 + max((int) get_option($counter, 0), (int) $wpdb->get_var($wpdb->prepare("SELECT COALESCE(MAX(nr), 0) FROM {$table} WHERE an = %d", $an))); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
             $row = array(
                 'an' => $an,
                 'nr' => $nr,
                 'serie' => $settings['prefix'] . '-' . $an . '-' . str_pad((string) $nr, 5, '0', STR_PAD_LEFT),
                 'creat' => current_time('mysql', true),
                 'creat_de' => get_current_user_id(),
+                'act_cheie' => self::act_key($d['serie_act']),
                 'receptioner' => $d['receptioner'],
                 'rezervare' => '' !== $code ? $code : $label,
                 'comanda' => (int) $order->get_id(),
@@ -362,9 +396,16 @@ final class GI_Fise {
             $ok = $wpdb->insert($table, $row);
             $wpdb->suppress_errors($previous);
             if ($ok) {
+                if ($nr > (int) get_option($counter, 0)) {
+                    update_option($counter, $nr, false);
+                }
                 return (int) $wpdb->insert_id;
             }
-            if (false === stripos((string) $wpdb->last_error, 'duplicate')) {
+            $error = (string) $wpdb->last_error;
+            if (false !== stripos($error, 'act_unic') || false !== stripos($error, 'act_cheie')) {
+                return -1; // aceeași fișă (același act pe aceeași rezervare) trimisă de două ori în același timp
+            }
+            if (false === stripos($error, 'duplicate') && false === stripos($error, 'unique')) {
                 break;
             }
         }
@@ -479,29 +520,10 @@ final class GI_Fise {
 
     /* ---------- Cârlige din Zona echipei ---------- */
 
-    /** Înainte de afișare: descărcarea CSV (singurul răspuns care nu e o pagină). */
-    public static function route($sec, $id) {
-        if ('registru' !== $sec || !is_user_logged_in()) {
-            return;
-        }
-        $export = isset($_GET['export']) ? sanitize_key(wp_unslash($_GET['export'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-        if ('csv' !== $export) {
-            return;
-        }
-        $nonce = isset($_GET['_gi_nonce']) ? sanitize_text_field(wp_unslash($_GET['_gi_nonce'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-        if (!current_user_can('gi_fise_vezi') || !wp_verify_nonce($nonce, 'gi_zona_export')) {
-            wp_die('Linkul a expirat sau contul nu are voie. Deschide din nou Registrul și apasă „Descarcă CSV”.', '', array('response' => 403));
-        }
-        $q = isset($_GET['q']) ? sanitize_text_field(wp_unslash($_GET['q'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-        $n = self::stream_csv($q);
-        GI_Istoric::log('fisa_export', 'registru', array('fise' => $n, 'cautare' => '' !== $q));
-        exit;
-    }
-
     public static function handle_post($sec, $id, $action) {
         if ('fisa' === $sec && 'inscrie' === $action) {
             self::post_fisa();
-        } elseif ('registru' === $sec && in_array($action, array('sterge', 'sterge_vechi', 'setari'), true)) {
+        } elseif ('registru' === $sec && in_array($action, array('sterge', 'sterge_vechi', 'setari', 'cauta', 'csv'), true)) {
             self::post_registry($action);
         }
     }
@@ -512,7 +534,7 @@ final class GI_Fise {
         }
         GI_Zona::check('fisa', 'receptie');
         $raw = array();
-        foreach (array('f_nume', 'f_prenume', 'f_dob', 'f_sex', 'f_loc', 'f_cet', 'f_tip', 'f_doc', 'f_exp', 'f_cnp', 'f_dom', 'f_tel', 'f_sosire', 'f_plecare', 'f_recep', 'sigT', 'sigR', 'gdpr', 'depaseste', 'rez_cod', 'rez_comanda', 'rez_nume') as $k) {
+        foreach (array('f_nume', 'f_prenume', 'f_dob', 'f_sex', 'f_loc', 'f_cet', 'f_tip', 'f_doc', 'f_exp', 'f_cnp', 'f_dom', 'f_tel', 'f_sosire', 'f_plecare', 'f_recep', 'sigT', 'sigR', 'gdpr', 'gdpr_h', 'depaseste', 'rez_cod', 'rez_comanda', 'rez_nume') as $k) {
             $raw[$k] = GI_Zona::posted($k);
         }
         $found = GI_Rezervari::resolve($raw['rez_cod'], $raw['rez_comanda'], $raw['rez_nume']);
@@ -532,6 +554,9 @@ final class GI_Fise {
         $checked = self::validate($raw, $order, $summary);
         $errors = array_merge($errors, $checked['errors']);
         if ($errors) {
+            if (md5(self::settings()['gdpr']) !== $raw['gdpr_h']) {
+                $raw['gdpr'] = ''; // textul s-a schimbat: turistul trebuie să-l citească pe cel nou și să bifeze din nou
+            }
             self::$sticky = $raw;
             GI_Zona::inline(array('errors' => $errors));
             return;
@@ -539,6 +564,11 @@ final class GI_Fise {
         $settings = self::settings();
         $snapshot = array('unitate' => $settings['unitate'], 'operator' => $settings['operator'], 'cui' => $settings['cui'], 'clasificare' => $settings['clasificare']);
         $id = self::insert($checked['data'], $order, $found['label'], $snapshot);
+        if (-1 === $id) {
+            self::$sticky = $raw;
+            GI_Zona::inline(array('errors' => array('Pentru această rezervare există deja o fișă cu același act.')));
+            return;
+        }
         if (!$id) {
             self::$sticky = $raw;
             GI_Zona::inline(array('errors' => array('Nu s-a putut înscrie fișa (eroare la salvare). Încearcă din nou; dacă se repetă, spune-i lui Claude.')));
@@ -550,11 +580,37 @@ final class GI_Fise {
         GI_Zona::go('fisa', (string) $id);
     }
 
+    private static function search_key() {
+        return 'gi_reg_q_' . get_current_user_id();
+    }
+
+    private static function current_search() {
+        $q = get_transient(self::search_key());
+        return is_string($q) ? $q : '';
+    }
+
     private static function post_registry($action) {
         if (!current_user_can('gi_fise_vezi')) {
             GI_Zona::deny('acasa');
         }
         GI_Zona::check('registru', 'registru');
+        if ('cauta' === $action) {
+            // Căutarea (nume, CNP, act) nu stă în adresa paginii (ar ajunge în jurnalele serverului și în istoricul browserului): se ține 15 minute, pe cont.
+            $q = mb_substr(trim(sanitize_text_field((string) GI_Zona::posted('q'))), 0, 80);
+            if ('' === $q) {
+                delete_transient(self::search_key());
+            } else {
+                set_transient(self::search_key(), $q, 15 * MINUTE_IN_SECONDS);
+            }
+            return;
+        }
+        if ('csv' === $action) {
+            $q = self::current_search();
+            ignore_user_abort(true); // un export întrerupt tot se trece în istoric
+            $n = self::stream_csv($q);
+            GI_Istoric::log('fisa_export', 'registru', array('fise' => $n, 'cautare' => '' !== $q));
+            exit;
+        }
         if ('sterge' === $action) {
             $id = absint(GI_Zona::posted('fisa_id'));
             $row = $id ? self::get($id) : null;
@@ -663,8 +719,11 @@ final class GI_Fise {
                 }
                 ?>
             </strong> Copiii nu au fișă.</p>
-            <?php $missing = self::unit_missing($settings); if ($missing && current_user_can('gi_echipa')) : ?>
-                <div class="gi-zona-notice gi-zona-err" role="status">Datele unității nu sunt complete pe fișă (lipsesc: <?php echo esc_html(implode(', ', $missing)); ?>). Completează-le în <a class="gi-text-link" href="<?php echo esc_url(GI_Zona::url('registru')); ?>">Registrul fișelor → Setări</a>.</div>
+            <?php $missing = self::unit_missing($settings); if (($missing || self::DEFAULT_GDPR === $settings['gdpr']) && current_user_can('gi_echipa')) : ?>
+                <div class="gi-zona-notice gi-zona-err" role="status">
+                    <?php if ($missing) : ?>Datele unității nu sunt complete pe fișă (lipsesc: <?php echo esc_html(implode(', ', $missing)); ?>). <?php endif; ?>
+                    <?php if (self::DEFAULT_GDPR === $settings['gdpr']) : ?>Textul bifei despre datele personale e cel provizoriu (îl dă juristul). <?php endif; ?>
+                    Le schimbi în <a class="gi-text-link" href="<?php echo esc_url(GI_Zona::url('registru')); ?>">Registrul fișelor → Setări</a>.</div>
             <?php elseif ($missing) : ?>
                 <p class="gi-zona-mic">Datele unității (firmă, CUI, clasificare) le completează proprietara; până atunci, fișa le arată goale.</p>
             <?php endif; ?>
@@ -727,6 +786,7 @@ final class GI_Fise {
             </div>
             <?php echo self::field('Recepționer (numele)', 'recep', $val('f_recep', $user->display_name), array('required' => '', 'maxlength' => '120')); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
+            <input type="hidden" name="gdpr_h" value="<?php echo esc_attr(md5($settings['gdpr'])); ?>">
             <label class="gi-zona-radio gi-fisa-gdpr"><input type="checkbox" name="gdpr" value="1" required <?php checked($val('gdpr'), '1'); ?>> <span><?php echo esc_html($settings['gdpr']); ?></span></label>
             <?php if (null !== $adults && $adults > 0 && $have >= $adults) : ?>
                 <label class="gi-zona-radio"><input type="checkbox" name="depaseste" value="1" <?php checked($val('depaseste'), '1'); ?>> <span>Adaug încă o fișă (toți adulții din rezervare au deja)</span></label>
@@ -836,24 +896,32 @@ final class GI_Fise {
             return;
         }
         $settings = self::settings();
-        $q = isset($_GET['q']) ? sanitize_text_field(wp_unslash($_GET['q'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $q = self::current_search();
         $page = isset($_GET['pagina']) ? max(1, absint(wp_unslash($_GET['pagina']))) : 1; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
         $per = 50;
         $res = self::search($q, $page, $per);
         $pages = max(1, (int) ceil($res['total'] / $per));
         $old = self::older_than_ids($settings['pastrare_luni']);
-        $link = function ($args) use ($q) {
-            return add_query_arg(array_filter(array_merge(array('q' => $q), $args)), GI_Zona::url('registru'));
+        $link = function ($args) {
+            return add_query_arg($args, GI_Zona::url('registru'));
         };
         ?>
         <div class="gi-zona-card">
             <h2>Registrul fișelor de cazare</h2>
-            <p class="gi-zona-mic">Îl vezi numai tu. Recepția înscrie fișe, dar nu vede registrul. <strong><?php echo (int) $res['total']; ?></strong> <?php echo '' !== $q ? 'fișe găsite' : 'fișe în total'; ?>.</p>
-            <form method="get" action="<?php echo esc_url(GI_Zona::url('registru')); ?>" class="gi-zona-form">
+            <p class="gi-zona-mic">Îl vede numai administratorul. Recepția înscrie fișe, dar nu vede registrul. <strong><?php echo (int) $res['total']; ?></strong> <?php echo '' !== $q ? 'fișe găsite' : 'fișe în total'; ?>.</p>
+            <form method="post" action="<?php echo esc_url(GI_Zona::url('registru')); ?>" class="gi-zona-form">
+                <?php echo GI_Zona::nonce_field('registru'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                <input type="hidden" name="gi_actiune" value="cauta">
                 <label for="gi-reg-q">Caută (serie, nume, rezervare, act, CNP, număr comandă)</label>
-                <input type="text" id="gi-reg-q" name="q" value="<?php echo esc_attr($q); ?>" autocomplete="off">
+                <input type="text" id="gi-reg-q" name="q" value="<?php echo esc_attr($q); ?>" autocomplete="off" maxlength="80">
                 <p class="gi-zona-butoane"><button type="submit" class="button button-primary">Caută</button>
-                    <a class="button button-outline" href="<?php echo esc_url(add_query_arg(array('export' => 'csv', 'q' => $q, '_gi_nonce' => wp_create_nonce('gi_zona_export')), GI_Zona::url('registru'))); ?>">Descarcă CSV (Excel)</a></p>
+                    <?php if ('' !== $q) : ?><button type="submit" class="button button-outline" onclick="document.getElementById('gi-reg-q').value=''">Arată toate</button><?php endif; ?></p>
+            </form>
+            <form method="post" action="<?php echo esc_url(GI_Zona::url('registru')); ?>" class="gi-zona-form">
+                <?php echo GI_Zona::nonce_field('registru'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                <input type="hidden" name="gi_actiune" value="csv">
+                <p class="gi-zona-butoane"><button type="submit" class="button button-outline">Descarcă CSV (Excel)<?php echo '' !== $q ? ' — numai cele găsite' : ''; ?></button></p>
+                <p class="gi-zona-mic">Dacă Excel strică un număr (CNP-ul apare ca 1,9E+12 sau telefonul pierde zeroul din față): deschide fișierul cu <em>Date → Din text/CSV</em> și alege coloanele CNP și Telefon ca „Text”. Telefoanele care încep cu „+” apar cu un apostrof în față, ca să nu fie luate drept formulă.</p>
             </form>
         </div>
         <?php if ($res['rows']) : ?>

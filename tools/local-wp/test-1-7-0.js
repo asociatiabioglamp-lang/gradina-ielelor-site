@@ -72,6 +72,13 @@ const MRZ_EXPIRED = buildTD1({ doc: 'AB654321', dob: '800101', sex: 'M', exp: '2
   const CODE = (await vp.locator('.gi-cod-rezervare .gi-cod').innerText()).trim();
   ok(/^[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(CODE), 'pregătire: rezervarea A are codul ' + CODE);
   const rows = async () => (await api(adm, 'fise_randuri')).rows;
+  // Căutarea în registru: formular POST (nimic din ce se caută nu ajunge în adresa paginii).
+  const regSearch = async (text) => {
+    await ap.goto(ZONA + 'registru/', { waitUntil: 'domcontentloaded' });
+    await ap.fill('#gi-reg-q', text);
+    await Promise.all([ap.waitForNavigation({ waitUntil: 'domcontentloaded' }), ap.click('form:has(input[value="cauta"]) button.button-primary')]);
+    return ap.locator('.gi-zona').innerText();
+  };
 
   // ------------------------------------------------------------------ 1. Din Recepție la formular
   await ap.goto(RECEPTIE + '?' + q({ cod: CODE }), { waitUntil: 'domcontentloaded' });
@@ -87,6 +94,8 @@ const MRZ_EXPIRED = buildTD1({ doc: 'AB654321', dob: '800101', sex: 'M', exp: '2
   ok((await ap.inputValue('#gi-f-dom')).includes('Strada Probei 1') && (await ap.inputValue('#gi-f-tel')) === '0711222333', 'formular: domiciliul și telefonul vin din rezervare');
   ok((await ap.inputValue('#gi-f-sosire')) === '2027-02-10' && (await ap.inputValue('#gi-f-plecare')) === '2027-02-12', 'formular: sosirea și plecarea vin din rezervare');
   ok((await ap.inputValue('#gi-f-recep')).length > 1, 'formular: numele recepționerului e precompletat cu contul curent');
+  const notice0 = await ap.locator('.gi-zona-notice').allInnerTexts();
+  ok(notice0.some((n) => /cel provizoriu/.test(n) && /lipsesc: operatorul/.test(n)), 'formular: administratorul vede că datele unității lipsesc și că textul despre datele personale e cel provizoriu');
   ok(/noindex/.test(await ap.content()) && (await ap.locator('textarea[name="mrz_text"]').count()) === 0, 'formular: nu apare în Google, iar câmpul pentru zona de jos a actului nu se trimite (nu are nume)');
 
   // ------------------------------------------------------------------ 2. Citirea actului
@@ -191,6 +200,42 @@ const MRZ_EXPIRED = buildTD1({ doc: 'AB654321', dob: '800101', sex: 'M', exp: '2
   const r2 = await rows();
   ok(r2.length === 2 && r2[1].serie === 'GI-' + YEAR + '-00002' && r2[1].cnp === '' && r2[1].adult_nr === '2' && r2[1].cetatenie === 'Germania', 'adultul 2: pașaport străin, fără CNP, seria 00002, adultul 2');
 
+  // ------------------------------------------------------------------ 4b. Semnături și câmpuri: cazuri limită
+  {
+    await ap.goto(ZONA + 'fisa/?' + q({ cod: CODE }), { waitUntil: 'domcontentloaded' });
+    await ap.check('input[name="depaseste"]').catch(() => {});
+    // semnătura rămâne la rotirea telefonului / schimbarea lățimii
+    await sign(ap, 'sigT');
+    const wBefore = await ap.evaluate(() => document.getElementById('gi-sigT').width);
+    const ink = () => ap.evaluate(() => { const c = document.getElementById('gi-sigT'); const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 3; i < d.length; i += 4) { if (d[i] > 0) n++; } return n; });
+    const inkBefore = await ink();
+    await ap.setViewportSize({ width: 900, height: 1000 });
+    await ap.evaluate(() => window.dispatchEvent(new Event('resize')));
+    await sign(ap, 'sigT'); // atingerea următoare face „setup()”, vede lățimea nouă și trebuie să păstreze ce era desenat
+    await sign(ap, 'sigR');
+    const inkAfter = await ink();
+    const wAfter = await ap.evaluate(() => document.getElementById('gi-sigT').width);
+    ok(wBefore !== wAfter && inkBefore > 100 && inkAfter > 100, 'semnătură: la schimbarea lățimii ecranului (' + wBefore + ' → ' + wAfter + ' px) desenul rămâne (' + inkBefore + ' → ' + inkAfter + ' pixeli)');
+    await ap.setViewportSize({ width: 1280, height: 1000 });
+    // semnătură goală trimisă direct (ocolind JavaScript-ul): serverul o respinge
+    const gd = (await api(adm, 'gd')).gd;
+    const fields = await ap.evaluate(() => Object.fromEntries(new FormData(document.querySelector('[data-gi-fisa]'))));
+    const blank = await ap.evaluate(() => { const c = document.createElement('canvas'); c.width = 320; c.height = 140; return c.toDataURL('image/png'); });
+    Object.assign(fields, { f_nume: 'GOALA', f_prenume: 'SEMNATURA', f_dob: '1990-01-01', f_cet: 'România', f_tip: 'Carte de identitate', f_doc: 'GO000111', f_dom: 'Brașov', f_recep: 'Test', gdpr: '1', depaseste: '1', sigT: blank, sigR: blank });
+    if (gd) {
+      const rb = await adm.request.post(ZONA + 'fisa/', { form: fields, maxRedirects: 0 });
+      const blankText = await rb.text();
+      ok(/Lipsește o semnătură/.test(blankText) && !(await rows()).some((r) => r.nume === 'GOALA'), 'semnătură: un PNG gol (fără niciun pixel desenat) trimis direct la server e respins');
+    } else {
+      console.log('[OK]     semnătură: PHP-ul local nu are extensia GD, deci verificarea pixelilor de pe server se sare (se face în browser)');
+    }
+    // cetățenie cu „<” (cum o dă unele cititoare pentru actele germane) e respinsă
+    fields.sigT = (await ap.inputValue('[name="sigT"]')) || fields.sigT;
+    Object.assign(fields, { f_cet: 'D<<', f_doc: 'GO000222' });
+    const rc2 = await adm.request.post(ZONA + 'fisa/', { form: Object.assign({}, fields, { sigT: await ap.evaluate(() => document.getElementById('gi-sigT').toDataURL('image/png')), sigR: await ap.evaluate(() => document.getElementById('gi-sigR').toDataURL('image/png')) }), maxRedirects: 0 });
+    ok(/Cetățenia: fără semnele/.test(await rc2.text()) && !(await rows()).some((r) => r.nume === 'GOALA'), 'cetățenie: „D<<” (cod cu umplutură) e respins, nu se păstrează');
+  }
+
   // ------------------------------------------------------------------ 5. Adultul 3: toți adulții au fișă
   await ap.goto(ZONA + 'fisa/?' + q({ cod: CODE }), { waitUntil: 'domcontentloaded' });
   ok(/Toți cei 2 adulți au deja fișă/.test(await ap.locator('.gi-zona').innerText()) && (await ap.locator('input[name="depaseste"]').count()) === 1, 'al treilea adult: „Toți cei 2 adulți au deja fișă”, cu bifa „Adaug încă o fișă”');
@@ -227,8 +272,8 @@ const MRZ_EXPIRED = buildTD1({ doc: 'AB654321', dob: '800101', sex: 'M', exp: '2
   const rr = await rp.goto(ZONA + 'registru/', { waitUntil: 'domcontentloaded' });
   const regTxt = await rp.locator('.gi-zona').innerText();
   ok(/numai proprietara/.test(regTxt) && !/POPESCU|MUELLER|GI-\d{4}-\d{5}/.test(regTxt) && (await rp.locator('table').count()) === 0, 'recepție (cont): /registru/ nu arată nicio fișă (' + rr.status() + ')');
-  const csvRc = await rc.request.get(BASE + '/zona-echipei/registru/?export=csv&_gi_nonce=x', { maxRedirects: 0 });
-  ok(csvRc.status() === 403 && !/POPESCU/.test(await csvRc.text()), 'recepție (cont): descărcarea CSV e refuzată (' + csvRc.status() + ')');
+  const csvRc = await rc.request.post(ZONA + 'registru/', { form: { gi_actiune: 'csv', _gi_nonce: 'x' }, maxRedirects: 0 });
+  ok(!/POPESCU/.test(await csvRc.text()) && !/text\/csv/.test(csvRc.headers()['content-type'] || ''), 'recepție (cont): descărcarea CSV e refuzată (' + csvRc.status() + ')');
   await rp.goto(ZONA + 'fisa/' + r4[0].id + '/', { waitUntil: 'domcontentloaded' });
   ok(/nu ai voie să o vezi/.test(await rp.locator('.gi-zona').innerText()) && !/POPESCU/.test(await rp.locator('.gi-zona').innerText()), 'recepție (cont): fișa altcuiva nu se deschide');
   const delTry = await rc.request.post(ZONA + 'registru/', { form: { gi_actiune: 'sterge', fisa_id: r4[0].id, _gi_nonce: 'x' }, maxRedirects: 0 });
@@ -251,36 +296,45 @@ const MRZ_EXPIRED = buildTD1({ doc: 'AB654321', dob: '800101', sex: 'M', exp: '2
   // ------------------------------------------------------------------ 8. Registrul (administrator)
   await ap.goto(ZONA, { waitUntil: 'domcontentloaded' });
   ok(/Registrul fișelor/.test(await ap.locator('.gi-zona').innerText()), 'registru: administratorul are dala „Registrul fișelor”');
-  await ap.goto(ZONA + 'registru/', { waitUntil: 'domcontentloaded' });
-  let reg = await ap.locator('.gi-zona').innerText();
+  let reg = await regSearch('');
   ok(/5 fișe în total/.test(reg) && /POPESCU MARIA ELENA/.test(reg) && /MUELLER HANS/.test(reg) && /GI-\d{4}-00005/.test(reg), 'registru: lista cu toate cele 5 fișe');
-  await ap.goto(ZONA + 'registru/?' + q({ q: 'mueller' }), { waitUntil: 'domcontentloaded' });
-  reg = await ap.locator('.gi-zona').innerText();
+  reg = await regSearch('mueller');
   ok(/1 fișe găsite/.test(reg) && /MUELLER/.test(reg) && !/POPESCU/.test(reg), 'registru: căutare după nume');
-  await ap.goto(ZONA + 'registru/?' + q({ q: CNP1 }), { waitUntil: 'domcontentloaded' });
-  ok(/POPESCU/.test(await ap.locator('.gi-zona').innerText()), 'registru: căutare după CNP');
-  await ap.goto(ZONA + 'registru/?' + q({ q: 'GI-' + YEAR + '-00003' }), { waitUntil: 'domcontentloaded' });
-  ok(/TERCER/.test(await ap.locator('.gi-zona').innerText()), 'registru: căutare după serie');
-  await ap.goto(ZONA + 'registru/?' + q({ q: 'nimeni-nu-se-cheama-asa' }), { waitUntil: 'domcontentloaded' });
-  ok(/Nicio fișă pentru această căutare/.test(await ap.locator('.gi-zona').innerText()), 'registru: căutare fără rezultat');
+  ok(!/mueller/i.test(ap.url()) && !/[?&]q=/.test(ap.url()), 'registru: ce cauți nu apare în adresa paginii (' + ap.url().replace(BASE, '') + ')');
+  ok(/MUELLER/.test(await (async () => { await ap.goto(ZONA + 'registru/', { waitUntil: 'domcontentloaded' }); return ap.locator('.gi-zona').innerText(); })()), 'registru: căutarea se păstrează la reîncărcarea paginii (15 minute)');
+  reg = await regSearch(CNP1);
+  ok(/POPESCU/.test(reg), 'registru: căutare după CNP');
+  reg = await regSearch('GI-' + YEAR + '-00003');
+  ok(/TERCER/.test(reg), 'registru: căutare după serie');
+  reg = await regSearch('nimeni-nu-se-cheama-asa');
+  ok(/Nicio fișă pentru această căutare/.test(reg), 'registru: căutare fără rezultat');
+  reg = await regSearch('');
+  ok(/5 fișe în total/.test(reg), 'registru: căutare goală arată din nou toate fișele');
   await ap.goto(ZONA + 'registru/' + r5[0].id + '/', { waitUntil: 'domcontentloaded' });
   ok((await ap.locator('.gi-fisa-sheet').count()) === 1 && /POPESCU/.test(await ap.locator('.gi-fisa-sheet').innerText()), 'registru: o fișă se deschide din registru');
   // CSV
   await ap.goto(ZONA + 'registru/', { waitUntil: 'domcontentloaded' });
-  const csvHref = await ap.locator('a:has-text("Descarcă CSV")').getAttribute('href');
-  const csvRes = await adm.request.get(csvHref);
+  ok((await ap.locator('a[href*="export=csv"]').count()) === 0, 'CSV: nu mai există link de descărcare cu căutarea în adresă (se descarcă printr-un formular)');
+  const csvNonce = await ap.locator('form:has(input[value="csv"]) input[name="_gi_nonce"]').getAttribute('value');
+  const csvRes = await adm.request.post(ZONA + 'registru/', { form: { gi_actiune: 'csv', _gi_nonce: csvNonce } });
   const csv = await csvRes.body(); const csvText = csv.toString('utf8');
   ok(csvRes.status() === 200 && /text\/csv/.test(csvRes.headers()['content-type'] || '') && csv[0] === 0xEF && csv[1] === 0xBB && csv[2] === 0xBF && /attachment; filename="registru-fise-/.test(csvRes.headers()['content-disposition'] || ''), 'CSV: se descarcă ca fișier, cu semnul UTF-8 pentru Excel');
   const lines = csvText.replace(/^﻿/, '').split('\r\n').filter(Boolean);
   ok(lines.length === 6 && /^"Seria";"Rezervare";"Comanda"/.test(lines[0]) && lines[1].includes('"RECEPTIE"') && lines.some((l) => l.includes('"POPESCU"') && l.includes('"' + CNP1 + '"') && l.includes('"14.03.1990"')), 'CSV: antet și 5 rânduri, cu CNP și datele în format zz.ll.aaaa');
   ok(lines.some((l) => l.includes(`"'=HYPERLINK(""http://x.example"")"`)), 'CSV: o celulă care începe cu „=” e prefixată cu apostrof (nu se execută ca formulă în Excel)');
   ok(!/semn|data:image/.test(csvText), 'CSV: fără imaginile semnăturilor');
-  const csvNo = await adm.request.get(ZONA + 'registru/?export=csv&_gi_nonce=gresit', { maxRedirects: 0 });
-  ok(csvNo.status() === 403, 'CSV: fără codul de siguranță valabil e refuzat (' + csvNo.status() + ')');
+  const csvNo = await adm.request.post(ZONA + 'registru/', { form: { gi_actiune: 'csv', _gi_nonce: 'gresit' }, maxRedirects: 0 });
+  ok(csvNo.status() === 302 && !/POPESCU/.test(await csvNo.text()), 'CSV: fără codul de siguranță valabil nu se descarcă nimic (' + csvNo.status() + ')');
+  const csvGet = await adm.request.get(ZONA + 'registru/?export=csv&_gi_nonce=' + csvNonce, { maxRedirects: 0 });
+  ok(!/POPESCU/.test(await csvGet.text()) && !/text\/csv/.test(csvGet.headers()['content-type'] || ''), 'CSV: descărcarea prin adresă (GET) nu mai merge');
   // ștergere
   await ap.goto(ZONA + 'registru/', { waitUntil: 'domcontentloaded' });
   await Promise.all([ap.waitForNavigation({ waitUntil: 'domcontentloaded' }), ap.locator('tr:has-text("TERCER") button:has-text("Șterge")').click()]);
   ok((await rows()).length === 4 && /GI-\d{4}-00003 a fost ștearsă/.test(await ap.locator('.gi-zona-notice').innerText()), 'registru: „Șterge” scoate fișa (cu confirmare) și spune care');
+
+  await ap.goto(ZONA + 'registru/', { waitUntil: 'domcontentloaded' });
+  await Promise.all([ap.waitForNavigation({ waitUntil: 'domcontentloaded' }), ap.locator('tr:has-text("RECEPTIE") button:has-text("Șterge")').click()]);
+  ok((await rows()).length === 3, 'registru: se șterge și ultima fișă (numărul cel mai mare)');
 
   // ------------------------------------------------------------------ 9. Setări, serie nouă, termen de păstrare
   await ap.goto(ZONA + 'registru/', { waitUntil: 'domcontentloaded' });
@@ -295,7 +349,25 @@ const MRZ_EXPIRED = buildTD1({ doc: 'AB654321', dob: '800101', sex: 'M', exp: '2
   await sign(ap, 'sigT'); await sign(ap, 'sigR'); await ap.check('input[name="gdpr"]');
   await Promise.all([ap.waitForURL(/\/zona-echipei\/fisa\/\d+\/$/), ap.click('[data-gi-fisa-submit]')]);
   const sh2 = await ap.locator('.gi-fisa-sheet').innerText();
-  ok(/TST1-\d{4}-00006/.test(sh2) && /Operator Probă SRL/.test(sh2) && /CUI RO123456/.test(sh2) && /1 stea/.test(sh2) && /Text de probă despre datele personale/.test(sh2), 'setări: fișa nouă are seria TST1-…, datele unității și textul nou');
+  ok(/TST1-\d{4}-00006/.test(sh2) && !/-00005\b/.test(sh2) && /Operator Probă SRL/.test(sh2) && /CUI RO123456/.test(sh2) && /1 stea/.test(sh2) && /Text de probă despre datele personale/.test(sh2), 'setări: fișa nouă are seria TST1-…, datele unității și textul nou');
+  // Textul despre datele personale se schimbă între timp (altă filă): fișa nu se înscrie cu un text pe care turistul nu l-a văzut
+  await ap.goto(ZONA + 'fisa/?' + q({ cod: CODE }), { waitUntil: 'domcontentloaded' });
+  ok(!(await ap.locator('.gi-zona-notice').allInnerTexts()).some((n) => /cel provizoriu|lipsesc/.test(n)), 'formular: după ce unitatea și textul sunt completate, avertismentul dispare');
+  await setAll({ nume: 'RAZGANDIT', prenume: 'TEXT', dob: '1991-02-03', cet: 'România', tip: 'Carte de identitate', doc: 'GH777666', dom: 'Brașov' });
+  await ap.check('input[name="depaseste"]').catch(() => {});
+  await sign(ap, 'sigT'); await sign(ap, 'sigR'); await ap.check('input[name="gdpr"]');
+  const ap2 = await adm.newPage(); ap2.setDefaultTimeout(90000);
+  await ap2.goto(ZONA + 'registru/', { waitUntil: 'domcontentloaded' });
+  await ap2.fill('#gi-s-gdpr', 'Text schimbat între timp, ' + STAMP + '.');
+  await Promise.all([ap2.waitForNavigation({ waitUntil: 'domcontentloaded' }), ap2.click('button:has-text("Salvează setările")')]);
+  await ap2.close();
+  const beforeChange = (await rows()).length;
+  err = await trySubmit();
+  ok(/Textul despre datele personale s-a schimbat/.test(err) && (await rows()).length === beforeChange, 'GDPR: dacă textul s-a schimbat cât timp se completa, fișa nu se înscrie (' + err.slice(0, 80) + ')');
+  ok(!(await ap.locator('input[name="gdpr"]').isChecked()) && /Text schimbat între timp/.test(await ap.locator('.gi-fisa-gdpr').innerText()) && (await ap.inputValue('#gi-f-nume')) === 'RAZGANDIT', 'GDPR: formularul arată textul nou, bifa e scoasă, restul datelor rămân');
+  await ap.check('input[name="gdpr"]');
+  await Promise.all([ap.waitForURL(/\/zona-echipei\/fisa\/\d+\/$/), ap.click('[data-gi-fisa-submit]')]);
+  ok(/Text schimbat între timp/.test(await ap.locator('.gi-fisa-sheet').innerText()), 'GDPR: fișa păstrează textul bifat de turist (cel nou)');
   await ap.goto(ZONA + 'registru/' + r5[0].id + '/', { waitUntil: 'domcontentloaded' });
   const oldSheet = await ap.locator('.gi-fisa-sheet').innerText();
   ok(!/Operator Probă SRL/.test(oldSheet) && !/Text de probă despre datele/.test(oldSheet), 'setări: fișa veche rămâne cum a fost (fără datele noi ale unității)');

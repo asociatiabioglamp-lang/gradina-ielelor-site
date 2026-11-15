@@ -32,11 +32,16 @@
     if (dt.getUTCFullYear() !== y || dt.getUTCMonth() !== m - 1 || dt.getUTCDate() !== d) return '';
     return dt.toISOString().slice(0, 10);
   }
-  // Anul are două cifre: la naștere, un an din viitor înseamnă secolul trecut; la expirare, mereu 20xx.
+  // Anul are două cifre. Fișa e numai pentru adulți: dacă anul 20xx ar da o persoană sub 18 ani (sau din viitor), data nașterii e din secolul trecut.
+  // La expirare, mereu 20xx.
   function dobISO(s, today) {
     var p = ymd(s); if (!p) return '';
-    var cur = (today || new Date()).getUTCFullYear() % 100;
-    return isoDate(p.yy > cur ? 1900 + p.yy : 2000 + p.yy, p.mm, p.dd);
+    var t = today || new Date();
+    var modern = isoDate(2000 + p.yy, p.mm, p.dd);
+    var old = isoDate(1900 + p.yy, p.mm, p.dd);
+    if (!modern) return old;
+    var age = t.getUTCFullYear() - (2000 + p.yy) - ((t.getUTCMonth() + 1 < p.mm || (t.getUTCMonth() + 1 === p.mm && t.getUTCDate() < p.dd)) ? 1 : 0);
+    return age < 18 && old ? old : modern;
   }
   function expISO(s) { var p = ymd(s); return p ? isoDate(2000 + p.yy, p.mm, p.dd) : ''; }
   function clean(s) { return s.replace(/</g, ' ').replace(/\s+/g, ' ').trim(); }
@@ -54,7 +59,7 @@
     PRT: 'Portugalia', BEL: 'Belgia', CHE: 'Elveția', SWE: 'Suedia', DNK: 'Danemarca', NOR: 'Norvegia', FIN: 'Finlanda', IRL: 'Irlanda', GRC: 'Grecia',
     HRV: 'Croația', SVN: 'Slovenia', SRB: 'Serbia', TUR: 'Turcia', LTU: 'Lituania', LVA: 'Letonia', EST: 'Estonia', ISR: 'Israel', CAN: 'Canada'
   };
-  function countryName(code) { return COUNTRIES[code] || code; }
+  function countryName(code) { code = String(code).replace(/</g, ''); return COUNTRIES[code] || code; } // „D<<” (Germania) are „<” de umplutură
 
   function parse(raw, today) {
     var text = String(raw == null ? '' : raw).toUpperCase().replace(/[«‹]/g, '<');
@@ -90,8 +95,11 @@
     var np = nameParts(names);
     r.sur = np.sur; r.given = np.given;
     r.docNoClean = r.docNo.replace(/</g, '');
+    // Un număr de act mai lung de 9 caractere are „<” în loc de cifra de control (restul stă în câmpul opțional): nu se poate verifica, nu se declară alterat.
+    var longDoc = r.cdDoc === '<';
     r.checks.unshift(
-      { ok: String(check(r.docNo)) === r.cdDoc, text: 'Cifra de control a seriei și numărului actului' },
+      longDoc ? { ok: true, note: true, text: 'Seria actului are mai mult de 9 caractere: cifra ei de control nu se verifică. Verifică seria cu ochiul liber.' }
+              : { ok: String(check(r.docNo)) === r.cdDoc, text: 'Cifra de control a seriei și numărului actului' },
       { ok: String(check(r.dob)) === r.cdDob, text: 'Cifra de control a datei nașterii' },
       { ok: String(check(r.exp)) === r.cdExp, text: 'Cifra de control a datei expirării' },
       { ok: String(check(comp[0])) === comp[1], text: 'Cifra de control totală' }
@@ -108,7 +116,7 @@
 
   /* ---------- CNP (numai români): 13 cifre, cifra de control cu ponderile 279146358279, începe cu data nașterii din act ---------- */
   function cnpOk(c) {
-    if (!/^\d{13}$/.test(c)) return false;
+    if (!/^[1-9]\d{12}$/.test(c)) return false; // prima cifră (sexul și secolul) e 1–9
     var w = '279146358279', s = 0;
     for (var i = 0; i < 12; i++) s += +c.charAt(i) * +w.charAt(i);
     var r = s % 11;

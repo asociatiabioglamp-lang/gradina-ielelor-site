@@ -68,6 +68,21 @@ ok(born2005.dobISO === '2005-06-12' && born2005.cnp.startsWith('5050612'), 'năs
 const bornFuture = M.parse(build({ doc: 'XY123456', dob: '270101', sex: 'M', exp: '300101', sur: 'IONESCU', given: 'ION' }), TODAY);
 ok(bornFuture.dobISO === '1927-01-01', 'an din două cifre peste anul de azi (27 > 26): secolul trecut (1927)');
 
+// ---- corecturi din verificarea independentă ----
+const old25 = M.parse(build({ doc: 'XY123456', dob: '250101', sex: 'F', exp: '300101', sur: 'VECHE', given: 'ANA' }), TODAY);
+ok(old25.dobISO === '1925-01-01', 'an din două cifre care ar da o persoană sub 18 ani (25 → 2025 = 1 an): fișa e pentru adulți, deci 1925');
+const adult08 = M.parse(build({ doc: 'XY123456', dob: '080101', sex: 'F', exp: '300101', sur: 'TANARA', given: 'ANA' }), TODAY);
+ok(adult08.dobISO === '2008-01-01' || adult08.dobISO === '1908-01-01', 'an 08 la 17 ani și 10 luni (față de 15.11.2026): decis după regula adulților (1908), omul vede data și o corectează');
+const adult05 = M.parse(build({ doc: 'XY123456', dob: '081115', sex: 'F', exp: '300101', sur: 'MAJORA', given: 'ANA' }), TODAY);
+ok(adult05.dobISO === '2008-11-15', 'născută la 15.11.2008, azi 15.11.2026 → exact 18 ani: 2008');
+const leap = M.parse(build({ doc: 'XY123456', dob: '000229', sex: 'M', exp: '300101', sur: 'BISECT', given: 'ION' }), TODAY);
+ok(leap.dobISO === '2000-02-29', '29 februarie 2000 (an bisect): data se citește');
+const deu = M.parse('P<D<<MUELLER<<HANS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\nC01X00T478D<<8505201M3206019<<<<<<<<<<<<<<<0', TODAY);
+ok(M.countryName('D<<') === 'Germania' && M.countryName('ROU') === 'România', 'țară cu „<” de umplutură (D<<): „Germania”, fără „<”');
+const longDoc = M.parse('I<UTOD' + '<'.repeat(24) + '\n7408122F1204159UTO<<<<<<<<<<<6\nERIKSSON<<ANNA<MARIA<<<<<<<<<<', TODAY);
+ok(!longDoc.error && longDoc.checks[0].ok === true && longDoc.checks[0].note === true, 'număr de act cu „<” în loc de cifră de control (act cu serie lungă): nu se declară alterat, doar se cere verificarea la vedere');
+ok(!M.cnpOk('0900314080015') && !M.cnpMatches('0900314080015', '1990-03-14', 'F'), 'CNP care începe cu 0 nu e valabil');
+
 // ---- CNP scris de mână ----
 ok(M.cnpMatches(cnpF, '1990-03-14', 'F') && !M.cnpMatches(cnpF, '1990-03-14', 'M') && !M.cnpMatches(cnpF, '1991-03-14', 'F'), 'CNP: se potrivește cu data și sexul; altfel nu');
 ok(!M.cnpMatches(cnpWith(1, '900314', '08001'), '1890-03-14', 'M') && M.cnpMatches(cnpWith(3, '900314', '08001'), '1890-03-14', 'M'), 'CNP: secolul se verifică (1 = 1900–1999, 3 = 1800–1899)');

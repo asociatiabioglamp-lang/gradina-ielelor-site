@@ -40,7 +40,7 @@
     if (!window.GIMrz) { addCheck('bad', 'Cititorul de acte nu s-a încărcat. Reîncarcă pagina sau scrie datele de mână.'); return; }
     var r = window.GIMrz.parse(mrzBox.value);
     if (r.error) { addCheck('bad', r.error); return; }
-    r.checks.forEach(function (c) { addCheck(c.ok ? 'ok' : 'bad', c.text + (c.ok ? ' se potrivește.' : ' NU se potrivește: actul a fost citit greșit sau e alterat.')); });
+    r.checks.forEach(function (c) { addCheck(c.ok ? 'ok' : 'bad', c.note ? c.text : c.text + (c.ok ? ' se potrivește.' : ' NU se potrivește: actul a fost citit greșit sau e alterat.')); });
     if (r.expISO) {
       if (r.expISO < today) addCheck('bad', 'Actul a expirat la ' + fmt(r.expISO) + '. Cere alt act.');
       else addCheck('ok', 'Actul e valabil până la ' + fmt(r.expISO) + '.');
@@ -80,8 +80,25 @@
     var drawing = false, used = false, last = null;
     function setup() {
       var w = Math.round(canvas.getBoundingClientRect().width) || 300;
-      if (canvas.width !== w) { canvas.width = w; }
+      if (canvas.width !== w) {
+        // Schimbarea lățimii (rotirea telefonului, apariția barei de derulare) șterge desenul: îl păstrăm și îl redesenăm.
+        var keep = null;
+        if (used && canvas.width) {
+          keep = document.createElement('canvas'); keep.width = canvas.width; keep.height = canvas.height;
+          keep.getContext('2d').drawImage(canvas, 0, 0);
+        }
+        canvas.width = w;
+        if (keep) ctx.drawImage(keep, 0, 0, w, canvas.height);
+      }
       ctx.lineWidth = 2.4; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#11293a';
+    }
+    // Există cu adevărat ceva desenat? (un pătrat gol nu e o semnătură)
+    function hasInk() {
+      try {
+        var d = ctx.getImageData(0, 0, canvas.width, canvas.height).data, n = 0;
+        for (var i = 3; i < d.length; i += 16) { if (d[i] > 0 && ++n >= 6) return true; }
+        return false;
+      } catch (e) { return used; }
     }
     function pos(e) {
       var r = canvas.getBoundingClientRect();
@@ -119,9 +136,9 @@
       img.src = store.value;
     }
     pads[name] = {
-      used: function () { return used; },
+      used: function () { return used && hasInk(); },
       clear: function () { ctx.clearRect(0, 0, canvas.width, canvas.height); used = false; if (store) store.value = ''; },
-      save: function () { if (store) store.value = used ? canvas.toDataURL('image/png') : ''; }
+      save: function () { if (store) store.value = (used && hasInk()) ? canvas.toDataURL('image/png') : ''; }
     };
   }
   Array.prototype.forEach.call(form.querySelectorAll('canvas[data-gi-pad]'), makePad);

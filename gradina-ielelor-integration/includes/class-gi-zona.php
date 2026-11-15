@@ -441,9 +441,6 @@ final class GI_Zona {
                 return; // răspuns afișat direct (conține o parolă): nu trece prin baza de date
             }
         }
-        if (in_array($sec, array('fisa', 'registru'), true) && class_exists('GI_Fise')) {
-            GI_Fise::route($sec, $id);
-        }
         if ('tipar' === $sec) {
             self::print_sheet();
         }
@@ -892,7 +889,7 @@ final class GI_Zona {
                 <a class="gi-zona-tile" href="<?php echo esc_url(self::url('receptie')); ?>"><strong>Recepție</strong><span>Scanezi codul QR al rezervării și vezi rezervarea turistului.</span></a>
             <?php endif; ?>
             <?php if (current_user_can('gi_fise_vezi') && class_exists('GI_Fise')) : ?>
-                <a class="gi-zona-tile" href="<?php echo esc_url(self::url('registru')); ?>"><strong>Registrul fișelor</strong><span>Fișele de cazare înscrise: căutare, descărcare, ștergere. Îl vezi numai tu.</span></a>
+                <a class="gi-zona-tile" href="<?php echo esc_url(self::url('registru')); ?>"><strong>Registrul fișelor</strong><span>Fișele de cazare înscrise: căutare, descărcare, ștergere. Îl vede numai administratorul.</span></a>
             <?php endif; ?>
             <?php if (self::history_prefixes()) : ?>
                 <a class="gi-zona-tile" href="<?php echo esc_url(self::url('istoric')); ?>"><strong>Istoric</strong><span>Cine a creat sau a șters ce, și când: vouchere, locuri, conturi.</span></a>
