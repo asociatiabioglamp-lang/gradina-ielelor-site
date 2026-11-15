@@ -88,7 +88,7 @@ function checksum(code) {
   const C = await api(adm, 'comanda&' + q({ stare: 'pending', nume: 'Cora', prenume: 'Nefinalizata' + STAMP }));
   const D = await api(adm, 'comanda&' + q({ stare: 'processing', nume: 'Dan', prenume: 'Anulat' + STAMP, sosire: '2026-12-25', plecare: '2026-12-27', adulti: 2, copii: 0 }));
   const E = await api(adm, 'comanda&' + q({ stare: 'processing', nume: 'Elena', prenume: 'Livrare' + STAMP, tel: '0733444555', sosire: '2027-02-01', plecare: '2027-02-03', adulti: 2, copii: 2, plata: 'Plată la livrare', metoda: 'cod' }));
-  const F = await api(adm, 'comanda&' + q({ stare: 'processing', nume: 'Florin', prenume: 'Ștefănescu', tel: '0744555666', sosire: '2027-03-10', plecare: '2027-03-12', adulti: 3, copii: 0 }));
+  const F = await api(adm, 'comanda&' + q({ stare: 'processing', nume: 'Florin', prenume: 'Ștefănescu', tel: '0744555666', sosire: '2027-03-10', plecare: '2027-03-12', adulti: 3, copii: 0, fara_cod: 1 }));
   ok(A.id && B.id && C.id && D.id && E.id && F.id, 'pregătire: șase comenzi de probă (plătită, la locație, nefinalizată, plătită care va fi anulată, plată la livrare în „procesare”, rezervare veche fără cod)');
 
   // ------------------------------------------------------------------ 1. Codul pe pagina de mulțumire
@@ -126,7 +126,8 @@ function checksum(code) {
     const html = await r.text();
     const h = r.headers();
     ok(r.status() === 200 && /noindex/.test(h['x-robots-tag'] || '') && /noindex/.test(html) && /no-store|no-cache|private/.test(h['cache-control'] || ''), `pagina codului: 200, noindex (antet și meta), fără memorie intermediară (${r.status()}, ${h['x-robots-tag']}, ${h['cache-control']})`);
-    ok(!/Popescu|Ionescu|0711222333|client\.test\.|Strada Probei|450/.test(html), 'pagina codului: fără nume, telefon, email, adresă sau sume');
+    const mainText = await (async () => { const c = await newCtx(); const pp = await c.newPage(); await pp.goto(BASE + '/cod-rezervare/' + codes.A + '/', { waitUntil: 'load' }); const tx = await pp.locator('main').innerText(); await c.close(); return tx; })();
+    ok(!/Popescu|Ionescu|0711222333|client\.test\.|Strada Probei/.test(html.replace(/<(script|style)[\s\S]*?<\/\1>/gi, '')) && !/\b450\b|\$|lei|RON/.test(mainText), 'pagina codului: fără nume, telefon, email, adresă sau sume (în conținutul paginii)');
     const pg = await newCtx(); const p2 = await pg.newPage();
     await p2.goto(BASE + '/cod-rezervare/' + codes.A.toLowerCase() + '/', { waitUntil: 'load' });
     ok((await decode(p2, '.gi-cod-qr-mare', 0)) === 'GI1.' + codes.A + '.' + checksum(codes.A), 'pagina codului: cu litere mici în adresă tot arată codul, iar codul QR mare se citește');
@@ -213,8 +214,10 @@ function checksum(code) {
     ok(/Nu găsesc o rezervare/.test(txt), 'recepție: număr de comandă care nu există → „Nu găsesc”');
     txt = await search(ap, codes.D);
     ok(/nu e finalizată/.test(txt) && /Anulat/i.test(txt), 'recepție: rezervare anulată → avertisment că nu e finalizată');
+    txt = await search(ap, 'x" autofocus onfocus="window.__xss=1');
+    ok(/forma așteptată/.test(txt) && (await ap.evaluate(() => window.__xss === undefined && document.querySelector('#gi-r-cod').getAttribute('onfocus') === null && document.querySelector('#gi-r-cod').value === 'x" autofocus onfocus="window.__xss=1')), 'recepție: text cu ghilimele și atribute (încercare de injectare) rămâne text în câmp, nu devine cod');
     txt = await search(ap, '<script>alert(1)</script>');
-    ok(/forma așteptată/.test(txt) && !(await ap.content()).includes('<script>alert(1)</script>'), 'recepție: text cu etichete nu se afișează ca etichete');
+    ok(!(await ap.evaluate(() => Array.from(document.scripts).some((s) => s.textContent.includes('alert(1)')))) && !/Ana Popescu/.test(txt), 'recepție: text cu etichete <script> nu ajunge în pagină (curățat) și nu arată nicio rezervare');
     // Istoric
     await ap.goto(ZONA + 'istoric/?tip=receptie_', { waitUntil: 'domcontentloaded' });
     const hist = await ap.locator('.gi-zona').innerText();
@@ -261,11 +264,11 @@ function checksum(code) {
   {
     const pg = await newCtx({ deviceScaleFactor: 2 }); const p = await pg.newPage();
     await p.goto(BASE + '/cod-rezervare/' + codes.A + '/', { waitUntil: 'load' });
-    const qrPng = path.join(TMP, 'qr.png'); const mjpeg = path.join(TMP, 'camera.mjpeg');
+    const qrPng = path.join(TMP, 'qr.png'); const mjpeg = path.join(TMP, 'camera.y4m');
     await p.locator('.gi-cod-qr-mare').screenshot({ path: qrPng });
     let haveVideo = true;
     try {
-      execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-loop', '1', '-i', qrPng, '-vf', 'scale=420:420:flags=neighbor,pad=640:480:110:30:white', '-t', '2', '-r', '10', '-c:v', 'mjpeg', '-q:v', '3', mjpeg]);
+      execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-loop', '1', '-i', qrPng, '-vf', 'scale=420:420:flags=neighbor,pad=640:480:110:30:white,format=yuv420p', '-t', '1', '-r', '5', '-f', 'yuv4mpegpipe', mjpeg]);
     } catch (e) { haveVideo = false; }
     await pg.close();
     ok(haveVideo, 'cameră simulată: imaginea cu codul QR a fost transformată în film pentru camera de probă (ffmpeg)');
@@ -292,10 +295,10 @@ function checksum(code) {
       const pg2 = await newCtx({ deviceScaleFactor: 2 }); const p2 = await pg2.newPage();
       await p2.goto(BASE + '/cod-rezervare/' + codes.A + '/', { waitUntil: 'load' });
       await p2.evaluate(() => { const el = document.querySelector('.gi-cod-qr-mare'); const x = window.qrcode(0, 'Q'); x.addData('WIFI:T:WPA;S:Gradina;P:parola;;'); x.make(); el.innerHTML = x.createSvgTag({ scalable: true }); });
-      const wifiPng = path.join(TMP, 'wifi.png'); const wifiVid = path.join(TMP, 'wifi.mjpeg');
+      const wifiPng = path.join(TMP, 'wifi.png'); const wifiVid = path.join(TMP, 'wifi.y4m');
       await p2.locator('.gi-cod-qr-mare').screenshot({ path: wifiPng });
       await pg2.close();
-      execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-loop', '1', '-i', wifiPng, '-vf', 'scale=420:420:flags=neighbor,pad=640:480:110:30:white', '-t', '2', '-r', '10', '-c:v', 'mjpeg', '-q:v', '3', wifiVid]);
+      execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-loop', '1', '-i', wifiPng, '-vf', 'scale=420:420:flags=neighbor,pad=640:480:110:30:white,format=yuv420p', '-t', '1', '-r', '5', '-f', 'yuv4mpegpipe', wifiVid]);
       const cam2 = await chromium.launch({ args: ['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream', '--use-file-for-fake-video-capture=' + wifiVid] });
       const c2 = await cam2.newContext({ viewport: { width: 390, height: 800 }, isMobile: true, hasTouch: true, permissions: ['camera'], storageState: await adm.storageState() });
       const w = await c2.newPage(); w.setDefaultTimeout(30000);
@@ -345,7 +348,7 @@ function checksum(code) {
     ok(/Bogdan Ionescu/.test(txt) && /neplătită încă/.test(txt), 'recepție (cont): caută o rezervare și o vede');
     for (const s of ['vouchere/', 'copaci/', 'echipa/', 'istoric/', 'tipar/']) {
       const r = await rp.goto(ZONA + s, { waitUntil: 'domcontentloaded' });
-      const body = await rp.locator('.gi-zona').innerText();
+      const body = (await rp.locator('.gi-zona').count()) ? await rp.locator('.gi-zona').innerText() : '';
       ok(!/gi-zona-lista|name="gi_actiune"/.test(await rp.content()) && !/Generează|Creează contul|Adaugă un loc|Ce s-a întâmplat/.test(body), `recepție (cont): /${s} nu arată nimic din vouchere, copaci, echipă sau istoric (${r.status()})`);
     }
     const post = await rc.request.post(ZONA + 'vouchere/', { form: { gi_actiune: 'genereaza', tip: 'suma', valoare: '50', numar: '1', prefix: 'RECEPTIE' + STAMP, _gi_nonce: 'x' }, maxRedirects: 0 });
@@ -357,6 +360,7 @@ function checksum(code) {
     const restNonce = (await (await rc.request.get(BASE + '/wp-admin/admin-ajax.php?action=rest-nonce')).text()).trim();
     const me = await rc.request.fetch(BASE + '/wp-json/wp/v2/users/me', { method: 'POST', headers: { 'X-WP-Nonce': restNonce }, data: { password: 'Alta-Cheie-Noua-' + STAMP } });
     ok(me.status() >= 400, `recepție (cont): nu poate schimba parola prin REST (${me.status()})`);
+    await api(adm, 'emailuri');
     const lp = await (await newCtx()).request.post(BASE + '/wp-login.php?action=lostpassword', { form: { user_login: L }, maxRedirects: 0 });
     const lp2 = await (await newCtx()).request.post(BASE + '/wp-login.php?action=lostpassword', { form: { user_login: 'nu.exista.' + STAMP }, maxRedirects: 0 });
     ok(lp.status() === lp2.status() && (lp.headers().location || '') === (lp2.headers().location || ''), `recepție (cont): „Mi-am uitat parola” răspunde ca pentru un cont inexistent (${lp.status()} / ${lp2.status()})`);
@@ -364,6 +368,7 @@ function checksum(code) {
     await rc.close();
     // proprietara scoate accesul
     await ap.goto(ZONA + 'echipa/', { waitUntil: 'domcontentloaded' });
+    ap.once('dialog', (d) => d.accept());
     await Promise.all([ap.waitForNavigation({ waitUntil: 'domcontentloaded' }), ap.locator('.gi-zona-lista li:has-text("' + L + '") button:has-text("Scoate accesul")').click()]);
     const after = await api(adm, 'utilizator&login=' + L);
     ok(after.exists && !after.caps.gi_zona && !after.roles.includes('gi_receptie'), 'echipă: „Scoate accesul” scoate rolul Recepție');

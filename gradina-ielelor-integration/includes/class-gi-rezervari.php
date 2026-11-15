@@ -232,9 +232,9 @@ final class GI_Rezervari {
                     $out['sosire'] = self::parse_date($value);
                 } elseif (1 === preg_match('/check\s*-?\s*out|plecare|depart/i', $label) && '' === $out['plecare']) {
                     $out['plecare'] = self::parse_date($value);
-                } elseif (1 === preg_match('/adult/i', $label) && null === $out['adulti']) {
+                } elseif (1 === preg_match('/adul[tțţ]|adult/iu', $label) && null === $out['adulti']) { // „Adulți” se scrie cu ț, deci „adult” singur nu l-ar prinde
                     $out['adulti'] = (int) $value;
-                } elseif (1 === preg_match('/copi|child/i', $label) && null === $out['copii']) {
+                } elseif (1 === preg_match('/copi|child|minor/iu', $label) && null === $out['copii']) {
                     $out['copii'] = (int) $value;
                 }
             }

@@ -4,6 +4,7 @@
  * Pentru test-1-6-0.js (codul QR al rezervării și pagina Recepție):
  *  - /?gi_test=comanda&stare=processing&nume=X&prenume=Y&tel=Z&sosire=aaaa-ll-zz&plecare=aaaa-ll-zz&adulti=2&copii=1[&metoda=cod]
  *        → creează o comandă de probă (produsul „Rezervare de probă”, câmpurile „Check in:”, „Check out:”, „Cantitate:”, „Adulți”, „Copii”), întoarce id, cheie și adresa paginii de mulțumire
+ *        (cu &fara_cod=1: scoate codul pe care l-ar fi pus emailul de stare, ca la comenzile făcute înainte de 1.6.0)
  *  - /?gi_test=stare_comanda&id=N&stare=cancelled → schimbă starea comenzii
  *  - /?gi_test=cod_comanda&id=N → codul rezervării păstrat în comandă (gol dacă încă nu are)
  *  - /?gi_test=bloc_email&id=N&text=0|1&admin=0|1 → ce adaugă pluginul în emailul de confirmare (HTML sau text)
@@ -75,6 +76,11 @@ add_action('init', function () {
             $order->set_date_paid(time());
         }
         $order->save();
+        if ('1' === $q('fara_cod')) {
+            // Comandă ca cele făcute înainte de 1.6.0: emailul de stare (oprit local) i-ar fi pus deja un cod.
+            $order->delete_meta_data('_gi_cod_rezervare');
+            $order->save();
+        }
         echo wp_json_encode(array('id' => $order->get_id(), 'key' => $order->get_order_key(), 'url' => $order->get_checkout_order_received_url(), 'vezi' => $order->get_view_order_url(), 'email' => $order->get_billing_email()));
     } elseif ('stare_comanda' === $t) {
         $order = wc_get_order((int) $q('id'));
