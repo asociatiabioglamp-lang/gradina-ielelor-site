@@ -3,7 +3,7 @@ Contributors: gradina-ielelor
 Tags: one-page, woocommerce, booking, ovabrw, seo
 Requires at least: 6.0
 Requires PHP: 7.4
-Stable tag: 1.7.0
+Stable tag: 1.8.0
 License: GPLv2 or later
 
 Template-uri server-side pentru pagina principală (hub de rezervare) și paginile dedicate ofertelor Grădina Ielelor, cu WooCommerce + OVABRW drept singur motor de rezervări.
@@ -40,6 +40,13 @@ Nu. Constanta GI_REACT_DEMO_ENABLED este false, bundle-ul React nu este inclus, 
 Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai opțiunile acestui plugin.
 
 == Changelog ==
+
+= 1.8.0 =
+* Harta și ghidul Grădinii: proprietara încarcă un plan al Grădinii (Zona echipei → Harta), iar la fiecare loc din „Copaci și locuri” apasă pe plan unde se află (poziția se păstrează în procente). Cine scanează codul QR al unui loc vede „Ești aici”, cu locul marcat pe plan, și un link spre pagina /in-gradina/harta/ (planul cu toate locurile, apăsabile, și ghidul pe grupe: informații, locuri și facilități, copaci și plante). Fără plan încărcat, nu apare nicio hartă; adresa „harta” e rezervată.
+* Tipuri noi de locuri (pentru bucătărie, terasă, Wi-Fi, loc de joacă, băi, vatră, parcare, lac): fiecare are pagina și codul QR lui. Tipul „Informații” e pentru panouri ca „Ce poți vizita” sau „Parteneri”: textul se schimbă oricând, iar codul QR printat rămâne același, deci nu mai trebuie reprintate panouri și afișe.
+* Scriere simplă pentru textul unui loc, fără HTML: „# ” titlu, „## ” subtitlu, „- ” listă, „1. ” listă numerotată, **îngroșat**, *înclinat*, [text](https://adresa) link (și tel: și mailto:), „> ” citat, „---” linie. Cinci butoane peste casetă scriu semnele. Etichetele HTML și „javascript:” nu se execută; textele cu HTML din editorul WordPress rămân neschimbate.
+* Document PDF la un loc (de ex. fișa plantei): se încarcă din formularul locului (maximum 15 MB, verificat să fie PDF adevărat), cu bifa „are sigla și numele Grădinii Ielelor” (regula de bază); pe pagina publică apare butonul „Descarcă fișa (PDF)”. Se poate înlocui sau șterge (fișierul vechi se șterge).
+* Regula de bază (sigla și numele Grădinii Ielelor pe tot ce descarcă sau printează clienții) se aplică și plăcuțelor cu cod QR de printat ale locurilor.
 
 = 1.7.0 =
 * Această versiune cuprinde tot ce s-a făcut după 1.5.1: codul QR la rezervare și Recepția (descrise la „1.6.0”, mai jos, care nu s-a lansat separat) și fișa de cazare cu registrul (descrise aici).

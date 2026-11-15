@@ -1,4 +1,4 @@
-# Zona echipei (pluginul 1.7.0)
+# Zona echipei (pluginul 1.8.0)
 
 **Administrare** direct de pe site, fără să intri în administrarea WordPress. Utilizator + parolă.
 Adresa: **gradina-ielelor.ro/zona-echipei/**. În subsolul fiecărei pagini a site-ului e o căsuță **„Administrare”** care duce acolo.
@@ -132,6 +132,34 @@ Dacă ceva nu e în regulă (CNP greșit, act expirat, același act de două ori
 
 **Istoric.** Fiecare fișă înscrisă, ștearsă sau descărcată apare în Istoric → Fișe, **fără** nume, CNP, acte sau telefoane.
 
+## Panouri cu cod QR: ce poți vizita, parteneri, reguli (nu mai reprintezi nimic)
+Un cod QR printat duce mereu la aceeași adresă, iar **textul paginii îl schimbi când vrei**. Deci, în loc de panouri și afișe care se reprintează la fiecare schimbare, pui **un cod QR** și actualizezi doar pagina.
+1. **Zona echipei → Copaci și locuri → Adaugă un loc.**
+2. La „Ce este?” alegi **„Informații”** (pentru „Ce poți vizita”, „Parteneri Grădina Ielelor”, „Reguli”, „Program”) sau tipul locului: **Bucătărie, Terasă, Wi-Fi, Loc de joacă, Băi și dușuri, Vatră, Parcare, Lac sau ponton**, Copac, Plantă.
+3. Scrii titlul și textul (vezi „Scrierea simplă”), bifezi **Publică** și salvezi. Apare codul QR: **Printează acest cod**. Pe plăcuță ies automat **sigla și numele Grădinii Ielelor**.
+4. Cine scanează vede pagina. Când ceva se schimbă (un partener nou, un program nou), modifici textul paginii: **codul din teren rămâne bun**.
+5. Un cod pentru tot ghidul: pagina **gradina-ielelor.ro/in-gradina/harta/** (harta, dacă ai încărcat planul, și lista tuturor paginilor: informații, locuri și facilități, copaci și plante). Poți face un loc de tip „Informații” cu textul „Ghidul Grădinii” și să-i pui acolo linkul către pagina asta, sau să printezi direct adresa ei ca cod QR din Zonă (la „Copaci și locuri” nu apare, deoarece nu e un loc; spune-mi dacă vrei un buton pentru ea).
+
+## Harta Grădinii („Ești aici”)
+1. **Zona echipei → Copaci și locuri → Harta Grădinii** (sau direct **Harta**). Încarci **planul Grădinii**: o poză sau un desen (JPG, PNG sau WebP), cu nordul sus, cât mai clar. Până îl încarci, nu apare nicio hartă nicăieri.
+2. Pentru fiecare loc: deschizi locul, la **„Unde e locul pe hartă?”** apeși pe plan, în locul unde pui codul QR (apare un punct; poți apăsa din nou ca să-l muți sau **„Scoate de pe hartă”**). Salvezi.
+3. Cine scanează codul acelui loc vede, sus pe pagină, **„Ești aici”**: planul cu locul lui marcat (pulsează), celelalte locuri ca puncte mici, și linkul **„Vezi toată harta Grădinii”**.
+4. Pagina **/in-gradina/harta/**: planul cu toate locurile publicate marcate (apeși pe un punct și vezi numele și butonul spre pagina lui) și, dedesubt, lista pe grupe. Cine vine dintr-un cod vede locul lui marcat.
+5. Dacă **schimbi planul** cu altul de altă mărime sau decupare, locurile trebuie marcate din nou (pozițiile sunt procente din plan). Dacă îl **scoți**, hărțile dispar, dar pozițiile rămân păstrate.
+Nu inventez poziții: le alegi tu pe plan. **De la tine am nevoie de planul Grădinii.**
+
+## Scrierea simplă (titluri, liste, link-uri)
+În textul unui loc scrii simplu, cu semne la început de rând (sau apeși butoanele de deasupra casetei):
+- `# Titlu` = titlu mare, `## Subtitlu` = subtitlu
+- `- element` = listă cu buline; `1. pas` = listă numerotată
+- `**text**` = îngroșat; `*text*` = înclinat
+- `[Parteneri](https://adresa.ro)` = link; `[0721 333 164](tel:0721333164)` = link de telefon; `[scrie-ne](mailto:adresa@exemplu.ro)` = link de email
+- `> citat`; `---` singur pe rând = linie despre; rând gol = paragraf nou.
+Textul scris așa rămâne exact cum l-ai scris. Etichetele HTML nu se păstrează, iar link-urile periculoase (`javascript:`) nu devin link-uri.
+
+## Document PDF la un loc (fișa plantei, programul, regulile)
+La formularul locului: **„Document PDF”**. Alegi fișierul (PDF, maximum 15 MB) și bifezi **„Documentul are sigla și numele Grădinii Ielelor”** (regula de bază: tot ce descarcă clienții poartă sigla și numele; documentele GI FLORA o au). Pe pagina publică a locului apare butonul **„Descarcă fișa (PDF, mărime)”**. Ca să-l înlocuiești, alegi alt fișier (cel vechi se șterge); ca să-l scoți, bifezi „Șterge documentul”. Documentul se vede public cât timp locul e publicat. Pagina locului poate avea și textul (povestea) *și* documentul: textul se citește pe telefon, documentul se salvează sau se printează.
+
 ## Copaci și locuri (cod QR)
 **Zona echipei → Copaci și locuri → Adaugă un loc.** Scrii titlul, alegi ce este (copac, plantă, loc), numele științific (dacă vrei), o frază sub titlu, **povestea locului** și alegi **poza**. De pe telefon poți face poza chiar atunci (maximum 8 MB).
 - Scrii și „ce se vede în poză” (o frază), pentru cei care nu văd imaginea.
@@ -143,6 +171,7 @@ Dacă ceva nu e în regulă (CNP greșit, act expirat, același act de două ori
 Ghidul detaliat pentru codurile din teren (mărimi, unde le pui, statistici): `docs/zona-privata.md`. Aceleași funcții se găsesc și în administrarea WordPress, meniul **Grădina**.
 
 ## Ce urmează (în aceeași Zonă)
+- **Un buton pentru codul QR al ghidului întreg** (/in-gradina/harta/), dacă vrei să-l printezi direct din Zonă.
 - **Citirea actului cu camera telefonului** (a zonei de jos a actului, fără cititor): etapă separată, se încearcă pe un telefon real. Mai înainte: textul notei despre datele personale și termenul de păstrare (jurist).
 - Nu se pune nimic live fără aprobarea ta.
 
