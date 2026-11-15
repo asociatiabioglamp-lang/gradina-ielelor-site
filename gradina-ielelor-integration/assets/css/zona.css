@@ -117,6 +117,9 @@
 .gi-cod-site .gi-zona .gi-cod-qr-mare svg { display: block; width: 100%; height: auto; }
 @media print { .gi-cod-site .site-header, .gi-cod-site .site-footer, .gi-cod-site .gi-content-hero, .gi-cod-site .gi-mobile-booking, .gi-cod-site .button, .gi-cod-site #gt_float_wrapper { display: none !important; } }
 
+/* Zona echipei: fără steagul de limbă (traducerea automată ar trimite datele turiștilor la un serviciu extern) */
+.gi-zona-site #gt_float_wrapper, .gi-zona-site .gt_float_wrapper, .gi-zona-site .gtranslate_wrapper { display: none !important; }
+
 /* ---------- Recepție: scanare cu camera, rezervarea găsită ---------- */
 .gi-zona-site .gi-zona .gi-scan-video { display: block; width: 100%; max-width: 420px; aspect-ratio: 4 / 3; object-fit: cover; background: #000; border-radius: 4px; }
 .gi-zona-site .gi-zona .gi-scan-video[hidden] { display: none; }

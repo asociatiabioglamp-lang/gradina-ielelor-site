@@ -39,6 +39,7 @@ final class GI_Zona {
         add_filter('rank_math/frontend/robots', array(__CLASS__, 'robots_array'));
         add_filter('pre_get_document_title', array(__CLASS__, 'document_title'), 99);
         add_filter('body_class', array(__CLASS__, 'body_class'));
+        add_action('wp_head', array(__CLASS__, 'no_translate_meta'), 1);
         add_action('wp_loaded', array(__CLASS__, 'maybe_flush'));
         // La „init”, nu la „admin_init”: ecranele care verifică drepturile (articole, fișiere, pagini ale pluginurilor) se opresc cu eroare înainte de „admin_init”.
         add_action('init', array(__CLASS__, 'keep_sales_out_of_admin'), 1);
@@ -132,6 +133,13 @@ final class GI_Zona {
                 }
             }
         }
+        // Registrul fișelor (gi_fise_vezi) îl are numai administratorul: se retrage de la orice alt rol care l-ar fi primit de la o versiune mai veche.
+        foreach (array('shop_manager', 'editor', self::ROLE, self::ROLE_RECEPTIE) as $other) {
+            $r = get_role($other);
+            if ($r && $r->has_cap('gi_fise_vezi')) {
+                $r->remove_cap('gi_fise_vezi');
+            }
+        }
         update_option('gi_zona_roluri', GI_VERSION, true);
     }
 
@@ -149,6 +157,9 @@ final class GI_Zona {
             $r = get_role($name);
             if ($r && (!$r->has_cap('gi_zona') || ('editor' !== $name && !$r->has_cap('gi_receptie')))) {
                 return false;
+            }
+            if ($r && 'administrator' !== $name && $r->has_cap('gi_fise_vezi')) {
+                return false; // dreptul acesta rămâne numai administratorului
             }
         }
         return true;
@@ -313,8 +324,16 @@ final class GI_Zona {
         if (self::is_zona()) {
             $classes[] = 'gi-one-page'; // aceleași reguli de pagină ca restul site-ului (steagul de limbă, bara de administrare)
             $classes[] = 'gi-page-zona';
+            $classes[] = 'notranslate'; // traducerea automată (Google, steagul de limbă) nu trebuie să trimită numele și datele turiștilor la un serviciu extern
         }
         return $classes;
+    }
+
+    /** Spune browserelor și traducătoarelor să nu traducă (adică să nu trimită la Google) conținutul Zonei. */
+    public static function no_translate_meta() {
+        if (self::is_zona()) {
+            echo '<meta name="google" content="notranslate">' . "\n";
+        }
     }
 
     /**

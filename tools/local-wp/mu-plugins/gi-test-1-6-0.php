@@ -112,7 +112,13 @@ add_action('init', function () {
         echo wp_json_encode(array('sterse' => $n));
     } elseif ('permisiuni' === $t) {
         $r = get_role('gi_receptie');
-        echo wp_json_encode(array('exista' => (bool) $r, 'caps' => $r ? array_keys(array_filter($r->capabilities)) : array()));
+        $fise = array();
+        foreach (wp_roles()->roles as $name => $role) {
+            if (!empty($role['capabilities']['gi_fise_vezi'])) {
+                $fise[] = $name;
+            }
+        }
+        echo wp_json_encode(array('exista' => (bool) $r, 'caps' => $r ? array_keys(array_filter($r->capabilities)) : array(), 'fise_vezi_roluri' => $fise));
     }
     exit;
 }, 20);
