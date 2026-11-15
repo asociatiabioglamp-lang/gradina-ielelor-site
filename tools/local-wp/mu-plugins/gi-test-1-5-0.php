@@ -7,7 +7,7 @@
  *  - /?gi_test=cupon&cod=X      → datele cuponului (valoare, tip, folosiri, expirare, cine l-a generat)
  *  - /?gi_test=sterge_utilizator&login=X → șterge utilizatorul de probă
  *  - /?gi_test=zona_reset       → readuce limitele și opțiunile Zonei la starea de pornire
- *  - /?gi_test=esecuri_login    → câte autentificări greșite a văzut un ascultător montat DUPĂ cel din Zonă (prioritate 10000); apoi se resetează
+ *  - /?gi_test=esecuri_login    → câte autentificări greșite a văzut un ascultător montat DUPĂ pluginul Grădinii (la init, prioritate 10); apoi se resetează
  *  - /?gi_test=cauta_optiuni&q=X → de câte ori apare textul X în valorile opțiunilor (parolele nu trebuie să rămână în baza de date)
  *  - /?gi_test=ini              → post_max_size și upload_max_filesize ale serverului local
  */
@@ -21,9 +21,13 @@ if (!preg_match('/^(127\.0\.0\.1|localhost)(:\d+)?$/', $gi_test_host)) {
     return;
 }
 
-add_action('wp_login_failed', function () {
-    update_option('gi_test_esecuri_login', (int) get_option('gi_test_esecuri_login', 0) + 1, false);
-}, 10000);
+// Ca un plugin de limitare a autentificărilor, montat DUPĂ pluginul Grădinii (la „init”), la prioritatea obișnuită 10:
+// dacă Zona ar ieși din cerere înainte de prioritatea 10, acest ascultător n-ar mai vedea eșecul.
+add_action('init', function () {
+    add_action('wp_login_failed', function () {
+        update_option('gi_test_esecuri_login', (int) get_option('gi_test_esecuri_login', 0) + 1, false);
+    }, 10);
+}, 20);
 
 add_filter('pre_wp_mail', function ($null, $atts) {
     update_option('gi_test_emailuri', (int) get_option('gi_test_emailuri', 0) + 1, false);
