@@ -83,6 +83,7 @@ function checksum(code) {
   const perm = await api(adm, 'permisiuni');
   ok(perm.exista && perm.caps.includes('gi_receptie') && perm.caps.includes('gi_zona') && !perm.caps.includes('gi_vouchere') && !perm.caps.includes('gi_echipa') && !perm.caps.includes('edit_posts'), 'rol: „Recepție (Grădina)” are numai dreptul Zonei și al Recepției (fără vouchere, echipă, articole): ' + perm.caps.join(', '));
 
+  ok(JSON.stringify(perm.fise_vezi_roluri) === '["administrator"]', 'rol: dreptul „registrul fișelor” (gi_fise_vezi) îl are numai administratorul (' + perm.fise_vezi_roluri.join(', ') + ')');
   const A = await api(adm, 'comanda&' + q({ stare: 'processing', nume: 'Ana', prenume: 'Popescu' + STAMP, tel: '0711222333', sosire: '2026-12-18', plecare: '2026-12-20', adulti: 2, copii: 1 }));
   const B = await api(adm, 'comanda&' + q({ stare: 'on-hold', nume: 'Bogdan', prenume: 'Ionescu' + STAMP, tel: '0722333444', sosire: '2027-01-05', plecare: '2027-01-06', adulti: 1, plata: 'Plata la locație' }));
   const C = await api(adm, 'comanda&' + q({ stare: 'pending', nume: 'Cora', prenume: 'Nefinalizata' + STAMP }));
@@ -171,6 +172,13 @@ function checksum(code) {
     }
     await ap.goto(ZONA + 'receptie/', { waitUntil: 'domcontentloaded' });
     ok(/noindex/.test((await ap.content())), 'recepție: pagina nu apare în Google');
+    ok((await ap.locator('meta[name="google"][content="notranslate"]').count()) === 1 && (await ap.evaluate(() => document.body.classList.contains('notranslate'))), 'recepție: pagina cere să nu fie tradusă automat (meta notranslate + clasa pe pagină): datele turiștilor nu pleacă la un traducător');
+    {
+      const pub = await newCtx(); const pubPage = await pub.newPage();
+      await pubPage.goto(BASE + '/glamping/', { waitUntil: 'domcontentloaded' });
+      ok((await pubPage.locator('meta[name="google"][content="notranslate"]').count()) === 0, 'traducere: pe paginile publice traducerea rămâne permisă (nu s-a oprit peste tot)');
+      await pub.close();
+    }
     ok((await ap.locator('[data-gi-scan] video[hidden]').count()) === 1 && (await ap.locator('[data-gi-scan-open]').isVisible()) && !(await ap.locator('[data-gi-scan-stop]').isVisible()), 'recepție: butonul „Scanează cu camera” se vede, camera e oprită');
 
     let txt = await search(ap, codes.A);
