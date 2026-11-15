@@ -118,7 +118,7 @@
 @media print { .gi-cod-site .site-header, .gi-cod-site .site-footer, .gi-cod-site .gi-content-hero, .gi-cod-site .gi-mobile-booking, .gi-cod-site .button, .gi-cod-site #gt_float_wrapper { display: none !important; } }
 
 /* Zona echipei: fără steagul de limbă (traducerea automată ar trimite datele turiștilor la un serviciu extern) */
-.gi-zona-site #gt_float_wrapper, .gi-zona-site .gt_float_wrapper, .gi-zona-site .gtranslate_wrapper { display: none !important; }
+body.gi-page-zona #gt_float_wrapper, body.gi-page-zona .gt_float_wrapper, body.gi-page-zona .gtranslate_wrapper { display: none !important; } /* steagul e pus de WordPress în afara casetei paginii, deci regula pornește de la <body> */
 
 /* ---------- Recepție: scanare cu camera, rezervarea găsită ---------- */
 .gi-zona-site .gi-zona .gi-scan-video { display: block; width: 100%; max-width: 420px; aspect-ratio: 4 / 3; object-fit: cover; background: #000; border-radius: 4px; }
@@ -167,7 +167,7 @@
 .gi-zona-site .gi-zona .gi-fisa-foot { margin: 12px 0 0; font-size: 12px; color: var(--text-2); }
 @media (max-width: 560px) { .gi-zona-site .gi-zona .gi-fisa-semnaturi { grid-template-columns: 1fr; } .gi-zona-site .gi-zona .gi-fisa-tabel th { width: 44%; } .gi-zona-site .gi-zona .gi-fisa-serie { text-align: left; } }
 @media print {
-  .gi-zona-site .site-header, .gi-zona-site .site-footer, .gi-zona-site .gi-content-hero, .gi-zona-site .gi-mobile-booking, .gi-zona-site #gt_float_wrapper,
+  .gi-zona-site .site-header, .gi-zona-site .site-footer, .gi-zona-site .gi-content-hero, .gi-zona-site .gi-mobile-booking, body.gi-page-zona #gt_float_wrapper,
   .gi-zona-site .gi-zona .no-print, .gi-zona-site .gi-zona .gi-zona-notice, .gi-zona-site .gi-zona .gi-zona-back { display: none !important; }
   @page { size: A4; margin: 12mm 14mm; }
   .gi-zona-site .gi-zona .gi-fisa-sheet { border: 0; padding: 0; max-width: none; margin: 0; }

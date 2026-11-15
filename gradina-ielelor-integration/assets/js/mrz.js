@@ -43,6 +43,14 @@
     var age = t.getUTCFullYear() - (2000 + p.yy) - ((t.getUTCMonth() + 1 < p.mm || (t.getUTCMonth() + 1 === p.mm && t.getUTCDate() < p.dd)) ? 1 : 0);
     return age < 18 && old ? old : modern;
   }
+  // Anul din două cifre dă două date posibile; „ambiguă” = ar fi fost una cu o persoană sub 18 ani (și s-a ales secolul trecut).
+  function dobAmbiguous(s, today) {
+    var p = ymd(s); if (!p) return false;
+    var chosen = dobISO(s, today);
+    var modern = isoDate(2000 + p.yy, p.mm, p.dd);
+    var todayIso = (today || new Date()).toISOString().slice(0, 10);
+    return !!chosen && +chosen.slice(0, 4) < 2000 && !!modern && modern <= todayIso; // 20xx ar fi o persoană născută deja (sub 18 ani), nu una din viitor
+  }
   function expISO(s) { var p = ymd(s); return p ? isoDate(2000 + p.yy, p.mm, p.dd) : ''; }
   function clean(s) { return s.replace(/</g, ' ').replace(/\s+/g, ' ').trim(); }
   function nameParts(field) {
@@ -97,14 +105,16 @@
     r.docNoClean = r.docNo.replace(/</g, '');
     // Un număr de act mai lung de 9 caractere are „<” în loc de cifra de control (restul stă în câmpul opțional): nu se poate verifica, nu se declară alterat.
     var longDoc = r.cdDoc === '<';
+    r.longDoc = longDoc;
     r.checks.unshift(
-      longDoc ? { ok: true, note: true, text: 'Seria actului are mai mult de 9 caractere: cifra ei de control nu se verifică. Verifică seria cu ochiul liber.' }
+      longDoc ? { ok: false, note: true, text: 'Seria actului are mai mult de 9 caractere și nu încape aici (cifra ei de control nu se poate verifica). Scrie seria completă de mână, din act.' }
               : { ok: String(check(r.docNo)) === r.cdDoc, text: 'Cifra de control a seriei și numărului actului' },
       { ok: String(check(r.dob)) === r.cdDob, text: 'Cifra de control a datei nașterii' },
       { ok: String(check(r.exp)) === r.cdExp, text: 'Cifra de control a datei expirării' },
       { ok: String(check(comp[0])) === comp[1], text: 'Cifra de control totală' }
     );
     r.dobISO = dobISO(r.dob, today);
+    r.dobAmbiguous = dobAmbiguous(r.dob, today);
     r.expISO = expISO(r.exp);
     r.sexNorm = r.sex === 'F' || r.sex === 'M' ? r.sex : '';
     r.allOk = r.checks.every(function (c) { return c.ok; });

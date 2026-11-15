@@ -49,6 +49,7 @@ const CNP1 = cnpWith(2, '900314', '08001');
 const MRZ1 = buildTD1({ doc: 'XY123456', dob: '900314', sex: 'F', exp: '350101', sur: 'POPESCU', given: 'MARIA ELENA', opt1: CNP1 });
 const MRZ_BAD = MRZ1.split('\n').map((l, i) => (i === 1 ? l.replace('900314', '900315') : l)).join('\n'); // cifră greșită în data nașterii (numai pe rândul 2)
 const MRZ_EXPIRED = buildTD1({ doc: 'AB654321', dob: '800101', sex: 'M', exp: '200101', sur: 'VECHI', given: 'ION' });
+const MRZ_AMBIGUOUS = buildTD1({ doc: 'AB654322', dob: '081201', sex: 'F', exp: '350101', sur: 'AMBIGUA', given: 'ANA' });
 
 (async () => {
   const phpBefore = logLines();
@@ -106,6 +107,8 @@ const MRZ_EXPIRED = buildTD1({ doc: 'AB654321', dob: '800101', sex: 'M', exp: '2
   await fillMrz(MRZ_EXPIRED);
   checks = await ap.locator('[data-gi-mrz-checks]').innerText();
   ok(/Actul a expirat la 01\.01\.2020/.test(checks), 'act: expirat → „Actul a expirat la 01.01.2020”');
+  await fillMrz(MRZ_AMBIGUOUS);
+  ok(/Anul nașterii din act are două cifre/.test(await ap.locator('[data-gi-mrz-checks]').innerText()) && (await ap.inputValue('#gi-f-dob')) === '1908-12-01', 'act: anul nașterii din două cifre care ar da o persoană sub 18 ani → avertisment roșu să se verifice în act (se alege 1908, nu se ascunde)');
   await fillMrz('ceva scris de mână');
   ok(/Nu recunosc rândurile/.test(await ap.locator('[data-gi-mrz-checks]').innerText()), 'act: text oarecare → mesaj clar');
   await fillMrz(MRZ1);
@@ -300,6 +303,13 @@ const MRZ_EXPIRED = buildTD1({ doc: 'AB654321', dob: '800101', sex: 'M', exp: '2
   ok(/5 fișe în total/.test(reg) && /POPESCU MARIA ELENA/.test(reg) && /MUELLER HANS/.test(reg) && /GI-\d{4}-00005/.test(reg), 'registru: lista cu toate cele 5 fișe');
   reg = await regSearch('mueller');
   ok(/1 fișe găsite/.test(reg) && /MUELLER/.test(reg) && !/POPESCU/.test(reg), 'registru: căutare după nume');
+  {
+    const n = await ap.locator('form:has(input[value="csv"]) input[name="_gi_nonce"]').getAttribute('value');
+    const qv = await ap.locator('form:has(input[value="csv"]) input[name="q"]').getAttribute('value');
+    const part = await adm.request.post(ZONA + 'registru/', { form: { gi_actiune: 'csv', _gi_nonce: n, q: qv } });
+    const partLines = (await part.text()).replace(/^\uFEFF/, '').split('\r\n').filter(Boolean);
+    ok(qv === 'mueller' && partLines.length === 2 && partLines[1].includes('"MUELLER"') && !/POPESCU/.test(partLines.join('')), 'CSV: după o căutare, formularul trimite căutarea și se descarcă numai fișele găsite (' + (partLines.length - 1) + ')');
+  }
   ok(!/mueller/i.test(ap.url()) && !/[?&]q=/.test(ap.url()), 'registru: ce cauți nu apare în adresa paginii (' + ap.url().replace(BASE, '') + ')');
   ok(/MUELLER/.test(await (async () => { await ap.goto(ZONA + 'registru/', { waitUntil: 'domcontentloaded' }); return ap.locator('.gi-zona').innerText(); })()), 'registru: căutarea se păstrează la reîncărcarea paginii (15 minute)');
   reg = await regSearch(CNP1);
@@ -388,6 +398,21 @@ const MRZ_EXPIRED = buildTD1({ doc: 'AB654321', dob: '800101', sex: 'M', exp: '2
   for (const p of pii) { const c = (await api(adm, 'cauta_istoric&q=' + encodeURIComponent(p))).count; if (c) leaked.push(p + ':' + c); }
   ok(!leaked.length && !pii.some((p) => hist.includes(p)), 'istoric: nu conține nume, CNP, acte sau telefoane ale turiștilor (' + (leaked.join(', ') || 'curat') + ')');
   ok(!/Operator Probă SRL|RO123456/.test(JSON.stringify((await api(adm, 'istoric&n=50')).rows)), 'istoric: nici datele unității nu se scriu la setări (doar numele câmpurilor schimbate)');
+
+  // ------------------------------------------------------------------ 10b. Două tablete trimit deodată aceeași fișă
+  {
+    await ap.goto(ZONA + 'fisa/?' + q({ cod: CODE }), { waitUntil: 'domcontentloaded' });
+    await ap.check('input[name="depaseste"]').catch(() => {});
+    await sign(ap, 'sigT'); await sign(ap, 'sigR');
+    const base = await ap.evaluate(() => Object.fromEntries(new FormData(document.querySelector('[data-gi-fisa]'))));
+    const sigT = await ap.evaluate(() => document.getElementById('gi-sigT').toDataURL('image/png'));
+    const sigR = await ap.evaluate(() => document.getElementById('gi-sigR').toDataURL('image/png'));
+    const race = Object.assign({}, base, { f_nume: 'CURSA', f_prenume: 'DUBLA', f_dob: '1988-08-08', f_cet: 'România', f_tip: 'Carte de identitate', f_doc: 'RACE0001', f_dom: 'Brașov', f_recep: 'Test', gdpr: '1', depaseste: '1', sigT, sigR });
+    const both = await Promise.all([adm.request.post(ZONA + 'fisa/', { form: race, maxRedirects: 0 }), adm.request.post(ZONA + 'fisa/', { form: race, maxRedirects: 0 })]);
+    const texts = await Promise.all(both.map((r) => r.text()));
+    const inscrise = (await rows()).filter((r) => r.nume === 'CURSA');
+    ok(inscrise.length === 1 && both.filter((r) => r.status() === 302).length === 1 && texts.some((x) => /există deja o fișă cu același act/.test(x)), 'concurență: aceeași fișă trimisă de două ori în același timp se înscrie o singură dată, a doua primește „există deja o fișă cu același act” (' + both.map((r) => r.status()).join('/') + ', ' + inscrise.length + ' înscrisă)');
+  }
 
   // ------------------------------------------------------------------ 11. Ecrane
   {

@@ -53,11 +53,12 @@
     put('sex', r.sexNorm, true);
     put('cet', r.country, true);
     put('tip', r.docType, true);
-    put('doc', r.docNoClean, true);
+    put('doc', r.longDoc ? '' : r.docNoClean, true); // o serie lungă nu se completează trunchiată
     put('exp', r.expISO, true);
     put('cnp', r.cnp, true);
     if (r.cnp) addCheck('ok', 'CNP-ul din act e valid și se potrivește cu data nașterii și cu sexul.');
     else if (r.nat === 'ROU') addCheck('info', 'CNP-ul nu apare în datele citite din act. Dacă îl ai pe act, scrie-l mai jos.');
+    if (r.dobAmbiguous) addCheck('bad', 'Anul nașterii din act are două cifre: am ales ' + fmt(r.dobISO) + ' (persoană adultă). Verifică data nașterii în act și corect-o dacă e alta.');
     if (!r.allOk) addCheck('info', 'Verifică actul cu ochiul liber și corectează câmpurile de mai jos înainte de a înscrie fișa.');
     mrzBox.value = ''; // textul brut al zonei de jos nu rămâne în pagină
   }

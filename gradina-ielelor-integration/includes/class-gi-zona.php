@@ -162,6 +162,11 @@ final class GI_Zona {
                 return false; // dreptul acesta rămâne numai administratorului
             }
         }
+        foreach (array($sales, $reception) as $team_role) {
+            if ($team_role->has_cap('gi_fise_vezi')) {
+                return false; // nici rolurile de echipă nu-l au
+            }
+        }
         return true;
     }
 

@@ -202,22 +202,26 @@ final class GI_Fise {
         }
         if (function_exists('imagecreatefromstring')) { // o imagine fără niciun pixel desenat nu e o semnătură
             $im = @imagecreatefromstring($bin);
-            if ($im && imageistruecolor($im)) {
+            if (!$im) {
+                return ''; // PNG tăiat sau stricat: nu se poate afișa
+            }
+            if (imageistruecolor($im)) {
                 $ink = 0;
                 $w = imagesx($im);
                 $h = imagesy($im);
-                for ($y = 0; $y < $h && $ink < 15; $y += 2) {
+                for ($y = 0; $y < $h && $ink < 6; $y += 2) {
                     for ($x = 0; $x < $w; $x += 2) {
-                        if ((((imagecolorat($im, $x, $y) >> 24) & 0x7F) < 100) && ++$ink >= 15) {
+                        if ((((imagecolorat($im, $x, $y) >> 24) & 0x7F) < 127) && ++$ink >= 6) { // orice pixel care nu e complet transparent
                             break;
                         }
                     }
                 }
-                imagedestroy($im);
-                if ($ink < 15) {
+                if ($ink < 6) {
+                    imagedestroy($im);
                     return '';
                 }
             }
+            imagedestroy($im);
         }
         return $v;
     }
@@ -286,6 +290,8 @@ final class GI_Fise {
         $d['nastere'] = self::valid_date($g('f_dob'), '1900-01-01', $today);
         if ('' === $d['nastere']) {
             $errors[] = 'Data nașterii lipsește sau nu e o dată valabilă (între 1900 și azi).';
+        } elseif ($d['nastere'] < gmdate('Y-m-d', strtotime('-110 years'))) {
+            $errors[] = 'Data nașterii pare greșită (peste 110 ani). Verifică-o în act.';
         }
         $sex = strtoupper($g('f_sex'));
         $d['sex'] = in_array($sex, array('F', 'M'), true) ? $sex : '';
@@ -356,7 +362,7 @@ final class GI_Fise {
         global $wpdb;
         $table = self::table();
         $settings = self::settings();
-        $an = (int) gmdate('Y');
+        $an = (int) wp_date('Y'); // anul din seria fișei: al site-ului (ora locală), nu UTC
         $counter = 'gi_fise_ultim_' . $an;
         $code = GI_Rezervari::code_for_order($order, false);
         for ($try = 0; $try < 6; $try++) {
@@ -403,11 +409,15 @@ final class GI_Fise {
                 return $new_id;
             }
             $error = (string) $wpdb->last_error;
-            if (false !== stripos($error, 'act_unic') || false !== stripos($error, 'act_cheie')) {
+            // Mesajul de eroare diferă între MySQL și SQLite (și poate cuprinde tot textul comenzii): întrebăm direct dacă fișa există deja.
+            $previous = $wpdb->suppress_errors(true);
+            $same = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$table} WHERE comanda = %d AND act_cheie = %s LIMIT 1", (int) $order->get_id(), $row['act_cheie'])); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            $wpdb->suppress_errors($previous);
+            if ($same) {
                 return -1; // aceeași fișă (același act pe aceeași rezervare) trimisă de două ori în același timp
             }
             if (false === stripos($error, 'duplicate') && false === stripos($error, 'unique')) {
-                break;
+                break; // altă eroare, nu un conflict de număr: reîncercarea n-ar ajuta
             }
         }
         return 0;
@@ -606,7 +616,8 @@ final class GI_Fise {
             return;
         }
         if ('csv' === $action) {
-            $q = self::current_search();
+            // Exportă exact ce arăta pagina (căutarea o trimite formularul, nu o ia din memorie, unde poate fi expirată sau schimbată în altă filă).
+            $q = mb_substr(trim(sanitize_text_field((string) GI_Zona::posted('q'))), 0, 80);
             ignore_user_abort(true); // un export întrerupt tot se trece în istoric
             $n = self::stream_csv($q);
             GI_Istoric::log('fisa_export', 'registru', array('fise' => $n, 'cautare' => '' !== $q));
@@ -921,6 +932,7 @@ final class GI_Fise {
             <form method="post" action="<?php echo esc_url(GI_Zona::url('registru')); ?>" class="gi-zona-form">
                 <?php echo GI_Zona::nonce_field('registru'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                 <input type="hidden" name="gi_actiune" value="csv">
+                <input type="hidden" name="q" value="<?php echo esc_attr($q); ?>">
                 <p class="gi-zona-butoane"><button type="submit" class="button button-outline">Descarcă CSV (Excel)<?php echo '' !== $q ? ' — numai cele găsite' : ''; ?></button></p>
                 <p class="gi-zona-mic">Dacă Excel strică un număr (CNP-ul apare ca 1,9E+12 sau telefonul pierde zeroul din față): deschide fișierul cu <em>Date → Din text/CSV</em> și alege coloanele CNP și Telefon ca „Text”. Telefoanele care încep cu „+” apar cu un apostrof în față, ca să nu fie luate drept formulă.</p>
             </form>

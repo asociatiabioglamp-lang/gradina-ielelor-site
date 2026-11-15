@@ -174,6 +174,13 @@ function checksum(code) {
     ok(/noindex/.test((await ap.content())), 'recepție: pagina nu apare în Google');
     ok((await ap.locator('meta[name="google"][content="notranslate"]').count()) === 1 && (await ap.evaluate(() => document.body.classList.contains('notranslate'))), 'recepție: pagina cere să nu fie tradusă automat (meta notranslate + clasa pe pagină): datele turiștilor nu pleacă la un traducător');
     {
+      // steagul de limbă (pus în afara casetei paginii) e ascuns în Zonă: se simulează cu pagina de probă „stiluri străine”
+      await ap.goto(RECEPTIE + '?gi_test=stiluri', { waitUntil: 'load' });
+      const flag = await ap.evaluate(() => { const f = document.querySelector('#gt_float_wrapper'); return f ? getComputedStyle(f).display : 'lipsește'; });
+      ok(flag === 'none' || flag === 'lipsește', 'recepție: steagul de limbă nu se vede în Zonă (' + flag + ')');
+      await ap.goto(RECEPTIE, { waitUntil: 'domcontentloaded' });
+    }
+    {
       const pub = await newCtx(); const pubPage = await pub.newPage();
       await pubPage.goto(BASE + '/glamping/', { waitUntil: 'domcontentloaded' });
       ok((await pubPage.locator('meta[name="google"][content="notranslate"]').count()) === 0, 'traducere: pe paginile publice traducerea rămâne permisă (nu s-a oprit peste tot)');

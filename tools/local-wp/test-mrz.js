@@ -80,7 +80,8 @@ ok(leap.dobISO === '2000-02-29', '29 februarie 2000 (an bisect): data se citeșt
 const deu = M.parse('P<D<<MUELLER<<HANS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\nC01X00T478D<<8505201M3206019<<<<<<<<<<<<<<<0', TODAY);
 ok(M.countryName('D<<') === 'Germania' && M.countryName('ROU') === 'România', 'țară cu „<” de umplutură (D<<): „Germania”, fără „<”');
 const longDoc = M.parse('I<UTOD' + '<'.repeat(24) + '\n7408122F1204159UTO<<<<<<<<<<<6\nERIKSSON<<ANNA<MARIA<<<<<<<<<<', TODAY);
-ok(!longDoc.error && longDoc.checks[0].ok === true && longDoc.checks[0].note === true, 'număr de act cu „<” în loc de cifră de control (act cu serie lungă): nu se declară alterat, doar se cere verificarea la vedere');
+ok(!longDoc.error && longDoc.longDoc === true && longDoc.checks[0].ok === false && longDoc.checks[0].note === true && /Scrie seria completă de mână/.test(longDoc.checks[0].text), 'număr de act cu „<” în loc de cifră de control (act cu serie lungă): se spune clar să scrie seria completă de mână, nu se completează trunchiată');
+ok(M.parse(build({ doc: 'XY123456', dob: '081201', sex: 'F', exp: '300101', sur: 'AMBIGUA', given: 'ANA' }), TODAY).dobAmbiguous === true && M.parse(build({ doc: 'XY123456', dob: '900314', sex: 'F', exp: '300101', sur: 'CLARA', given: 'ANA' }), TODAY).dobAmbiguous === false, 'an din două cifre ambiguu (081201: 2008 sau 1908): marcat „ambiguu”, ca să se verifice în act; un an clar (90) nu e marcat');
 ok(!M.cnpOk('0900314080015') && !M.cnpMatches('0900314080015', '1990-03-14', 'F'), 'CNP care începe cu 0 nu e valabil');
 
 // ---- CNP scris de mână ----
