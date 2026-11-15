@@ -220,7 +220,7 @@ body.admin-bar .gi-site .site-header{top:32px}
 .gi-site .footer-legal+.footer-bottom{border-top:0;padding-top:8px}
 .gi-site .gi-admin-wrap{display:flex;justify-content:flex-end;padding-bottom:20px}
 .gi-site .site-footer .gi-admin-wrap .gi-admin-box{display:inline-flex;align-items:center;gap:9px;min-height:44px;margin:0;padding:9px 16px;border:1px solid rgba(27,58,75,.3);border-radius:2px;background:transparent;color:var(--text-2);font-size:var(--fs-note);font-weight:600;line-height:1.2;text-decoration:none;transition:background .2s,color .2s,border-color .2s}
-.gi-site .site-footer .gi-admin-wrap .gi-admin-box:hover,.gi-site .site-footer .gi-admin-wrap .gi-admin-box:focus-visible{background:var(--forest);border-color:var(--forest);color:#fff}
+.gi-site .site-footer .gi-admin-wrap .gi-admin-box:hover,.gi-site .site-footer .gi-admin-wrap .gi-admin-box:focus-visible{background:rgba(29,99,128,.12);border-color:var(--forest);color:var(--text-2)}
 .gi-site .gi-admin-box .gi-icon{width:18px;height:18px}
 .gi-site .footer-bottom{display:flex;justify-content:space-between;gap:30px;padding-top:24px;border-top:1px solid rgba(27,58,75,.14);color:var(--text-2);font-size:var(--fs-note);line-height:1.55}
 .gi-site .mobile-booking-cta{display:none}
