@@ -38,8 +38,10 @@ Proprietar: Asociația Bioglamp. Comunicarea cu proprietarul se face în român�
 - Pașii proprietarului (backup, instalare, NETOPIA sandbox, lansare, revenire, urmărire): `docs/lansare.md`. Conturi, accese, secrete: `docs/independenta.md`.
 - Nu se adaugă deploy automat pe live. `deploy-staging.yml` rămâne manual și oprit implicit.
 
-## Stare la 30.10.2026
-- Versiunea pluginului: 1.1.0 (ramura `main`).
+## Stare la 15.11.2026
+- Versiunea pluginului pe `main` și pe live: **1.7.0** (QR la rezervare, Recepție, fișa de cazare și registru; Zona echipei; vouchere și copaci cu cod QR). În lucru, în ramura `harta-locuri-1-8-0`: 1.8.0 (harta cu „Ești aici”, panouri informative cu cod QR, scriere simplă, PDF la locuri).
+- Istoricul stării de la 30.10.2026, pentru context:
+- Versiunea pluginului era 1.1.0 (ramura `main`).
 - Gata: hub-ul de pe pagina principală și pagina dedicată Glamping.
 - Următoarele: paginile Camping & rulote, Bungalow, Festivaluri & evenimente (același model ca Glamping), apoi pozele reale.
 - Pozele: în `assets/images/` (WebP optimizat, fără metadate), preluate de pe site-ul live; sursa fiecăreia e în `binary-manifest.tsv`. Alte fotografii ale proprietarului: Google Drive, `kimi/gradina ielelor hub/lucru/01-poze-siglate`.
