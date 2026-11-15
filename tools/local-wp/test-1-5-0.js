@@ -1,4 +1,4 @@
-// Test pentru versiunea 1.5.0 („Zona echipei”: intrare direct de pe site, conturi de vânzări fără administrare WordPress, vouchere,
+// Test pentru versiunile 1.5.0 și 1.5.1 („Zona echipei”: intrare direct de pe site, conturi de vânzări fără administrare WordPress, vouchere,
 // copaci și locuri, echipă), pe WordPress local pornit pe 127.0.0.1:9400 (vezi tools/local-wp/README.md).
 // NUMAI LOCAL: se autentifică cu admin/password, creează și șterge conturi, vouchere și locuri de probă.
 // Are nevoie de: mu-plugin-urile din tools/local-wp/mu-plugins (inclusiv gi-test-1-5-0.php și gi-test-1-3-14.php), WooCommerce activ
@@ -232,7 +232,7 @@ async function runScreens(browser, newCtx, state) {
     ok(/no-store|no-cache/.test(hd['cache-control'] || ''), `zona fără cont: nu se păstrează în memorii intermediare (Cache-Control: ${hd['cache-control']})`);
     ok(/id="gi-zona-user"/.test(html) && /name="pwd"/.test(html) && /autocomplete="current-password"/.test(html) && /for="gi-zona-user"/.test(html) && /for="gi-zona-pass"/.test(html), 'zona fără cont: formular de intrare cu etichete și completare automată');
     ok(/Zona echipei \| /.test((html.match(/<title>([^<]*)<\/title>/) || [])[1] || ''), 'zona fără cont: titlul paginii e „Zona echipei | …”');
-    for (const s of ['vouchere/', 'copaci/', 'copaci/nou/', 'echipa/', 'tipar/?tip=vouchere&ids[]=1']) {
+    for (const s of ['vouchere/', 'copaci/', 'copaci/nou/', 'echipa/', 'istoric/', 'tipar/?tip=vouchere&ids[]=1']) {
       const t = await (await ctx.request.get(ZONA + s)).text();
       ok(/id="gi-zona-user"/.test(t) && !/gi-zona-lista|gi-zona-coduri|gi-qr-mini|name="gi_actiune"/.test(t), `zona fără cont: /${s.split('?')[0]} arată numai formularul de intrare`);
     }
@@ -296,6 +296,60 @@ async function runScreens(browser, newCtx, state) {
   // ------------------------------------------------------------------ 4. Administratorul în Zonă
   const adm = await newCtx(); const ap = await adm.newPage(); ap.setDefaultTimeout(90000);
   const submit = async (page, sel) => { await Promise.all([page.waitForNavigation({ waitUntil: 'domcontentloaded' }), page.click(sel)]); };
+  const histChecks = async () => {
+    // ---- ștergerea voucherelor (1.5.1)
+    const del = flashCodes[1], used = flashCodes[0];
+    await ap.goto(ZONA + 'vouchere/', { waitUntil: 'domcontentloaded' });
+    ok((await ap.locator('button:has-text("Șterge voucherele alese")').count()) === 1, 'vouchere: administratorul are butonul „Șterge voucherele alese”');
+    await ap.locator('.gi-zona-lista li', { hasText: del }).locator('input[name="ids[]"]').check();
+    await submit(ap, 'button:has-text("Șterge voucherele alese")');
+    const m1 = (await ap.locator('.gi-zona-notice').allInnerTexts()).join(' ');
+    ok(new RegExp('Am șters voucherul ' + del).test(m1) && (await api(adm, 'cupon&cod=' + del)).exists === false, `vouchere: voucherul ales se șterge (${del}) și nu mai poate fi folosit`);
+    ok((await ap.locator('.gi-zona-lista li', { hasText: del }).count()) === 0 && (await ap.locator('.gi-zona-lista li', { hasText: used }).count()) === 1, 'vouchere: lista nu-l mai arată; celălalt voucher rămâne');
+    const printDeleted = await (await adm.request.get(ZONA + 'tipar/?tip=vouchere&ids[]=' + cp[1].id + '&_gi_nonce=' + (await nonceFor(adm, 'gi_zona_tipar')))).text();
+    ok(!/class="gi-tile"/.test(printDeleted), 'vouchere: un voucher șters nu se mai poate printa nici cu linkul făcut de mână');
+    await api(adm, 'folosit&cod=' + used);
+    await ap.goto(ZONA + 'vouchere/', { waitUntil: 'domcontentloaded' });
+    await ap.locator('.gi-zona-lista li', { hasText: used }).locator('input[name="ids[]"]').check();
+    await submit(ap, 'button:has-text("Șterge voucherele alese")');
+    const m2 = (await ap.locator('.gi-zona-notice').allInnerTexts()).join(' ');
+    ok(/deja folosit/.test(m2) && (await api(adm, 'cupon&cod=' + used)).exists === true, 'vouchere: un voucher folosit NU se șterge (mesaj clar, rămâne ca dovadă)');
+    const plainCode = 'SIMPLU' + STAMP; const plain = await api(adm, 'cupon_simplu&cod=' + plainCode);
+    if (plain.id) { created.coupons.push(plain.id); }
+    const nSt = await nonceFor(adm, 'gi_zona_sterge');
+    await adm.request.post(ZONA + 'vouchere/', { form: { gi_actiune: 'sterge', 'ids[]': String(plain.id), _gi_nonce_sterge: nSt }, maxRedirects: 0 });
+    ok((await api(adm, 'cupon&cod=' + plainCode)).exists === true && /nu s-a putut șterge|nu s-au putut șterge/.test(await (await adm.request.get(ZONA + 'vouchere/')).text()), 'vouchere: un cupon care nu e din Zonă (făcut altfel) nu se poate șterge de aici');
+    await adm.request.post(ZONA + 'vouchere/', { form: { gi_actiune: 'sterge', 'ids[]': String(cp[0].id), _gi_nonce_sterge: await nonceFor(adm, 'gi_zona_genereaza') }, maxRedirects: 0 });
+    ok(/Pagina a expirat/.test(await (await adm.request.get(ZONA + 'vouchere/')).text()) && (await api(adm, 'cupon&cod=' + used)).exists === true, 'vouchere: ștergerea cu un cod de siguranță de la altă acțiune nu face nimic');
+
+    // ---- istoricul (1.5.1)
+    const rows = (await api(adm, 'istoric&n=100')).rows;
+    const by = (a) => rows.filter((r) => r.actiune === a);
+    ok(by('voucher_creat').some((r) => /TESTZ/.test(r.detalii) && /admin/.test(r.utilizator) && r.detalii.includes(del) && r.detalii.includes(used)), 'istoric: generarea voucherelor e înregistrată: cine, ce, cu toate codurile');
+    ok(by('voucher_creat').some((r) => Number(r.user_id) === u1.id && /VANZ/.test(r.detalii)), 'istoric: și generarea făcută de colegul de la vânzări, pe numele lui');
+    ok(by('voucher_sters').some((r) => r.obiect === del && /admin/.test(r.utilizator)), 'istoric: ștergerea e înregistrată (cine, ce cod)');
+    ok(by('voucher_sters').length === 1, 'istoric: o singură ștergere (folositul și cuponul străin nu s-au șters, deci nu apar)');
+    for (const a of ['cont_creat', 'cont_parola', 'cont_scos', 'cont_reactivat', 'cont_rol', 'cont_limite', 'cont_parola_proprie']) {
+      ok(by(a).length >= 1, 'istoric: evenimentul „' + a + '” e înregistrat');
+    }
+    ok(by('loc_creat').some((r) => /Stejarul zonei/.test(r.detalii)) && by('loc_modificat').length >= 1, 'istoric: crearea și modificarea unui loc sunt înregistrate');
+    const secrets = [cred.pass, cred2.pass, 'Cl13nt-' + STAMP + 'x'];
+    let leak = 0; for (const sct of secrets) { leak += (await api(adm, 'cauta_istoric&q=' + encodeURIComponent(sct))).count; }
+    ok(leak === 0, 'istoric: nicio parolă nu apare în istoric');
+    await ap.goto(ZONA, { waitUntil: 'domcontentloaded' });
+    ok((await ap.locator('.gi-zona-tile strong', { hasText: 'Istoric' }).count()) === 1, 'istoric: administratorul are dala „Istoric” pe prima pagină');
+    await ap.goto(ZONA + 'istoric/', { waitUntil: 'domcontentloaded' });
+    const ht = await ap.locator('.gi-zona').innerText();
+    const hh = await ap.content();
+    ok(/A generat 2 vouchere de 50 lei/.test(ht) && new RegExp('A șters voucherul ' + del).test(ht) && /A creat contul colegului/.test(ht) && /A adăugat locul/.test(ht) && /Și-a schimbat parola/.test(ht), 'istoric (pagina): se văd generarea, ștergerea, contul creat, locul adăugat și parola schimbată, în română');
+    ok(hh.includes('gi-zona-coduri-istoric') && hh.split(del).length > 2, 'istoric (pagina): codul voucherului șters rămâne în istoric, în lista codurilor generate');
+    await ap.goto(ZONA + 'istoric/?tip=cont_', { waitUntil: 'domcontentloaded' });
+    const ct = await ap.locator('.gi-zona-tabel').innerText();
+    ok(/A creat contul colegului/.test(ct) && !/vouchere de/.test(ct) && !/A adăugat locul/.test(ct), 'istoric (pagina): filtrul „Conturi” arată numai conturile');
+    ok((await ap.locator('.gi-zona-tabel td:first-child').first().innerText()).match(/^\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}$/) !== null, 'istoric (pagina): data și ora sunt în formatul zz.ll.aaaa hh:mm');
+    ok((await ap.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)) <= 0, 'istoric (pagina): fără derulare pe orizontală');
+  };
+
   const tailChecks = async () => {
   {
     // un cont de client existent (cineva din echipă care a rezervat și el): primește rolul de vânzări și își păstrează parola
@@ -642,6 +696,43 @@ async function runScreens(browser, newCtx, state) {
   }
   if (SHOTS) { await sp.screenshot({ path: path.join(SHOTS, 'zona-vouchere-vanzari.png'), fullPage: true }); }
 
+  // --- colegul de la vânzări: fără ștergere de vouchere și fără istoric; își schimbă singur parola (1.5.1)
+  {
+    await sp.goto(ZONA + 'vouchere/', { waitUntil: 'domcontentloaded' });
+    ok((await sp.locator('button:has-text("Șterge voucherele alese")').count()) === 0, 'vânzări: lista lui de vouchere nu are butonul „Șterge”');
+    const ownCode = sCodes[0]; const ownInfo = await api(sal, 'cupon&cod=' + ownCode);
+    const nDel = await nonceFor(sal, 'gi_zona_sterge');
+    await sal.request.post(ZONA + 'vouchere/', { form: { gi_actiune: 'sterge', 'ids[]': String(ownInfo.id), _gi_nonce_sterge: nDel }, maxRedirects: 0 });
+    ok(/Nu ai voie/.test(await (await sal.request.get(ZONA + 'vouchere/')).text()) && (await api(sal, 'cupon&cod=' + ownCode)).exists === true, 'vânzări: ștergerea trimisă de mână (cu cod valid) e refuzată, voucherul rămâne');
+    await sp.goto(ZONA + 'istoric/', { waitUntil: 'domcontentloaded' });
+    ok(/nu are acces la istoric/.test(await sp.locator('.gi-zona').innerText()) && (await sp.locator('.gi-zona-tabel').count()) === 0, 'vânzări: istoricul e închis');
+    await sp.goto(ZONA, { waitUntil: 'domcontentloaded' });
+    ok((await sp.locator('.gi-zona-tile', { hasText: 'Istoric' }).count()) === 0 && (await sp.locator('#gi-pm-curenta').count()) === 1, 'vânzări: pe prima pagină nu are dala „Istoric”, dar are „Parola ta”');
+    const fillPw = async (cur, n1, n2) => {
+      await sp.goto(ZONA, { waitUntil: 'domcontentloaded' });
+      await sp.fill('#gi-pm-curenta', cur); await sp.fill('#gi-pm-noua', n1); await sp.fill('#gi-pm-noua2', n2);
+      await submit(sp, 'button:has-text("Schimbă parola")');
+      return (await sp.locator('.gi-zona-notice').allInnerTexts()).join(' ');
+    };
+    const NEWPW = 'ParolaMea-' + STAMP + 'Q!';
+    ok(/Parola curentă nu e corectă/.test(await fillPw('gresita-gresita-1', NEWPW, NEWPW)), 'parola ta: parola curentă greșită → refuzat');
+    ok(/nu sunt la fel/.test(await fillPw(cred.pass, NEWPW, NEWPW + 'x')), 'parola ta: cele două parole noi diferite → refuzat');
+    ok(/alta decât cea curentă/.test(await fillPw(cred.pass, cred.pass, cred.pass)), 'parola ta: aceeași parolă ca cea curentă → refuzat');
+    {
+      const nPw = await nonceFor(sal, 'gi_zona_parola_mea');
+      await sal.request.post(ZONA, { form: { gi_actiune: 'parola_mea', parola_curenta: cred.pass, parola_noua: 'scurta1', parola_noua2: 'scurta1', _gi_nonce: nPw }, maxRedirects: 0 });
+      ok(/cel puțin 12 caractere/.test(await (await sal.request.get(ZONA)).text()), 'parola ta: o parolă prea scurtă (trimisă de mână) → refuzată');
+    }
+    ok(/a fost schimbată/.test(await fillPw(cred.pass, NEWPW, NEWPW)), 'parola ta: parola corectă, cu parola nouă de două ori → schimbată');
+    await sp.goto(ZONA + 'vouchere/', { waitUntil: 'domcontentloaded' });
+    ok((await sp.locator('.gi-zona-lista').count()) === 1, 'parola ta: după schimbare rămâne conectat pe acest dispozitiv');
+    const oldOk = await (await newCtx()).request.post(BASE + '/wp-login.php', { form: { log: cred.login, pwd: cred.pass, 'wp-submit': 'Log In' }, maxRedirects: 0 });
+    const newOk = await (await newCtx()).request.post(BASE + '/wp-login.php', { form: { log: cred.login, pwd: NEWPW, 'wp-submit': 'Log In' }, maxRedirects: 0 });
+    ok(oldOk.status() === 200 && newOk.status() === 302, `parola ta: parola veche nu mai merge (${oldOk.status()}), cea nouă merge (${newOk.status()})`);
+    ok((await api(adm, 'cauta_optiuni&q=' + encodeURIComponent(NEWPW))).count === 0 && (await api(adm, 'cauta_istoric&q=' + encodeURIComponent(NEWPW))).count === 0, 'parola ta: parola nouă nu apare nici în opțiuni, nici în istoric');
+    cred.pass = NEWPW;
+  }
+
   // --- limitele se schimbă de proprietară și se aplică imediat
   await ap.goto(ZONA + 'echipa/', { waitUntil: 'domcontentloaded' });
   await ap.fill('#gi-l-p', '20'); await ap.fill('#gi-l-s', '150,5'); await ap.fill('#gi-l-n', '12');
@@ -730,6 +821,7 @@ async function runScreens(browser, newCtx, state) {
     await ap.goto(ZONA + 'echipa/', { waitUntil: 'domcontentloaded' });
     ok((await ap.locator('.gi-zona-lista li', { hasText: COLEG }).count()) === 1, 'echipă: colegul reactivat apare din nou în lista echipei');
   }
+  await histChecks();
   await tailChecks();
 
   if (!process.env.GI_SKIP_HEAVY) { await runScreens(browser, newCtx, await adm.storageState()); }

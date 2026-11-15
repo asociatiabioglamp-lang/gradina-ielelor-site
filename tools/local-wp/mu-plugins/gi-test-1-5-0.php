@@ -11,6 +11,10 @@
  *  - /?gi_test=cauta_optiuni&q=X → de câte ori apare textul X în valorile opțiunilor (parolele nu trebuie să rămână în baza de date)
  *  - /?gi_test=ini              → post_max_size și upload_max_filesize ale serverului local
  *  - /?gi_test=creeaza_client&login=X&email=Y&parola=Z → creează un cont de client (rol „customer”)
+ *  - /?gi_test=folosit&cod=X    → marchează voucherul X drept folosit o dată
+ *  - /?gi_test=cupon_simplu&cod=X → creează un cupon WooCommerce obișnuit (fără semnul voucherelor din Zonă)
+ *  - /?gi_test=istoric&n=N      → ultimele N rânduri din istoricul Zonei
+ *  - /?gi_test=cauta_istoric&q=X → de câte ori apare textul X în istoricul Zonei
  *  - /?gi_test=curata_teste     → șterge conturile de probă rămase (colega.test.*, client.test.*) după o rulare întreruptă
  *  - /?gi_test=filtru_voucher&html=… → ce întoarce filtrul care înlocuiește propoziția despre folosirea parțială a voucherului
  */
@@ -49,7 +53,7 @@ add_action('init', function () {
 
 add_action('init', function () {
     $t = isset($_GET['gi_test']) ? sanitize_key(wp_unslash($_GET['gi_test'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-    if ('' === $t || !in_array($t, array('emailuri', 'utilizator', 'cupon', 'sterge_utilizator', 'zona_reset', 'esecuri_login', 'cauta_optiuni', 'ini', 'creeaza_client', 'filtru_voucher', 'curata_teste'), true)) {
+    if ('' === $t || !in_array($t, array('emailuri', 'utilizator', 'cupon', 'sterge_utilizator', 'zona_reset', 'esecuri_login', 'cauta_optiuni', 'ini', 'creeaza_client', 'filtru_voucher', 'curata_teste', 'folosit', 'cupon_simplu', 'istoric', 'cauta_istoric'), true)) {
         return;
     }
     header('Content-Type: application/json');
@@ -107,6 +111,36 @@ add_action('init', function () {
     } elseif ('filtru_voucher' === $t) {
         $html = isset($_GET['html']) ? (string) wp_unslash($_GET['html']) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
         echo wp_json_encode(array('out' => GI_Plugin::voucher_whole_use($html, array())));
+    } elseif ('folosit' === $t) {
+        $code = isset($_GET['cod']) ? wc_format_coupon_code(wp_unslash($_GET['cod'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $id = $code ? wc_get_coupon_id_by_code($code) : 0;
+        if ($id) {
+            $c = new WC_Coupon($id);
+            $c->set_usage_count(1);
+            $c->save();
+        }
+        echo wp_json_encode(array('ok' => (bool) $id));
+    } elseif ('cupon_simplu' === $t) {
+        $code = isset($_GET['cod']) ? wc_format_coupon_code(wp_unslash($_GET['cod'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $c = new WC_Coupon();
+        $c->set_code($code);
+        $c->set_discount_type('fixed_cart');
+        $c->set_amount(5);
+        $c->save();
+        echo wp_json_encode(array('id' => $c->get_id()));
+    } elseif ('istoric' === $t) {
+        global $wpdb;
+        $n = isset($_GET['n']) ? max(1, min(200, absint(wp_unslash($_GET['n'])))) : 20; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $table = $wpdb->prefix . 'gi_istoric';
+        $rows = $wpdb->get_results($wpdb->prepare("SELECT actiune, obiect, utilizator, user_id, detalii FROM {$table} ORDER BY id DESC LIMIT %d", $n), ARRAY_A); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        echo wp_json_encode(array('rows' => $rows ? $rows : array()));
+    } elseif ('cauta_istoric' === $t) {
+        global $wpdb;
+        $q = isset($_GET['q']) ? (string) wp_unslash($_GET['q']) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $table = $wpdb->prefix . 'gi_istoric';
+        $like = '%' . $wpdb->esc_like($q) . '%';
+        $n = '' === $q ? -1 : (int) $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM {$table} WHERE detalii LIKE %s OR obiect LIKE %s OR utilizator LIKE %s", $like, $like, $like)); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        echo wp_json_encode(array('count' => $n));
     } elseif ('curata_teste' === $t) {
         require_once ABSPATH . 'wp-admin/includes/user.php';
         $n = 0;

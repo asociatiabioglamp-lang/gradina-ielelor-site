@@ -13,6 +13,8 @@ delete_transient('gi_galerie_lipsa');
 delete_option('gi_zona_rewrite');
 delete_option('gi_zona_roluri');
 delete_option('gi_zona_limite');
+// Istoricul (tabelul gi_istoric) se păstrează: e istoric. Se poate șterge din baza de date, dacă nu mai e nevoie de el.
+delete_option('gi_istoric_db');
 remove_role('gi_vanzari');
 foreach (array('administrator', 'shop_manager', 'editor') as $gi_role_name) {
     $gi_role = get_role($gi_role_name);

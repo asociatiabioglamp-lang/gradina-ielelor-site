@@ -178,7 +178,56 @@ final class GI_Vouchere {
             $coupon->save();
             $created[] = $coupon->get_id();
         }
+        if ($created && class_exists('GI_Istoric')) {
+            $codes = array();
+            foreach ($created as $created_id) {
+                $made = new WC_Coupon($created_id);
+                $codes[] = strtoupper($made->get_code());
+            }
+            GI_Istoric::log('voucher_creat', $lot, array('tip' => $type, 'valoare' => $value, 'numar' => count($created), 'prefix' => $prefix, 'nota' => (string) $note, 'coduri' => $codes, 'expira' => wp_date('d.m.Y', $expires->getTimestamp())), $user_id);
+        }
         return array('errors' => $errors, 'ids' => $created);
+    }
+
+    /**
+     * Șterge vouchere gata create (numai cele generate din zona Grădina), în numele unui utilizator cu drept la toate voucherele.
+     * Se șterg numai cele NEFOLOSITE; cele folosite rămân (sunt dovada reducerii de pe comandă). „Ștergerea” le pune în Coșul WooCommerce
+     * (un administrator le poate readuce din WooCommerce → Marketing → Cupoane → Coș, timp de 30 de zile): un cupon din coș nu se mai poate folosi.
+     * Fiecare ștergere intră în istoric. Întoarce array('sterse' => [coduri], 'folosite' => n, 'refuzate' => n).
+     *
+     * @param int[] $ids
+     */
+    public static function delete_vouchers($ids, $user_id) {
+        $out = array('sterse' => array(), 'folosite' => 0, 'refuzate' => 0);
+        $ids = array_values(array_unique(array_filter(array_map('absint', (array) $ids))));
+        $user = get_userdata((int) $user_id);
+        if (!$user || !($user->has_cap('gi_vouchere_toate') || $user->has_cap('manage_woocommerce'))) {
+            $out['refuzate'] = count($ids);
+            return $out;
+        }
+        foreach ($ids as $id) {
+            $post = get_post($id);
+            if (!$post || 'shop_coupon' !== $post->post_type || 'trash' === $post->post_status || !metadata_exists('post', $post->ID, '_gi_voucher_lot')) {
+                $out['refuzate']++;
+                continue;
+            }
+            $coupon = new WC_Coupon($post->ID);
+            if ((int) $coupon->get_usage_count() > 0) {
+                $out['folosite']++;
+                continue;
+            }
+            $code = strtoupper($coupon->get_code());
+            $details = array('valoare' => self::describe($coupon), 'lot' => (string) get_post_meta($post->ID, '_gi_voucher_lot', true), 'creat_la' => wp_date('d.m.Y H:i', strtotime($post->post_date_gmt . ' UTC')), 'creat_de' => (int) get_post_meta($post->ID, '_gi_voucher_creator', true));
+            if (wp_trash_post($post->ID)) {
+                $out['sterse'][] = $code;
+                if (class_exists('GI_Istoric')) {
+                    GI_Istoric::log('voucher_sters', $code, $details, $user_id);
+                }
+            } else {
+                $out['refuzate']++;
+            }
+        }
+        return $out;
     }
 
     public static function generate() {
@@ -369,7 +418,7 @@ final class GI_Vouchere {
         $tiles = array();
         foreach ($ids as $id) {
             $post = get_post($id);
-            if (!$post || 'shop_coupon' !== $post->post_type || !self::can_see($post->ID)) {
+            if (!$post || 'shop_coupon' !== $post->post_type || 'trash' === $post->post_status || !self::can_see($post->ID)) {
                 continue;
             }
             $c = new WC_Coupon($post->ID);

@@ -86,3 +86,17 @@
   .gi-zona-site .gi-zona .gi-zona-inline { flex: 1 1 140px; }
   .gi-zona-site .gi-zona .gi-zona-inline .button { width: 100%; }
 }
+
+/* ---------- Istoric, butoane în rând ---------- */
+.gi-zona-site .gi-zona .gi-zona-butoane { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 0; }
+.gi-zona-site .gi-zona .gi-zona-filtre { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; }
+.gi-zona-site .gi-zona .button.gi-zona-mic-buton { min-height: 44px; padding: 8px 16px; font-size: var(--fs-note); }
+.gi-zona-site .gi-zona .gi-zona-tabel { overflow-x: auto; border: 1px solid var(--line); border-radius: 4px; }
+.gi-zona-site .gi-zona .gi-zona-tabel table { border-collapse: collapse; width: 100%; font-size: var(--fs-note); }
+.gi-zona-site .gi-zona .gi-zona-tabel th, .gi-zona-site .gi-zona .gi-zona-tabel td { padding: 10px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); font-size: var(--fs-note); line-height: 1.45; color: var(--ink-soft); }
+.gi-zona-site .gi-zona .gi-zona-tabel th { font-size: 13px; font-weight: 650; letter-spacing: .05em; text-transform: uppercase; color: var(--text-2); background: var(--sky-50); white-space: nowrap; }
+.gi-zona-site .gi-zona .gi-zona-tabel td:first-child { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.gi-zona-site .gi-zona .gi-zona-tabel td:nth-child(3) { min-width: 240px; }
+.gi-zona-site .gi-zona .gi-zona-tabel details { margin-top: 6px; }
+.gi-zona-site .gi-zona .gi-zona-tabel summary { cursor: pointer; font-weight: 650; color: var(--forest); min-height: 32px; }
+.gi-zona-site .gi-zona .gi-zona-coduri-istoric { display: block; margin-top: 4px; font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 14px; overflow-wrap: anywhere; user-select: all; }

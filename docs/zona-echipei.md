@@ -1,10 +1,10 @@
-# Zona echipei (pluginul 1.5.0)
+# Zona echipei (pluginul 1.5.1)
 
 **Administrare** direct de pe site, fără să intri în administrarea WordPress. Utilizator + parolă.
 Adresa: **gradina-ielelor.ro/zona-echipei/**. În subsolul fiecărei pagini a site-ului e o căsuță **„Administrare”** care duce acolo.
 Pagina nu apare în Google și nu se păstrează în memoria browserului sau a serverului.
 
-Ce e acum în Zonă: **Vouchere**, **Copaci și locuri** (cu cod QR) și **Echipă**.
+Ce e acum în Zonă: **Vouchere**, **Copaci și locuri** (cu cod QR), **Echipă** și **Istoric**. Fiecare își schimbă singur parola din „Parola ta”, pe prima pagină.
 Urmează, în aceeași Zonă, două dale noi: **QR la rezervare** și **Fișa de cazare** (cerute de proprietară, 15.11.2026; vezi „Ce urmează”).
 
 ## Intri
@@ -24,6 +24,12 @@ Limitarea încercărilor repetate de parolă **nu** e în plugin (hotărâre din
 | **Vânzări (Grădina)** — conturile colegilor | **numai ale lui**, în limite | nu | nu | **nu** (e trimis înapoi în Zonă) |
 
 Colegii de la vânzări nu văd nimic din administrarea WordPress: nici articole, nici pagini, nici comenzi, nici alte conturi. Văd numai Zona echipei.
+
+## Cine creează conturile și cine ține parolele
+- **Conturile le creezi tu**, ca administrator, din **Echipă → Adaugă un coleg**. Nimeni altcineva nu poate crea conturi: nici managerul de magazin, nici colegii de la vânzări.
+- **Parola o generează sistemul** (lungă, aleatoare) și ți-o arată o singură dată. **Nu o poate vedea nimeni după aceea**, nici tu: nu se păstrează în clar. Dacă se pierde, dai **Parolă nouă**.
+- **Colegul își poate schimba parola** singur, din „Parola ta” (cu parola curentă, cel puțin 12 caractere), sau, dacă a uitat-o, cu **„Mi-am uitat parola”** (primește un link pe email).
+- **Tu poți oricând** să dai o parolă nouă sau să scoți accesul. Ce faci cu conturile rămâne în **Istoric**.
 
 ## Un coleg nou, de la vânzări
 **Zona echipei → Echipă → Adaugă un coleg.** Scrii **numele** și **emailul**. Apeși „Creează contul”.
@@ -51,6 +57,19 @@ Cu **0**, tipul respectiv e oprit (de ex. 0 la procente = colegul poate da numai
 - Bifezi voucherele din listă, alegi mărimea și apeși **„Printează voucherele alese”**.
 - Cine scanează codul ajunge pe site; codul se aplică singur la rezervare (la coș).
 - Un coleg de la vânzări vede și printează **numai voucherele lui**.
+
+### Ștergerea unui voucher gata creat
+În lista de vouchere bifezi unul sau mai multe și apeși **„Șterge voucherele alese”** (apare confirmarea). Numai administratorul și managerii de magazin pot șterge; colegii de la vânzări nu.
+- Se șterg numai voucherele **nefolosite**. Unul folosit rămâne în listă (e dovada reducerii de pe comandă).
+- Voucherul șters **nu se mai poate folosi** (nici cu codul scris, nici cu QR-ul printat).
+- Nu dispare definitiv: merge în **Coșul WooCommerce** (WooCommerce → Marketing → Cupoane → Coș) și un administrator îl poate readuce în 30 de zile.
+- Ștergerea rămâne în **Istoric** (cine, când, ce cod).
+
+### Istoric de creare
+**Zona echipei → Istoric:** cine a generat vouchere (cu codurile), cine a șters vouchere, cine a adăugat sau a modificat locuri, cine a creat conturi, a dat parole noi, a scos accesul sau a schimbat limitele, cu data și ora. Poți filtra pe Vouchere, Locuri sau Conturi. Rămâne și după ce voucherul sau locul e șters. **Parolele nu apar niciodată.**
+- Fiecare vede doar ce are voie să administreze: voucherele (administrator, manager de magazin), locurile (cine administrează copacii), conturile (numai administratorul).
+- Istoricul începe de la instalarea acestei versiuni: ce s-a creat înainte nu apare aici (voucherele mai vechi se văd în lista de vouchere, cu cine le-a generat).
+- Se păstrează într-un tabel al site-ului (`gi_istoric`), care rămâne chiar dacă pluginul e șters.
 
 ### Prima încercare cu platforma de rezervări (înainte să dai vouchere clienților)
 Voucherele sunt **cupoane WooCommerce obișnuite**, de două feluri: **sumă fixă** (în lei) sau **procent**. Sunt același sistem cu care lucrează și modulul de rezervări (BRW), dar eu **nu pot încerca aici** o rezervare reală cu BRW (modulul nu e disponibil în mediul meu de test). Faci o încercare, o dată, **pe copia de test (staging)**, nu pe site-ul real:

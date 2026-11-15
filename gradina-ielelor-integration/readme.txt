@@ -3,7 +3,7 @@ Contributors: gradina-ielelor
 Tags: one-page, woocommerce, booking, ovabrw, seo
 Requires at least: 6.0
 Requires PHP: 7.4
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License: GPLv2 or later
 
 Template-uri server-side pentru pagina principală (hub de rezervare) și paginile dedicate ofertelor Grădina Ielelor, cu WooCommerce + OVABRW drept singur motor de rezervări.
@@ -40,6 +40,12 @@ Nu. Constanta GI_REACT_DEMO_ENABLED este false, bundle-ul React nu este inclus, 
 Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai opțiunile acestui plugin.
 
 == Changelog ==
+
+= 1.5.1 =
+* Zona echipei → Vouchere: ștergerea voucherelor gata create („Șterge voucherele alese”), numai pentru administrator și managerul de magazin, numai pentru cele nefolosite (cele folosite rămân ca dovadă). Se pun în Coșul WooCommerce: un cupon din coș nu se mai poate folosi, iar un administrator îl poate readuce 30 de zile.
+* Istoric de creare (Zona echipei → Istoric): cine a generat sau a șters vouchere, a adăugat sau a modificat locuri, a creat conturi, a dat parole noi, a scos accesul sau a schimbat limitele, cu data și ora. Rămâne și după ștergere. Parolele nu apar niciodată. Se păstrează într-un tabel al site-ului (gi_istoric), care rămâne și dacă pluginul e șters.
+* „Parola ta” în Zonă: fiecare cont de echipă își schimbă parola (cu parola curentă, cel puțin 12 caractere); rămâne conectat pe acel dispozitiv, celelalte sesiuni se închid.
+* Fiecare voucher din listă arată când a fost creat.
 
 = 1.5.0 =
 * „Zona echipei” (adresa /zona-echipei/): administrare direct de pe site, fără administrarea WordPress, cu utilizator și parolă. În subsolul tuturor paginilor apare căsuța „Administrare”. Pagina nu apare în Google și nu se păstrează în memorii intermediare. Ghid: docs/zona-echipei.md.
