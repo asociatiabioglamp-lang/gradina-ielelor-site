@@ -10,14 +10,18 @@
  *  - /?gi_test=esecuri_login    → câte autentificări greșite a văzut un ascultător montat DUPĂ pluginul Grădinii (la init, prioritate 10); apoi se resetează
  *  - /?gi_test=cauta_optiuni&q=X → de câte ori apare textul X în valorile opțiunilor (parolele nu trebuie să rămână în baza de date)
  *  - /?gi_test=ini              → post_max_size și upload_max_filesize ale serverului local
+ *  - /?gi_test=creeaza_client&login=X&email=Y&parola=Z → creează un cont de client (rol „customer”)
+ *  - /?gi_test=curata_teste     → șterge conturile de probă rămase (colega.test.*, client.test.*) după o rulare întreruptă
+ *  - /?gi_test=filtru_voucher&html=… → ce întoarce filtrul care înlocuiește propoziția despre folosirea parțială a voucherului
  */
 if (!defined('ABSPATH')) {
     exit;
 }
 
 // Numai pe WordPress-ul local: pe orice alt domeniu nu face nimic (nu oprește emailurile, nu are adrese de test).
-$gi_test_host = isset($_SERVER['HTTP_HOST']) ? strtolower((string) $_SERVER['HTTP_HOST']) : '';
-if (!preg_match('/^(127\.0\.0\.1|localhost)(:\d+)?$/', $gi_test_host)) {
+// Se verifică adresa din setările site-ului (nu antetul Host, pe care îl poate trimite oricine).
+$gi_test_host = strtolower((string) wp_parse_url((string) get_option('home'), PHP_URL_HOST));
+if (!in_array($gi_test_host, array('127.0.0.1', 'localhost'), true)) {
     return;
 }
 
@@ -45,7 +49,7 @@ add_action('init', function () {
 
 add_action('init', function () {
     $t = isset($_GET['gi_test']) ? sanitize_key(wp_unslash($_GET['gi_test'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-    if ('' === $t || !in_array($t, array('emailuri', 'utilizator', 'cupon', 'sterge_utilizator', 'zona_reset', 'esecuri_login', 'cauta_optiuni', 'ini'), true)) {
+    if ('' === $t || !in_array($t, array('emailuri', 'utilizator', 'cupon', 'sterge_utilizator', 'zona_reset', 'esecuri_login', 'cauta_optiuni', 'ini', 'creeaza_client', 'filtru_voucher', 'curata_teste'), true)) {
         return;
     }
     header('Content-Type: application/json');
@@ -94,6 +98,25 @@ add_action('init', function () {
         echo wp_json_encode(array('count' => $n));
     } elseif ('ini' === $t) {
         echo wp_json_encode(array('post_max_size' => ini_get('post_max_size'), 'upload_max_filesize' => ini_get('upload_max_filesize'), 'wp_max_upload_size' => wp_max_upload_size()));
+    } elseif ('creeaza_client' === $t) {
+        $u = isset($_GET['login']) ? sanitize_user(wp_unslash($_GET['login'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $e = isset($_GET['email']) ? sanitize_email(wp_unslash($_GET['email'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $pw = isset($_GET['parola']) ? (string) wp_unslash($_GET['parola']) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $id = ($u && $e && $pw) ? wp_insert_user(array('user_login' => $u, 'user_email' => $e, 'user_pass' => $pw, 'role' => 'customer')) : 0;
+        echo wp_json_encode(array('ok' => $id && !is_wp_error($id), 'id' => is_wp_error($id) ? 0 : (int) $id));
+    } elseif ('filtru_voucher' === $t) {
+        $html = isset($_GET['html']) ? (string) wp_unslash($_GET['html']) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        echo wp_json_encode(array('out' => GI_Plugin::voucher_whole_use($html, array())));
+    } elseif ('curata_teste' === $t) {
+        require_once ABSPATH . 'wp-admin/includes/user.php';
+        $n = 0;
+        foreach (get_users(array('search' => '*.test.*', 'search_columns' => array('user_login'), 'fields' => array('ID', 'user_login'))) as $u) {
+            if ($u->ID > 1 && (0 === strpos($u->user_login, 'colega.test.') || 0 === strpos($u->user_login, 'client.test.'))) {
+                wp_delete_user($u->ID);
+                $n++;
+            }
+        }
+        echo wp_json_encode(array('sterse' => $n));
     } elseif ('zona_reset' === $t) {
         delete_option('gi_zona_limite');
         echo wp_json_encode(array('ok' => true));

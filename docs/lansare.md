@@ -444,6 +444,8 @@ Ce se întâmplă: paginile existente revin singure la designul vechi (conținut
 
 Ca să revii la designul nou: **Activează** pluginul. Paginile își păstrează șabloanele alese.
 
+**Dacă ai conturi pentru colegii de la vânzări (Zona echipei, de la 1.5.0):** cât timp pluginul e oprit, ei pot intra în administrare ca simpli abonați (profilul lor, fără conținut). Nu e urgent. Când reactivezi pluginul, sunt din nou trimiși numai în Zonă. Dacă renunți la plugin de tot, **Echipă → Scoate accesul** pentru fiecare, înainte de ștergere.
+
 **Dacă numai regulamentul de la plată face probleme** (caseta nu apare sau rezervarea nu poate fi finalizată): în **Setări → Grădina Ielelor → Regulamentul la plată** debifezi „Clientul citește și bifează regulamentul…” și salvezi. Rezervările merg din nou ca înainte, fără bifă, iar designul nou rămâne. Spune-mi imediat, ca să reparăm.
 
 ### R2. O singură pagină înapoi (1 minut pe pagină)

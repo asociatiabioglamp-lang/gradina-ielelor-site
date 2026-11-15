@@ -148,7 +148,8 @@ final class GI_Zona {
     public static function login_redirect($redirect_to, $requested, $user) {
         if ($user instanceof WP_User && self::is_sales_only($user)) {
             $base = self::url();
-            return 0 === strpos((string) $redirect_to, $base) ? $redirect_to : $base; // colegul de la vânzări ajunge numai în Zonă
+            $ok = 0 === strpos((string) $redirect_to, $base) && false === strpos(rawurldecode((string) $redirect_to), '..'); // fără „..”: nu se iese din Zonă
+            return $ok ? $redirect_to : $base; // colegul de la vânzări ajunge numai în Zonă
         }
         return $redirect_to;
     }
@@ -444,7 +445,18 @@ final class GI_Zona {
             $existing_id = email_exists($email);
             if ($existing_id) {
                 $old = get_userdata($existing_id);
-                if ($old && empty($old->roles)) {
+                $old_roles = $old ? (array) $old->roles : array();
+                if ($old && !empty($old_roles) && !in_array(self::ROLE, $old_roles, true) && !$old->has_cap('edit_posts') && !array_diff($old_roles, array('customer', 'subscriber'))) {
+                    // Un cont de client (cineva din echipă care a rezervat și el): primește și rolul de vânzări, cu aceeași parolă ca până acum.
+                    $old->add_role(self::ROLE);
+                    self::flash(array('ok' => 'Contul exista deja (cont de client). Colegul are acum acces la Zonă și intră cu parola lui obișnuită.'));
+                    self::go('echipa');
+                }
+                if ($old && in_array(self::ROLE, $old_roles, true)) {
+                    self::flash(array('errors' => array('Acest coleg e deja în echipă.')));
+                    self::go('echipa');
+                }
+                if ($old && empty($old_roles)) {
                     // Un cont căruia i s-a scos accesul înainte (rămas fără rol): îl reactivăm, cu o parolă nouă.
                     $old->set_role(self::ROLE);
                     $pass = wp_generate_password(12, false);
@@ -649,8 +661,8 @@ final class GI_Zona {
         <div class="gi-zona-card">
             <h2>Voucher nou</h2>
             <p>Valabil <strong><?php echo (int) GI_Vouchere::MONTHS; ?> luni</strong> de azi. Un cod se folosește <strong>o singură dată, în întregime</strong>: nu se poate folosi parțial, iar dacă rezervarea e mai mică decât valoarea lui, diferența se pierde (nu se împarte și nu rămâne pe cod).
-                <?php if ($limits) : ?>Pe fiecare cod poți da cel mult <strong><?php echo esc_html($nice($limits['procent'])); ?>%</strong> sau <strong><?php echo esc_html($nice($limits['suma'])); ?> lei</strong> reducere, cel mult <strong><?php echo (int) $limits['numar']; ?></strong> coduri deodată. La o rezervare se poate folosi un singur cod de la tine.<?php endif; ?></p>
-            <form method="post" action="<?php echo esc_url(self::url('vouchere')); ?>" class="gi-zona-form">
+                <?php if ($limits) : ?>Pe fiecare cod poți da cel mult <strong><?php echo esc_html($nice($limits['procent'])); ?>%</strong> sau <strong><?php echo esc_html($nice($limits['suma'])); ?> lei</strong> reducere, cel mult <strong><?php echo (int) $limits['numar']; ?></strong> coduri deodată. Codurile tale nu se combină cu alte coduri: la o rezervare se aplică unul singur.<?php endif; ?></p>
+            <form method="post" data-gi-o-data action="<?php echo esc_url(self::url('vouchere')); ?>" class="gi-zona-form">
                 <input type="hidden" name="gi_actiune" value="genereaza">
                 <?php echo self::nonce_field('genereaza'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                 <fieldset>
@@ -769,7 +781,7 @@ final class GI_Zona {
         ?>
         <div class="gi-zona-card">
             <h2><?php echo $post ? 'Modifică locul' : 'Loc nou'; ?></h2>
-            <form method="post" action="<?php echo esc_url(self::url('copaci', $post ? (string) $post->ID : 'nou')); ?>" enctype="multipart/form-data" class="gi-zona-form">
+            <form method="post" data-gi-o-data action="<?php echo esc_url(self::url('copaci', $post ? (string) $post->ID : 'nou')); ?>" enctype="multipart/form-data" class="gi-zona-form">
                 <input type="hidden" name="gi_actiune" value="salveaza">
                 <?php echo self::nonce_field('salveaza'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                 <label for="gi-p-titlu">Titlul (numele locului)</label>
@@ -840,13 +852,13 @@ final class GI_Zona {
                                 <strong><?php echo esc_html($u->display_name); ?></strong>
                                 <span>Utilizator: <?php echo esc_html($u->user_login); ?> · <?php echo esc_html($u->user_email); ?></span>
                             </div>
-                            <form method="post" action="<?php echo esc_url(self::url('echipa')); ?>" class="gi-zona-inline">
+                            <form method="post" data-gi-o-data action="<?php echo esc_url(self::url('echipa')); ?>" class="gi-zona-inline">
                                 <input type="hidden" name="gi_actiune" value="parola">
                                 <input type="hidden" name="utilizator" value="<?php echo esc_attr((string) $u->ID); ?>">
                                 <?php echo self::nonce_field('echipa_parola'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                                 <button type="submit" class="button button-outline">Parolă nouă</button>
                             </form>
-                            <form method="post" action="<?php echo esc_url(self::url('echipa')); ?>" class="gi-zona-inline">
+                            <form method="post" data-gi-o-data action="<?php echo esc_url(self::url('echipa')); ?>" class="gi-zona-inline">
                                 <input type="hidden" name="gi_actiune" value="elimina">
                                 <input type="hidden" name="utilizator" value="<?php echo esc_attr((string) $u->ID); ?>">
                                 <?php echo self::nonce_field('echipa_elimina'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -859,7 +871,7 @@ final class GI_Zona {
         </div>
         <div class="gi-zona-card">
             <h2>Adaugă un coleg</h2>
-            <form method="post" action="<?php echo esc_url(self::url('echipa')); ?>" class="gi-zona-form">
+            <form method="post" data-gi-o-data action="<?php echo esc_url(self::url('echipa')); ?>" class="gi-zona-form">
                 <input type="hidden" name="gi_actiune" value="adauga">
                 <?php echo self::nonce_field('echipa_adauga'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                 <label for="gi-t-nume">Numele</label>
@@ -873,7 +885,7 @@ final class GI_Zona {
         <div class="gi-zona-card">
             <h2>Limite pentru vânzări</h2>
             <p>Cât pot da colegii de la vânzări. Tu (și managerii de magazin) nu aveți limite. <strong>Valorile de pornire sunt provizorii: schimbă-le după cum vrei.</strong> Cu 0, tipul respectiv e oprit.</p>
-            <form method="post" action="<?php echo esc_url(self::url('echipa')); ?>" class="gi-zona-form">
+            <form method="post" data-gi-o-data action="<?php echo esc_url(self::url('echipa')); ?>" class="gi-zona-form">
                 <input type="hidden" name="gi_actiune" value="limite">
                 <?php echo self::nonce_field('echipa_limite'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                 <label for="gi-l-p">Reducere maximă în procente (%)</label>

@@ -3,7 +3,7 @@
 // NUMAI LOCAL: se autentifică cu admin/password, creează și șterge conturi, vouchere și locuri de probă.
 // Are nevoie de: mu-plugin-urile din tools/local-wp/mu-plugins (inclusiv gi-test-1-5-0.php și gi-test-1-3-14.php), WooCommerce activ
 // și biblioteca de test jsqr (numai pentru test, nu face parte din plugin):  npm install jsqr  și  NODE_PATH să includă folderul ei node_modules.
-// Variabile opționale: GI_SKIP_HEAVY=1 (sare peste cele 66 de încărcări de pagini pentru ecrane și subsol, când stilurile nu s-au schimbat), GI_PHP_LOG (calea spre wp-content/gi-php-errors.log, ca să se verifice că nu apar erori PHP), GI_SHOTS (folder pentru capturi).
+// Variabile opționale: GI_ONLY_TAIL=1 (numai conturile de client și variantele de text din Regulament), GI_SKIP_HEAVY=1 (sare peste cele 66 de încărcări de pagini pentru ecrane și subsol, când stilurile nu s-au schimbat), GI_PHP_LOG (calea spre wp-content/gi-php-errors.log, ca să se verifice că nu apar erori PHP), GI_SHOTS (folder pentru capturi).
 // Verifică:
 //  - căsuța „Administrare” din subsol (pe cinci pagini, șase ecrane, cu stilurile străine): se vede, nu e acoperită, se poate atinge, duce la Zona echipei;
 //  - Zona echipei fără cont: formular de intrare, nu se arată nimic, nu apare în Google (antet + meta), fără păstrare în memorii intermediare;
@@ -296,10 +296,62 @@ async function runScreens(browser, newCtx, state) {
   // ------------------------------------------------------------------ 4. Administratorul în Zonă
   const adm = await newCtx(); const ap = await adm.newPage(); ap.setDefaultTimeout(90000);
   const submit = async (page, sel) => { await Promise.all([page.waitForNavigation({ waitUntil: 'domcontentloaded' }), page.click(sel)]); };
+  const tailChecks = async () => {
+  {
+    // un cont de client existent (cineva din echipă care a rezervat și el): primește rolul de vânzări și își păstrează parola
+    const cl = 'client.test.' + STAMP, cmail = cl + '@example.com', cpass = 'Cl13nt-' + STAMP + 'x';
+    const made = await api(adm, 'creeaza_client&login=' + cl + '&email=' + encodeURIComponent(cmail) + '&parola=' + encodeURIComponent(cpass));
+    if (made.ok) { created.users.push(cl); }
+    await ap.goto(ZONA + 'echipa/', { waitUntil: 'domcontentloaded' });
+    await ap.fill('#gi-t-nume', 'Client ' + STAMP); await ap.fill('#gi-t-email', cmail);
+    await submit(ap, 'button:has-text("Creează contul")');
+    const nt = (await ap.locator('.gi-zona-notice').allInnerTexts()).join(' ');
+    const uc = await api(adm, 'utilizator&login=' + cl);
+    ok(made.ok && /cont de client/.test(nt) && uc.roles.includes('customer') && uc.roles.includes('gi_vanzari') && uc.caps.gi_vouchere && !uc.caps.edit_posts && !/Parola:/.test(nt), 'echipă: un cont de client existent primește rolul de vânzări (păstrează „client”), fără parolă nouă afișată');
+    const lg = await newCtx();
+    const rr = await lg.request.post(BASE + '/wp-login.php', { form: { log: cl, pwd: cpass, 'wp-submit': 'Log In', redirect_to: ZONA + '../wp-admin/' }, maxRedirects: 0 });
+    ok(rr.status() === 302 && (rr.headers().location || '') === ZONA, `echipă: clientul intră cu parola lui obișnuită și ajunge în Zonă; un redirect_to cu „..” nu-l scoate din Zonă (${(rr.headers().location || '').replace(BASE, '')})`);
+    await lg.close();
+    await ap.goto(ZONA + 'echipa/', { waitUntil: 'domcontentloaded' });
+    await ap.fill('#gi-t-nume', 'Client ' + STAMP); await ap.fill('#gi-t-email', cmail);
+    await submit(ap, 'button:has-text("Creează contul")');
+    ok(/deja în echipă/.test((await ap.locator('.gi-zona-notice').allInnerTexts()).join(' ')), 'echipă: același email încă o dată, când e deja în echipă → „Acest coleg e deja în echipă.”');
+    await ap.goto(ZONA + 'echipa/', { waitUntil: 'domcontentloaded' });
+    await submit(ap, '.gi-zona-lista li:has-text("' + cl + '") button:has-text("Scoate accesul")'); // pe un cont existent, lista arată numele lui, nu pe cel scris la „Adaugă”
+    const uc2 = await api(adm, 'utilizator&login=' + cl);
+    ok(uc2.roles.join() === 'customer', `echipă: „Scoate accesul” scoate numai rolul de vânzări; contul de client rămâne (${JSON.stringify(uc2.roles)})`);
+  }
+  {
+    // propoziția despre folosirea parțială: variante de marcaj (spațiu dur, sedilă, în mijlocul paragrafului, text invalid)
+    const NOU = 'Voucherul se folosește o singură dată, în întregime; nu se poate folosi parțial. Dacă rezervarea e mai mică decât valoarea voucherului, diferența se pierde.';
+    const f = async (html) => (await api(adm, 'filtru_voucher&html=' + encodeURIComponent(html)));
+    const v1 = await f('<li>Îl poți folosi și parțial: suma nefolosită rămâne pe voucher, până la aceeași dată.</li>');
+    ok(v1.out === '<li>' + NOU + '</li>', 'regulament (filtru): marcajul de pe site (<li>) se înlocuiește exact, fără resturi');
+    const v2 = await f('<li>Îl\u00a0poți folosi\u00a0și parțial: suma nefolosită rămâne pe voucher.</li>');
+    ok(v2.out === '<li>' + NOU + '</li>', 'regulament (filtru): cu spații dure în propoziție');
+    const v3 = await f('<li>Îl poţi folosi şi parţial: suma nefolosită rămâne pe voucher.</li>');
+    ok(v3.out === '<li>' + NOU + '</li>', 'regulament (filtru): cu diacritice cu sedilă (ţ, ş)');
+    const v4 = await f('<p>Prima. Îl poți folosi și parțial: suma nefolosită rămâne pe voucher. Altă propoziție rămâne.</p>');
+    ok(/Altă propoziție rămâne\./.test(v4.out) && /^<p>Prima\. Voucherul se folosește/.test(v4.out) && !/rămâne pe voucher\./.test(v4.out.replace(NOU, '')), 'regulament (filtru): în mijlocul paragrafului nu se pierde următoarea propoziție');
+    const v5 = await f('<p>Alt text cu parțial în el, fără propoziția cerută.</p>');
+    ok(v5.out === '<p>Alt text cu parțial în el, fără propoziția cerută.</p>', 'regulament (filtru): alt text cu „parțial” rămâne neschimbat');
+    const v6 = await f('<p>parțial \ufffd Îl poți folosi și parțial: x.</p>');
+    ok(v6.out.length > 10, 'regulament (filtru): textul cu caractere ciudate nu dispare');
+  }
+  };
   await ap.goto(ZONA, { waitUntil: 'domcontentloaded' });
   await ap.fill('#gi-zona-user', 'admin'); await ap.fill('#gi-zona-pass', 'password');
   await submit(ap, '.gi-zona-login button[type=submit]');
   ok(/\/zona-echipei\/$/.test(ap.url()), 'administrator: după autentificare ajunge în Zona echipei');
+  if (process.env.GI_ONLY_TAIL) {
+    // Numai conturile de client și variantele de text din Regulament (pentru reluări rapide).
+    ap.on('dialog', (d) => d.accept());
+    await tailChecks();
+    for (const login of created.users) { await api(actx, 'sterge_utilizator&login=' + login); }
+    await browser.close();
+    console.log(failures ? `\n${failures} verificări au picat.` : '\nToate verificările au trecut.');
+    process.exit(failures ? 1 : 0);
+  }
   const tiles = await ap.locator('.gi-zona-tile strong').allInnerTexts();
   ok(tiles.join('|') === 'Vouchere|Copaci și locuri|Echipă', `administrator: pagina Zonei arată cele trei dale (${tiles.join(' | ')})`);
   ok((await ap.locator('.gi-zona-foot a', { hasText: 'Administrarea WordPress' }).count()) === 1, 'administrator: are și linkul „Administrarea WordPress”');
@@ -474,7 +526,7 @@ async function runScreens(browser, newCtx, state) {
   ok((await ap.inputValue('#gi-l-p')) === '10' && (await ap.inputValue('#gi-l-s')) === '100' && (await ap.inputValue('#gi-l-n')) === '10', 'echipă: limitele de pornire (provizorii) sunt 10% / 100 lei / 10 coduri');
   const COLEG = 'Colega Test ' + STAMP; const EMAIL = 'colega.test.' + STAMP + '@example.com';
   await ap.fill('#gi-t-nume', COLEG); await ap.fill('#gi-t-email', EMAIL);
-  await submit(ap, 'button:has-text("Creează contul")');
+  await Promise.all([ap.waitForNavigation({ waitUntil: 'domcontentloaded' }), ap.dblclick('button:has-text("Creează contul")')]); // dublu clic: formularul se trimite o singură dată
   const credText = await ap.locator('.gi-zona-notice .gi-zona-coduri').innerText();
   const cred = { login: (credText.match(/Utilizator: (\S+)/) || [])[1], pass: (credText.match(/Parola: (\S+)/) || [])[1] };
   ok(!!cred.login && !!cred.pass && cred.pass.length >= 12 && credText.includes(ZONA), `echipă: contul se creează și se arată o singură dată adresa, utilizatorul și parola (${cred.login})`);
@@ -487,7 +539,7 @@ async function runScreens(browser, newCtx, state) {
   ok(!(await ap.content()).includes(cred.pass) && (await ap.locator('.gi-zona-lista li', { hasText: COLEG }).count()) === 1, 'echipă: parola nu se mai arată după ce ai plecat din pagină; colegul e în listă');
   await ap.fill('#gi-t-nume', 'Altă ' + STAMP); await ap.fill('#gi-t-email', EMAIL);
   await submit(ap, 'button:has-text("Creează contul")');
-  ok(/Există deja un cont/.test(await ap.locator('.gi-zona-notice').first().innerText()), 'echipă: același email a doua oară → mesaj, nu se face alt cont');
+  ok(/deja în echipă/.test(await ap.locator('.gi-zona-notice').first().innerText()), 'echipă: același email a doua oară (colegul e deja în echipă) → mesaj, nu se face alt cont');
   {
     const n = await nonceFor(adm, 'gi_zona_echipa_adauga');
     await adm.request.post(ZONA + 'echipa/', { form: { gi_actiune: 'adauga', nume: 'X', email: 'nu-e-email', _gi_nonce: n }, maxRedirects: 0 });
@@ -678,6 +730,7 @@ async function runScreens(browser, newCtx, state) {
     await ap.goto(ZONA + 'echipa/', { waitUntil: 'domcontentloaded' });
     ok((await ap.locator('.gi-zona-lista li', { hasText: COLEG }).count()) === 1, 'echipă: colegul reactivat apare din nou în lista echipei');
   }
+  await tailChecks();
 
   if (!process.env.GI_SKIP_HEAVY) { await runScreens(browser, newCtx, await adm.storageState()); }
 

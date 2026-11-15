@@ -27,11 +27,12 @@ Colegii de la vânzări nu văd nimic din administrarea WordPress: nici articole
 
 ## Un coleg nou, de la vânzări
 **Zona echipei → Echipă → Adaugă un coleg.** Scrii **numele** și **emailul**. Apeși „Creează contul”.
-- Pe ecran apar o dată **adresa, utilizatorul și parola**, chiar în răspunsul la formular (**nu reîncărca pagina**). **Notează-le și transmite-le colegului**. Parola nu se păstrează nicăieri în site.
+- Pe ecran apar o dată **adresa, utilizatorul și parola**, chiar în răspunsul la formular (**nu reîncărca pagina**). **Notează-le și transmite-le colegului**. Parola nu se păstrează nicăieri în site. Dacă ai reîncărcat sau ai pierdut pagina, apeși „Parolă nouă” și iei alta.
 - **Nu se trimite niciun email** colegului. (Din motive de siguranță, parola nu pleacă prin email.)
 - Colegul intră la Administrare, cu aceste date. Dacă o uită, tu îi faci alta: **„Parolă nouă”** (parola veche nu mai merge, iar sesiunile lui deschise se închid).
 - Când pleacă din echipă: **„Scoate accesul”**. Contul rămâne, dar fără acces la nimic (se scoate numai rolul „Vânzări”; contul dispare din lista echipei).
 - Dacă revine: la „Adaugă un coleg” scrii **același email**; contul se reactivează, cu o parolă nouă, arătată o singură dată.
+- Dacă colegul are deja un **cont de client** pe site (a rezervat și el): la „Adaugă un coleg”, cu același email, primește rolul de vânzări **și își păstrează parola de până acum**. Conturile cu alte roluri (editor, manager etc.) nu se schimbă de aici.
 - Din Zonă poți schimba parola și poți scoate accesul **numai conturilor de vânzări**, nu și conturilor tale sau ale altor roluri.
 
 ## Cât poate da un coleg de la vânzări (limite)
@@ -42,7 +43,7 @@ Colegii de la vânzări nu văd nimic din administrarea WordPress: nici articole
 
 Cu **0**, tipul respectiv e oprit (de ex. 0 la procente = colegul poate da numai sume fixe). Tu și managerii de magazin nu aveți limite.
 
-**Ce înseamnă limita, exact:** se aplică **fiecărui cod** și fiecărei generări. Codurile generate de un coleg se pot folosi **doar câte unul la o rezervare** (nu se adună), deci la o rezervare reducerea maximă e cea de pe un cod. **Nu există o limită pe zi:** un coleg poate genera, în zile diferite sau una după alta, câte coduri vrea. Fiecare cod păstrează cine l-a generat (vezi „Toate voucherele”). Vrei și o limită pe zi? Spune-mi și o adaug.
+**Ce înseamnă limita, exact:** se aplică **fiecărui cod** și fiecărei generări. Codurile generate de un coleg **nu se combină cu alte coduri**: la o rezervare se aplică unul singur (dacă un client are în coș alt cod, cel nou îl înlocuiește). Deci la o rezervare reducerea maximă e cea de pe un cod. **Nu există o limită pe zi:** un coleg poate genera, în zile diferite sau una după alta, câte coduri vrea. Fiecare cod păstrează cine l-a generat (vezi „Toate voucherele”). Vrei și o limită pe zi? Spune-mi și o adaug.
 
 ## Vouchere
 **Zona echipei → Vouchere.** Alegi tipul (sumă fixă sau procent), valoarea, câte coduri, începutul codului (de ex. GRADINA) și, dacă vrei, o notă („cadou de Crăciun”; **fără nume de persoane**).

@@ -9,6 +9,7 @@
  *   [data-qr-select-all]            → bifează / debifează toate căsuțele din tabelul în care se află
  *   [data-qr-select-all-list]       → la fel, pentru listele din Zona echipei (căsuțele „ids[]” din același formular)
  *   [data-gi-confirma]              → cere o confirmare înainte de a trimite formularul (ex. „Scoți accesul acestui cont?”)
+ *   form[data-gi-o-data]            → după trimitere, butoanele de trimitere se opresc (un dublu clic nu trimite formularul de două ori)
  */
 (function () {
   'use strict';
@@ -76,6 +77,21 @@
       if (!scope) return;
       var boxes = scope.querySelectorAll(selector);
       for (var i = 0; i < boxes.length; i++) boxes[i].checked = box.checked;
+    });
+
+    // O singură trimitere: un dublu clic ar crea două conturi, două loturi de vouchere sau ar schimba parola de două ori.
+    document.addEventListener('submit', function (event) {
+      var form = event.target;
+      if (!form || !form.hasAttribute || !form.hasAttribute('data-gi-o-data')) return;
+      setTimeout(function () {
+        var buttons = form.querySelectorAll('button[type="submit"]');
+        for (var i = 0; i < buttons.length; i++) buttons[i].disabled = true;
+      }, 0);
+    });
+    window.addEventListener('pageshow', function (event) {
+      if (!event.persisted) return;
+      var buttons = document.querySelectorAll('form[data-gi-o-data] button[type="submit"]');
+      for (var i = 0; i < buttons.length; i++) buttons[i].disabled = false;
     });
 
     // Acțiuni care cer o confirmare (în Zona echipei): fără confirmare, formularul nu se trimite.
