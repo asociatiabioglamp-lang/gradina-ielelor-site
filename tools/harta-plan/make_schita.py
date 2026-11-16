@@ -190,6 +190,23 @@ for b in buildings:
 buildings = split_out
 print('fără cod PUZ:', [round(b['c'][0]) for b in buildings if 'puz' not in b])
 
+
+# ---- lacurile = zonele inundabile din PUZ (proprietara, 16.11: „locurile inundabile = lacuri”); conturul e măsurat pe planul original, în px ai decupajului ----
+def chaikin(pts, it=3):
+    p = [tuple(map(float, q)) for q in pts]
+    for _ in range(it):
+        out = []
+        for i in range(len(p)):
+            a, b = p[i], p[(i + 1) % len(p)]
+            out += [(0.75 * a[0] + 0.25 * b[0], 0.75 * a[1] + 0.25 * b[1]), (0.25 * a[0] + 0.75 * b[0], 0.25 * a[1] + 0.75 * b[1])]
+        p = out
+    return p
+
+LAKES = [  # CCN 5102/2 (lângă A11) și CCN 5102/3 (între bungalouri și C7)
+    np.array([[1756, 1558], [1968, 1549], [2037, 1580], [2049, 1674], [2034, 1724], [1981, 1796], [1865, 1799], [1787, 1724], [1718, 1630], [1846, 1627]]),
+    np.array([[1005, 2742], [1317, 2905], [1283, 2995], [1197, 3205], [955, 3525], [905, 3495], [772, 3030], [800, 2965], [905, 2805]]),
+]
+
 # ---- numerotare: de la nord la sud (sus → jos), apoi de la vest la est ----
 items = []
 for b in buildings:
@@ -201,6 +218,14 @@ if entrance:
 items.sort(key=lambda t: (round(t['c'][1] / 70), t['c'][0]))
 for i, t in enumerate(items, 1):
     t['nr'] = i
+LAKE_ANCHOR = [(1975, 1690), None]   # primul lac are în mijloc clădirea A11: numărul/pinul se pune în partea liberă din dreapta
+# lacurile primesc numerele 31 și 32, ca numerele 1–30 deja trimise proprietarei să rămână neschimbate
+for k, lk in enumerate(LAKES):
+    M = cv2.moments(lk.reshape(-1, 1, 2).astype(np.int32))
+    centru = (M['m10'] / M['m00'], M['m01'] / M['m00'])
+    if LAKE_ANCHOR[k]:
+        centru = LAKE_ANCHOR[k]
+    items.append({'kind': 'lac', 'hull': lk, 'c': centru, 'puz': '', 'smooth': chaikin(lk), 'nr': 31 + k})
 
 # ---- desen (supraeșantionare x2, apoi micșorare) ----
 OUT_W = 1500
@@ -226,6 +251,9 @@ GRASS = (228, 238, 214)
 d.polygon(P(cv2.approxPolyDP(parcel_c - np.array([[cx0, cy0]]), 4, True)[:, 0, :]), fill=GRASS)
 for pc in poly_from_mask(canal_k, 4, 6000):
     d.polygon(P(pc), fill=(150, 205, 234))
+for t in items:
+    if t['kind'] == 'lac':
+        d.polygon(P(t['smooth']), fill=(88, 176, 200), outline=(50, 130, 160))
 for pc in poly_from_mask(road_k, 3, 300):
     d.polygon(P(pc), fill=(207, 200, 186))
 # conturul Grădinii
@@ -233,6 +261,8 @@ d.line(P(list(cv2.approxPolyDP(parcel_c - np.array([[cx0, cy0]]), 4, True)[:, 0,
 
 COL = {'cladire': (217, 138, 74), 'joaca': (93, 180, 126), 'panouri': (176, 210, 120), 'parcare': (170, 170, 178), 'deseuri': (240, 190, 90), 'put': (60, 170, 225), 'giratoriu': (140, 200, 120), 'intrare': (200, 50, 45)}
 for t in items:
+    if t['kind'] == 'lac':
+        continue  # desenat mai sus, sub drumuri
     hull = t['hull']
     col = COL[t['kind']]
     if t['kind'] in ('put', 'giratoriu'):
@@ -290,18 +320,19 @@ d.polygon([(ax, ay - 50 * SS), (ax - 22 * SS, ay + 25 * SS), (ax, ay + 10 * SS),
 d.text((ax - 12 * SS, ay + 32 * SS), 'N', font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', 30 * SS), fill=(31, 85, 99))
 
 img = img.resize((OUT_W, int(Hd / SS)), Image.LANCZOS)
-out_png = os.path.join(HERE, 'schita-numerotata.png')
+OUT = os.environ.get('GI_OUT') or HERE
+out_png = os.path.join(OUT, 'schita-numerotata.png')
 img.save(out_png, optimize=True)
 print('salvat', out_png, img.size)
 
 # ---- date pentru tabel și pentru hartă (poziții în procente din imaginea finală) ----
 FW, FH = img.size
 kinds = {'cladire': 'clădire', 'joaca': 'zonă verde de joacă / agrement copii', 'panouri': 'zonă cu panouri fotovoltaice', 'parcare': 'zonă cu locuri înclinate (parcare?)',
-         'deseuri': 'platformă colectare deșeuri', 'put': 'put forat', 'giratoriu': 'giratoriu (cerc verde)', 'intrare': 'acces din drumul public'}
+         'deseuri': 'platformă colectare deșeuri', 'put': 'put forat', 'giratoriu': 'giratoriu (cerc verde)', 'intrare': 'acces din drumul public', 'lac': 'lac (zonă inundabilă în PUZ)'}
 rows = []
 for t in items:
     px, py = t['badge']
     rows.append({'nr': t['nr'], 'tip': kinds[t['kind']], 'cod_puz': t['puz'], 'nume_puz': puz_name.get(t['puz'], ''), 'x_pct': round(px * scale / FW * 100, 1) if False else round(px / CW * 100, 1), 'y_pct': round(py / CH * 100, 1)})
-json.dump({'latime': FW, 'inaltime': FH, 'randuri': rows}, open(os.path.join(HERE, 'schita-date.json'), 'w'), ensure_ascii=False, indent=1)
+json.dump({'latime': FW, 'inaltime': FH, 'randuri': rows}, open(os.path.join(OUT, 'schita-date.json'), 'w'), ensure_ascii=False, indent=1)
 for r in rows:
     print(r['nr'], r['tip'], r['cod_puz'], r['nume_puz'], r['x_pct'], r['y_pct'])

@@ -190,6 +190,23 @@ for b in buildings:
 buildings = split_out
 print('fără cod PUZ:', [round(b['c'][0]) for b in buildings if 'puz' not in b])
 
+
+# ---- lacurile = zonele inundabile din PUZ (proprietara, 16.11: „locurile inundabile = lacuri”); conturul e măsurat pe planul original, în px ai decupajului ----
+def chaikin(pts, it=3):
+    p = [tuple(map(float, q)) for q in pts]
+    for _ in range(it):
+        out = []
+        for i in range(len(p)):
+            a, b = p[i], p[(i + 1) % len(p)]
+            out += [(0.75 * a[0] + 0.25 * b[0], 0.75 * a[1] + 0.25 * b[1]), (0.25 * a[0] + 0.75 * b[0], 0.25 * a[1] + 0.75 * b[1])]
+        p = out
+    return p
+
+LAKES = [  # CCN 5102/2 (lângă A11) și CCN 5102/3 (între bungalouri și C7)
+    np.array([[1756, 1558], [1968, 1549], [2037, 1580], [2049, 1674], [2034, 1724], [1981, 1796], [1865, 1799], [1787, 1724], [1718, 1630], [1846, 1627]]),
+    np.array([[1005, 2742], [1317, 2905], [1283, 2995], [1197, 3205], [955, 3525], [905, 3495], [772, 3030], [800, 2965], [905, 2805]]),
+]
+
 # ---- numerotare: de la nord la sud (sus → jos), apoi de la vest la est ----
 items = []
 for b in buildings:
@@ -201,6 +218,14 @@ if entrance:
 items.sort(key=lambda t: (round(t['c'][1] / 70), t['c'][0]))
 for i, t in enumerate(items, 1):
     t['nr'] = i
+LAKE_ANCHOR = [(1975, 1690), None]   # primul lac are în mijloc clădirea A11: numărul/pinul se pune în partea liberă din dreapta
+# lacurile primesc numerele 31 și 32, ca numerele 1–30 deja trimise proprietarei să rămână neschimbate
+for k, lk in enumerate(LAKES):
+    M = cv2.moments(lk.reshape(-1, 1, 2).astype(np.int32))
+    centru = (M['m10'] / M['m00'], M['m01'] / M['m00'])
+    if LAKE_ANCHOR[k]:
+        centru = LAKE_ANCHOR[k]
+    items.append({'kind': 'lac', 'hull': lk, 'c': centru, 'puz': '', 'smooth': chaikin(lk), 'nr': 31 + k})
 
 
 
@@ -255,6 +280,8 @@ for t in shown:
         groups.append(t['grup'])
 shown.sort(key=lambda t: (groups.index(t['grup']) if t['grup'] else len(groups), t['nr']))   # legenda: pe grupuri, în cadrul grupului de la nord la sud
 def color_of(t):
+    if t['kind'] == 'lac':
+        return (88, 176, 200)
     return PALETTE[groups.index(t['grup']) % len(PALETTE)] if t['grup'] else COL[t['kind']]
 MUTED = (222, 218, 206)
 
@@ -266,10 +293,15 @@ def base_image():
     dd.polygon(P(outline), fill=GRASS)
     for pc in poly_from_mask(canal_k, 4, 6000):
         dd.polygon(P(pc), fill=(150, 205, 234))
+    for t in items:
+        if t['kind'] == 'lac':
+            dd.polygon(P(t['smooth']), fill=(88, 176, 200) if t['arata'] else (190, 215, 225), outline=(50, 130, 160) if t['arata'] else (170, 190, 200))
     for pc in poly_from_mask(road_k, 3, 300):
         dd.polygon(P(pc), fill=(207, 200, 186))
     dd.line(P(list(outline) + [outline[0]]), fill=(31, 85, 99), width=int(5 * sc * 0.7))
     for t in items:
+        if t['kind'] == 'lac':
+            continue  # desenat mai sus, sub drumuri
         hull = t['hull']
         col = color_of(t) if t['arata'] else MUTED
         edge = (70, 50, 30) if t['arata'] else (170, 165, 150)
