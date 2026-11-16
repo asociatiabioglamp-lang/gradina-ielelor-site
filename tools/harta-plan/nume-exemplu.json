@@ -1,0 +1,6 @@
+{
+  "_grupuri": ["Acces", "Cazare"],
+  "1": {"nume": "Exemplu: Intrarea", "grup": "Acces"},
+  "5": {"nume": "Exemplu: Glamping 1", "grup": "Cazare"},
+  "3": {"nume": "Exemplu: loc ascuns pe harta vizitatorilor", "arata": false}
+}
