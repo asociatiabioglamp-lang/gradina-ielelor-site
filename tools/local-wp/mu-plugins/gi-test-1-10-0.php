@@ -47,6 +47,9 @@ add_action('wp_enqueue_scripts', function () {
         'ovabrw-frontend' => '/plugins/s4p_ova-brw20/assets/js/frontend.js',
         'ova-calendar' => '/plugins/s4p_ova-brw20/assets/js/calendar.js',
         'control-alt-modul' => '/plugins/alt-modul/js/control.js',
+        'gtm4wp-woocommerce' => '/plugins/duracelltomi-google-tag-manager/build/gtm4wp-woocommerce.js',
+        'gtm4wp-ecommerce-generic' => '/plugins/duracelltomi-google-tag-manager/build/gtm4wp-ecommerce-generic.js',
+        'gtm4wp-contact-form-7-tracker' => '/plugins/duracelltomi-google-tag-manager/build/gtm4wp-contact-form-7-tracker.js',
     );
     foreach ($scripts as $handle => $path) {
         wp_enqueue_script($handle, $u . $path, array(), '1', true);
@@ -54,6 +57,21 @@ add_action('wp_enqueue_scripts', function () {
     wp_add_inline_script('elementor-frontend', 'window.__elementor_inline = 1;', 'before');
     wp_add_inline_script('control-alt-modul', 'window.__control_inline = 1;', 'before');
 }, 5);
+
+// fișiere puse în coadă TÂRZIU (ca tema veche, care își pune scriptul de autentificare în subsol, după wp_footer) și un lanț de dependențe: wd-login-sidebar depinde
+// de woodmart-theme, care depinde de jQuery
+add_action('wp_head', function () {
+    wp_enqueue_style('swiper', content_url('/plugins/elementor/assets/lib/swiper/v8/css/swiper.min.css'), array(), '1');
+}, 4);
+add_action('wp_footer', function () {
+    wp_enqueue_script('wd-login-sidebar', content_url('/themes/giw/js/login-sidebar.js'), array('woodmart-theme'), '1', true);
+    wp_enqueue_style('wd-bottom-toolbar', content_url('/themes/giw/css/bottom-toolbar.css'), array(), '1');
+}, 3);
+add_action('wp_enqueue_scripts', function () {
+    wp_deregister_script('woodmart-theme');
+    wp_register_script('woodmart-theme', content_url('/themes/giw/js/woodmart.js'), array('jquery'), '1', true);
+    wp_enqueue_script('woodmart-theme');
+}, 6);
 
 // fișiere în „stil modul” (WordPress le pune în pagină cu <link rel="modulepreload">)
 add_action('wp_head', function () {
@@ -70,7 +88,11 @@ add_action('init', function () {
     }
     header('Content-Type: application/json');
     if ('c1100_nivel' === $t) {
-        if (isset($_GET['n']) && is_numeric($_GET['n'])) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        if (isset($_GET['n']) && 'reset' === $_GET['n']) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            $o = (array) get_option('gi_integration_options', array());
+            unset($o['light_pages']);
+            update_option('gi_integration_options', $o);
+        } elseif (isset($_GET['n']) && is_numeric($_GET['n'])) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
             $o = (array) get_option('gi_integration_options', array());
             $o['light_pages'] = max(0, min(2, (int) $_GET['n'])); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
             update_option('gi_integration_options', $o);
@@ -84,9 +106,13 @@ add_action('init', function () {
         update_post_meta($id, '_wp_page_template', 'gi-content.php');
         return get_permalink($id);
     };
+    $punct = get_posts(array('post_type' => GI_Puncte::TYPE, 'post_status' => 'publish', 'numberposts' => 1, 's' => 'T1100'));
+    $punct_id = $punct ? $punct[0]->ID : wp_insert_post(array('post_type' => GI_Puncte::TYPE, 'post_status' => 'publish', 'post_title' => 'T1100 Loc de probă', 'post_content' => 'Text de probă.'));
     echo wp_json_encode(array(
         'brw' => $mk('c1100-cu-formular', 'Cu formular', '<p>Text.</p>[ovabrw_search]'),
         'woo' => $mk('c1100-cu-woo', 'Cu WooCommerce', '<p>Text.</p>[woocommerce_cart]'),
+        'woo2' => $mk('c1100-cu-produse', 'Cu produse', '<p>Text.</p>[products limit="2"]'),
+        'punct' => get_permalink($punct_id),
     ));
     exit;
 }, 1);

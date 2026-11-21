@@ -25,20 +25,27 @@ final class GI_Light {
     public static function init() {
         add_filter('template_include', array(__CLASS__, 'detect'), 100000);
         add_action('wp_enqueue_scripts', array(__CLASS__, 'strip'), 100100);
-        add_action('wp_head', array(__CLASS__, 'strip'), 7);   // înainte ca WordPress să afișeze stilurile (prioritatea 8)
-        add_action('wp_footer', array(__CLASS__, 'strip'), 0); // înainte ca WordPress să afișeze scripturile din subsol (prioritatea 20)
-        add_action('template_redirect', array(__CLASS__, 'start_buffer'), 1);
+        // Tema veche (și alte module) mai pun fișiere în coadă târziu (în subsol, în wp_footer): se curăță chiar înainte ca WordPress să le afișeze.
+        add_action('wp_head', array(__CLASS__, 'strip'), 7);
+        add_action('wp_print_styles', array(__CLASS__, 'strip'), 0);
+        add_action('wp_print_scripts', array(__CLASS__, 'strip'), 0);
+        add_action('wp_footer', array(__CLASS__, 'strip'), 0);
+        add_action('wp_print_footer_scripts', array(__CLASS__, 'strip'), 1);
+        add_filter('wp_resource_hints', array(__CLASS__, 'resource_hints'), 100, 2);
     }
 
     /** 0 = oprit, 1 = fără prima pagină (implicit), 2 = și prima pagină. */
     public static function level() {
         $options = gi_options();
-        $level = isset($options['light_pages']) ? (int) $options['light_pages'] : 1;
+        $level = isset($options['light_pages']) ? (int) $options['light_pages'] : 0;
         return max(0, min(2, $level));
     }
 
     public static function detect($template) {
         self::$own = is_string($template) && 0 === strpos(wp_normalize_path($template), wp_normalize_path(GI_PATH . 'templates/'));
+        if (self::applies() && !wp_doing_cron() && !is_feed() && !is_robots() && !(defined('REST_REQUEST') && REST_REQUEST) && !(function_exists('is_embed') && is_embed())) {
+            ob_start(array(__CLASS__, 'clean_html')); // numai pe paginile noastre (nu și pe magazin, coș, plată sau exporturi)
+        }
         return $template;
     }
 
@@ -51,7 +58,7 @@ final class GI_Light {
         if (class_exists('GI_Zona') && GI_Zona::is_zona()) {
             return false; // zona echipei: neatinsă
         }
-        if (function_exists('is_customize_preview') && is_customize_preview()) {
+        if ((function_exists('is_customize_preview') && is_customize_preview()) || isset($_GET['elementor-preview']) || isset($_GET['elementor_library'])) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
             return false;
         }
         if (self::is_hub() && $level < 2) {
@@ -83,7 +90,8 @@ final class GI_Light {
 
     private static function needs_woocommerce() {
         $content = self::content();
-        return '' !== $content && false !== stripos($content, 'woocommerce');
+        // blocuri sau coduri scurte WooCommerce (unele nu conțin cuvântul „woocommerce”: [products], [add_to_cart], [product_page]...)
+        return '' !== $content && 1 === preg_match('~woocommerce|\[(?:products?|product_page|product_categor(?:y|ies)|add_to_cart|add_to_cart_url|shop_messages|recent_products|sale_products|best_selling_products|top_rated_products|featured_products|related_products|cart|checkout|my_account)\b~i', $content);
     }
 
     /** Fragmente din adresa fișierului care arată că vine de la un modul sau de la tema care nu are ce căuta pe paginile noastre. */
@@ -113,7 +121,10 @@ final class GI_Light {
         return apply_filters('gi_light_drop_handles', $prefixes, $keep_booking);
     }
 
-    private static function matches($handle, $src, $sources, $prefixes) {
+    private static function matches($handle, $src, $sources, $prefixes, $keep_booking = false) {
+        if ($keep_booking && 'swiper' === $handle) {
+            return false; // stilul „swiper” vine de la Elementor, dar îl folosește și BRW (galerii, slidere)
+        }
         $src = is_string($src) ? $src : '';
         foreach ($sources as $needle) {
             if ('' !== $src && false !== strpos($src, $needle)) {
@@ -139,14 +150,14 @@ final class GI_Light {
         $styles = wp_styles();
         foreach ((array) $styles->queue as $handle) {
             $src = isset($styles->registered[$handle]) ? $styles->registered[$handle]->src : '';
-            if (self::matches($handle, $src, $sources, $prefixes)) {
+            if (self::matches($handle, $src, $sources, $prefixes, $keep_booking)) {
                 wp_dequeue_style($handle);
             }
         }
         $scripts = wp_scripts();
         foreach ((array) $scripts->queue as $handle) {
             $src = isset($scripts->registered[$handle]) ? $scripts->registered[$handle]->src : '';
-            if (self::matches($handle, $src, $sources, $prefixes)) {
+            if (self::matches($handle, $src, $sources, $prefixes, $keep_booking)) {
                 wp_dequeue_script($handle);
             }
         }
@@ -160,17 +171,26 @@ final class GI_Light {
             foreach (array('wc-add-to-cart', 'woocommerce', 'wc-cart-fragments', 'js-cookie', 'jquery-blockui') as $handle) {
                 wp_dequeue_script($handle);
             }
+            // GTM4WP: scripturile de comerț electronic (adăugare în coș, produse) nu au ce face pe paginile fără coș, iar cel pentru WooCommerce cere jQuery fără să-l declare
+            // (măsurat pe live: „jQuery is not defined” când jQuery nu mai pornește). Scriptul pentru Formularul de contact rămâne.
+            foreach (array('gtm4wp-woocommerce', 'gtm4wp-ecommerce-generic') as $handle) {
+                wp_dequeue_script($handle);
+            }
         }
+    }
+
+    /** Paginile noastre nu cer fonturi Google: dispar și indiciile „dns-prefetch” și „preconnect” către ele. */
+    public static function resource_hints($urls, $relation) {
+        if (!self::applies() || !in_array($relation, array('dns-prefetch', 'preconnect'), true)) {
+            return $urls;
+        }
+        return array_values(array_filter((array) $urls, function ($url) {
+            $href = is_array($url) && isset($url['href']) ? $url['href'] : (is_string($url) ? $url : '');
+            return false === strpos($href, 'fonts.googleapis.com') && false === strpos($href, 'fonts.gstatic.com');
+        }));
     }
 
     /* ---------------- modulele JavaScript ale cuponelor, scrise direct în pagină ---------------- */
-
-    public static function start_buffer() {
-        if (self::level() < 1 || is_admin() || wp_doing_ajax() || wp_doing_cron() || is_feed() || is_robots() || (defined('REST_REQUEST') && REST_REQUEST) || (function_exists('is_embed') && is_embed())) {
-            return;
-        }
-        ob_start(array(__CLASS__, 'clean_html'));
-    }
 
     /** Scoate <link rel="modulepreload"> și <script type="module"> ale cuponelor (WordPress le pune în pagină chiar dacă pagina nu are cupoane). */
     public static function clean_html($html) {

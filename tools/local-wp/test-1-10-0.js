@@ -32,7 +32,8 @@ const COUPONS = ['acfwf-wc-cart-block-integration'];
 const FONTS = ['ovabrw-google-font', 'xts-google-fonts', 'google-fonts-1'];
 const BRW = ['ovabrw-frontend', 'ova-timepicker', 'ova-calendar'];
 const HEAVY_NO_BRW = [...THEME, ...ELEMENTOR, ...HOTELLER, ...COUPONS, ...FONTS.filter((f) => f !== 'ovabrw-google-font')];
-const CONTROL = ['control-alt-modul'];
+const CONTROL = ['control-alt-modul', 'gtm4wp-contact-form-7-tracker'];
+const GTM4WP_ECOM = ['gtm4wp-woocommerce', 'gtm4wp-ecommerce-generic'];
 
 (async () => {
   const phpBefore = logLines();
@@ -64,7 +65,11 @@ const CONTROL = ['control-alt-modul'];
     ['Contact', '/contact/'],
     ['Harta', '/in-gradina/harta/'],
   ];
+  PAGES.push(['loc din Grădină (QR)', pagini.punct.replace(BASE, '')]);
 
+  // ---------- implicit: oprit ----------
+  await (await ap.request.get(BASE + '/?gi_test=c1100_nivel&n=reset')).text();
+  ok((await (await ap.request.get(BASE + '/?gi_test=c1100_nivel&n=')).json()).nivel === 0, 'fără nicio alegere, nivelul „Pagini ușoare” este 0 (la instalare nu se schimbă nimic)');
   // ---------- nivelul 0: nimic nu se scoate ----------
   ok((await setLevel(0)) === 0, 'nivel 0 pus');
   const wooOf = (x) => ['wc-cart-fragments', 'woocommerce', 'jquery-blockui', 'wc-add-to-cart', 'js-cookie'].filter((n) => ids(x, 'js').has(n));
@@ -73,8 +78,8 @@ const CONTROL = ['control-alt-modul'];
   ok(wooBaseSimple.length > 0 && wooBaseWoo.length > 0, 'nivel 0: WooCommerce încarcă fișiere de coș pe pagina simplă (' + wooBaseSimple.join(',') + ') și pe cea cu WooCommerce (' + wooBaseWoo.join(',') + '): baza de comparație');
   for (const [name, url] of [...PAGES, ['prima pagină', '/']]) {
     const h = await get(url);
-    const all = [...HEAVY_NO_BRW, ...BRW, ...CONTROL, 'ovabrw-google-font'];
-    ok(missingOf(h, all).length === 0, 'nivel 0, ' + name + ': toate fișierele de probă rămân (lipsesc: ' + missingOf(h, all).join(',') + ')');
+    const all = [...HEAVY_NO_BRW, ...BRW, ...CONTROL, ...GTM4WP_ECOM, 'ovabrw-google-font'];
+    ok(missingOf(h, all).length === 0 && ids(h, 'js').has('wd-login-sidebar'), 'nivel 0, ' + name + ': toate fișierele de probă rămân, și cele puse târziu (lipsesc: ' + missingOf(h, all).join(',') + ')');
     ok(/advanced-coupons-for-woocommerce-free\/dist\/common\/NoticesPlugin/.test(h), 'nivel 0, ' + name + ': modulepreload al cuponelor rămâne');
   }
 
@@ -86,6 +91,9 @@ const CONTROL = ['control-alt-modul'];
     ok(missingOf(h, CONTROL).length === 0, 'nivel 1, ' + name + ': fișierul unui alt modul rămâne');
     ok(!h.includes('__elementor_inline') && h.includes('__control_inline'), 'nivel 1, ' + name + ': codul inline al fișierelor scoase dispare, cel al altui modul rămâne');
     ok(!/advanced-coupons-for-woocommerce-free/.test(h) && /alt-modul\/js\/control-modul/.test(h), 'nivel 1, ' + name + ': modulepreload și modulul cuponelor dispar, cele ale altui modul rămân');
+    ok(!ids(h, 'js').has('wd-login-sidebar') && !ids(h, 'css').has('wd-bottom-toolbar') && !ids(h, 'js').has('woodmart-theme') && !ids(h, 'css').has('swiper'), 'nivel 1, ' + name + ': și fișierele puse în coadă târziu (în subsol) dispar, fără să tragă după ele tema');
+    ok(present(h, GTM4WP_ECOM).length === 0, 'nivel 1, ' + name + ': scripturile de comerț electronic GTM4WP dispar (au rămas: ' + present(h, GTM4WP_ECOM).join(',') + '), cel pentru Formularul de contact rămâne');
+    ok(!ids(h, 'js').has('jquery-core') && !/fonts\.googleapis|fonts\.gstatic/.test(h), 'nivel 1, ' + name + ': jQuery nu mai pornește când nu-l mai cere nimeni, iar indiciile spre fonturile Google dispar');
     ok(/gradina-ielelor-integration\/assets\/css\/site\.css/.test(h) && /<footer/.test(h) && /<h1/.test(h), 'nivel 1, ' + name + ': pagina rămâne întreagă (CSS-ul nostru, titlu, subsol)');
   }
   {
@@ -106,6 +114,9 @@ const CONTROL = ['control-alt-modul'];
     const base = await get('/despre-noi/');
     ok(wooOf(base).length === 0, 'nivel 1, pagina simplă: fișierele WooCommerce de coș dispar (au rămas: ' + wooOf(base).join(',') + ')');
     ok(present(w, HEAVY_NO_BRW).length === 0, 'nivel 1, pagina cu WooCommerce: tema și Elementor tot dispar');
+    const w2 = await get(pagini.woo2);
+    ok(wooOf(w2).length > 0, 'nivel 1, pagina cu [products] (fără cuvântul „woocommerce”): fișierele WooCommerce rămân (' + wooOf(w2).join(',') + ')');
+    ok(present(w, GTM4WP_ECOM).length === GTM4WP_ECOM.length, 'nivel 1, pagina cu WooCommerce: scripturile de comerț electronic GTM4WP rămân');
     ok(wooOf(w).join(',') === wooBaseWoo.join(','), 'nivel 1, pagina cu blocuri WooCommerce: fișierele WooCommerce rămân toate (' + wooOf(w).join(',') + ')');
   }
 
@@ -116,6 +127,7 @@ const CONTROL = ['control-alt-modul'];
     ok(present(h, HEAVY_NO_BRW).length === 0, 'nivel 2, prima pagină: tema, Elementor, hoteller, cupoane, fonturi dispar (au rămas: ' + present(h, HEAVY_NO_BRW).join(',') + ')');
     ok(present(h, [...BRW, 'ovabrw-google-font']).length === BRW.length + 1, 'nivel 2, prima pagină: BRW rămâne, cu fontul lui (lipsesc: ' + missingOf(h, [...BRW, 'ovabrw-google-font']).join(',') + ')');
     ok(missingOf(h, CONTROL).length === 0 && !/advanced-coupons-for-woocommerce-free/.test(h), 'nivel 2, prima pagină: fișierul altui modul rămâne, modulele cuponelor dispar');
+    ok(ids(h, 'css').has('swiper') && !ids(h, 'js').has('wd-login-sidebar') && !ids(h, 'js').has('woodmart-theme'), 'nivel 2, prima pagină: stilul „swiper” (folosit și de BRW) rămâne, tema nu');
     ok(/gradina-ielelor-integration\/assets\/css\/home\.css/.test(h) && /ovabrw_search|gi-fake-brw|data-gi-booking|ovabrw/i.test(h), 'nivel 2, prima pagină: stilurile noastre și formularul de rezervare rămân');
   }
   for (const [name, url] of PAGES) {
@@ -158,7 +170,13 @@ const CONTROL = ['control-alt-modul'];
   ok((await setLevelRead()) === 2, 'valoare nepermisă (7) → se reduce la 2');
   async function setLevelRead() { return (await (await ap.request.get(BASE + '/?gi_test=c1100_nivel')).json()).nivel; }
 
-  ok((await setLevel(1)) === 1, 'valoarea implicită (1) revine');
+  // o salvare care nu conține câmpul „Pagini ușoare” nu schimbă alegerea făcută
+  await setLevel(1);
+  await ap.goto(BASE + '/wp-admin/options-general.php?page=gi-integration', { waitUntil: 'domcontentloaded' });
+  await ap.evaluate(() => { const s = document.querySelector('select[name="gi_integration_options[light_pages]"]'); s.parentNode.removeChild(s); });
+  await Promise.all([ap.waitForNavigation(), ap.click('input#submit, #submit')]);
+  ok((await setLevelRead()) === 1, 'salvare fără câmpul „Pagini ușoare”: rămâne valoarea aleasă (1), nu revine la implicit');
+  ok((await setLevel(0)) === 0, 'valoarea implicită (0, oprit) revine la sfârșit');
   ok(logLines() === phpBefore, 'fără erori PHP noi în jurnal (' + (logLines() - phpBefore) + ')');
   await browser.close();
   console.log(failures === 0 ? '\nTOATE VERIFICĂRILE AU TRECUT' : '\n' + failures + ' VERIFICĂRI AU EȘUAT');

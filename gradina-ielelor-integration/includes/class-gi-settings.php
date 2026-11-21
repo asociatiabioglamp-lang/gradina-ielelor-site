@@ -27,7 +27,8 @@ final class GI_Settings {
             $output[$key] = !empty($input[$key]) ? sanitize_title(wp_unslash($input[$key])) : $defaults[$key];
         }
         $output['redirects_permanent'] = empty($input['redirects_permanent']) ? 0 : 1;
-        $light = isset($input['light_pages']) ? (int) $input['light_pages'] : (int) $defaults['light_pages'];
+        $previous_options = get_option('gi_integration_options', array());
+        $light = isset($input['light_pages']) ? (int) $input['light_pages'] : (isset($previous_options['light_pages']) ? (int) $previous_options['light_pages'] : (int) $defaults['light_pages']); // o salvare fără câmp păstrează valoarea aleasă
         $output['light_pages'] = max(0, min(2, $light));
         $output['onsite_surcharge_enabled'] = empty($input['onsite_surcharge_enabled']) ? 0 : 1;
         $output['roi_required'] = empty($input['roi_required']) ? 0 : 1;
@@ -113,9 +114,9 @@ final class GI_Settings {
                         <th scope="row"><label for="gi-light-pages">Pagini ușoare (viteză)</label></th>
                         <td>
                             <select id="gi-light-pages" name="gi_integration_options[light_pages]">
-                                <option value="0" <?php selected((int) $options['light_pages'], 0); ?>>Oprit (se încarcă tot, ca înainte)</option>
-                                <option value="1" <?php selected((int) $options['light_pages'], 1); ?>>Paginile noi, fără prima pagină</option>
-                                <option value="2" <?php selected((int) $options['light_pages'], 2); ?>>Toate paginile noi, inclusiv prima pagină</option>
+                                <option value="0" <?php selected(GI_Light::level(), 0); ?>>Oprit (se încarcă tot, ca înainte)</option>
+                                <option value="1" <?php selected(GI_Light::level(), 1); ?>>Paginile noi, fără prima pagină</option>
+                                <option value="2" <?php selected(GI_Light::level(), 2); ?>>Toate paginile noi, inclusiv prima pagină</option>
                             </select>
                             <p class="description">Pe paginile noi (Glamping, Camping, Despre noi, Contact, Galerie, Harta, locurile din Grădină) nu se mai încarcă fișierele temei vechi, ale Elementor, ale modulului pentru hoteluri și ale cuponelor: pagina apare mult mai repede. Prima pagină are formularul real de rezervare; la „inclusiv prima pagină” rămâne doar ce îi trebuie formularului. Paginile magazinului, coșul, plata, contul și paginile vechi nu se ating. Dacă ceva arată altfel, alege „Oprit”: efectul e imediat.</p>
                         </td>

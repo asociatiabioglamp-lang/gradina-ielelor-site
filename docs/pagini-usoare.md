@@ -13,7 +13,7 @@ Cerere de la proprietară (21.11.2026): „da, începe cu paginile ușoare”, d
 | Formularul de rezervare (`ova-brw`) | 13 de stil, 9 de script | nu (paginile ofertelor nu au formularul; butoanele duc la prima pagină) |
 | `advanced-coupons` | 2 de stil, 2 module JavaScript | nu |
 | Fonturi Google ale altor module | 3 | nu (paginile noastre nu le folosesc) |
-| WooCommerce (coș, plată, fragmente de coș) | 5 | nu pe paginile fără coș |
+| WooCommerce (coș, plată, fragmente de coș) și scripturile de comerț electronic GTM4WP | 5 + 2 | nu pe paginile fără coș |
 | jQuery, jQuery UI, masonry și alte fișiere WordPress, aduse de cele de mai sus | ~12 | numai cât cer cele rămase |
 
 ## Ce face versiunea 1.10.0 (`includes/class-gi-light.php`)
