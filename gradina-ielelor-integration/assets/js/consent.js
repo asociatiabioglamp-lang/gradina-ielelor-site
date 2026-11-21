@@ -9,12 +9,16 @@
         var NAME = cfg.cookie || 'gi_consent';
         var VERSION = String(cfg.version || 1);
         var DAYS = cfg.days || 180;
+        if (window.GICookie) {
+            return; // scriptul a fost inclus de două ori (ex. un modul care combină fișierele)
+        }
         var box = document.getElementById('gi-cookie');
         var reopen = document.querySelector('.gi-cookie-reopen');
         var root = document.documentElement;
         var loaded = false;
         var attrLoaded = false;
         var decidedNow = false; // a ales pe această pagină (chiar dacă browserul nu păstrează cookie-uri)
+        var current = null; // alegerea în vigoare pe această pagină ({stats, mkt}); nu depinde de cookie-uri
         var lastOpener = null;
 
         if (!box) {
@@ -122,8 +126,8 @@
 
         /* ---------- ștergerea cookie-urilor, pe categorii ---------- */
         var GROUPS = {
-            stats: /^(_ga|_gid|_gat|__utm|sbjs_)/,
-            mkt: /^(_gcl_|_gac_|_fbp|_fbc|_ttp|_tt_|ttclid)/
+            stats: /^(_ga(_.*)?|_gid|_gat(_.*)?|__utm[a-z]+|sbjs_.*)$/,
+            mkt: /^(_gcl_.*|_gac_.*|_fbp|_fbc|_ttp|_tt_.*|ttclid)$/
         };
 
         function purge(re) {
@@ -224,10 +228,11 @@
         }
 
         function choose(stats, mkt) {
-            var prev = readChoice();
+            var prev = current || readChoice();
             var withdrew = !!prev && ((prev.stats && !stats) || (prev.mkt && !mkt));
             writeChoice(stats, mkt);
             decidedNow = true;
+            current = { stats: stats, mkt: mkt };
             pushConsent(stats, mkt);
             loadAllowed({ stats: stats, mkt: mkt });
             purgeUngranted({ stats: stats, mkt: mkt });
@@ -293,11 +298,16 @@
                 location.reload();
             } else if (!c && box.hidden) {
                 openBox('main');
+            } else if (c && !box.hidden) {
+                current = c;
+                loadAllowed(c);
+                closeBox();
             }
         });
 
         /* ---------- pornire ---------- */
         var choice = readChoice();
+        current = choice;
         purgeUngranted(choice);
         if (choice) {
             loadAllowed(choice);

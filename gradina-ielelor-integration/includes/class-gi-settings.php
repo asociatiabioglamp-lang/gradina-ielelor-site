@@ -34,6 +34,7 @@ final class GI_Settings {
         } else {
             $previous = get_option('gi_integration_options', array());
             $output['gtm_id'] = isset($previous['gtm_id']) ? (string) $previous['gtm_id'] : $defaults['gtm_id'];
+            add_settings_error('gi_integration_options', 'gi_alte', 'Celelalte setări s-au salvat.', 'success');
             add_settings_error('gi_integration_options', 'gi_gtm_id', 'Codul Tag Manager nu arată ca un cod GTM-XXXXXXX și nu s-a schimbat. S-a păstrat: ' . ('' !== $output['gtm_id'] ? $output['gtm_id'] : '(gol)') . '.', 'error');
         }
         $output['onsite_surcharge_enabled'] = empty($input['onsite_surcharge_enabled']) ? 0 : 1;
@@ -120,9 +121,9 @@ final class GI_Settings {
                         <th scope="row">Cookie-uri și măsurare</th>
                         <td>
                             <label><input type="checkbox" name="gi_integration_options[consent_enabled]" value="1" <?php checked(!empty($options['consent_enabled'])); ?>> Afișează bannerul de cookie-uri; Tag Manager se încarcă numai după acord</label>
-                            <p><label>Cod Tag Manager: <input class="regular-text" type="text" name="gi_integration_options[gtm_id]" value="<?php echo esc_attr($options['gtm_id']); ?>" placeholder="GTM-XXXXXXX" pattern="GTM-[A-Za-z0-9]{4,12}" style="max-width:200px;"></label></p>
+                            <p><label>Cod Tag Manager: <input class="regular-text" type="text" name="gi_integration_options[gtm_id]" value="<?php echo esc_attr($options['gtm_id']); ?>" placeholder="GTM-XXXXXXX" pattern="\s*[Gg][Tt][Mm]-[A-Za-z0-9]{4,12}\s*" title="De exemplu: GTM-ABC1234" style="max-width:200px;"></label></p>
                             <p class="description">Codul containerului din contul Google al asociației (tagmanager.google.com). Gol = nu se măsoară nimic. Dacă debifezi, bannerul dispare și Tag Manager nu se mai încarcă de aici (modulul GTM4WP, dacă e activ, își pune singur codul).</p>
-                            <p class="description"><strong>GTM4WP (modulul vechi):</strong> <?php echo GI_Consent::gtm4wp_active() ? '✗ încă activ: încarcă Tag Manager fără acord. Dezactivează-l din Module.' : '✓ oprit'; ?><br>
+                            <p class="description"><strong>GTM4WP (modulul vechi):</strong> <?php echo GI_Consent::gtm4wp_active() ? '✗ încă activ: codul lui din pagină se scoate oricum de banner, dar nu mai are rost; dezactivează-l din Module.' : '✓ oprit'; ?><br>
                             <strong>Pagina „Cookies”:</strong> <?php echo GI_Consent::policy_url() ? '✓ găsită (bannerul trimite la ea)' : '✗ lipsește (bannerul nu are link spre politică)'; ?></p>
                         </td>
                     </tr>

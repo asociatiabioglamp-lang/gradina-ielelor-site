@@ -11,7 +11,7 @@
 .gi-cookie .gi-cookie__btn--ghost{background:transparent;color:#1d6380}
 .gi-cookie .gi-cookie__btn--ghost:hover{background:#e1eff8;color:#174f67;border-color:#174f67}
 /* peste stilurile vechi ale temei (a:focus,button:focus{outline:none!important}) conturile rămân vizibile */
-.gi-cookie .gi-cookie__btn:focus-visible,.gi-cookie a:focus-visible,.gi-cookie .gi-cookie__close:focus-visible,.gi-cookie input:focus-visible,.gi-cookie-reopen:focus-visible,.gi-cookie-link:focus-visible,.gi-cookie:focus-visible{outline:3px solid #f7b267!important;outline-offset:2px!important}
+.gi-cookie .gi-cookie__btn:focus-visible,.gi-cookie a:focus-visible,.gi-cookie .gi-cookie__close:focus-visible,.gi-cookie input:focus-visible,.gi-cookie-reopen:focus-visible,.gi-cookie-link:focus-visible{outline:3px solid #174f67!important;outline-offset:2px!important;box-shadow:0 0 0 6px #fffdf8!important}
 .gi-cookie .gi-cookie__more{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;margin:14px 0 0;padding:0;font-size:15px}
 .gi-cookie .gi-cookie__more a{color:#1d6380;text-decoration:underline;text-underline-offset:3px}
 .gi-cookie .gi-cookie__close{appearance:none;-webkit-appearance:none;margin:0 0 0 auto;padding:6px 4px;border:0;background:none;color:#33454f;font:600 15px/1.2 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer}

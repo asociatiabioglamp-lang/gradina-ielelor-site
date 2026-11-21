@@ -40,6 +40,7 @@ final class GI_Consent {
         add_action('admin_notices', array(__CLASS__, 'admin_notice'));
         add_action('init', array(__CLASS__, 'purge_cache_after_upgrade'), 20);
         add_action('update_option_gi_integration_options', array(__CLASS__, 'purge_cache'));
+        add_action('add_option_gi_integration_options', array(__CLASS__, 'purge_cache'));
     }
 
     /** Comutatorul din Setări → Grădina Ielelor. Oprit = nu apare nimic și nu se încarcă nimic (revenire la comportamentul de dinainte de 1.9.0). */
@@ -106,24 +107,35 @@ final class GI_Consent {
         }
         $scripts = wp_scripts();
         $steps = array();
-        foreach (array('sourcebuster-js', 'wc-order-attribution') as $handle) {
+        $moving = array('sourcebuster-js', 'wc-order-attribution'); // se mută împreună: wc-order-attribution depinde de sourcebuster-js
+        foreach ($moving as $handle) {
             if (!isset($scripts->registered[$handle]) || !wp_script_is($handle, 'enqueued')) {
                 continue;
             }
-            $reg = $scripts->registered[$handle];
-            foreach (array('before') as $key) {
-                $extra = $scripts->get_data($handle, $key);
-                if (is_array($extra)) {
-                    foreach ($extra as $code) {
-                        if (is_string($code) && '' !== trim($code)) {
-                            $steps[] = array('code' => $code);
-                        }
-                    }
+            // Un script de care depinde altul pus în coadă (ex. integrarea WP Consent API) nu se mută: ar porni oricum, fără acord.
+            $has_dependents = false;
+            foreach ((array) $scripts->queue as $queued) {
+                if (!in_array($queued, $moving, true) && isset($scripts->registered[$queued]) && in_array($handle, (array) $scripts->registered[$queued]->deps, true)) {
+                    $has_dependents = true;
+                    break;
                 }
             }
-            $data = $scripts->get_data($handle, 'data'); // wp_localize_script
+            if ($has_dependents) {
+                continue;
+            }
+            $reg = $scripts->registered[$handle];
+            // ordinea din WordPress: datele (wp_localize_script), apoi „before”, scriptul, „after”
+            $data = $scripts->get_data($handle, 'data');
             if (is_string($data) && '' !== trim($data)) {
                 $steps[] = array('code' => $data);
+            }
+            $before = $scripts->get_data($handle, 'before');
+            if (is_array($before)) {
+                foreach ($before as $code) {
+                    if (is_string($code) && '' !== trim($code)) {
+                        $steps[] = array('code' => $code);
+                    }
+                }
             }
             $src = (string) $reg->src;
             if ('' !== $src) {
@@ -163,7 +175,7 @@ final class GI_Consent {
             'days' => (int) self::DAYS,
             'cookie' => self::COOKIE,
             'attr' => self::$attribution_steps,
-        )) . ';', 'before');
+        ), JSON_HEX_TAG | JSON_HEX_AMP) . ';', 'before');
     }
 
     /** Bannerul: HTML ascuns, la fel pentru toți; JavaScript-ul îl arată numai cui nu a ales încă. */
@@ -289,7 +301,7 @@ final class GI_Consent {
             return $html;
         }
         $out = self::strip_blocks($html, $needles);
-        $simple = preg_replace_callback('~<(?:link|img)\b[^>]*+>~i', function ($match) use ($needles) {
+        $simple = preg_replace_callback('~<(?:link|img)\b(?:[^>"\']++|"[^"]*+"|\'[^\']*+\')*+>~i', function ($match) use ($needles) {
             return self::contains_any($match[0], $needles) ? '' : $match[0];
         }, $out);
         return is_string($simple) ? $simple : $out;
@@ -308,24 +320,43 @@ final class GI_Consent {
         $len = strlen($html);
         $pos = 0;
         $out = '';
+        $comment = null; // poziția următorului comentariu (false = nu mai sunt); se recalculează numai când a rămas în urmă, ca scanarea să fie liniară
+        $tag_at = null;
+        $tag_name = '';
         while ($pos < $len) {
-            $comment = strpos($html, '<!--', $pos);
-            $tag = preg_match('~<(script|noscript|iframe)(?=[\s/>])~i', $html, $m, PREG_OFFSET_CAPTURE, $pos) ? $m : null;
-            $tag_at = $tag ? $tag[0][1] : false;
+            if (null === $comment || (false !== $comment && $comment < $pos)) {
+                $comment = strpos($html, '<!--', $pos);
+            }
+            if (null === $tag_at || (false !== $tag_at && $tag_at < $pos)) {
+                if (preg_match('~<(script|noscript|iframe)(?=[\s/>])~i', $html, $m, PREG_OFFSET_CAPTURE, $pos)) {
+                    $tag_at = $m[0][1];
+                    $tag_name = strtolower($m[1][0]);
+                } else {
+                    $tag_at = false;
+                }
+            }
             if (false === $comment && false === $tag_at) {
                 break;
             }
             if (false !== $comment && (false === $tag_at || $comment < $tag_at)) {
-                $end = strpos($html, '-->', $comment + 4);
-                $end = false === $end ? $len : $end + 3; // comentariu neînchis: restul paginii e comentariu și pentru browser
+                if ('>' === substr($html, $comment + 4, 1)) { // <!--> este un comentariu gol
+                    $end = $comment + 5;
+                } elseif ('->' === substr($html, $comment + 4, 2)) { // <!--->
+                    $end = $comment + 6;
+                } else {
+                    $end = strpos($html, '-->', $comment + 4);
+                    $end = false === $end ? $len : $end + 3; // comentariu neînchis: restul paginii e comentariu și pentru browser
+                }
                 $out .= substr($html, $pos, $end - $pos);
                 $pos = $end;
                 continue;
             }
-            $name = strtolower($tag[1][0]);
-            $close = stripos($html, '</' . $name, $tag_at + 1);
-            $gt = false === $close ? false : strpos($html, '>', $close);
-            if (false === $gt) { // eticheta nu se închide: se lasă neatinsă
+            // eticheta de închidere: „</script” urmat de spațiu, „/” sau „>” (ca în browser)
+            if (!preg_match('~</' . $tag_name . '(?=[\s/>])~i', $html, $cm, PREG_OFFSET_CAPTURE, $tag_at + 1)) {
+                break; // eticheta nu se închide: se lasă neatinsă
+            }
+            $gt = strpos($html, '>', $cm[0][1]);
+            if (false === $gt) {
                 break;
             }
             $block = substr($html, $tag_at, $gt + 1 - $tag_at);

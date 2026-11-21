@@ -5,6 +5,7 @@ if (!defined('WP_UNINSTALL_PLUGIN')) {
 }
 
 delete_option('gi_integration_options');
+delete_option('gi_consent_cache_version');
 delete_option('gi_puncte_rewrite');
 delete_option('gi_galerie_aplicata');
 delete_transient('gi_galerie_lipsa');
