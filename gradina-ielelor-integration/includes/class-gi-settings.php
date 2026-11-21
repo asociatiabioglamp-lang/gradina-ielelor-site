@@ -27,6 +27,9 @@ final class GI_Settings {
             $output[$key] = !empty($input[$key]) ? sanitize_title(wp_unslash($input[$key])) : $defaults[$key];
         }
         $output['redirects_permanent'] = empty($input['redirects_permanent']) ? 0 : 1;
+        $output['consent_enabled'] = empty($input['consent_enabled']) ? 0 : 1;
+        $gtm_id = isset($input['gtm_id']) ? strtoupper(preg_replace('/[^A-Za-z0-9\-]/', '', sanitize_text_field(wp_unslash($input['gtm_id'])))) : '';
+        $output['gtm_id'] = 1 === preg_match('~^GTM-[A-Z0-9]{4,12}$~', $gtm_id) ? $gtm_id : '';
         $output['onsite_surcharge_enabled'] = empty($input['onsite_surcharge_enabled']) ? 0 : 1;
         $output['roi_required'] = empty($input['roi_required']) ? 0 : 1;
         $roi_version = isset($input['roi_version']) ? mb_substr(sanitize_text_field(wp_unslash($input['roi_version'])), 0, 60) : '';
@@ -105,6 +108,16 @@ final class GI_Settings {
                         <td>
                             <label><input type="checkbox" name="gi_integration_options[redirects_permanent]" value="1" <?php checked(!empty($options['redirects_permanent'])); ?>> Redirecționări permanente (301)</label>
                             <p class="description">Lasă nebifat în prima săptămână după lansare: redirecționările sunt temporare, iar dacă revii la site-ul vechi, browserele vizitatorilor nu rămân pe adresele noi. Bifează după 7 zile fără probleme (D+7), ca Google să mute definitiv adresele.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Cookie-uri și măsurare</th>
+                        <td>
+                            <label><input type="checkbox" name="gi_integration_options[consent_enabled]" value="1" <?php checked(!empty($options['consent_enabled'])); ?>> Afișează bannerul de cookie-uri; Tag Manager se încarcă numai după acord</label>
+                            <p><label>Cod Tag Manager: <input class="regular-text" type="text" name="gi_integration_options[gtm_id]" value="<?php echo esc_attr($options['gtm_id']); ?>" placeholder="GTM-XXXXXXX" pattern="GTM-[A-Za-z0-9]{4,12}" style="max-width:200px;"></label></p>
+                            <p class="description">Codul containerului din contul Google al asociației (tagmanager.google.com). Gol = nu se măsoară nimic. Dacă debifezi, bannerul dispare și Tag Manager nu se mai încarcă de aici (modulul GTM4WP, dacă e activ, își pune singur codul).</p>
+                            <p class="description"><strong>GTM4WP (modulul vechi):</strong> <?php echo GI_Consent::gtm4wp_active() ? '✗ încă activ: încarcă Tag Manager fără acord. Dezactivează-l din Module.' : '✓ oprit'; ?><br>
+                            <strong>Pagina „Cookies”:</strong> <?php echo GI_Consent::policy_url() ? '✓ găsită (bannerul trimite la ea)' : '✗ lipsește (bannerul nu are link spre politică)'; ?></p>
                         </td>
                     </tr>
                     <tr>

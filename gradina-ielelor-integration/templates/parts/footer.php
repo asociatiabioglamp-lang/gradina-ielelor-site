@@ -28,6 +28,7 @@ if (gi_from_checkout()) {
                 <?php $gi_external = 0 !== strpos($gi_url, home_url('/')); ?>
                 <a href="<?php echo esc_url($gi_url); ?>"<?php echo $gi_external ? ' target="_blank" rel="noopener noreferrer"' : ''; ?>><?php echo esc_html($gi_label); ?></a>
             <?php endforeach; ?>
+            <?php if (GI_Consent::enabled()) : ?><a href="#setari-cookie" data-gi-cookie-open>Setări cookie-uri</a><?php endif; ?>
         </nav>
         <div class="container footer-bottom"><span>Rezervările și plățile se fac online, direct pe site.</span><span>© <?php echo esc_html(wp_date('Y')); ?> Grădina Ielelor</span></div>
         <?php // Căsuța pentru echipă: duce la Zona echipei (utilizator + parolă), fără să se intre în administrarea WordPress. ?>

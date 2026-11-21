@@ -3,7 +3,7 @@ Contributors: gradina-ielelor
 Tags: one-page, woocommerce, booking, ovabrw, seo
 Requires at least: 6.0
 Requires PHP: 7.4
-Stable tag: 1.8.0
+Stable tag: 1.9.0
 License: GPLv2 or later
 
 Template-uri server-side pentru pagina principală (hub de rezervare) și paginile dedicate ofertelor Grădina Ielelor, cu WooCommerce + OVABRW drept singur motor de rezervări.
@@ -40,6 +40,12 @@ Nu. Constanta GI_REACT_DEMO_ENABLED este false, bundle-ul React nu este inclus, 
 Nu. Template-ul se aplică numai paginii selectate. Dezinstalarea șterge numai opțiunile acestui plugin.
 
 == Changelog ==
+
+= 1.9.0 =
+* Cookie-uri: banner de acord pe toate paginile site-ului (și pe cele vechi), cu „Accept toate”, „Refuz” și „Alege” (statistici, marketing), la fel de vizibile. Alegerea se păstrează 180 de zile în cookie-ul propriu `gi_consent` și se schimbă oricând din „Setări cookie-uri” (subsol, butonul mic de pe pagină, shortcode `[gi_cookie_setari]`). Starea implicită pentru Google (Consent Mode) este „refuzat”.
+* Google Tag Manager se încarcă numai după acord, din Setări → Grădina Ielelor → Cookie-uri și măsurare (cod GTM-…). Modulul GTM4WP trebuie oprit, altfel își pune singur codul, fără acord; pagina de setări avertizează. Comutatorul „Afișează bannerul” oprește totul (revenire la comportamentul de dinainte).
+* Plasă de siguranță: scriptele cu ID-urile vechi (pixel Facebook, pixel TikTok, Google Analytics și Tag Manager ale fostului administrator) se scot din pagini, indiferent de acord. Lista se poate completa cu filtrul `gi_blocked_tracker_ids`.
+* Zona echipei nu are banner și nu încarcă Tag Manager.
 
 = 1.8.0 =
 * Harta și ghidul Grădinii: proprietara încarcă un plan al Grădinii (Zona echipei → Harta), iar la fiecare loc din „Copaci și locuri” apasă pe plan unde se află (poziția se păstrează în procente). Cine scanează codul QR al unui loc vede „Ești aici”, cu locul marcat pe plan, și un link spre pagina /in-gradina/harta/ (planul cu toate locurile, apăsabile, și ghidul pe grupe: informații, locuri și facilități, copaci și plante). Fără plan încărcat, nu apare nicio hartă; adresa „harta” e rezervată.

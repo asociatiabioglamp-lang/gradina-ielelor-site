@@ -20,6 +20,9 @@ function gi_default_options() {
         // Regulamentul la finalizarea rezervării: bifă obligatorie, cu citire (decizia proprietarului, 31.10.2026).
         'roi_required' => 1,
         'roi_version' => '15.11.2026', // textul regulamentului s-a schimbat la 15.11.2026 (voucherul nu se folosește parțial)
+        // Cookie-uri (1.9.0, cererea proprietarei din 21.11.2026): banner de acord și Tag Manager încărcat numai după acord. 0 = oprit (revenire).
+        'consent_enabled' => 1,
+        'gtm_id' => 'GTM-5XNZX5QT', // containerul asociației (Tag Manager, contul Gradina Ielelor)
         // Sezonul afișat pe paginile ofertelor (text liber; gol = nu se afișează).
         'season_bungalow' => '1 mai – 30 septembrie',
         'season_glamping' => '1 mai – 30 septembrie',

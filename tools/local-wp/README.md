@@ -78,3 +78,9 @@ NODE_PATH="$(npm root -g):<folder>/node_modules" GI_BASE=http://127.0.0.1:9401 n
 ```bash
 NODE_PATH="$(npm root -g):<folder>/node_modules" GI_PHP_LOG=<wp>/wp-content/gi-php-errors.log node tools/local-wp/test-1-7-0.js
 ```
+
+## Testul cookie-urilor (pluginul 1.9.0)
+`test-1-9-0.js` verifică bannerul de cookie-uri (prima vizită, „Refuz”, „Statistici”, retragerea, cookie vechi sau stricat, tastatura, telefonul), faptul că Tag Manager nu se încarcă înainte de acord și se încarcă după, ordinea din `dataLayer`, plasa de siguranță pentru codurile vechi (Facebook, TikTok, Analytics, Tag Manager), HTML-ul identic pentru toți (cache), Zona echipei fără banner și setările. Are nevoie de `mu-plugins/gi-test-1-9-0.php`. Cererile către Google, Facebook și TikTok sunt interceptate: nu pleacă nimic în afară. NUMAI LOCAL (se autentifică cu admin/password și schimbă opțiunile pluginului; la sfârșit le pune la valorile implicite).
+```
+GI_BASE=http://127.0.0.1:9400 GI_PHP_LOG=<wp>/wp-content/gi-php-errors.log GI_SHOTS=<folder capturi> NODE_PATH=$(npm root -g) node tools/local-wp/test-1-9-0.js
+```
