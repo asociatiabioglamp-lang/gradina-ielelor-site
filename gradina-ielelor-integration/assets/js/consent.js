@@ -14,6 +14,12 @@
         }
         var box = document.getElementById('gi-cookie');
         var reopen = document.querySelector('.gi-cookie-reopen');
+        var footerLink = document.querySelector('.footer-legal [data-gi-cookie-open]');
+        if (footerLink && reopen && reopen.parentNode) {
+            // paginile noi au linkul „Setări cookie-uri” în subsol: butonul mic de deasupra paginii ar acoperi, pe telefon, căsuța „Administrare” de la sfârșit
+            reopen.parentNode.removeChild(reopen);
+            reopen = null;
+        }
         var root = document.documentElement;
         var loaded = false;
         var attrLoaded = false;
@@ -222,7 +228,7 @@
             if (reopen) {
                 reopen.hidden = !show;
             }
-            var target = (lastOpener && document.contains(lastOpener) && !lastOpener.hidden) ? lastOpener : (show ? reopen : null);
+            var target = (lastOpener && document.contains(lastOpener) && !lastOpener.hidden) ? lastOpener : (show ? reopen : footerLink);
             lastOpener = null;
             focusEl(target);
         }

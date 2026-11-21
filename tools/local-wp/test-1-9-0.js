@@ -27,6 +27,7 @@ function ok(condition, text) { console.log((condition ? '[OK]     ' : '[EROARE] 
 const logLines = () => { try { return PHP_LOG ? fs.readFileSync(PHP_LOG, 'utf8').split('\n').filter(Boolean).length : 0; } catch (e) { return 0; } };
 const OLD_IDS = ['371463157145157', 'D7P8DJBC77U3CRQJR7P0', 'G-T0Y2TVCYBD', 'GTM-T5L2SC7K'];
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const reopen = (pg) => pg.evaluate(() => window.GICookie.open()); // deschide setările (pe paginile noi butonul mic nu există: linkul e în subsol)
 
 (async () => {
   const phpBefore = logLines();
@@ -95,17 +96,17 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     ok((await cookieOf(ctx, 'gi_consent')) === '1:0:0', '„Refuz”: cookie 1:0:0 (' + (await cookieOf(ctx, 'gi_consent')) + ')');
     const ck = (await ctx.cookies(BASE)).find((x) => x.name === 'gi_consent');
     ok(ck && ck.sameSite === 'Lax' && ck.expires > Date.now() / 1000 + 170 * 86400 && ck.expires < Date.now() / 1000 + 190 * 86400, 'cookie: SameSite=Lax, ~180 de zile');
-    ok(await p.locator('.gi-cookie-reopen').isVisible(), 'după alegere apare butonul mic „Setări cookie-uri”');
+    ok(await p.locator('.gi-cookie-reopen').count() === 0 && await p.locator('.footer-legal a[data-gi-cookie-open]').count() === 1, 'pe paginile noi nu există butonul mic (ar acoperi „Administrare”); linkul „Setări cookie-uri” e în subsol');
     await shot(p, 'desktop-dupa-alegere');
     await p.reload({ waitUntil: 'networkidle' });
-    ok(!(await banner.isVisible()) && await p.locator('.gi-cookie-reopen').isVisible(), 'după reîncărcare: fără banner, cu butonul mic');
+    ok(!(await banner.isVisible()), 'după reîncărcare: fără banner');
     ok(gtmReqs(reqs).length === 0, 'după „Refuz” Tag Manager nu se încarcă, nici după reîncărcare');
     const list2 = await dl(p);
     ok(list2.find((e) => e[0] === 'consent' && e[1] === 'update' && e[2].analytics_storage === 'denied'), 'alegerea salvată se aplică din prima clipă (update: refuzat)');
 
     // ---------- 3. Statistici ----------
     await p.evaluate(() => { window.__marker = 'acelasi-document'; });
-    await p.locator('.gi-cookie-reopen').click();
+    await reopen(p);
     ok(await banner.isVisible() && await p.locator('#gi-cookie [data-gi-view="settings"]').isVisible(), 'butonul mic deschide „Alege ce cookie-uri accepți”');
     const need = p.locator('#gi-ck-need');
     ok(await need.isChecked() && await need.isDisabled(), '„Necesare”: bifat și nu se poate debifa');
@@ -136,7 +137,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     // ---------- 5. retragerea ----------
     await ctx.addCookies([{ name: '_ga', value: 'GA1.1.1.1', url: BASE }, { name: '_ga_ABC', value: 'x', url: BASE }, { name: 'wp_test_pastrat', value: '1', url: BASE }]);
     const before = gtmReqs(reqs).length;
-    await p.locator('.gi-cookie-reopen').click();
+    await reopen(p);
     ok(await p.locator('#gi-ck-stats').isChecked(), 'redeschis: Statistici apare bifat');
     await p.locator('#gi-ck-stats').uncheck();
     await Promise.all([p.waitForNavigation({ waitUntil: 'networkidle' }), p.locator('#gi-cookie [data-gi-act="save"]').click()]);
@@ -146,7 +147,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     ok(gtmReqs(reqs).length === before, 'după retragere și reîncărcare Tag Manager nu mai pornește');
 
     // ---------- 6. accept toate din setări ----------
-    await p.locator('.gi-cookie-reopen').click();
+    await reopen(p);
     await p.locator('#gi-cookie [data-gi-view="settings"] [data-gi-act="accept"]').click();
     await p.waitForFunction(() => !!window.__gtm_stub, null, { timeout: 5000 }).catch(() => {});
     ok((await cookieOf(ctx, 'gi_consent')) === '1:1:1', '„Accept toate”: cookie 1:1:1');
@@ -210,11 +211,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
       await p.evaluate(() => window.scrollTo(0, 800)); // butonul fix al site-ului apare numai după derulare (comportamentul lui propriu)
       await sleep(600);
       ok(await cta.isVisible(), 'telefon: după alegere (și după derulare), butonul „Rezervă cazare” reapare');
-      const r1 = await cta.boundingBox();
-      const r2 = await p.locator('.gi-cookie-reopen').boundingBox();
-      const overlap = r1 && r2 && !(r2.x + r2.width <= r1.x || r2.x >= r1.x + r1.width || r2.y + r2.height <= r1.y || r2.y >= r1.y + r1.height);
-      ok(r2 && r2.width >= 40 && !overlap, 'telefon: butonul mic de redeschidere (≥ 40 px) nu se suprapune cu „Rezervă cazare”');
-      ok(r2 && r2.y + r2.height <= 844 - 70, 'telefon: butonul mic stă deasupra barei de jos (de 55 px) a temei vechi, pe orice pagină (jos la ' + (r2 ? Math.round(844 - r2.y - r2.height) : '?') + ' px)');
+      ok(await p.locator('.gi-cookie-reopen').count() === 0, 'telefon: pe paginile noi nu apare butonul mic: nu se suprapune cu „Rezervă cazare” sau cu „Administrare”');
     }
     await shot(p, 'telefon-dupa-alegere');
     await ctx.close();
@@ -270,11 +267,11 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     await p.locator('#gi-cookie [data-gi-view="main"] [data-gi-act="reject"]').click();
     await p.goto(BASE + '/glamping/', { waitUntil: 'networkidle' });
     ok((await sb()) === 0, 'după „Refuz”, pe altă pagină: tot niciun cookie sbjs_*');
-    await p.locator('.gi-cookie-reopen').click();
+    await reopen(p);
     await p.locator('#gi-cookie [data-gi-view="settings"] [data-gi-act="accept"]').click();
     await sleep(1500);
     ok((await sb()) > 0, 'după „Accept toate”: scripturile de atribuire pornesc și apar cookie-urile sbjs_* (' + (await sb()) + ')');
-    await p.locator('.gi-cookie-reopen').click();
+    await reopen(p);
     await p.locator('#gi-ck-stats').uncheck();
     await Promise.all([p.waitForNavigation({ waitUntil: 'networkidle' }), p.locator('#gi-cookie [data-gi-act="save"]').click()]);
     ok((await sb()) === 0, 'retragerea statisticilor șterge și cookie-urile sbjs_*');
@@ -293,7 +290,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     await v2.ctx.addCookies([{ name: 'gi_consent', value: '1%3A1%3A1', url: BASE }, { name: '_ga', value: 'GA1.1.1.1', url: BASE }, { name: '_fbp', value: 'fb.1.1.1', url: BASE }]);
     const p2 = await v2.ctx.newPage();
     await p2.goto(BASE + '/', { waitUntil: 'networkidle' });
-    await p2.locator('.gi-cookie-reopen').click();
+    await reopen(p2);
     await p2.locator('#gi-ck-mkt').uncheck();
     await Promise.all([p2.waitForNavigation({ waitUntil: 'networkidle' }), p2.locator('#gi-cookie [data-gi-act="save"]').click()]);
     ok((await cookieOf(v2.ctx, '_ga')) === 'GA1.1.1.1' && (await cookieOf(v2.ctx, '_fbp')) === null, 'se retrage numai marketingul: _fbp se șterge, _ga (statistici) rămâne');
@@ -313,9 +310,9 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     await p.keyboard.press('Escape');
     ok(await p.evaluate(() => document.getElementById('gi-cookie').contains(document.activeElement)), 'Escape din setări: focusul rămâne în banner (nu cade pe pagină)');
     await p.locator('#gi-cookie [data-gi-view="main"] [data-gi-act="reject"]').click();
-    ok(await p.evaluate(() => document.activeElement && document.activeElement.classList.contains('gi-cookie-reopen')), 'după alegere, focusul trece pe butonul mic „Setări cookie-uri”');
+    ok(await p.evaluate(() => document.activeElement && document.activeElement.matches('[data-gi-cookie-open]')), 'după alegere, focusul trece pe linkul „Setări cookie-uri” din subsol (nu cade pe pagină)');
     await p.evaluate(() => { const b = document.createElement('div'); b.id = 'lightbox-probă'; document.body.appendChild(b); });
-    await p.locator('.gi-cookie-reopen').click();
+    await reopen(p);
     await p.locator('body').press('Escape'); // focusul e în banner: se închide
     ok(!(await p.locator('#gi-cookie').isVisible()), 'Escape cu focusul în banner îl închide (după o alegere)');
     await ctx.close();
@@ -333,7 +330,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     await foot.click();
     ok(await p.locator('#gi-cookie [data-gi-view="settings"]').isVisible(), 'linkul din subsol deschide setările');
     await p.locator('#gi-cookie [data-gi-act="close"]').click();
-    ok(!(await p.locator('#gi-cookie').isVisible()) && await p.locator('.gi-cookie-reopen').isVisible(), '„Închide” (după o alegere) ascunde setările');
+    ok(!(await p.locator('#gi-cookie').isVisible()), '„Închide” (după o alegere) ascunde setările');
     ok(/politica-cookies/.test(await p.locator('footer a[href*="politica-cookies"]').first().getAttribute('href')), 'subsolul trimite și la pagina „Cookies”');
     const s = await ctx.newPage();
     await s.goto(pagini.shortcode, { waitUntil: 'networkidle' });
@@ -344,6 +341,25 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     const h = await ctx.newPage();
     await h.goto(BASE + '/#setari-cookie', { waitUntil: 'networkidle' });
     ok(await h.locator('#gi-cookie [data-gi-view="settings"]').isVisible(), 'adresa #setari-cookie deschide setările');
+    await ctx.close();
+  }
+
+  // ---------- 11b. pagină fără subsolul nostru (ca paginile vechi): butonul mic ----------
+  {
+    const { ctx } = await visitor({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    const p = await ctx.newPage();
+    await p.goto(pagini.politica, { waitUntil: 'networkidle' });
+    ok(await p.locator('.footer-legal a[data-gi-cookie-open]').count() === 0, 'pagina de probă nu are subsolul nostru (ca paginile vechi)');
+    await p.locator('#gi-cookie [data-gi-view="main"] [data-gi-act="reject"]').click();
+    const fb = p.locator('.gi-cookie-reopen');
+    ok(await fb.isVisible(), 'pe paginile fără subsolul nostru apare butonul mic „Setări cookie-uri”');
+    const r = await fb.boundingBox();
+    ok(r && r.width >= 40 && r.y + r.height <= 844 - 70, 'butonul mic stă deasupra barei de jos (de 55 px) a temei vechi (jos la ' + (r ? Math.round(844 - r.y - r.height) : '?') + ' px)');
+    ok(await p.evaluate(() => document.activeElement && document.activeElement.classList.contains('gi-cookie-reopen')), 'după alegere, focusul trece pe butonul mic');
+    await fb.click();
+    ok(await p.locator('#gi-cookie [data-gi-view="settings"]').isVisible(), 'butonul mic deschide setările');
+    await p.locator('#gi-cookie [data-gi-act="close"]').click();
+    ok(await p.evaluate(() => document.activeElement && document.activeElement.classList.contains('gi-cookie-reopen')), 'la „Închide”, focusul revine pe butonul mic');
     await ctx.close();
   }
 
