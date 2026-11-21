@@ -20,6 +20,8 @@ function gi_default_options() {
         // Regulamentul la finalizarea rezervării: bifă obligatorie, cu citire (decizia proprietarului, 31.10.2026).
         'roi_required' => 1,
         'roi_version' => '15.11.2026', // textul regulamentului s-a schimbat la 15.11.2026 (voucherul nu se folosește parțial)
+        // Pagini ușoare (1.10.0): 0 = oprit; 1 = paginile noi, fără prima pagină; 2 = și prima pagină. Vezi includes/class-gi-light.php.
+        'light_pages' => 1,
         // Sezonul afișat pe paginile ofertelor (text liber; gol = nu se afișează).
         'season_bungalow' => '1 mai – 30 septembrie',
         'season_glamping' => '1 mai – 30 septembrie',
