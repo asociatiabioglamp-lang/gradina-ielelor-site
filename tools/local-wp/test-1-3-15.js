@@ -12,6 +12,8 @@
 // Iese cu cod 1 dacă o verificare pică.
 const { chromium } = require('playwright');
 const BASE = process.env.GI_BASE || 'http://127.0.0.1:9400';
+// De la 1.9.0 bannerul de cookie-uri se afișează la prima vizită: aici vizitatorul a ales deja (Refuz), ca să se verifice restul paginii.
+const newCtx = async (br, opts) => { const c = await br.newContext(opts); await c.addCookies([{ name: 'gi_consent', value: '1%3A0%3A0', url: BASE }]); return c; };
 const Q = '?gi_test=stiluri';
 let failures = 0;
 function ok(condition, text) {
@@ -85,7 +87,7 @@ const MEASURE = () => {
   async function open(size, path, opts) {
     const [w, h] = SIZES[size];
     const phone = Math.min(w, h) <= 430;
-    const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: phone, hasTouch: phone });
+    const ctx = await newCtx(browser, { viewport: { width: w, height: h }, isMobile: phone, hasTouch: phone });
     const page = await ctx.newPage();
     page.setDefaultTimeout(90000);
     if (opts && opts.oldBrowser) {
@@ -148,7 +150,7 @@ const MEASURE = () => {
 
   // 4. Paginile cu tema veche (produs): regula pentru steag e tipărită, iar steagul nu mai e fix
   {
-    const ctx = await browser.newContext({ viewport: { width: 360, height: 740 }, isMobile: true, hasTouch: true });
+    const ctx = await newCtx(browser, { viewport: { width: 360, height: 740 }, isMobile: true, hasTouch: true });
     const page = await ctx.newPage();
     await page.goto(BASE + '/?p=30&gi_test=stiluri', { waitUntil: 'load', timeout: 90000 });
     const r = await page.evaluate(() => {
@@ -171,7 +173,7 @@ const MEASURE = () => {
   //    în designul nostru (fără stiluri străine), culoarea textului rămâne aceeași, cu excepțiile alese de noi.
   const HOVER_EXCEPTIONS = '.button-outline, .footer-grid a, .footer-legal a, .calendar-filters button, .footer-bottom a';
   async function hoverPass(w, h, path, foreign) {
-    const ctx = await browser.newContext({ viewport: { width: w, height: h } });
+    const ctx = await newCtx(browser, { viewport: { width: w, height: h } });
     const page = await ctx.newPage();
     page.setDefaultTimeout(90000);
     await page.goto(BASE + path + (foreign ? Q : ''), { waitUntil: 'load' });
@@ -221,7 +223,7 @@ const MEASURE = () => {
 
   // 6. Telefon: după derulare, butonul „Rezervă” de jos e vizibil și liber (bara temei vechi nu îl acoperă)
   for (const path of ['/', '/glamping/', '/contact/']) {
-    const ctx = await browser.newContext({ viewport: { width: 360, height: 740 }, isMobile: true, hasTouch: true });
+    const ctx = await newCtx(browser, { viewport: { width: 360, height: 740 }, isMobile: true, hasTouch: true });
     const page = await ctx.newPage();
     await page.goto(BASE + path + Q, { waitUntil: 'load', timeout: 90000 });
     // Pe unele pagini butonul se ascunde singur cât timp formularul de rezervare e pe ecran: îl căutăm în mai multe locuri din pagină.
@@ -244,7 +246,7 @@ const MEASURE = () => {
 
   // 7. Telefon cu ecran scund (iPhone SE / 8 în Safari, circa 375×553): pozele de jos se văd măcar parțial pe primul ecran
   {
-    const ctx = await browser.newContext({ viewport: { width: 375, height: 553 }, isMobile: true, hasTouch: true });
+    const ctx = await newCtx(browser, { viewport: { width: 375, height: 553 }, isMobile: true, hasTouch: true });
     const page = await ctx.newPage();
     await page.goto(BASE + '/' + Q, { waitUntil: 'load', timeout: 90000 });
     const v = await page.evaluate(() => Array.from(document.querySelectorAll('.home-hero-slice-shore, .home-hero-slice-foc')).map((e) => { const b = e.getBoundingClientRect(); return Math.round(Math.max(0, Math.min(innerHeight, b.bottom) - Math.max(0, b.top))); }));
@@ -255,7 +257,7 @@ const MEASURE = () => {
   // 8. Cu bara de administrare WordPress (proprietara autentificată): steagul nu intră sub bară și nu stă peste antet
   {
     for (const [w, h] of [[360, 740], [768, 1024], [1440, 900]]) {
-      const ctx = await browser.newContext({ viewport: { width: w, height: h } });
+      const ctx = await newCtx(browser, { viewport: { width: w, height: h } });
       const page = await ctx.newPage();
       page.setDefaultTimeout(90000);
       await page.goto(BASE + '/wp-login.php', { waitUntil: 'domcontentloaded' });
@@ -272,7 +274,7 @@ const MEASURE = () => {
 
   // 9. Linkurile fără legătură cu Grădina (cerute de proprietară): dispare linkul, rămâne textul; celelalte linkuri rămân
   {
-    const ctx = await browser.newContext();
+    const ctx = await newCtx(browser);
     const page = await ctx.newPage();
     const resp = await page.goto(BASE + '/?gi_test=linkuri', { waitUntil: 'domcontentloaded', timeout: 90000 });
     let r = {};

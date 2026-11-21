@@ -29,7 +29,13 @@ final class GI_Settings {
         $output['redirects_permanent'] = empty($input['redirects_permanent']) ? 0 : 1;
         $output['consent_enabled'] = empty($input['consent_enabled']) ? 0 : 1;
         $gtm_id = isset($input['gtm_id']) ? strtoupper(preg_replace('/[^A-Za-z0-9\-]/', '', sanitize_text_field(wp_unslash($input['gtm_id'])))) : '';
-        $output['gtm_id'] = 1 === preg_match('~^GTM-[A-Z0-9]{4,12}$~', $gtm_id) ? $gtm_id : '';
+        if ('' === $gtm_id || 1 === preg_match('~^GTM-[A-Z0-9]{4,12}$~', $gtm_id)) {
+            $output['gtm_id'] = $gtm_id; // gol = fără măsurare, hotărât de proprietară
+        } else {
+            $previous = get_option('gi_integration_options', array());
+            $output['gtm_id'] = isset($previous['gtm_id']) ? (string) $previous['gtm_id'] : $defaults['gtm_id'];
+            add_settings_error('gi_integration_options', 'gi_gtm_id', 'Codul Tag Manager nu arată ca un cod GTM-XXXXXXX și nu s-a schimbat. S-a păstrat: ' . ('' !== $output['gtm_id'] ? $output['gtm_id'] : '(gol)') . '.', 'error');
+        }
         $output['onsite_surcharge_enabled'] = empty($input['onsite_surcharge_enabled']) ? 0 : 1;
         $output['roi_required'] = empty($input['roi_required']) ? 0 : 1;
         $roi_version = isset($input['roi_version']) ? mb_substr(sanitize_text_field(wp_unslash($input['roi_version'])), 0, 60) : '';

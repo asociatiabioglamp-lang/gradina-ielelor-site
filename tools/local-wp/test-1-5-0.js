@@ -18,6 +18,8 @@ const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
 const BASE = process.env.GI_BASE || 'http://127.0.0.1:9400';
+// De la 1.9.0 bannerul de cookie-uri se afișează la prima vizită: aici vizitatorul a ales deja (Refuz), ca să se verifice restul paginii.
+const newCtx = async (br, opts) => { const c = await br.newContext(opts); await c.addCookies([{ name: 'gi_consent', value: '1%3A0%3A0', url: BASE }]); return c; };
 if (!/^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/.test(BASE)) {
   console.error('Refuz să rulez pe ' + BASE + ': testul e numai pentru WordPress-ul local (GI_BASE=http://127.0.0.1:9400).');
   process.exit(2);
@@ -98,7 +100,7 @@ async function runScreens(browser, newCtx, state) {
     const phone = Math.min(w, h) <= 430;
     const problems = []; let primary = null;
     for (const [name, url, logged] of screens) {
-      const ctx = await browser.newContext(Object.assign({ viewport: { width: w, height: h }, isMobile: phone, hasTouch: phone }, logged ? { storageState: state } : {}));
+      const ctx = await newCtx(browser, Object.assign({ viewport: { width: w, height: h }, isMobile: phone, hasTouch: phone }, logged ? { storageState: state } : {}));
       const page = await ctx.newPage(); page.setDefaultTimeout(90000);
       await page.goto(url + '?gi_test=stiluri', { waitUntil: 'load' });
       if (logged && /vouchere|copaci\/$/.test(url)) { await page.waitForSelector('.gi-qr-mini svg').catch(() => {}); }

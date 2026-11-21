@@ -13,15 +13,19 @@ Cerere de la proprietară (21.11.2026): „implementează să afișeze ok”. Si
 - **Zona echipei** (cu utilizator și parolă) nu are banner și nu măsoară nimic.
 
 ## 2. Ce se întâmplă în spate
-- Din prima clipă, înainte de orice script de măsurare, pagina spune Google: „totul refuzat” (Google Consent Mode: `analytics_storage`, `ad_storage`, `ad_user_data`, `ad_personalization`). Alegerea salvată se aplică imediat ce pagina se încarcă.
+- Din prima clipă, înainte de orice script de măsurare, pagina spune Google: „totul refuzat” (Google Consent Mode: `analytics_storage`, `ad_storage`, `ad_user_data`, `ad_personalization`, `personalization_storage`; doar `functionality_storage` și `security_storage` rămân acordate, ca la orice site). Alegerea salvată se aplică imediat ce pagina se încarcă.
 - **Google Tag Manager nu se încarcă** până când vizitatorul nu acceptă statistici sau marketing. Containerul e cel al asociației (`GTM-5XNZX5QT`), setat în Setări → Grădina Ielelor → *Cookie-uri și măsurare*.
 - Bannerul se afișează din JavaScript, nu din PHP: paginile pot fi păstrate în memoria serverului (LiteSpeed), iar HTML-ul e același pentru toți vizitatorii.
+- **Orice cod de măsurare scris direct în pagină se scoate** (Tag Manager, gtag, pixel Facebook, pixel TikTok: scripturile, imaginile și iframe-urile lor), pentru că ar rula fără acord. Asta include codul modulului vechi GTM4WP: chiar dacă uiți să-l dezactivezi, el nu mai poate încărca Tag Manager înainte de acord. Tag Manager pornește numai din scriptul bannerului, după acord, și numai o singură dată (dacă un container cu același cod e deja pornit, nu se mai încarcă a doua oară).
+- **Atribuirea comenzilor WooCommerce** („de unde a venit clientul”, cookie-urile `sbjs_*`) se pune la statistici: scripturile ei se scot din pagină și pornesc din banner numai după acord pentru statistici, cu aceleași date. Fără acord, comenzile nu mai păstrează sursa vizitatorului. Oprire: filtrul `gi_keep_order_attribution` (nu se recomandă).
+- **Cookie-urile de măsurare ale unei categorii neacordate se șterg la prima pagină** (și cele rămase de la vizite mai vechi, de dinainte de 1.9.0): statistici = `_ga*`, `_gid`, `_gat*`, `__utm*`, `sbjs_*`; marketing = `_gcl_*`, `_gac_*`, `_fbp`, `_fbc`, `_ttp`, `_tt_*`, `ttclid`. Se șterge numai ce nu s-a acordat (cine retrage doar marketingul își păstrează `_ga`).
+- **Memoria serverului (LiteSpeed):** bannerul și codul containerului stau în pagini păstrate de server. La fiecare schimbare reală a setărilor și la prima cerere după o actualizare a pluginului se cere ștergerea ei (`litespeed_purge_all`); dacă un cache nu o primește, se șterge de mână din administrare.
 - **Plasa de siguranță:** scriptele cu ID-urile fostului administrator (pixel Facebook `371463157145157`, pixel TikTok `D7P8DJBC77U3CRQJR7P0`, Google Analytics `G-T0Y2TVCYBD`, Tag Manager `GTM-T5L2SC7K`) se scot din toate paginile, indiferent de acord. Vizitele nu trebuie să ajungă în conturi care nu sunt ale asociației. Lista se poate completa din cod, cu filtrul `gi_blocked_tracker_ids`. Când scriptele vechi se scot și din sursă (Module / temă / Elementor), plasa nu mai are ce face.
 
 ## 3. Instalarea pe live (proprietara, pas cu pas; numai după „da” al ei)
 1. **Copie de siguranță** (Softaculous → Backup), ca la fiecare versiune.
 2. Încarcă arhiva `gradina-ielelor-integration-1.9.0.zip` (WordPress → Module → Adaugă modul → Încarcă modul). Dacă dă „403 Forbidden”, vezi alternativa prin cPanel din `docs/lansare.md`.
-3. **Setări → Grădina Ielelor → Cookie-uri și măsurare:** trebuie să scrie codul `GTM-5XNZX5QT`. Dacă apare „✗ GTM4WP încă activ”, **dezactivează GTM4WP** (Module → Module instalate → GTM4WP → Dezactivează; nu-l șterge încă). Altfel Tag Manager s-ar încărca și de acolo, fără acord.
+3. **Setări → Grădina Ielelor → Cookie-uri și măsurare:** trebuie să scrie codul `GTM-5XNZX5QT`. Dacă apare „✗ încă activ” la GTM4WP, **dezactivează GTM4WP** (Module → Module instalate → GTM4WP → Dezactivează; nu-l șterge încă). Codul lui din pagină se scoate oricum de banner, dar nu mai are rost să rămână.
 4. **Verificare într-o fereastră privată:** deschide `gradina-ielelor.ro`. Trebuie să apară bannerul. Apasă **Accept toate**, apoi în Google Analytics → Rapoarte → Timp real trebuie să apară vizita ta. După **Refuz** nu trebuie să apară nimic.
 5. **Claude verifică din afară** (numai citire): codul Tag Manager nu apare în HTML-ul paginilor, apare bannerul, codurile vechi sunt scoase.
 6. **Revenire (dacă ceva nu merge):** Setări → Grădina Ielelor → debifează „Afișează bannerul de cookie-uri” (bannerul dispare, Tag Manager nu se mai încarcă de aici) și reactivează GTM4WP; sau instalează din nou arhiva 1.8.0 din Release-ul `v1.8.0`.
@@ -37,6 +41,7 @@ Lista de mai jos e făcută din ce se știe din cod și din paginile publice; **
 | `woocommerce_*`, `wp_woocommerce_session_*` | coșul și rezervarea | necesar |
 | `wordpress_*`, `wordpress_logged_in_*` | autentificarea (clienți și echipă) | necesar |
 | `googtrans` (GTranslate) | limba aleasă | necesar / preferințe (de hotărât) |
+| `sbjs_*` (WooCommerce, atribuirea comenzilor) | de unde a venit clientul (sursă, campanie, pagina de intrare) | statistici (numai după acord) |
 | `_ga`, `_ga_*` (prin Tag Manager, după acord) | statistici | statistici |
 | `_fbp`, `_ttp` și altele (numai dacă se adaugă în Tag Manager) | reclame | marketing |
 
@@ -46,6 +51,8 @@ Lista de mai jos e făcută din ce se știe din cod și din paginile publice; **
 3. Durata de 180 de zile și faptul că după „Refuz” nu se mai întreabă 180 de zile.
 4. Transferul datelor către Google (Analytics) și textul de informare (politica de confidențialitate).
 5. Modul de măsurare: Tag Manager nu se încarcă deloc înainte de acord („varianta strictă”).
+6. **GTranslate** (comutatorul de limbă) încarcă un script de la un server al lui (`cdn.gtranslate.net`) și poate pune cookie-ul `googtrans` înainte de orice alegere. Nu e blocat de banner. De hotărât: necesar (funcție cerută de vizitator) sau nu, și ce se spune în politică.
+7. **Safari** limitează la 7 zile cookie-urile scrise din JavaScript: acolo alegerea nu ține 180 de zile, ci cel mult 7.
 
 ## 6. Pentru cine modifică codul
 - Fișiere: `includes/class-gi-consent.php`, `assets/js/consent.js`, `assets/css/consent.css`; link în `templates/parts/footer.php`; opțiunile `consent_enabled` și `gtm_id` în `includes/template-tags.php` și `includes/class-gi-settings.php`.

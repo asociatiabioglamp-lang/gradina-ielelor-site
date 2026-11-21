@@ -4,6 +4,8 @@
  * Pentru test-1-9-0.js (bannerul de cookie-uri, Tag Manager numai după acord, plasa de siguranță pentru codurile vechi):
  *  - orice pagină cu ?c190_vechi=1  → în <head> apar, exact ca pe paginile vechi de pe live, codurile fostului administrator (pixel Facebook, pixel TikTok,
  *    Google Analytics ×2, Tag Manager vechi) și, ca etalon, un script al asociației (care NU trebuie scos)
+ *  - orice pagină cu ?c190_gtm4wp=1 → codul GTM4WP al containerului asociației (script în <head> + iframe în <noscript>), exact ca pe live: trebuie scos de plasa de siguranță
+ *  - orice pagină cu ?c190_limite=1 → cazuri-limită pentru plasa de siguranță (script într-un comentariu HTML, script foarte mare cu un ID vechi, script legitim lângă ele)
  *  - /?gi_test=c190_pagini → creează (o singură dată) pagina „Cookies” (info-util/politica-cookies) și o pagină de probă cu [gi_cookie_setari]; întoarce adresele
  *  - /?gi_test=c190_optiuni → întoarce opțiunile de cookie-uri (consent_enabled, gtm_id)
  *  - /?gi_test=c190_reset → pune opțiunile la valorile implicite
@@ -74,6 +76,29 @@ fbq('track', 'PageView');
     <?php
 }, 5);
 
+add_action('wp_head', function () {
+    if (isset($_GET['c190_gtm4wp'])) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        echo "<script data-cfasync=\"false\" data-pagespeed-no-defer>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-5XNZX5QT');</script>\n";
+    }
+    if (isset($_GET['c190_limite'])) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        echo "<!-- vechi: <script async src=\"https://www.googletagmanager.com/gtag/js?id=G-T0Y2TVCYBD\"> -->\n";
+        echo "<script id=\"c190-dupa-comentariu\">window.__dupa_comentariu = true;</script>\n";
+        echo '<script id="c190-mare">/* ' . str_repeat('x', 1300000) . ' G-T0Y2TVCYBD */</script>' . "\n";
+        echo "<script id=\"c190-legitim\">window.__legitim_ramas = true;</script>\n";
+    }
+}, 6);
+
+add_action('wp_footer', function () {
+    if (isset($_GET['c190_gtm4wp'])) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        echo '<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5XNZX5QT" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>' . "\n";
+    }
+}, 2);
+
+// numără ștergerile memoriei serverului (LiteSpeed), ca să se verifice că se cer după schimbarea setărilor
+add_action('litespeed_purge_all', function () {
+    update_option('c190_purjari', (int) get_option('c190_purjari', 0) + 1, false);
+});
+
 add_action('init', function () {
     $t = isset($_GET['gi_test']) ? sanitize_key(wp_unslash($_GET['gi_test'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
     if (!in_array($t, array('c190_pagini', 'c190_optiuni', 'c190_reset'), true)) {
@@ -94,6 +119,6 @@ add_action('init', function () {
         delete_option('gi_integration_options');
     }
     $o = gi_options();
-    echo wp_json_encode(array('consent_enabled' => (int) $o['consent_enabled'], 'gtm_id' => (string) $o['gtm_id']));
+    echo wp_json_encode(array('consent_enabled' => (int) $o['consent_enabled'], 'gtm_id' => (string) $o['gtm_id'], 'purjari' => (int) get_option('c190_purjari', 0), 'versiune_cache' => (string) get_option('gi_consent_cache_version', '')));
     exit;
 }, 1);

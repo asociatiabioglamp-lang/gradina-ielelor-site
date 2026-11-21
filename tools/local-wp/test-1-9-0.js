@@ -214,6 +214,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
       const r2 = await p.locator('.gi-cookie-reopen').boundingBox();
       const overlap = r1 && r2 && !(r2.x + r2.width <= r1.x || r2.x >= r1.x + r1.width || r2.y + r2.height <= r1.y || r2.y >= r1.y + r1.height);
       ok(r2 && r2.width >= 40 && !overlap, 'telefon: butonul mic de redeschidere (≥ 40 px) nu se suprapune cu „Rezervă cazare”');
+      ok(r2 && r2.y + r2.height <= 844 - 70, 'telefon: butonul mic stă deasupra barei de jos (de 55 px) a temei vechi, pe orice pagină (jos la ' + (r2 ? Math.round(844 - r2.y - r2.height) : '?') + ' px)');
     }
     await shot(p, 'telefon-dupa-alegere');
     await ctx.close();
@@ -237,6 +238,86 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     const heads = (h) => (h.match(/<script id="gi-consent-default">[\s\S]*?<\/script>/) || [''])[0];
     ok(heads(html1).length > 100 && heads(html1) === heads(html2), 'cache: scriptul de stare implicită e identic pentru toți');
     ok(await ap.request.get(BASE + '/?c190_vechi=1').then((r) => r.headers()['content-type'] || '').then((t) => /text\/html/.test(t)), 'pagina rămâne text/html');
+    await ctx.close();
+  }
+
+  // ---------- 10b. cod GTM4WP și cazuri-limită ----------
+  {
+    const raw = await (await ap.request.get(BASE + '/?c190_gtm4wp=1')).text();
+    ok(!raw.includes('googletagmanager.com/gtm.js') && !raw.includes('googletagmanager.com/ns.html'), 'GTM4WP: codul containerului din pagină (script și iframe din noscript) e scos de plasa de siguranță');
+    const lim = await (await ap.request.get(BASE + '/?c190_limite=1')).text();
+    ok(!lim.includes('c190-mare') && !lim.includes('x'.repeat(200)), 'script foarte mare (> 1 MB) cu ID vechi: scos, fără să depășească limitele PCRE');
+    ok(lim.includes('c190-dupa-comentariu') && lim.includes('c190-legitim'), 'scripturile legitime de lângă un <script> neînchis dintr-un comentariu rămân');
+    ok(lim.includes('<!-- vechi: <script async'), 'comentariul HTML rămâne neatins');
+    const { ctx, reqs } = await visitor();
+    const p = await ctx.newPage();
+    await p.goto(BASE + '/?c190_gtm4wp=1', { waitUntil: 'networkidle' });
+    ok(gtmReqs(reqs).length === 0, 'cu GTM4WP încă activ: înainte de acord nu pleacă nicio cerere spre Tag Manager (' + reqs.length + ')');
+    await p.locator('#gi-cookie [data-gi-view="main"] [data-gi-act="accept"]').click();
+    await p.waitForFunction(() => !!window.__gtm_stub, null, { timeout: 5000 }).catch(() => {});
+    await sleep(300);
+    ok(gtmReqs(reqs).length === 1, 'după acord: Tag Manager se încarcă o singură dată, nu de două ori (' + gtmReqs(reqs).length + ')');
+    await ctx.close();
+  }
+
+  // ---------- 10c. atribuirea comenzilor WooCommerce (cookie-uri sbjs_*) ----------
+  {
+    const { ctx } = await visitor();
+    const p = await ctx.newPage();
+    const sb = async () => (await ctx.cookies(BASE)).filter((c) => /^sbjs_/.test(c.name)).length;
+    await p.goto(BASE + '/', { waitUntil: 'networkidle' });
+    ok((await sb()) === 0, 'înainte de acord: niciun cookie sbjs_* (atribuirea comenzilor WooCommerce)');
+    await p.locator('#gi-cookie [data-gi-view="main"] [data-gi-act="reject"]').click();
+    await p.goto(BASE + '/glamping/', { waitUntil: 'networkidle' });
+    ok((await sb()) === 0, 'după „Refuz”, pe altă pagină: tot niciun cookie sbjs_*');
+    await p.locator('.gi-cookie-reopen').click();
+    await p.locator('#gi-cookie [data-gi-view="settings"] [data-gi-act="accept"]').click();
+    await sleep(1500);
+    ok((await sb()) > 0, 'după „Accept toate”: scripturile de atribuire pornesc și apar cookie-urile sbjs_* (' + (await sb()) + ')');
+    await p.locator('.gi-cookie-reopen').click();
+    await p.locator('#gi-ck-stats').uncheck();
+    await Promise.all([p.waitForNavigation({ waitUntil: 'networkidle' }), p.locator('#gi-cookie [data-gi-act="save"]').click()]);
+    ok((await sb()) === 0, 'retragerea statisticilor șterge și cookie-urile sbjs_*');
+    await ctx.close();
+  }
+
+  // ---------- 10d. ștergerea cookie-urilor pe categorii ----------
+  {
+    const { ctx } = await visitor();
+    await ctx.addCookies([{ name: '_ga', value: 'GA1.1.1.1', url: BASE }, { name: '_fbp', value: 'fb.1.1.1', url: BASE }]);
+    const p = await ctx.newPage();
+    await p.goto(BASE + '/', { waitUntil: 'networkidle' });
+    ok((await cookieOf(ctx, '_ga')) === null && (await cookieOf(ctx, '_fbp')) === null, 'cine n-a ales încă și vine cu _ga și _fbp de la vizite mai vechi: se șterg la prima pagină');
+    await ctx.close();
+    const v2 = await visitor();
+    await v2.ctx.addCookies([{ name: 'gi_consent', value: '1%3A1%3A1', url: BASE }, { name: '_ga', value: 'GA1.1.1.1', url: BASE }, { name: '_fbp', value: 'fb.1.1.1', url: BASE }]);
+    const p2 = await v2.ctx.newPage();
+    await p2.goto(BASE + '/', { waitUntil: 'networkidle' });
+    await p2.locator('.gi-cookie-reopen').click();
+    await p2.locator('#gi-ck-mkt').uncheck();
+    await Promise.all([p2.waitForNavigation({ waitUntil: 'networkidle' }), p2.locator('#gi-cookie [data-gi-act="save"]').click()]);
+    ok((await cookieOf(v2.ctx, '_ga')) === 'GA1.1.1.1' && (await cookieOf(v2.ctx, '_fbp')) === null, 'se retrage numai marketingul: _fbp se șterge, _ga (statistici) rămâne');
+    ok((await cookieOf(v2.ctx, 'gi_consent')) === '1:1:0', 'cookie 1:1:0 după retragerea marketingului');
+    await v2.ctx.close();
+  }
+
+  // ---------- 10e. contur de focus peste stilurile vechi + focus ----------
+  {
+    const { ctx } = await visitor();
+    const p = await ctx.newPage();
+    await p.goto(BASE + '/?gi_test=stiluri', { waitUntil: 'networkidle' });
+    await p.keyboard.press('Tab');
+    const ring = await p.evaluate(() => { const e = document.activeElement; const s = e && getComputedStyle(e); return e && s ? { act: e.getAttribute('data-gi-act'), style: s.outlineStyle, width: s.outlineWidth } : null; });
+    ok(ring && ring.act === 'accept' && ring.style !== 'none' && parseFloat(ring.width) >= 2, 'cu stilurile vechi ale temei, conturul de focus rămâne vizibil: ' + JSON.stringify(ring));
+    await p.locator('#gi-cookie [data-gi-view="main"] [data-gi-act="settings"]').click();
+    await p.keyboard.press('Escape');
+    ok(await p.evaluate(() => document.getElementById('gi-cookie').contains(document.activeElement)), 'Escape din setări: focusul rămâne în banner (nu cade pe pagină)');
+    await p.locator('#gi-cookie [data-gi-view="main"] [data-gi-act="reject"]').click();
+    ok(await p.evaluate(() => document.activeElement && document.activeElement.classList.contains('gi-cookie-reopen')), 'după alegere, focusul trece pe butonul mic „Setări cookie-uri”');
+    await p.evaluate(() => { const b = document.createElement('div'); b.id = 'lightbox-probă'; document.body.appendChild(b); });
+    await p.locator('.gi-cookie-reopen').click();
+    await p.locator('body').press('Escape'); // focusul e în banner: se închide
+    ok(!(await p.locator('#gi-cookie').isVisible()), 'Escape cu focusul în banner îl închide (după o alegere)');
     await ctx.close();
   }
 
@@ -285,10 +366,20 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     ok(/GTM4WP[^]*oprit/.test(await row.innerText()), 'Setări: GTM4WP apare „oprit” (nu e instalat local)');
     ok(/găsită/.test(await row.innerText()), 'Setări: pagina „Cookies” găsită');
     await ap.evaluate(() => { document.querySelector('form[action="options.php"]').noValidate = true; }); // validarea din browser (pattern) se ocolește: aici se testează curățarea din server
+    const purj0 = (await (await ap.request.get(BASE + '/?gi_test=c190_optiuni')).json());
+    ok(purj0.versiune_cache === '1.9.0' && purj0.purjari >= 1, 'după instalare/actualizare se șterge memoria serverului (LiteSpeed): ' + JSON.stringify(purj0));
     await ap.fill('input[name="gi_integration_options[gtm_id]"]', 'gtm-ab');
     await Promise.all([ap.waitForNavigation(), ap.click('input#submit, #submit')]);
     let o = await (await ap.request.get(BASE + '/?gi_test=c190_optiuni')).json();
-    ok(o.gtm_id === '' && o.consent_enabled === 1, 'cod invalid („gtm-ab”) → se salvează gol (' + JSON.stringify(o) + ')');
+    ok(o.gtm_id === 'GTM-5XNZX5QT' && o.consent_enabled === 1, 'cod invalid („gtm-ab”) → se păstrează codul vechi, nu se șterge în tăcere (' + JSON.stringify(o) + ')');
+    const purjCod = o.purjari;
+    ok(/nu arată ca un cod GTM/.test(await ap.locator('body').innerText()), 'Setări: mesaj de eroare vizibil pentru codul invalid');
+    await ap.goto(BASE + '/wp-admin/options-general.php?page=gi-integration', { waitUntil: 'domcontentloaded' });
+    await ap.evaluate(() => { document.querySelector('form[action="options.php"]').noValidate = true; });
+    await ap.fill('input[name="gi_integration_options[gtm_id]"]', '');
+    await Promise.all([ap.waitForNavigation(), ap.click('input#submit, #submit')]);
+    o = await (await ap.request.get(BASE + '/?gi_test=c190_optiuni')).json();
+    ok(o.gtm_id === '', 'cod golit de proprietară → se salvează gol (fără măsurare)');
     await ap.goto(BASE + '/wp-admin/options-general.php?page=gi-integration', { waitUntil: 'domcontentloaded' });
     ok(await ap.locator('.notice-info:has-text("lipsește codul Tag Manager")').count() === 1, 'Setări: mesaj „lipsește codul Tag Manager” când e gol');
     {
@@ -305,6 +396,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     await Promise.all([ap.waitForNavigation(), ap.click('input#submit, #submit')]);
     o = await (await ap.request.get(BASE + '/?gi_test=c190_optiuni')).json();
     ok(o.gtm_id === 'GTM-TEST1234', 'cod valid, cu spații și litere mici, se curăță: ' + o.gtm_id);
+    ok(o.purjari > purjCod, 'o schimbare reală a setărilor șterge memoria serverului (LiteSpeed): ' + purjCod + ' → ' + o.purjari);
     {
       const { ctx, reqs } = await visitor();
       const p = await ctx.newPage();
