@@ -34,6 +34,13 @@ Local nu există tema `giw`, Elementor, hoteller, BRW (plugin comercial) și cup
 2. S-a făcut o **simulare pe site-ul real, fără instalare**: pagina se încarcă de pe live cu cererile către fișierele scoase blocate (vezi mai jos). Se compară viteza și arătarea înainte și după.
 3. După instalare, verificare din afară (număr de fișiere, capturi) și verificare vizuală de către proprietară, pe telefon.
 
+## Verificări făcute înainte de instalare (22.11.2026)
+- Testul nou `tools/local-wp/test-1-10-0.js`: trece (nivelurile 0, 1, 2, fișiere puse târziu de temă, fără jQuery, indicii de fonturi scoase, implicit oprit, salvarea setărilor).
+- Testele vechi, rulate cu 1.10.0 în WordPress local, cu „Pagini ușoare” oprit (cum ajunge după instalare): `test-1-3-15.js` 121 de verificări, `test-1-8-0.js` complet, `test-1-5-0.js` 220/220 și fără erori PHP. Toate trec.
+- `test-securitate.js` se oprește la același pas (autentificarea greșită din „Contul meu” WooCommerce, după 32 de verificări trecute) și cu pluginul 1.8.0, cel de pe live: nu vine de la 1.10.0, ci de la copia locală de test.
+- Simulare pe site-ul real (paginile live încărcate, cu fișierele scoase de 1.10.0 blocate): Glamping pe telefon, primul conținut 6,7 → 2,9 s, cereri 131 → 33; fără erori JavaScript (nici în varianta fără jQuery).
+- Arhiva construită local cu `tools/build-zip.sh` are aceeași amprentă ca cea din GitHub Actions: SHA-256 946eed162b8198bd91db2bf87f6f6aaab2ddd770d28b37edf5e4b08623b46bad, 12.387.973 octeți.
+
 ## Revenire
 Setări → Grădina Ielelor → Pagini ușoare → **Oprit** → Salvează. Sau instalezi din nou arhiva 1.9.0/1.8.0 din Release.
 
